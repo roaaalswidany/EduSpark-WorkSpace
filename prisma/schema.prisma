@@ -1,0 +1,422 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum Role {
+  STUDENT
+  CREATOR
+  ADMIN
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum ServiceStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum OrderStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  REFUNDED
+  DISPUTED
+}
+
+enum ProjectStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// ─────────────────────────────────────────────
+// AUTH MODELS (NextAuth.js compatible)
+// ─────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role      @default(STUDENT)
+  bio           String?   @db.Text
+  headline      String?
+  website       String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // NextAuth relations
+  accounts       Account[]
+  sessions       Session[]
+
+  // Creator relations
+  courses        Course[]        @relation("CreatorCourses")
+  services       Service[]       @relation("CreatorServices")
+  proposals      Proposal[]      @relation("CreatorProposals")
+
+  // Student/Buyer relations
+  enrollments    Enrollment[]
+  reviews        Review[]
+  buyerOrders    Order[]         @relation("BuyerOrders")
+  sellerOrders   Order[]         @relation("SellerOrders")
+
+  // Client (project poster) relation
+  postedProjects Project[]       @relation("ClientProjects")
+
+  notifications  Notification[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ─────────────────────────────────────────────
+// COURSE MODELS
+// ─────────────────────────────────────────────
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  description String?
+  icon        String?
+  parentId    String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryHierarchy")
+  courses  Course[]
+  services Service[]
+
+  @@map("categories")
+}
+
+model Course {
+  id          String       @id @default(cuid())
+  title       String
+  slug        String       @unique
+  description String       @db.Text
+  thumbnail   String?
+  price       Decimal      @db.Decimal(10, 2)
+  level       CourseLevel  @default(BEGINNER)
+  status      CourseStatus @default(DRAFT)
+  language    String       @default("en")
+  tags        String[]
+  totalRating Float        @default(0)
+  ratingCount Int          @default(0)
+  creatorId   String
+  categoryId  String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  creator     User         @relation("CreatorCourses", fields: [creatorId], references: [id], onDelete: Cascade)
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  sections    Section[]
+  enrollments Enrollment[]
+  reviews     Review[]
+
+  @@index([creatorId])
+  @@index([slug])
+  @@index([status])
+  @@index([categoryId])
+  @@map("courses")
+}
+
+model Section {
+  id        String   @id @default(cuid())
+  title     String
+  order     Int
+  courseId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@index([courseId])
+  @@map("sections")
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  videoUrl    String?
+  duration    Int?
+  order       Int
+  isFree      Boolean  @default(false)
+  sectionId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  section        Section          @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  lessonProgress LessonProgress[]
+
+  @@index([sectionId])
+  @@map("lessons")
+}
+
+model Enrollment {
+  id          String           @id @default(cuid())
+  userId      String
+  courseId    String
+  status      EnrollmentStatus @default(ACTIVE)
+  progress    Float            @default(0)
+  paidAmount  Decimal          @db.Decimal(10, 2)
+  completedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course         Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonProgress LessonProgress[]
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@map("enrollments")
+}
+
+model LessonProgress {
+  id           String     @id @default(cuid())
+  completed    Boolean    @default(false)
+  watchedAt    DateTime?
+  enrollmentId String
+  lessonId     String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lesson     Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([enrollmentId, lessonId])
+  @@map("lesson_progress")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String?  @db.Text
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+  @@map("reviews")
+}
+
+// ─────────────────────────────────────────────
+// MARKETPLACE / SERVICE MODELS
+// ─────────────────────────────────────────────
+
+model Service {
+  id           String        @id @default(cuid())
+  title        String
+  slug         String        @unique
+  description  String        @db.Text
+  thumbnail    String?
+  price        Decimal       @db.Decimal(10, 2)
+  deliveryDays Int
+  revisions    Int           @default(1)
+  status       ServiceStatus @default(ACTIVE)
+  tags         String[]
+  creatorId    String
+  categoryId   String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  creator  User      @relation("CreatorServices", fields: [creatorId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  orders   Order[]
+
+  @@index([creatorId])
+  @@index([slug])
+  @@index([status])
+  @@map("services")
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  status       OrderStatus @default(PENDING)
+  totalAmount  Decimal     @db.Decimal(10, 2)
+  escrowAmount Decimal     @db.Decimal(10, 2)
+  requirements String?     @db.Text
+  deliveryDue  DateTime?
+  completedAt  DateTime?
+  buyerId      String
+  sellerId     String
+  serviceId    String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  buyer    User           @relation("BuyerOrders", fields: [buyerId], references: [id], onDelete: Restrict)
+  seller   User           @relation("SellerOrders", fields: [sellerId], references: [id], onDelete: Restrict)
+  service  Service        @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  messages OrderMessage[]
+
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([status])
+  @@map("orders")
+}
+
+model OrderMessage {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  senderId  String
+  orderId   String
+  createdAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("order_messages")
+}
+
+// ─────────────────────────────────────────────
+// PROJECT MODELS
+// ─────────────────────────────────────────────
+
+model Project {
+  id          String        @id @default(cuid())
+  title       String
+  description String        @db.Text
+  budget      Decimal?      @db.Decimal(10, 2)
+  deadline    DateTime?
+  status      ProjectStatus @default(OPEN)
+  tags        String[]
+  clientId    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  client    User       @relation("ClientProjects", fields: [clientId], references: [id], onDelete: Cascade)
+  proposals Proposal[]
+
+  @@index([clientId])
+  @@index([status])
+  @@map("projects")
+}
+
+model Proposal {
+  id           String   @id @default(cuid())
+  content      String   @db.Text
+  price        Decimal  @db.Decimal(10, 2)
+  deliveryDays Int
+  isAccepted   Boolean  @default(false)
+  creatorId    String
+  projectId    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  creator User    @relation("CreatorProposals", fields: [creatorId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([creatorId, projectId])
+  @@index([projectId])
+  @@map("proposals")
+}
+
+// ─────────────────────────────────────────────
+// NOTIFICATION MODEL
+// ─────────────────────────────────────────────
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  body      String   @db.Text
+  isRead    Boolean  @default(false)
+  link      String?
+  userId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@map("notifications")
+}
