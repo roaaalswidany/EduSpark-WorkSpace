@@ -28,9 +28,9 @@ import {
   Video,
 } from "lucide-react";
 
-import { trackProgressAction } from "@/app/actions/lms/track-progress";
-import type { CourseData, SectionData, LessonData } from "@/app/actions/lms/get-course";
-import { cn, formatDuration } from "@/app/lib/utils";
+import { trackProgressAction } from "@/actions/lms/track-progress";
+import type { CourseData, SectionData, LessonData } from "@/actions/lms/get-course";
+import { cn, formatDuration } from "@/lib/utils";
 
 // ─── Video Player ─────────────────────────────────────────────────────────────
 

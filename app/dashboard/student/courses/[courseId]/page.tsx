@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getCourseAction } from "@/app/actions/lms/get-course";
+import { getCourseAction } from "@/actions/lms/get-course";
 import { CourseLearningView } from "@/app/dashboard/student/courses/[courseId]/_components/course-learning-view";
 
 interface CoursePageProps {

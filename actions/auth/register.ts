@@ -3,7 +3,7 @@
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { Role } from "@prisma/client";
-import { db } from "@/app/lib/db";
+import { db } from "@/lib/db";
 
 // ─── Schemas ──────────────────────────────────────────────────────────────────
 

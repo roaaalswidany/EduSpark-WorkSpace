@@ -102,6 +102,9 @@ model User {
 
   notifications  Notification[]
 
+  quizAttempts  QuizAttempt[]
+  certificates  Certificate[]
+
   @@index([email])
   @@index([role])
   @@map("users")
@@ -195,11 +198,101 @@ model Course {
   enrollments Enrollment[]
   reviews     Review[]
 
+  quiz         Quiz?
+  certificates Certificate[]
+
   @@index([creatorId])
   @@index([slug])
   @@index([status])
   @@index([categoryId])
   @@map("courses")
+}
+
+model Quiz {
+  id           String        @id @default(cuid())
+  title        String
+  description  String?       @db.Text
+  passingScore Int           @default(80)
+  timeLimit    Int?
+  courseId     String        @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  course    Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  questions Question[]
+  attempts  QuizAttempt[]
+
+  @@map("quizzes")
+}
+
+model Question {
+  id            String   @id @default(cuid())
+  text          String   @db.Text
+  options       Json
+  correctOption String
+  explanation   String?  @db.Text
+  order         Int
+  quizId        String
+  createdAt     DateTime @default(now())
+
+  quiz    Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers QuizAnswer[]
+
+  @@index([quizId])
+  @@map("questions")
+}
+
+model QuizAttempt {
+  id          String   @id @default(cuid())
+  score       Float
+  passed      Boolean
+  totalQ      Int
+  correctQ    Int
+  submittedAt DateTime @default(now())
+  userId      String
+  quizId      String
+  courseId    String
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz        Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers     QuizAnswer[]
+  certificate Certificate?
+
+  @@index([userId])
+  @@index([quizId])
+  @@map("quiz_attempts")
+}
+
+model QuizAnswer {
+  id             String @id @default(cuid())
+  selectedOption String
+  isCorrect      Boolean
+  attemptId      String
+  questionId     String
+
+  attempt  QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, questionId])
+  @@map("quiz_answers")
+}
+
+model Certificate {
+  id           String   @id @default(cuid())
+  credentialId String   @unique
+  score        Float
+  issuedAt     DateTime @default(now())
+  userId       String
+  courseId     String
+  attemptId    String   @unique
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course  Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  attempt QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@map("certificates")
 }
 
 model Section {

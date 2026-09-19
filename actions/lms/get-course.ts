@@ -2,7 +2,7 @@
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { db } from "@/app/lib/db";
+import { db } from "@/lib/db";
 import type { CourseLevel, EnrollmentStatus } from "@prisma/client";
 
 // ─── Public Types (consumed by client components) ────────────────────────────

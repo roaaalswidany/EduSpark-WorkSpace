@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { db } from "@/app/lib/db";
+import { db } from "@/lib/db";
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
