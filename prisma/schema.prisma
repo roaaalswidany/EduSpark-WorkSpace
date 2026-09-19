@@ -61,6 +61,25 @@ enum ProjectStatus {
   IN_PROGRESS
   COMPLETED
   CANCELLED
+  PENDING
+   REVIEW_REQUESTED
+  DISPUTED
+}
+
+
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  REVIEW_REQUESTED
+  APPROVED
+  REVISION_NEEDED
+}
+
+enum ChatRoomType {
+  PROJECT
+  DIRECT
+  SUPPORT
 }
 
 // ─────────────────────────────────────────────
@@ -104,6 +123,10 @@ model User {
 
   quizAttempts  QuizAttempt[]
   certificates  Certificate[]
+
+   creatorProjects    Project[]             @relation("CreatorProjects")
+  chatMessages       ChatMessage[]
+  chatParticipations ChatRoomParticipant[]
 
   @@index([email])
   @@index([role])
@@ -410,10 +433,73 @@ model Service {
 
   portfolioLinks String[]
 
+  projects Project[]
+
   @@index([creatorId])
   @@index([slug])
   @@index([status])
   @@map("services")
+}
+
+model Milestone {
+  id           String          @id @default(cuid())
+  title        String
+  description  String?         @db.Text
+  dueDate      DateTime?
+  status       MilestoneStatus @default(PENDING)
+  order        Int             @default(1)
+  amount       Decimal?        @db.Decimal(10, 2)
+  completedAt  DateTime?
+  revisionNote String?         @db.Text
+  projectId    String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("milestones")
+}
+
+model ChatRoom {
+  id        String       @id @default(cuid())
+  type      ChatRoomType @default(PROJECT)
+  projectId String?      @unique
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  project      Project?              @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  messages     ChatMessage[]
+  participants ChatRoomParticipant[]
+
+  @@map("chat_rooms")
+}
+
+model ChatRoomParticipant {
+  userId     String
+  chatRoomId String
+  joinedAt   DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chatRoom ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+
+  @@id([userId, chatRoomId])
+  @@map("chat_room_participants")
+}
+
+model ChatMessage {
+  id         String   @id @default(cuid())
+  content    String   @db.Text
+  senderId   String
+  chatRoomId String
+  isSystem   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender   User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  chatRoom ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+
+  @@index([chatRoomId])
+  @@map("chat_messages")
 }
 
 model Order {
@@ -472,6 +558,14 @@ model Project {
 
   client    User       @relation("ClientProjects", fields: [clientId], references: [id], onDelete: Cascade)
   proposals Proposal[]
+
+  creatorId  String?
+  serviceId  String?
+
+  creator    User?       @relation("CreatorProjects", fields: [creatorId], references: [id], onDelete: SetNull)
+  service    Service?    @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  milestones Milestone[]
+  chatRoom   ChatRoom?
 
   @@index([clientId])
   @@index([status])

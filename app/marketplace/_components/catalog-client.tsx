@@ -149,7 +149,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
         {/* Thumbnail */}
         <div
           className={cn(
-            "relative w-full aspect-[16/9] bg-gradient-to-br overflow-hidden shrink-0",
+            "relative w-full aspect-video bg-linear-to-br overflow-hidden shrink-0",
             gradient
           )}
         >
@@ -475,7 +475,7 @@ export function CatalogClient({
 
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4 leading-[1.1]">
             Hire{" "}
-            <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
               Certified
             </span>{" "}
             Experts
