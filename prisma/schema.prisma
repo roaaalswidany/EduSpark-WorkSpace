@@ -408,6 +408,8 @@ model Service {
   category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   orders   Order[]
 
+  portfolioLinks String[]
+
   @@index([creatorId])
   @@index([slug])
   @@index([status])
