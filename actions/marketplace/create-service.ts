@@ -58,19 +58,19 @@ export const CreateServiceSchema = z.object({
     .trim(),
 
   price: z
-    .number({ invalid_type_error: "Price must be a number." })
+  .number({ error: "Price must be a number." })
     .min(5, "Minimum price is $5.")
     .max(10_000, "Maximum price is $10,000.")
     .multipleOf(0.01, "Price can have at most 2 decimal places."),
 
   deliveryDays: z
-    .number({ invalid_type_error: "Delivery time must be a number." })
+  .number({ error: "Delivery time must be a number." })
     .int("Delivery time must be a whole number.")
     .min(1, "Minimum delivery is 1 day.")
     .max(90, "Maximum delivery is 90 days."),
 
   revisions: z
-    .number({ invalid_type_error: "Revisions must be a number." })
+  .number({ error: "Revisions must be a number." })
     .int()
     .min(0, "Revisions cannot be negative.")
     .max(20, "Maximum revisions is 20.")
@@ -142,9 +142,9 @@ export async function createServiceAction(
       return {
         success: false,
         error: "INVALID_INPUT",
-        fieldErrors: parsed.error.flatten().fieldErrors as Partial
-          Record<keyof CreateServiceInput, string[]>
-        >,
+       fieldErrors: parsed.error.flatten().fieldErrors as Partial<
+  Record<keyof CreateServiceInput, string[]>
+>,
       };
     }
 

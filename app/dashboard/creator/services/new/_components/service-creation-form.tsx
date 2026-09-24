@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/incompatible-library */
 "use client";
 
 import { useState, useTransition, KeyboardEvent, useRef } from "react";
@@ -24,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { z } from "zod";
 import {
   X,
   Plus,
@@ -120,7 +122,7 @@ function TagInput({
       <div
         onClick={() => inputRef.current?.focus()}
         className={cn(
-          "min-h-[2.75rem] flex flex-wrap gap-1.5 items-center px-3 py-2 rounded-lg",
+          "min-h-11 flex flex-wrap gap-1.5 items-center px-3 py-2 rounded-lg",
           "bg-slate-950 border border-slate-700 cursor-text",
           "focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all"
         )}
@@ -154,7 +156,7 @@ function TagInput({
             onKeyDown={handleKeyDown}
             onBlur={() => input && addTag(input)}
             placeholder={value.length === 0 ? "Type a tag, press Enter…" : ""}
-            className="flex-1 min-w-[120px] bg-transparent text-sm text-slate-200 placeholder:text-slate-600 outline-none"
+            className="flex-1 min-w-30 bg-transparent text-sm text-slate-200 placeholder:text-slate-600 outline-none"
           />
         )}
       </div>
@@ -324,7 +326,11 @@ export function ServiceCreationForm({
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const form = useForm<CreateServiceInput>({
+ const form = useForm<
+    z.input<typeof CreateServiceSchema>,
+    unknown,
+    CreateServiceInput
+  >({
     resolver: zodResolver(CreateServiceSchema),
     defaultValues: {
       courseId: "",
@@ -643,12 +649,12 @@ export function ServiceCreationForm({
                   </FormLabel>
                   <FormControl>
                     <NumberInput
-                      value={field.value}
-                      onChange={field.onChange}
-                      min={0}
-                      max={20}
-                      placeholder="1"
-                    />
+  value={field.value ?? 1}
+  onChange={field.onChange}
+  min={0}
+  max={20}
+  placeholder="1"
+/>
                   </FormControl>
                   <FormDescription className="text-slate-600 text-xs">
                     0 = no revisions

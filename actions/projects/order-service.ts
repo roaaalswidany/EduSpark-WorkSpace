@@ -63,9 +63,9 @@ export async function orderServiceAction(
       return {
         success: false,
         error: "INVALID_INPUT",
-        fieldErrors: parsed.error.flatten().fieldErrors as Partial
-          Record<keyof OrderServiceInput, string[]>
-        >,
+       fieldErrors: parsed.error.flatten().fieldErrors as Partial<
+  Record<keyof OrderServiceInput, string[]>
+>,
       };
     }
 

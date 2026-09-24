@@ -135,7 +135,7 @@ export async function submitQuizAction(
     if (!enrollment) return { success: false, error: "NOT_ENROLLED" };
 
     // ── 5. Structural validation: all questions answered, no alien IDs ───────
-    const canonicalIds = new Set(questions.map((q: { id: any; }) => q.id));
+    const canonicalIds = new Set(questions.map((q) => q.id));
     const submittedIds = new Set(answers.map((a) => a.questionId));
 
     if (submittedIds.size !== canonicalIds.size) {
@@ -151,14 +151,14 @@ export async function submitQuizAction(
     // ── 6. Server-side grading ────────────────────────────────────────────────
     const answerMap = new Map(answers.map((a) => [a.questionId, a.selectedOption]));
 
-    const gradedAnswers = questions.map((q: { id: string; correctOption: string | undefined; }) => ({
-      questionId: q.id,
-      selectedOption: answerMap.get(q.id)!,
-      correctOption: q.correctOption,
-      isCorrect: answerMap.get(q.id) === q.correctOption,
-    }));
+    const gradedAnswers = questions.map((q) => ({
+  questionId: q.id,
+  selectedOption: answerMap.get(q.id)!,
+  correctOption: q.correctOption ?? "",
+  isCorrect: answerMap.get(q.id) === q.correctOption,
+}));
 
-    const correctCount = gradedAnswers.filter((a: { isCorrect: any; }) => a.isCorrect).length;
+const correctCount = gradedAnswers.filter((a) => a.isCorrect).length;
     const totalQ = questions.length;
     const rawScore = totalQ > 0 ? (correctCount / totalQ) * 100 : 0;
     const score = Math.round(rawScore * 100) / 100; // 2 decimal places
