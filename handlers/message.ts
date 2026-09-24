@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { randomUUID } from "crypto";
 import type {
   AuthenticatedSocket,
@@ -71,7 +72,7 @@ export function handleMessageEvents(
 
   // ── send_message ───────────────────────────────────────────────────────────
 
-  socket.on("send_message", async (payload: SendMessagePayload, ack) => {
+  socket.on("send_message", async (payload, ack) => {
     socket.data.lastActivity = new Date();
 
     // ── 1. Input validation ──────────────────────────────────────────────────

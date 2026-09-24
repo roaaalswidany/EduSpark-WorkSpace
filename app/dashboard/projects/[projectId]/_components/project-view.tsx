@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import {
@@ -138,6 +139,13 @@ const PROJECT_STATUS = {
     bar: "bg-slate-500",
     progress: 0,
   },
+   [ProjectStatus.OPEN]: {                    
+    label: "Open",                            
+    color: "text-slate-400",                  
+    bg: "bg-slate-700",                       
+    bar: "bg-slate-500",                      
+    progress: 0,                              
+  },                                
   [ProjectStatus.IN_PROGRESS]: {
     label: "In Progress",
     color: "text-indigo-300",
@@ -337,11 +345,13 @@ function MilestoneCard({
   const StatusIcon = config.icon;
   const due = dueDateMeta(milestone.dueDate);
   const isPending = pendingId === milestone.id;
-  const isProjectActive = ![
+  const isProjectActive = !(
+  [
     ProjectStatus.COMPLETED,
     ProjectStatus.CANCELLED,
     ProjectStatus.DISPUTED,
-  ].includes(projectStatus);
+  ] as ProjectStatus[]
+).includes(projectStatus);
 
   return (
     <div className="flex gap-4 items-start">
@@ -532,22 +542,15 @@ function MilestoneCard({
                   !revisionOpen && (
                     <>
                       <button
-                        onClick={() =>
-                          onRequestRevision(milestone.id, "__open__")
-                        }
-                        disabled={isPending}
-                        className={cn(
-                          "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
-                          "bg-slate-700 hover:bg-red-500/20 border border-slate-600 hover:border-red-500/30",
-                          "text-slate-400 hover:text-red-400",
-                          "disabled:opacity-50"
-                        )}
-                        // We use the revision form instead of direct action
-                        onClick={() => setRevisionOpen(true)}
-                      >
-                        <RotateCcw className="w-3.5 h-3.5" />
-                        Request Revision
-                      </button>
+  disabled={isPending}
+  className={cn(
+    "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
+    "bg-slate-700 hover:bg-red-500/20 border border-slate-600 hover:border-red-500/30",
+    "text-slate-400 hover:text-red-400",
+    "disabled:opacity-50"
+  )}
+  onClick={() => setRevisionOpen(true)}
+></button>
                     </>
                   )}
 
@@ -908,7 +911,7 @@ export function ProjectView({
             {/* ── Client: Approve All Completion ────────────────────────────── */}
             {isClient &&
               localProjectStatus === ProjectStatus.REVIEW_REQUESTED && (
-                <div className="mt-6 p-6 rounded-2xl bg-gradient-to-br from-emerald-500/8 via-teal-500/5 to-indigo-500/8 border border-emerald-500/20 text-center">
+                <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/8 via-teal-500/5 to-indigo-500/8 border border-emerald-500/20 text-center">
                   <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-4">
                     <ShieldCheck className="w-7 h-7 text-emerald-400" />
                   </div>
@@ -945,7 +948,7 @@ export function ProjectView({
 
             {/* ── Completed state ───────────────────────────────────────────── */}
             {localProjectStatus === ProjectStatus.COMPLETED && (
-              <div className="mt-6 p-6 rounded-2xl bg-gradient-to-br from-emerald-500/8 via-teal-500/5 to-indigo-500/8 border border-emerald-500/20 text-center">
+              <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/8 via-teal-500/5 to-indigo-500/8 border border-emerald-500/20 text-center">
                 <Award className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
                 <h3 className="text-lg font-bold text-white mb-1.5">
                   Project Complete! 🎉

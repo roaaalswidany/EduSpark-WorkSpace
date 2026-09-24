@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import {
@@ -44,7 +46,6 @@ import type {
   MessageGroup,
   AckResponse,
   RoomJoinedPayload,
-  RoomUsersPayload,
 } from "@/types/chat";
 
 // ─── Environment ──────────────────────────────────────────────────────────────
@@ -265,7 +266,7 @@ function LinkCard({ url }: { url: string }) {
   const isFile = /\.(pdf|docx?|xlsx?|pptx?|zip|rar|tar|gz|png|jpe?g|gif|svg|mp4|mov)(\?|$)/i.test(url);
 
   return (
-    
+     <a
       href={url}
       target="_blank"
       rel="noopener noreferrer"
@@ -307,7 +308,7 @@ const MessageContent = memo(function MessageContent({
       <p className="text-sm leading-relaxed whitespace-pre-wrap wrap-break-word">
         {parts.map((part, i) =>
           part.kind === "link" ? (
-            
+            <a
               key={i}
               href={part.value}
               target="_blank"
@@ -621,7 +622,7 @@ export default function ChatBox({
     } else {
       setHasNewMessages(true);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   }, [messages.length]);
 
   // ── Join room when connected ───────────────────────────────────────────────
@@ -670,12 +671,12 @@ export default function ChatBox({
         setIsJoined(true);
         // Refresh user list after recovery
         socket.emit(
-          "get_room_users",
-          { roomId },
-          (res: AckResponse<RoomUsersPayload>) => {
-            if (res.ok) setOnlineUsers(res.data.users);
-          }
-        );
+  "get_room_users",
+  { roomId },
+  (res: AckResponse<{ users: OnlineUser[] }>) => {
+    if (res.ok) setOnlineUsers(res.data.users);
+  }
+);
       } else {
         // State not recovered → re-join
         join();

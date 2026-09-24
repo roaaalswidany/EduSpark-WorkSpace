@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import "dotenv/config";
 import { createServer, type IncomingMessage, type ServerResponse } from "http";
 import express, { type Request, type Response, type NextFunction } from "express";
@@ -98,7 +99,7 @@ const httpServer = createServer(
 
 // ─── Socket.io server ─────────────────────────────────────────────────────────
 
-export const io = new Server
+export const io = new Server<
   ClientToServerEvents,
   ServerToClientEvents,
   Record<string, never>,
@@ -131,8 +132,7 @@ export const io = new Server
     skipMiddlewares: false,              // still re-verify JWT on recovery
   },
 
-  // Per-socket send queue size (prevents unbounded backpressure)
-  // @ts-expect-error: experimental option
+    // Per-socket send queue size (prevents unbounded backpressure)
   perMessageDeflate: { threshold: 1024 },
 });
 

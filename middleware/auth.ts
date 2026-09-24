@@ -7,7 +7,7 @@ import type {
 import { verifySocketToken, AuthError } from "../lib/jwt";
 import { logger, securityLogger } from "../lib/logger";
 
-type RawSocket = Socket
+type RawSocket = Socket<
   ClientToServerEvents,
   ServerToClientEvents,
   Record<string, never>,

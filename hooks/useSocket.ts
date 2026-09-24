@@ -15,7 +15,7 @@ const CHAT_SERVER_URL =
   process.env.NEXT_PUBLIC_CHAT_SERVER_URL ?? "http://localhost:3001";
 
 const SOCKET_OPTIONS = {
-  transports: ["websocket", "polling"] as const,
+  transports: ["websocket", "polling"],
   reconnection: true,
   reconnectionAttempts: 8,
   reconnectionDelay: 1_000,
@@ -23,7 +23,7 @@ const SOCKET_OPTIONS = {
   randomizationFactor: 0.5,
   timeout: 20_000,
   autoConnect: false,
-} as const;
+};
 
 // ─── Return type ──────────────────────────────────────────────────────────────
 

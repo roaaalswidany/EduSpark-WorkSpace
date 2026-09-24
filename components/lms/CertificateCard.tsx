@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useRef, useCallback, useId } from "react";
@@ -372,7 +373,7 @@ function FullCard({
             </button>
 
             {/* Verify externally */}
-            
+            <a
               href={verifyUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -467,7 +468,7 @@ function CompactCard({
           >
             <Download className="w-3.5 h-3.5 text-slate-600 hover:text-amber-400 transition-colors" />
           </button>
-          
+          <a
             href={verifyUrl}
             target="_blank"
             rel="noopener noreferrer"

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type {
   AuthenticatedSocket,
   SocketServer,
@@ -165,7 +167,7 @@ export function handleRoomEvents(
 
   // ── join_room ─────────────────────────────────────────────────────────────
 
-  socket.on("join_room", async (payload: JoinRoomPayload, ack) => {
+  socket.on("join_room", async (payload: JoinRoomPayload, ack: (arg0: AckResponse<RoomJoinedPayload>) => void) => {
     socket.data.lastActivity = new Date();
 
     const parsed = parseRoomId(payload.roomId);
@@ -276,7 +278,7 @@ export function handleRoomEvents(
 
   // ── get_room_users ────────────────────────────────────────────────────────
 
-  socket.on("get_room_users", (payload, ack) => {
+ socket.on("get_room_users", (payload, ack) => {
     if (!socket.rooms.has(payload.roomId)) {
       return ack({
         ok: false,

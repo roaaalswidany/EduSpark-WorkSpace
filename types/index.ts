@@ -185,14 +185,14 @@ export interface SocketData {
 
 // ─── Convenience aliases ──────────────────────────────────────────────────────
 
-export type SocketServer = Server
+export type SocketServer = Server<
   ClientToServerEvents,
   ServerToClientEvents,
   Record<string, never>,
   SocketData
 >;
 
-export type AuthenticatedSocket = Socket
+export type AuthenticatedSocket = Socket<
   ClientToServerEvents,
   ServerToClientEvents,
   Record<string, never>,
