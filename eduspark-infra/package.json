@@ -1,0 +1,15 @@
+{
+  "name": "eduspark-infra",
+  "private": true,
+  "scripts": {
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "infra:reset": "docker compose down -v && docker compose up -d",
+    "infra:logs": "docker compose logs -f",
+    "install:all": "npm install --prefix eduspark && npm install --prefix eduspark-chat-server && npm install",
+    "dev": "concurrently --names \"NEXT,CHAT\" --prefix-colors \"cyan,magenta\" \"npm run dev --prefix eduspark\" \"npm run dev --prefix eduspark-chat-server\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
