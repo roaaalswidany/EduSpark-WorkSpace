@@ -30,7 +30,7 @@ import {
   Package,
   ShieldCheck,
 } from "lucide-react";
-import { MilestoneStatus, ProjectStatus } from "@prisma/client";
+import { MilestoneStatus, ProjectStatus } from "@/lib/enums";
 import {
   startMilestoneAction,
   requestMilestoneReviewAction,

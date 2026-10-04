@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     root: resolve(__dirname, ".."),
     
   },
-  serverExternalPackages: ['@prisma/client', 'prisma'],
+    serverExternalPackages: ["@prisma/client", "prisma"],
   // ... باقي الإعدادات
 };
 
