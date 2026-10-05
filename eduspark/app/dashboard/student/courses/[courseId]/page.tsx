@@ -2,11 +2,12 @@ import { redirect, notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getCourseAction } from "@/actions/lms/get-course";
-import { CourseLearningView } from "@/app/dashboard/student/courses/[courseId]/_components/course-learning-view";
+import { CourseLearningView } from "./_components/course-learning-view";
+import { db } from "@/lib/db";
 
 interface CoursePageProps {
-  params: { courseId: string };
-  searchParams: { lessonId?: string };
+  params: Promise<{ courseId: string }>;
+  searchParams: Promise<{ lessonId?: string }>;
 }
 
 export default async function CoursePage({
@@ -16,29 +17,32 @@ export default async function CoursePage({
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect("/auth/login");
 
-  const result = await getCourseAction(params.courseId);
+  const { courseId } = await params;
+  const { lessonId } = await searchParams;
+
+  const result = await getCourseAction(courseId);
 
   if (!result.success) {
     if (result.error === "UNAUTHORIZED") redirect("/auth/login");
     if (result.error === "NOT_ENROLLED")
-      redirect(`/courses/${params.courseId}?error=not-enrolled`);
+      redirect(`/courses/${courseId}?error=not-enrolled`);
     notFound();
   }
 
   const { data: course } = result;
 
-  // Lesson selection priority:
-  //  1. URL query param (restore from navigation)
-  //  2. First uncompleted lesson (natural resume)
-  //  3. First lesson of first section (fresh start)
+  // Check if this course has a published quiz
+  const hasQuiz = !!(await db.quiz.findUnique({
+    where: { courseId },
+    select: { id: true },
+  }));
+
   const allLessonIds = course.sections.flatMap((s) =>
     s.lessons.map((l) => l.id)
   );
 
   const queriedLessonId =
-    searchParams.lessonId && allLessonIds.includes(searchParams.lessonId)
-      ? searchParams.lessonId
-      : null;
+    lessonId && allLessonIds.includes(lessonId) ? lessonId : null;
 
   const initialLessonId =
     queriedLessonId ??
@@ -49,6 +53,10 @@ export default async function CoursePage({
   if (!initialLessonId) notFound();
 
   return (
-    <CourseLearningView course={course} initialLessonId={initialLessonId} />
+    <CourseLearningView
+      course={course}
+      initialLessonId={initialLessonId}
+      hasQuiz={hasQuiz}
+    />
   );
 }

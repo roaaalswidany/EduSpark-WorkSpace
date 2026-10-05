@@ -1,124 +1,84 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { SocketServer, AuthenticatedSocket } from "../types";
-import { presenceStore, PresenceStore } from "../state/presence";
-import { rateLimiter } from "../state/rate-limiter";
-import { logger, securityLogger } from "../lib/logger";
+// ============================================================================
+// معالج أحداث الاتصال والانقطاع
+// ============================================================================
 
-// ─── Connection lifecycle ─────────────────────────────────────────────────────
+import type { TypedSocket, TypedServer } from "../types/socket.types";
+import { logger } from "../lib/logger";
+import { env } from "../config/env";
 
-export function handleConnectionLifecycle(
-  io: SocketServer,
-  socket: AuthenticatedSocket,
-  presence: PresenceStore
+// تتبّع المستخدمين المتصلين في الذاكرة
+const connectedUsers = new Map<string, Set<string>>(); // userId → Set<socketId>
+
+export function registerConnectionHandlers(
+  socket: TypedSocket,
+  io: TypedServer
 ): void {
-  const { user } = socket.data;
+  const user = socket.data.user;
 
-  // ── Register with presence store ─────────────────────────────────────────
+  // ── تسجيل الاتصال الجديد ──────────────────────────────────────────────────
+  if (!connectedUsers.has(user.id)) {
+    connectedUsers.set(user.id, new Set());
+  }
+  connectedUsers.get(user.id)!.add(socket.id);
 
-  const { isNewlyOnline } = presence.connect(socket.id, user);
+  const totalConnections = connectedUsers.get(user.id)!.size;
 
-  logger.info("Socket connected", {
-    meta: {
-      socketId: socket.id,
-      userId: user.id,
-      name: user.name,
-      role: user.role,
-      recovered: socket.recovered,
-      totalConnections: presence.getTotalConnections(),
-      onlineUsers: presence.getOnlineUserCount(),
-    },
+  logger.info("New socket connection", {
+    socketId: socket.id,
+    userId: user.id,
+    userName: user.name,
+    role: user.role,
+    totalUserConnections: totalConnections,
+    totalConnectedUsers: connectedUsers.size,
   });
 
-  // ── Broadcast online status to ALL connected clients ─────────────────────
-  // Only emit if this is the user's first connection (not a second tab).
+  // إرسال تأكيد الاتصال للعميل
+  socket.emit("connection_acknowledged", {
+    userId: user.id,
+    connectedAt: socket.data.connectedAt.toISOString(),
+    serverVersion: process.env["npm_package_version"] ?? "1.0.0",
+  });
 
-  if (isNewlyOnline) {
-    socket.broadcast.emit("presence_online", {
-      userId: user.id,
-      name: user.name,
-      image: user.image,
-      role: user.role,
-      connectedAt: socket.data.connectedAt.toISOString(),
-    });
-  }
-
-  // ── Handle recovered connections ─────────────────────────────────────────
-  // Socket.io connectionStateRecovery may restore room memberships automatically.
-  // Acknowledge recovery so the client can reconcile its UI state.
-
-  if (socket.recovered) {
-    const recoveredRooms = Array.from(socket.rooms).filter(
-      (r) => r !== socket.id
-    );
-
-    socket.emit("reconnect_ack", { recoveredRooms });
-
-    logger.info("Socket state recovered", {
-      meta: {
-        socketId: socket.id,
-        userId: user.id,
-        recoveredRooms,
-      },
-    });
-  }
-
-  // ── Handle disconnection ─────────────────────────────────────────────────
-
-  socket.on("disconnect", (reason: string) => {
-    socket.data.lastActivity = new Date();
-
-    const result = presence.disconnect(socket.id);
-
-    logger.info("Socket disconnected", {
-      meta: {
-        socketId: socket.id,
-        userId: user.id,
-        reason,
-        wasLastSocket: result?.isNowOffline ?? true,
-        remainingConnections: presence.getTotalConnections(),
-        sessionDurationMs:
-          Date.now() - socket.data.connectedAt.getTime(),
-      },
-    });
-
-    if (result?.isNowOffline) {
-      // Broadcast offline to everyone
-      socket.broadcast.emit("presence_offline", {
-        userId: user.id,
-        name: user.name,
-        disconnectedAt: new Date().toISOString(),
-      });
-
-      // Notify rooms the user was part of
-      const joinedRooms = Array.from(socket.data.joinedRooms ?? []) as string[];
-      for (const roomId of joinedRooms) {
-        socket.to(roomId).emit("user_left", {
-          roomId,
-          userId: user.id,
-          name: user.name,
-        });
-      }
-
-      // Clean up rate limiter bucket on clean disconnect
-      if (
-        reason === "client namespace disconnect" ||
-        reason === "server namespace disconnect"
-      ) {
-        rateLimiter.reset(user.id);
+  // ── معالجة الانقطاع ───────────────────────────────────────────────────────
+  socket.on("disconnect", (reason) => {
+    const userSockets = connectedUsers.get(user.id);
+    if (userSockets) {
+      userSockets.delete(socket.id);
+      if (userSockets.size === 0) {
+        connectedUsers.delete(user.id);
       }
     }
-  });
 
-  // ── Handle socket-level errors ────────────────────────────────────────────
+    const sessionDurationSeconds = Math.floor(
+      (Date.now() - socket.data.connectedAt.getTime()) / 1000
+    );
 
-  socket.on("error", (err: { message: any; }) => {
-    securityLogger.error("Socket error event", {
-      meta: {
-        socketId: socket.id,
-        userId: user.id,
-        error: err instanceof Error ? err.message : String(err),
-      },
+    logger.info("Socket disconnected", {
+      socketId: socket.id,
+      userId: user.id,
+      reason,
+      sessionDurationSeconds,
+      activeRooms: Array.from(socket.data.activeRooms),
+      remainingConnections: userSockets?.size ?? 0,
     });
   });
+
+  // ── معالجة الأخطاء ────────────────────────────────────────────────────────
+  socket.on("error", (error) => {
+    logger.error("Socket error", {
+      socketId: socket.id,
+      userId: user.id,
+      error: error.message,
+    });
+  });
+}
+
+export function getConnectedUsersCount(): number {
+  return connectedUsers.size;
+}
+
+export function getTotalConnectionsCount(): number {
+  let total = 0;
+  connectedUsers.forEach((sockets) => (total += sockets.size));
+  return total;
 }

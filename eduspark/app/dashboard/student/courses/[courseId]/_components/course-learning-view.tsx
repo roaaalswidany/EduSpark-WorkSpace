@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/preserve-manual-memoization */
 "use client";
 
+import Link from "next/link";
+
 import {
   useState,
   useCallback,
@@ -26,6 +28,7 @@ import {
   AlertCircle,
   GraduationCap,
   Video,
+  ArrowRight,
 } from "lucide-react";
 
 import { trackProgressAction } from "@/actions/lms/track-progress";
@@ -164,7 +167,15 @@ function ProgressRing({
 
 // ─── Completion Banner ────────────────────────────────────────────────────────
 
-function CompletionBanner({ title }: { title: string }) {
+function CompletionBanner({
+  title,
+  courseId,
+  hasQuiz,
+}: {
+  title: string;
+  courseId: string;
+  hasQuiz: boolean;
+}) {
   return (
     <div className="mx-4 sm:mx-6 mb-8 rounded-2xl bg-linear-to-br from-emerald-500/10 via-teal-500/5 to-indigo-500/10 border border-emerald-500/20 p-8 text-center">
       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/20 mb-4">
@@ -173,11 +184,22 @@ function CompletionBanner({ title }: { title: string }) {
       <h3 className="text-xl font-bold text-white mb-1.5">
         Course Complete! 🎉
       </h3>
-      <p className="text-slate-400 text-sm max-w-sm mx-auto">
+      <p className="text-slate-400 text-sm max-w-sm mx-auto mb-5">
         You finished{" "}
-        <span className="text-white font-medium">{title}</span>. Certificate
-        is now available in your dashboard.
+        <span className="text-white font-medium">{title}</span>.{" "}
+        {hasQuiz
+          ? "Take the certification quiz to earn your certificate."
+          : "Certificate is now available in your dashboard."}
       </p>
+      {hasQuiz && (
+        <Link
+          href={`/dashboard/student/courses/${courseId}/quiz`}
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+        >
+          Take Certification Quiz
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      )}
     </div>
   );
 }
@@ -345,11 +367,13 @@ function SectionAccordion({
 interface CourseLearningViewProps {
   course: CourseData;
   initialLessonId: string;
+  hasQuiz: boolean;
 }
 
 export function CourseLearningView({
   course,
   initialLessonId,
+  hasQuiz,
 }: CourseLearningViewProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -726,7 +750,13 @@ export function CourseLearningView({
             </div>
 
             {/* Course complete banner */}
-            {isPassed && <CompletionBanner title={course.title} />}
+            {isPassed && (
+  <CompletionBanner
+    title={course.title}
+    courseId={course.id}
+    hasQuiz={hasQuiz}
+  />
+)}
           </div>
         </main>
 

@@ -106,21 +106,18 @@ export async function submitQuizAction(
     // ── 3. Fetch quiz + questions (server-side only — correctOption never
     //       reaches the client in any form until after grading) ───────────────
     const quiz = await db.quiz.findUnique({
-      where: { id: quizId },
-      select: {
-        id: true,
-        passingScore: true,
-        courseId: true,
-        questions: {
-          orderBy: { order: "asc" },
-          select: {
-            id: true,
-            correctOption: true,
-            explanation: true,
-          },
-        },
-      },
-    });
+  where: { id: quizId },
+  select: {
+    id: true,
+    passingScore: true,
+    courseId: true,
+    questions: {
+      where: { status: "PUBLISHED" }, // ← الإضافة الحاسمة: تستثني AI_DRAFTED و REJECTED
+      orderBy: { order: "asc" },
+      select: { id: true, correctOption: true, explanation: true },
+    },
+  },
+});
 
     if (!quiz) return { success: false, error: "QUIZ_NOT_FOUND" };
 

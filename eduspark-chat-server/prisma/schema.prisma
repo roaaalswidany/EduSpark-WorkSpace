@@ -82,6 +82,12 @@ enum ChatRoomType {
   SUPPORT
 }
 
+enum AttachmentStatus {
+  PENDING    
+  CONFIRMED  
+  FAILED
+}
+
 // ─────────────────────────────────────────────
 // AUTH MODELS (NextAuth.js compatible)
 // ─────────────────────────────────────────────
@@ -120,6 +126,8 @@ model User {
   postedProjects Project[]       @relation("ClientProjects")
 
   notifications  Notification[]
+
+  uploadedAttachments Attachment[]
 
   quizAttempts  QuizAttempt[]
   certificates  Certificate[]
@@ -457,6 +465,8 @@ model Milestone {
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
+  attachments Attachment[]
+
   @@index([projectId])
   @@map("milestones")
 }
@@ -471,6 +481,7 @@ model ChatRoom {
   project      Project?              @relation(fields: [projectId], references: [id], onDelete: SetNull)
   messages     ChatMessage[]
   participants ChatRoomParticipant[]
+  attachments Attachment[]
 
   @@map("chat_rooms")
 }
@@ -497,6 +508,8 @@ model ChatMessage {
 
   sender   User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
   chatRoom ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+
+  attachments Attachment[]
 
   @@index([chatRoomId])
   @@map("chat_messages")
@@ -609,4 +622,33 @@ model Notification {
   @@index([userId])
   @@index([isRead])
   @@map("notifications")
+}
+
+model Attachment {
+  id            String           @id @default(cuid())
+  fileName      String
+  mimeType      String
+  fileSizeBytes Int
+  storageKey    String           @unique
+  status        AttachmentStatus @default(PENDING)
+  uploadedById  String
+
+  // حقول الارتباط — حالة واحدة فقط مفعَّلة منطقياً بحسب سياق الرفع
+  milestoneId   String?
+  chatRoomId    String?   // يُحدَّد لحظة الرفع (الغرفة معروفة قبل وجود الرسالة)
+  chatMessageId String?   // يُربَط لاحقاً لحظة إنشاء الرسالة فعلياً في خادم الدردشة
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  uploadedBy  User         @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  milestone   Milestone?   @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  chatRoom    ChatRoom?    @relation(fields: [chatRoomId], references: [id], onDelete: SetNull)
+  chatMessage ChatMessage? @relation(fields: [chatMessageId], references: [id], onDelete: Cascade)
+
+  @@index([milestoneId])
+  @@index([chatRoomId])
+  @@index([chatMessageId])
+  @@index([uploadedById])
+  @@map("attachments")
 }

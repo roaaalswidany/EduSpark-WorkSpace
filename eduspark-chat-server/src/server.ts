@@ -1,281 +1,235 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+// ============================================================================
+// EduSpark Chat Microservice — Main Server Entry Point
+//
+// التسلسل الكامل للتهيئة:
+// 1. التحقّق من متغيّرات البيئة
+// 2. إنشاء Express + HTTP Server
+// 3. الاتصال بـ Redis وإعداد الـ Adapter
+// 4. إعداد Socket.io مع CORS وجميع الـ middleware
+// 5. تسجيل كل معالجات الأحداث
+// 6. الاستماع على المنفذ المُحدَّد
+// ============================================================================
+
 import "dotenv/config";
-import { createServer, type IncomingMessage, type ServerResponse } from "http";
-import express, { type Request, type Response, type NextFunction } from "express";
-import cors from "cors";
+import express, { type Request, type Response } from "express";
+import { createServer } from "http";
 import { Server } from "socket.io";
-
+import cors from "cors";
+import { createAdapter } from "@socket.io/redis-adapter";
 import { env } from "./config/env";
+import { initRedisClients, closeRedisClients } from "./config/redis";
+import { prisma, checkDatabaseConnection } from "./lib/prisma";
 import { logger } from "./lib/logger";
-import { prisma, checkDatabaseHealth } from "./lib/prisma";
-import { socketAuthMiddleware } from "./middleware/auth";
-import { handleConnectionLifecycle } from "./handlers/connection";
-import { handleRoomEvents } from "./handlers/room";
-import { handleMessageEvents } from "./handlers/message";
-import { presenceStore } from "./state/presence";
-import { rateLimiter } from "./state/rate-limiter";
-
+import { socketAuthMiddleware } from "./middleware/socket-auth";
+import { registerConnectionHandlers, getConnectedUsersCount, getTotalConnectionsCount } from "./handlers/connection";
+import { registerRoomHandlers } from "./handlers/room";
+import { registerMessageHandlers } from "./handlers/message";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
   SocketData,
-} from "./types";
+  TypedServer,
+} from "./types/socket.types";
 
-// ─── Express application ──────────────────────────────────────────────────────
+// ─── Express Application ──────────────────────────────────────────────────────
 
 const app = express();
 
-app.set("trust proxy", 1); // Trust X-Forwarded-For from reverse proxy (nginx/caddy)
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: false }));
 
+// CORS للطلبات HTTP العادية (health check, إلخ)
 app.use(
   cors({
-    origin: env.NEXT_APP_URL,
-    methods: ["GET", "HEAD"],
+    origin: env.NEXTJS_APP_URL,
+    methods: ["GET", "POST"],
     credentials: true,
   })
 );
 
-app.use(express.json({ limit: "64kb" }));
-
-// ── Request logging middleware ───────────────────────────────────────────────
-
-app.use((req: Request, _res: Response, next: NextFunction) => {
-  logger.http(`${req.method} ${req.path}`, {
-    meta: { ip: req.ip, ua: req.headers["user-agent"] },
-  });
-  next();
-});
-
-// ── Health check ─────────────────────────────────────────────────────────────
+// ─── Health Check Endpoints ───────────────────────────────────────────────────
 
 app.get("/health", async (_req: Request, res: Response) => {
-  const dbHealthy = await checkDatabaseHealth();
-  const presence = presenceStore.snapshot();
+  const dbHealthy = await checkDatabaseConnection();
 
-  const status = dbHealthy ? "ok" : "degraded";
-  const statusCode = dbHealthy ? 200 : 503;
-
-  res.status(statusCode).json({
-    status,
+  res.status(dbHealthy ? 200 : 503).json({
+    status: dbHealthy ? "healthy" : "degraded",
     timestamp: new Date().toISOString(),
+    version: process.env["npm_package_version"] ?? "1.0.0",
     uptime: Math.floor(process.uptime()),
-    database: dbHealthy ? "connected" : "disconnected",
-    presence,
-    version: process.env["npm_package_version"] ?? "unknown",
+    environment: env.NODE_ENV,
+    services: {
+      database: dbHealthy ? "connected" : "disconnected",
+      socket: "running",
+    },
+    connections: {
+      uniqueUsers: getConnectedUsersCount(),
+      totalSockets: getTotalConnectionsCount(),
+    },
   });
 });
 
-// ── Metrics (Prometheus-compatible plaintext) ─────────────────────────────────
-
 app.get("/metrics", (_req: Request, res: Response) => {
-  const { onlineUsers, totalConnections } = presenceStore.snapshot();
-
-  res.type("text/plain").send([
-    `# HELP chat_online_users Number of distinct online users`,
-    `# TYPE chat_online_users gauge`,
-    `chat_online_users ${onlineUsers}`,
-    ``,
-    `# HELP chat_total_connections Total active socket connections`,
-    `# TYPE chat_total_connections gauge`,
-    `chat_total_connections ${totalConnections}`,
-    ``,
-    `# HELP process_uptime_seconds Server uptime`,
-    `# TYPE process_uptime_seconds gauge`,
-    `process_uptime_seconds ${process.uptime().toFixed(2)}`,
-  ].join("\n"));
+  res.json({
+    timestamp: new Date().toISOString(),
+    connections: {
+      uniqueUsers: getConnectedUsersCount(),
+      totalSockets: getTotalConnectionsCount(),
+    },
+    process: {
+      memoryUsageMB: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+      uptimeSeconds: Math.floor(process.uptime()),
+      pid: process.pid,
+    },
+  });
 });
 
-// ── 404 catch-all ─────────────────────────────────────────────────────────────
+// ─── HTTP Server ──────────────────────────────────────────────────────────────
 
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({ error: "Not found" });
-});
+const httpServer = createServer(app);
 
-// ─── HTTP server ──────────────────────────────────────────────────────────────
+// ─── Socket.io Server ────────────────────────────────────────────────────────
 
-const httpServer = createServer(
-  app as (req: IncomingMessage, res: ServerResponse) => void
-);
-
-// ─── Socket.io server ─────────────────────────────────────────────────────────
-
-export const io = new Server<
+const io: TypedServer = new Server<
   ClientToServerEvents,
   ServerToClientEvents,
   Record<string, never>,
   SocketData
 >(httpServer, {
+  // CORS لاتصالات WebSocket
   cors: {
-    origin: env.NEXT_APP_URL,
+    origin: env.NEXTJS_APP_URL,
     methods: ["GET", "POST"],
     credentials: true,
+    allowedHeaders: ["Authorization"],
   },
 
-  // Allow websocket upgrade with polling fallback for restrictive networks
+  // السماح بالـ polling كاحتياط للشبكات التي تحجب WebSocket
   transports: ["websocket", "polling"],
 
-  // Heartbeat configuration
-  pingTimeout: 60_000,   // 60s before declaring a dead connection
-  pingInterval: 25_000,  // probe every 25s
+  // إعدادات الاتصال
+  pingTimeout: 60_000,       // 60 ثانية قبل اعتبار الاتصال ميتاً
+  pingInterval: 25_000,      // نبضة كل 25 ثانية
+  upgradeTimeout: 10_000,    // 10 ثوانٍ للترقية من polling إلى WebSocket
+  maxHttpBufferSize: 1e6,    // 1 MB حجم أقصى للرسالة الواحدة
 
-  // Prevent slow/malicious clients from stalling the upgrade
-  upgradeTimeout: 30_000,
-
-  // Reject oversized payloads (guards against DoS)
-  maxHttpBufferSize: 1e6, // 1 MB
-
-  // Automatic connection state recovery
-  // Allows clients to resume room memberships after brief disconnections
-  // (network flicker, sleep/wake) without re-joining manually
+  // استعادة حالة الاتصال بعد انقطاع مؤقت
   connectionStateRecovery: {
-    maxDisconnectionDuration: 2 * 60_000, // 2 minutes
-    skipMiddlewares: false,              // still re-verify JWT on recovery
+    maxDisconnectionDuration: 2 * 60_000, // دقيقتان
+    skipMiddlewares: false,               // إعادة تشغيل الـ middleware حتى بعد الاسترداد
   },
-
-    // Per-socket send queue size (prevents unbounded backpressure)
-  perMessageDeflate: { threshold: 1024 },
 });
 
-// ─── Authentication middleware ────────────────────────────────────────────────
-// Runs on every new connection (including recovery attempts).
+// ─── Bootstrap Function ───────────────────────────────────────────────────────
 
-io.use(socketAuthMiddleware);
+async function bootstrap(): Promise<void> {
+  logger.info("🚀 Starting EduSpark Chat Server...");
 
-// ─── Connection handler ───────────────────────────────────────────────────────
+  // ── الخطوة 1: التحقّق من قاعدة البيانات ──────────────────────────────────
+  logger.info("Checking database connection...");
+  const dbHealthy = await checkDatabaseConnection();
+  if (!dbHealthy) {
+    logger.error("Cannot connect to database. Exiting.");
+    process.exit(1);
+  }
+  logger.info("✅ Database connection established");
 
-io.on("connection", (socket) => {
-  // 1. Lifecycle: presence, broadcast online/offline, cleanup
-  handleConnectionLifecycle(io, socket, presenceStore);
-  // 2. Room management: join/leave/history/user-list
-  handleRoomEvents(io, socket);
-  // 3. Messaging: send, persist, broadcast, typing indicators
-  handleMessageEvents(io, socket, presenceStore);
-});
+  // ── الخطوة 2: إعداد Redis Adapter ────────────────────────────────────────
+  logger.info("Initializing Redis clients...");
+  const { pubClient, subClient } = await initRedisClients();
 
-// ─── Adapter error handling ───────────────────────────────────────────────────
-// Catch errors from the in-memory adapter (e.g., room broadcast failures).
+  io.adapter(createAdapter(pubClient, subClient));
+  logger.info("✅ Redis adapter configured for horizontal scaling");
 
-io.engine.on("connection_error", (err) => {
-  logger.error("Socket.io engine connection error", {
-    meta: {
-      code: err.code,
-      message: err.message,
-      context: err.context,
-    },
+  // ── الخطوة 3: تسجيل Middleware المصادقة ──────────────────────────────────
+  // هذا يُنفَّذ قبل كل اتصال — الحارس الأمني الأوّل
+  io.use((socket, next) => {
+    socketAuthMiddleware(
+      socket as Parameters<typeof socketAuthMiddleware>[0],
+      next
+    );
   });
-});
 
-// ─── Graceful shutdown ────────────────────────────────────────────────────────
+  // ── الخطوة 4: معالج الاتصالات الجديدة ────────────────────────────────────
+  io.on("connection", (socket) => {
+    // تسجيل كل معالجات الأحداث للـ socket الجديد
+    registerConnectionHandlers(socket, io);
+    registerRoomHandlers(socket, io);
+    registerMessageHandlers(socket, io);
+  });
+
+  // ── الخطوة 5: الاستماع على المنفذ ────────────────────────────────────────
+  httpServer.listen(env.PORT, () => {
+    logger.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    logger.info(`🟢 EduSpark Chat Server is running`);
+    logger.info(`   Port     : ${env.PORT}`);
+    logger.info(`   Env      : ${env.NODE_ENV}`);
+    logger.info(`   Origin   : ${env.NEXTJS_APP_URL}`);
+    logger.info(`   Health   : http://localhost:${env.PORT}/health`);
+    logger.info(`   Metrics  : http://localhost:${env.PORT}/metrics`);
+    logger.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  });
+}
+
+// ─── Graceful Shutdown ────────────────────────────────────────────────────────
 
 let isShuttingDown = false;
 
-async function shutdown(signal: string): Promise<void> {
+async function gracefulShutdown(signal: string): Promise<void> {
   if (isShuttingDown) return;
   isShuttingDown = true;
 
-  logger.info(`Received ${signal} — starting graceful shutdown`, {
-    meta: {
-      onlineUsers: presenceStore.getOnlineUserCount(),
-      totalConnections: presenceStore.getTotalConnections(),
-    },
-  });
+  logger.info(`Received ${signal}. Starting graceful shutdown...`);
 
-  // 1. Stop accepting new connections
-  httpServer.close();
-
-  // 2. Broadcast shutdown notice to all connected clients
+  // إشعار المتصلين بالإغلاق الوشيك
   io.emit("server_error", {
-    code: "SERVER_ERROR",
-    message: "Server is restarting. Please reconnect in a moment.",
+    code: "SERVER_SHUTTING_DOWN",
+    message: "Server is restarting. You will be reconnected automatically.",
+    timestamp: new Date().toISOString(),
   });
 
-  // 3. Close all socket.io connections gracefully
-  io.disconnectSockets(true);
+  // إغلاق قبول الاتصالات الجديدة
+  httpServer.close(async () => {
+    logger.info("HTTP server closed");
 
-  // 4. Allow in-flight operations to complete (5s grace period)
-  await new Promise<void>((resolve) => setTimeout(resolve, 5_000));
+    // قطع اتصالات Socket.io بشكل نظيف
+    await io.close();
+    logger.info("Socket.io server closed");
 
-  // 5. Destroy rate limiter
-  rateLimiter.destroy();
+    // إغلاق اتصالات Redis
+    await closeRedisClients();
 
-  // 6. Disconnect Prisma
-  try {
+    // إغلاق اتصال قاعدة البيانات
     await prisma.$disconnect();
-    logger.info("Database connection closed");
-  } catch (err) {
-    logger.error("Error closing database connection", {
-      meta: { error: err instanceof Error ? err.message : String(err) },
-    });
-  }
+    logger.info("Database disconnected");
 
-  logger.info("Shutdown complete");
-  process.exit(0);
-}
+    logger.info("✅ Graceful shutdown complete");
+    process.exit(0);
+  });
 
-// Force exit if graceful shutdown takes too long
-process.on("SIGTERM", () => {
-  void shutdown("SIGTERM");
+  // Force exit بعد 30 ثانية إن لم ينتهِ الـ graceful shutdown
   setTimeout(() => {
-    logger.error("Forced exit: shutdown timed out after 30s");
+    logger.error("Forced shutdown after timeout");
     process.exit(1);
   }, 30_000).unref();
-});
-
-process.on("SIGINT", () => {
-  void shutdown("SIGINT");
-  setTimeout(() => {
-    logger.error("Forced exit: shutdown timed out after 30s");
-    process.exit(1);
-  }, 30_000).unref();
-});
-
-// ─── Unhandled rejection / exception ─────────────────────────────────────────
-
-process.on("uncaughtException", (err, origin) => {
-  logger.error("Uncaught exception", {
-    meta: {
-      error: err.message,
-      stack: err.stack,
-      origin,
-    },
-  });
-  void shutdown("uncaughtException");
-});
-
-process.on("unhandledRejection", (reason, promise) => {
-  logger.error("Unhandled promise rejection", {
-    meta: {
-      reason: reason instanceof Error ? reason.message : String(reason),
-      stack: reason instanceof Error ? reason.stack : undefined,
-      promise: String(promise),
-    },
-  });
-  // Do NOT exit on unhandled rejections — log and continue
-  // unless it's a critical resource (covered by uncaughtException)
-});
-
-// ─── Startup ──────────────────────────────────────────────────────────────────
-
-async function bootstrap(): Promise<void> {
-  // Verify DB connection before accepting traffic
-  const dbReady = await checkDatabaseHealth();
-  if (!dbReady) {
-    logger.error("Database is unreachable at startup — aborting");
-    process.exit(1);
-  }
-
-  httpServer.listen(env.PORT, () => {
-    logger.info("✅ EduSpark Chat Server started", {
-      meta: {
-        port: env.PORT,
-        environment: env.NODE_ENV,
-        allowedOrigin: env.NEXT_APP_URL,
-        rateLimit: `${env.MAX_MESSAGES_PER_MINUTE} msg/min`,
-        pid: process.pid,
-        nodeVersion: process.version,
-      },
-    });
-  });
 }
 
-void bootstrap();
+process.on("SIGTERM", () => void gracefulShutdown("SIGTERM"));
+process.on("SIGINT", () => void gracefulShutdown("SIGINT"));
+
+process.on("uncaughtException", (error) => {
+  logger.error("Uncaught exception", { error: error.message, stack: error.stack });
+  void gracefulShutdown("uncaughtException");
+});
+
+process.on("unhandledRejection", (reason) => {
+  logger.error("Unhandled rejection", {
+    reason: reason instanceof Error ? reason.message : String(reason),
+  });
+});
+
+// ─── Start ────────────────────────────────────────────────────────────────────
+bootstrap().catch((error) => {
+  logger.error("Fatal bootstrap error", { error: error instanceof Error ? error.message : String(error) });
+  process.exit(1);
+});

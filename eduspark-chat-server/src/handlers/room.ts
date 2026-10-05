@@ -1,292 +1,236 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import type {
-  AuthenticatedSocket,
-  SocketServer,
-  JoinRoomPayload,
-  LeaveRoomPayload,
-  AckResponse,
-  RoomJoinedPayload,
-  RoomUsersPayload,
-  BroadcastMessage,
-  ParsedRoomId,
-  OnlineUserInfo,
-} from "../types";
+// ============================================================================
+// معالج أحداث الغرف (join_room, leave_room)
+// ============================================================================
+
+import type { TypedSocket, TypedServer } from "../types/socket.types";
+import { parseRoomIdentifier, verifyRoomAccess } from "../guards/room-access";
 import { prisma } from "../lib/prisma";
-import { presenceStore } from "../state/presence";
-import { logger, securityLogger } from "../lib/logger";
+import { logger } from "../lib/logger";
+import type { MessageBroadcastPayload } from "../types/socket.types";
 
-// ─── Room ID parser ───────────────────────────────────────────────────────────
+const RECENT_MESSAGES_LIMIT = 50;
 
-const VALID_PREFIXES = new Set(["chat", "course", "support"]);
-
-function parseRoomId(raw: string): ParsedRoomId | null {
-  const sepIdx = raw.indexOf(":");
-  if (sepIdx === -1) return null;
-
-  const prefix = raw.slice(0, sepIdx);
-  const entityId = raw.slice(sepIdx + 1);
-
-  if (!VALID_PREFIXES.has(prefix) || !entityId || entityId.length > 200) {
-    return null;
-  }
-
-  return { prefix: prefix as ParsedRoomId["prefix"], entityId, raw };
-}
-
-// ─── Authorization per room type ──────────────────────────────────────────────
-
-async function authorizeRoomAccess(
-  userId: string,
-  parsed: ParsedRoomId
-): Promise<{ allowed: boolean; reason?: string }> {
-  switch (parsed.prefix) {
-    case "chat": {
-      // DB-backed room — user must be a registered participant
-      const participant = await prisma.chatRoomParticipant.findUnique({
-        where: {
-          userId_chatRoomId: {
-            userId,
-            chatRoomId: parsed.entityId,
-          },
-        },
-        select: { userId: true },
-      });
-
-      if (!participant) {
-        return { allowed: false, reason: "User is not a participant of this chat room." };
-      }
-      return { allowed: true };
-    }
-
-    case "course": {
-      // Enrolled student or the course creator
-      const [enrollment, course] = await Promise.all([
-        prisma.enrollment.findUnique({
-          where: { userId_courseId: { userId, courseId: parsed.entityId } },
-          select: { id: true },
-        }),
-        prisma.course.findUnique({
-          where: { id: parsed.entityId },
-          select: { creatorId: true },
-        }),
-      ]);
-
-      const allowed = !!(enrollment || course?.creatorId === userId);
-      return allowed
-        ? { allowed: true }
-        : { allowed: false, reason: "User is not enrolled in this course." };
-    }
-
-    case "support": {
-      // Any authenticated user may join a support room
-      return { allowed: true };
-    }
-
-    default:
-      return { allowed: false, reason: "Unknown room type." };
-  }
-}
-
-// ─── Load recent message history ──────────────────────────────────────────────
-
-async function loadRoomHistory(
-  prefix: ParsedRoomId["prefix"],
-  entityId: string,
-  limit = 50
-): Promise<BroadcastMessage[]> {
-  if (prefix !== "chat") {
-    // Transient rooms have no persisted history
-    return [];
-  }
-
-  const messages = await prisma.chatMessage.findMany({
-    where: { chatRoomId: entityId },
-    orderBy: { createdAt: "desc" },
-    take: limit,
-    select: {
-      id: true,
-      content: true,
-      isSystem: true,
-      createdAt: true,
-      senderId: true,
-      sender: {
-        select: { id: true, name: true, image: true },
-      },
-    },
-  });
-
-  // Reverse to chronological order
-  return messages.reverse().map((m) => ({
-    id: m.id,
-    tempId: m.id, // historical messages use their real ID as tempId
-    chatRoomId: entityId,
-    content: m.content,
-    isSystem: m.isSystem,
-    replyToId: null,
-    sender: {
-      id: m.sender.id,
-      name: m.sender.name,
-      image: m.sender.image,
-    },
-    createdAt: m.createdAt.toISOString(),
-  }));
-}
-
-// ─── Build online user list for a room ───────────────────────────────────────
-
-function getRoomOnlineUsers(io: SocketServer, roomId: string): OnlineUserInfo[] {
-  const socketsInRoom = io.sockets.adapter.rooms.get(roomId);
-  if (!socketsInRoom) return [];
-
-  const seen = new Set<string>();
-  const users: OnlineUserInfo[] = [];
-
-  for (const socketId of socketsInRoom) {
-    const socket = io.sockets.sockets.get(socketId);
-    if (!socket?.data?.user) continue;
-
-    const userId = socket.data.user.id;
-    if (seen.has(userId)) continue; // deduplicate multi-tab users
-    seen.add(userId);
-
-    const info = presenceStore.getUserInfo(userId);
-    if (info) users.push(info);
-  }
-
-  return users;
-}
-
-// ─── Handler registration ─────────────────────────────────────────────────────
-
-export function handleRoomEvents(
-  io: SocketServer,
-  socket: AuthenticatedSocket
+export function registerRoomHandlers(
+  socket: TypedSocket,
+  io: TypedServer
 ): void {
-  const { user } = socket.data;
+  const user = socket.data.user;
 
-  // ── join_room ─────────────────────────────────────────────────────────────
+  // ── join_room ──────────────────────────────────────────────────────────────
+  socket.on("join_room", async (payload, callback) => {
+    const { roomType, targetId } = payload;
 
-  socket.on("join_room", async (payload: JoinRoomPayload, ack: (arg0: AckResponse<RoomJoinedPayload>) => void) => {
-    socket.data.lastActivity = new Date();
-
-    const parsed = parseRoomId(payload.roomId);
-    if (!parsed) {
-      const resp: AckResponse<never> = {
-        ok: false,
-        error: { code: "INVALID_PAYLOAD", message: `Invalid room ID format: "${payload.roomId}".` },
-      };
-      return ack(resp as AckResponse<RoomJoinedPayload>);
-    }
-
-    // Authorization check
-    try {
-      const { allowed, reason } = await authorizeRoomAccess(user.id, parsed);
-
-      if (!allowed) {
-        securityLogger.warn("Unauthorized room join attempt", {
-          meta: { userId: user.id, roomId: payload.roomId, reason },
-        });
-
-        return ack({
-          ok: false,
-          error: { code: "ROOM_ACCESS_DENIED", message: reason ?? "Access denied." },
-        });
-      }
-    } catch (err) {
-      logger.error("Room authorization DB error", {
-        meta: {
-          userId: user.id,
-          roomId: payload.roomId,
-          error: err instanceof Error ? err.message : String(err),
+    if (!roomType || !targetId) {
+      return callback({
+        success: false,
+        error: {
+          code: "INVALID_PAYLOAD",
+          message: "roomType and targetId are required.",
         },
       });
-      return ack({
-        ok: false,
-        error: { code: "SERVER_ERROR", message: "Failed to verify room access." },
-      });
     }
 
-    // Don't re-join if already a socket member (idempotent)
-    if (socket.rooms.has(payload.roomId)) {
-      const users = getRoomOnlineUsers(io, payload.roomId);
-      const history = await loadRoomHistory(parsed.prefix, parsed.entityId);
-      return ack({ ok: true, data: { roomId: payload.roomId, users, history, totalMessages: history.length } });
-    }
+    // تنظيف وتحليل معرّف الغرفة
+    const parsed = parseRoomIdentifier(roomType, targetId);
 
-    // Join socket room
-    await socket.join(payload.roomId);
-    socket.data.joinedRooms.add(payload.roomId);
-
-    // Notify others in the room
-    socket.to(payload.roomId).emit("user_joined", {
-      roomId: payload.roomId,
-      user: {
-        userId: user.id,
-        name: user.name,
-        image: user.image,
-        role: user.role,
-        connectedAt: socket.data.connectedAt.toISOString(),
-      },
+    logger.debug("Room join attempt", {
+      socketId: socket.id,
+      userId: user.id,
+      roomId: parsed.fullRoomId,
     });
 
-    // Load and return room state
-    try {
-      const [history, users] = await Promise.all([
-        loadRoomHistory(parsed.prefix, parsed.entityId),
-        Promise.resolve(getRoomOnlineUsers(io, payload.roomId)),
-      ]);
+    // التحقّق من حق الوصول عبر قاعدة البيانات
+    const accessResult = await verifyRoomAccess(user, parsed);
 
-      logger.info("User joined room", {
-        meta: { userId: user.id, roomId: payload.roomId, historyCount: history.length },
+    if (!accessResult.granted) {
+      logger.warn("Room join denied", {
+        socketId: socket.id,
+        userId: user.id,
+        roomId: parsed.fullRoomId,
+        reason: accessResult.code,
       });
 
-      ack({ ok: true, data: { roomId: payload.roomId, users, history, totalMessages: history.length } });
-    } catch (err) {
-      logger.error("Failed to load room history", {
-        meta: {
-          userId: user.id,
-          roomId: payload.roomId,
-          error: err instanceof Error ? err.message : String(err),
+      return callback({
+        success: false,
+        error: {
+          code: accessResult.code,
+          message: accessResult.message,
         },
       });
-      // Return without history on DB failure (room is still joined)
-      ack({ ok: true, data: { roomId: payload.roomId, users: [], history: [], totalMessages: 0 } });
     }
+
+    // الانضمام للغرفة في Socket.io
+    await socket.join(parsed.fullRoomId);
+    socket.data.activeRooms.add(parsed.fullRoomId);
+
+    // إشعار أعضاء الغرفة بالانضمام الجديد
+    socket.to(parsed.fullRoomId).emit("user_joined_room", {
+      userId: user.id,
+      userName: user.name,
+      userImage: user.image,
+      roomId: parsed.fullRoomId,
+      timestamp: new Date().toISOString(),
+    });
+
+    // جلب آخر الرسائل للـ room history
+    const recentMessages = await fetchRecentMessages(parsed);
+
+    const membersCount = getSocketsInRoom(io, parsed.fullRoomId);
+
+    logger.info("User joined room", {
+      socketId: socket.id,
+      userId: user.id,
+      roomId: parsed.fullRoomId,
+      membersCount,
+    });
+
+    callback({
+      success: true,
+      data: {
+        roomId: parsed.fullRoomId,
+        membersCount,
+        recentMessages,
+      },
+    });
   });
 
-  // ── leave_room ────────────────────────────────────────────────────────────
+  // ── leave_room ─────────────────────────────────────────────────────────────
+  socket.on("leave_room", async (payload, callback) => {
+    const { roomId } = payload;
 
-  socket.on("leave_room", (payload: LeaveRoomPayload) => {
-    socket.data.lastActivity = new Date();
+    if (!socket.rooms.has(roomId)) {
+      return callback({
+        success: false,
+        error: {
+          code: "NOT_IN_ROOM",
+          message: "You are not a member of this room.",
+        },
+      });
+    }
 
-    if (!socket.rooms.has(payload.roomId)) return;
+    await socket.leave(roomId);
+    socket.data.activeRooms.delete(roomId);
 
-    socket.leave(payload.roomId);
-    socket.data.joinedRooms.delete(payload.roomId);
-
-    socket.to(payload.roomId).emit("user_left", {
-      roomId: payload.roomId,
+    socket.to(roomId).emit("user_left_room", {
       userId: user.id,
-      name: user.name,
+      userName: user.name,
+      userImage: user.image,
+      roomId,
+      timestamp: new Date().toISOString(),
     });
 
     logger.info("User left room", {
-      meta: { userId: user.id, roomId: payload.roomId },
+      socketId: socket.id,
+      userId: user.id,
+      roomId,
     });
+
+    callback({ success: true, data: null });
   });
 
-  // ── get_room_users ────────────────────────────────────────────────────────
+  // ── ping_room ──────────────────────────────────────────────────────────────
+  socket.on("ping_room", (payload, callback) => {
+    const { roomId } = payload;
 
- socket.on("get_room_users", (payload, ack) => {
-    if (!socket.rooms.has(payload.roomId)) {
-      return ack({
-        ok: false,
-        error: { code: "ROOM_NOT_FOUND", message: "You are not in this room." },
+    if (!socket.rooms.has(roomId)) {
+      return callback({
+        success: false,
+        error: { code: "NOT_IN_ROOM", message: "You are not in this room." },
       });
     }
 
-    const users = getRoomOnlineUsers(io, payload.roomId);
-    ack({ ok: true, data: { roomId: payload.roomId, users } });
+    callback({
+      success: true,
+      data: {
+        roomId,
+        membersCount: getSocketsInRoom(io, roomId),
+        isActive: true,
+      },
+    });
   });
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function getSocketsInRoom(io: TypedServer, roomId: string): number {
+  const room = io.sockets.adapter.rooms.get(roomId);
+  return room ? room.size : 0;
+}
+
+async function fetchRecentMessages(
+  parsed: ReturnType<typeof parseRoomIdentifier>
+): Promise<MessageBroadcastPayload[]> {
+  try {
+    const whereClause = buildMessageWhereClause(parsed);
+
+    const messages = await prisma.message.findMany({
+      where: whereClause,
+      orderBy: { createdAt: "desc" },
+      take: RECENT_MESSAGES_LIMIT,
+      select: {
+        id: true,
+        content: true,
+        fileUrl: true,
+        fileType: true,
+        isSystem: true,
+        createdAt: true,
+        senderId: true,
+        courseId: true,
+        projectId: true,
+        isSupport: true,
+        sender: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    // عكس الترتيب: من الأقدم للأحدث للعرض الصحيح
+    return messages.reverse().map((msg) => ({
+      id: msg.id,
+      tempId: msg.id, // للرسائل التاريخية نستخدم الـ id الفعلي
+      content: msg.content,
+      fileUrl: msg.fileUrl,
+      fileType: msg.fileType,
+      senderId: msg.sender.id,
+      senderName: msg.sender.name,
+      senderImage: msg.sender.image,
+      senderRole: msg.sender.role,
+      roomId: parsed.fullRoomId,
+      courseId: msg.courseId,
+      projectId: msg.projectId,
+      isSupport: msg.isSupport,
+      isSystem: msg.isSystem,
+      createdAt: msg.createdAt.toISOString(),
+    }));
+  } catch (error) {
+    logger.error("Error fetching recent messages", {
+      roomType: parsed.type,
+      targetId: parsed.targetId,
+      error: error instanceof Error ? error.message : "unknown",
+    });
+    return [];
+  }
+}
+
+function buildMessageWhereClause(
+  parsed: ReturnType<typeof parseRoomIdentifier>
+): Record<string, unknown> {
+  switch (parsed.type) {
+    case "course-study-group":
+      return { courseId: parsed.targetId };
+    case "project-workspace":
+      return { projectId: parsed.targetId };
+    case "support-channel":
+      return {
+        isSupport: true,
+        senderId: parsed.targetId, // targetId هنا هو userId
+      };
+    default:
+      return {};
+  }
 }

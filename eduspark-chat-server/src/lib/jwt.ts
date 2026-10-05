@@ -1,89 +1,103 @@
+// ============================================================================
+// التحقّق من JWT الصادر عن NextAuth
+//
+// الاستراتيجية الأمنية:
+// NextAuth تُصدر JWT موقَّعاً بـ HMAC-SHA256 باستخدام NEXTAUTH_SECRET.
+// خادم الدردشة يُفكِّكه بنفس المفتاح (JWT_SECRET في .env).
+// لا يوجد اتصال شبكي بين الخادمَين — التحقّق تشفيري محلي بالكامل.
+// ============================================================================
+
 import jwt from "jsonwebtoken";
 import { env } from "../config/env";
-import { securityLogger } from "./logger";
-import type { AuthenticatedUser, UserRole } from "../types";
+import { logger } from "./logger";
+import type { Role } from "@prisma/client";
 
-// ─── Raw decoded shape from NextAuth JWT ──────────────────────────────────────
-
-interface NextAuthJWTPayload {
-  id: string;
-  name?: string;
-  email?: string;
-  role?: UserRole;
-  picture?: string;
-  iat?: number;
-  exp?: number;
+export interface DecodedNextAuthToken {
+  sub: string;           // user.id
+  email: string;
+  name: string;
+  role: Role;
+  picture: string | null;
+  iat: number;
+  exp: number;
   jti?: string;
 }
 
-const VALID_ROLES: Set<string> = new Set(["STUDENT", "CREATOR", "ADMIN"]);
+export type JWTVerificationResult =
+  | { success: true; payload: DecodedNextAuthToken }
+  | { success: false; reason: "EXPIRED" | "INVALID" | "MALFORMED" | "MISSING_CLAIMS" };
 
-// ─── Verify & extract ─────────────────────────────────────────────────────────
-
-export function verifySocketToken(
-  rawToken: string,
-  socketId: string,
-  remoteAddress: string
-): AuthenticatedUser {
-  // Basic token format sanity check before hitting crypto
-  if (!rawToken || rawToken.split(".").length !== 3) {
-    securityLogger.warn("Malformed JWT received", {
-      meta: { socketId, ip: remoteAddress, tokenLength: rawToken?.length ?? 0 },
-    });
-    throw new AuthError("MALFORMED_TOKEN", "Invalid token format.");
+/**
+ * يُفكِّك ويتحقّق من صحة JWT الصادر عن NextAuth
+ *
+ * الأسباب التي تجعل هذه الدالة آمنة:
+ * 1. algorithms: ["HS256"] يمنع هجوم Algorithm Confusion
+ * 2. التحقّق من انتهاء الصلاحية exp يحدث تلقائياً في jwt.verify
+ * 3. نتحقّق من الحقول الإلزامية sub و role بعد الفكّ
+ */
+export function verifyNextAuthToken(rawToken: string): JWTVerificationResult {
+  if (!rawToken || typeof rawToken !== "string" || rawToken.split(".").length !== 3) {
+    return { success: false, reason: "MALFORMED" };
   }
-
-  let decoded: NextAuthJWTPayload;
 
   try {
-    decoded = jwt.verify(rawToken, env.JWT_SECRET, {
+    const decoded = jwt.verify(rawToken, env.JWT_SECRET, {
       algorithms: ["HS256"],
-    }) as NextAuthJWTPayload;
-  } catch (err) {
-    const code = err instanceof jwt.TokenExpiredError
-      ? "TOKEN_EXPIRED"
-      : err instanceof jwt.NotBeforeError
-      ? "TOKEN_NOT_ACTIVE"
-      : "TOKEN_INVALID";
+    }) as DecodedNextAuthToken;
 
-    securityLogger.warn("JWT verification failed", {
-      meta: {
-        code,
-        socketId,
-        ip: remoteAddress,
-        reason: err instanceof Error ? err.message : "unknown",
-      },
+    // التحقّق من الحقول الإلزامية
+    if (!decoded.sub || typeof decoded.sub !== "string") {
+      logger.warn("JWT missing sub claim");
+      return { success: false, reason: "MISSING_CLAIMS" };
+    }
+
+    if (!decoded.role || !["STUDENT", "CREATOR", "ADMIN"].includes(decoded.role)) {
+      logger.warn("JWT has invalid role claim", { role: decoded.role });
+      return { success: false, reason: "MISSING_CLAIMS" };
+    }
+
+    if (!decoded.email) {
+      logger.warn("JWT missing email claim");
+      return { success: false, reason: "MISSING_CLAIMS" };
+    }
+
+    return { success: true, payload: decoded };
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return { success: false, reason: "EXPIRED" };
+    }
+    if (error instanceof jwt.JsonWebTokenError) {
+      return { success: false, reason: "INVALID" };
+    }
+
+    logger.error("Unexpected JWT verification error", {
+      error: error instanceof Error ? error.message : "unknown",
     });
-
-    throw new AuthError(code, "Authentication token is invalid or expired.");
+    return { success: false, reason: "INVALID" };
   }
-
-  // Validate required fields
-  if (!decoded.id || typeof decoded.id !== "string") {
-    throw new AuthError("INVALID_CLAIMS", "Token is missing required user ID.");
-  }
-
-  if (!decoded.role || !VALID_ROLES.has(decoded.role)) {
-    throw new AuthError("INVALID_CLAIMS", `Token contains invalid role: ${decoded.role ?? "none"}.`);
-  }
-
-  return {
-    id: decoded.id,
-    name: decoded.name ?? "Unknown",
-    email: decoded.email ?? "",
-    role: decoded.role,
-    image: decoded.picture ?? null,
-  };
 }
 
-// ─── Typed Auth Error ─────────────────────────────────────────────────────────
-
-export class AuthError extends Error {
-  constructor(
-    public readonly code: string,
-    message: string
-  ) {
-    super(message);
-    this.name = "AuthError";
+/**
+ * يستخرج التوكن من handshake socket
+ * يقبل التوكن من: auth.token أو Authorization header
+ */
+export function extractTokenFromHandshake(
+  auth: Record<string, unknown>,
+  headers: Record<string, string | string[] | undefined>
+): string | null {
+  // المصدر الأوّل: socket.handshake.auth.token (الطريقة المُفضَّلة)
+  if (auth["token"] && typeof auth["token"] === "string") {
+    return auth["token"];
   }
+
+  // المصدر الثاني: Authorization header (Bearer token)
+  const authHeader = headers["authorization"];
+  if (authHeader && typeof authHeader === "string") {
+    const parts = authHeader.split(" ");
+    if (parts.length === 2 && parts[0]?.toLowerCase() === "bearer" && parts[1]) {
+      return parts[1];
+    }
+  }
+
+  return null;
 }

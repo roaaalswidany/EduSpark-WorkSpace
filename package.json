@@ -5,7 +5,8 @@
   "workspaces": [
     "eduspark",
     "eduspark-chat-server"
-  ],  "scripts": {
+  ],
+  "scripts": {
     "dev": "concurrently --names \"NEXT,CHAT\" --prefix-colors \"cyan,magenta\" \"npm run dev --prefix eduspark\" \"npm run dev --prefix eduspark-chat-server\"",
     "build": "npm --prefix eduspark run build && npm --prefix eduspark-chat-server run build",
     "install:all": "npm install && npm install --prefix eduspark && npm install --prefix eduspark-chat-server",
@@ -18,5 +19,9 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1146.0",
+    "@aws-sdk/s3-request-presigner": "^3.1146.0"
   }
 }

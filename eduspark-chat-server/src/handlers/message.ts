@@ -1,310 +1,298 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { randomUUID } from "crypto";
-import type {
-  AuthenticatedSocket,
-  SocketServer,
-  SendMessagePayload,
-  BroadcastMessage,
-  AckResponse,
-  MessageAckPayload,
-  TypingPayload,
-  ParsedRoomId,
-} from "../types";
-import { prisma } from "../lib/prisma";
-import { rateLimiter } from "../state/rate-limiter";
-import { logger, auditLogger, securityLogger } from "../lib/logger";
-import { PresenceStore } from "../state/presence";
+// ============================================================================
+// معالج الرسائل — الحفظ والبثّ
+//
+// استراتيجية الأداء:
+// 1. نبثّ الرسالة للغرفة فوراً (optimistic broadcast)
+// 2. نحفظها في DB بشكل غير متزامن (async persist)
+// 3. نُبلِّغ المُرسِل بنجاح الحفظ أو فشله
+//
+// هذا يضمن تجربة مستخدم سريعة مع ضمان استمرارية البيانات
+// ============================================================================
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+import { randomUUID } from "crypto";
+import type { TypedSocket, TypedServer, SendMessagePayload } from "../types/socket.types";
+import { prisma } from "../lib/prisma";
+import { logger } from "../lib/logger";
+import type { FileType } from "@prisma/client";
+
+// تحديد المعدّل: Map بسيطة في الذاكرة (في production: استخدمي Redis)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
 const MAX_MESSAGE_LENGTH = 4000;
-const TYPING_DEBOUNCE_MS = 5000; // auto-clear typing indicator after 5s
+const RATE_LIMIT_WINDOW_MS = 60_000; // دقيقة واحدة
+const RATE_LIMIT_MAX_MESSAGES = 60;  // 60 رسالة في الدقيقة
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function parseRoomIdSimple(raw: string): ParsedRoomId | null {
-  const sepIdx = raw.indexOf(":");
-  if (sepIdx === -1) return null;
-  const prefix = raw.slice(0, sepIdx) as ParsedRoomId["prefix"];
-  const entityId = raw.slice(sepIdx + 1);
-  return entityId ? { prefix, entityId, raw } : null;
-}
-
-function sanitizeContent(raw: string): string {
-  return raw
-    .trim()
-    .replace(/\u0000/g, "") // strip null bytes
-    .slice(0, MAX_MESSAGE_LENGTH);
-}
-
-// ─── Message persistence (non-blocking, fire-and-watch) ───────────────────────
-// We broadcast immediately for low latency then persist asynchronously.
-// If persistence fails, the sender is notified to rollback the optimistic UI.
-
-async function persistMessage(
-  chatRoomId: string,
-  senderId: string,
-  content: string,
-  messageId: string,
-  replyToId: string | null
-): Promise<void> {
-  await prisma.chatMessage.create({
-    data: {
-      id: messageId,
-      chatRoomId,
-      senderId,
-      content,
-      isSystem: false,
-    },
-    select: { id: true }, // minimal select for speed
-  });
-}
-
-// ─── Handler registration ─────────────────────────────────────────────────────
-
-export function handleMessageEvents(
-  io: SocketServer,
-  socket: AuthenticatedSocket,
-  _presence: PresenceStore
+export function registerMessageHandlers(
+  socket: TypedSocket,
+  io: TypedServer
 ): void {
-  const { user } = socket.data;
-  const typingTimers = new Map<string, NodeJS.Timeout>(); // roomId → clear timer
+  const user = socket.data.user;
 
-  // ── send_message ───────────────────────────────────────────────────────────
+  socket.on("send_message", async (payload: SendMessagePayload, callback) => {
+    const {
+      roomId,
+      content,
+      tempId,
+      fileUrl,
+      fileType,
+    } = payload;
 
-  socket.on("send_message", async (payload, ack) => {
-    socket.data.lastActivity = new Date();
-
-    // ── 1. Input validation ──────────────────────────────────────────────────
-
-    if (!payload.roomId || !payload.tempId) {
-      return ack({
-        ok: false,
-        error: { code: "INVALID_PAYLOAD", message: "roomId and tempId are required." },
+    // ── التحقّق من الحقول الإلزامية ────────────────────────────────────────
+    if (!roomId || typeof roomId !== "string") {
+      return callback({
+        success: false,
+        error: { code: "INVALID_PAYLOAD", message: "roomId is required." },
       });
     }
 
-    const content = sanitizeContent(payload.content ?? "");
-
-    if (!content) {
-      return ack({
-        ok: false,
-        error: { code: "MESSAGE_EMPTY", message: "Message content cannot be empty." },
+    if (!tempId || typeof tempId !== "string") {
+      return callback({
+        success: false,
+        error: { code: "INVALID_PAYLOAD", message: "tempId is required for message tracking." },
       });
     }
 
-    if (content.length > MAX_MESSAGE_LENGTH) {
-      return ack({
-        ok: false,
+    const trimmedContent = (content ?? "").trim();
+
+    if (!trimmedContent && !fileUrl) {
+      return callback({
+        success: false,
+        error: { code: "EMPTY_MESSAGE", message: "Message must have content or an attachment." },
+      });
+    }
+
+    if (trimmedContent.length > MAX_MESSAGE_LENGTH) {
+      return callback({
+        success: false,
         error: {
           code: "MESSAGE_TOO_LONG",
-          message: `Message exceeds the ${MAX_MESSAGE_LENGTH} character limit.`,
+          message: `Message cannot exceed ${MAX_MESSAGE_LENGTH} characters.`,
         },
       });
     }
 
-    // ── 2. Sender must be in the room ────────────────────────────────────────
-
-    if (!socket.rooms.has(payload.roomId)) {
-      securityLogger.warn("Message sent to room without membership", {
-        meta: { userId: user.id, roomId: payload.roomId },
+    // ── التحقّق أن المُرسِل في الغرفة المستهدَفة ──────────────────────────────
+    if (!socket.rooms.has(roomId)) {
+      logger.warn("Message rejected: sender not in room", {
+        userId: user.id,
+        roomId,
+        socketId: socket.id,
       });
-      return ack({
-        ok: false,
-        error: { code: "FORBIDDEN", message: "You must join the room before sending messages." },
+      return callback({
+        success: false,
+        error: {
+          code: "NOT_IN_ROOM",
+          message: "You must join the room before sending messages.",
+        },
       });
     }
 
-    // ── 3. Rate limiting ─────────────────────────────────────────────────────
-
-    const rateCheck = rateLimiter.check(user.id);
-
-    if (!rateCheck.allowed) {
-      securityLogger.warn("Message rate limit exceeded", {
-        meta: {
-          userId: user.id,
-          roomId: payload.roomId,
-          resetInMs: rateCheck.resetInMs,
-        },
-      });
-      return ack({
-        ok: false,
+    // ── تحديد معدّل الرسائل ────────────────────────────────────────────────
+    const rateLimitResult = checkRateLimit(user.id);
+    if (!rateLimitResult.allowed) {
+      return callback({
+        success: false,
         error: {
           code: "RATE_LIMITED",
-          message: `Rate limit exceeded. Try again in ${Math.ceil(rateCheck.resetInMs / 1000)} seconds.`,
+          message: `Too many messages. Please wait ${rateLimitResult.retryAfterSeconds} seconds.`,
         },
       });
     }
 
-    if (rateCheck.isWarning) {
-      // Soft warning to client — approaching limit
-      socket.emit("server_error", {
-        code: "RATE_LIMITED",
-        message: `Warning: ${rateCheck.remaining} messages remaining in this minute.`,
+    // ── تحليل الغرفة لتحديد حقول DB ─────────────────────────────────────────
+    const roomContext = parseRoomContext(roomId, user.id);
+    if (!roomContext) {
+      return callback({
+        success: false,
+        error: { code: "INVALID_ROOM_ID", message: "Cannot parse room identifier." },
       });
     }
 
-    // ── 4. Generate server-assigned message ID ───────────────────────────────
-
+    // ── توليد معرّف الرسالة على الخادم ────────────────────────────────────────
     const messageId = randomUUID();
-    const now = new Date();
-    const parsed = parseRoomIdSimple(payload.roomId);
+    const createdAt = new Date();
 
-    // ── 5. Build broadcast payload ───────────────────────────────────────────
-
-    const broadcastMsg: BroadcastMessage = {
+    // ── البثّ الفوري (Optimistic) ───────────────────────────────────────────
+    // نُرسِل قبل الحفظ لضمان تجربة سريعة
+    const broadcastPayload = {
       id: messageId,
-      tempId: payload.tempId,
-      chatRoomId: payload.roomId,
-      content,
-      isSystem: false,
-      replyToId: payload.replyToId ?? null,
-      sender: {
-        id: user.id,
-        name: user.name,
-        image: user.image,
-      },
-      createdAt: now.toISOString(),
-    };
-
-    // ── 6. Acknowledge immediately (optimistic) ──────────────────────────────
-
-    const ackPayload: MessageAckPayload = {
-      messageId,
-      tempId: payload.tempId,
-      createdAt: now.toISOString(),
-    };
-
-    ack({ ok: true, data: ackPayload });
-
-    // ── 7. Broadcast to room (exclude sender — they already have it) ─────────
-
-    socket.to(payload.roomId).emit("message_new", broadcastMsg);
-
-    // Also emit to sender's other tabs (if connected on multiple devices)
-    socket.emit("message_new", broadcastMsg);
-
-    // ── 8. Audit log — compliance record (includes content) ─────────────────
-
-    auditLogger.info("message_sent", {
-      messageId,
+      tempId,
+      content: trimmedContent,
+      fileUrl: fileUrl ?? null,
+      fileType: (fileType ?? null) as string | null,
       senderId: user.id,
       senderName: user.name,
-      roomId: payload.roomId,
-      contentLength: content.length,
-      content, // retained for legal compliance — see AUDIT_LOG_RETENTION_DAYS
-      timestamp: now.toISOString(),
-      ip: socket.handshake.address,
-    });
+      senderImage: user.image,
+      senderRole: user.role,
+      roomId,
+      courseId: roomContext.courseId,
+      projectId: roomContext.projectId,
+      isSupport: roomContext.isSupport,
+      isSystem: false,
+      createdAt: createdAt.toISOString(),
+    };
 
-    // ── 9. Operational log — no content ─────────────────────────────────────
+    // البثّ للجميع في الغرفة (بما فيهم المُرسِل عبر io.to لا socket.to)
+    io.to(roomId).emit("new_message", broadcastPayload);
 
-    logger.info("Message dispatched", {
-      meta: {
+    // ── إشعار المُرسِل بأن الرسالة أُرسِلت (قبل الحفظ) ──────────────────────
+    callback({
+      success: true,
+      data: {
         messageId,
-        userId: user.id,
-        roomId: payload.roomId,
-        contentLength: content.length,
+        tempId,
+        createdAt: createdAt.toISOString(),
       },
     });
 
-    // ── 10. Async DB persistence (only for `chat:` rooms) ───────────────────
-
-    if (parsed?.prefix === "chat") {
-      persistMessage(
-        parsed.entityId,
-        user.id,
-        content,
+    // ── الحفظ غير المتزامن في قاعدة البيانات ─────────────────────────────────
+    // نُنفِّذ هذا بعد إرسال الـ callback لعدم إبطاء الاستجابة
+    persistMessageToDatabase({
+      messageId,
+      content: trimmedContent,
+      fileUrl: fileUrl ?? null,
+      fileType: fileType as FileType | undefined,
+      senderId: user.id,
+      courseId: roomContext.courseId,
+      projectId: roomContext.projectId,
+      isSupport: roomContext.isSupport,
+      createdAt,
+    }).catch((error) => {
+      logger.error("Failed to persist message to database", {
         messageId,
-        payload.replyToId ?? null
-      )
-        .then(() => {
-          logger.debug("Message persisted to DB", { meta: { messageId } });
-          // Confirm persistence to sender (optional UI checkmark)
-          socket.emit("message_saved", ackPayload);
-        })
-        .catch((err) => {
-          logger.error("Failed to persist message", {
-            meta: {
-              messageId,
-              userId: user.id,
-              roomId: payload.roomId,
-              error: err instanceof Error ? err.message : String(err),
-            },
-          });
-          // Notify sender so the client can display a retry/error indicator
-          socket.emit("message_error", {
-            tempId: payload.tempId,
-            error: { code: "SERVER_ERROR", message: "Message could not be saved. Please retry." },
-          });
-        });
-    }
-  });
-
-  // ── typing_start ───────────────────────────────────────────────────────────
-
-  socket.on("typing_start", (payload: TypingPayload) => {
-    socket.data.lastActivity = new Date();
-
-    if (!socket.rooms.has(payload.roomId)) return;
-
-    // Broadcast to room except sender
-    socket.to(payload.roomId).emit("typing_indicator", {
-      roomId: payload.roomId,
-      userId: user.id,
-      name: user.name,
-      isTyping: true,
-    });
-
-    // Auto-clear typing indicator after TYPING_DEBOUNCE_MS
-    const existing = typingTimers.get(payload.roomId);
-    if (existing) clearTimeout(existing);
-
-    const timer = setTimeout(() => {
-      socket.to(payload.roomId).emit("typing_indicator", {
-        roomId: payload.roomId,
         userId: user.id,
-        name: user.name,
-        isTyping: false,
-      });
-      typingTimers.delete(payload.roomId);
-    }, TYPING_DEBOUNCE_MS);
-
-    typingTimers.set(payload.roomId, timer);
-  });
-
-  // ── typing_stop ────────────────────────────────────────────────────────────
-
-  socket.on("typing_stop", (payload: TypingPayload) => {
-    if (!socket.rooms.has(payload.roomId)) return;
-
-    const timer = typingTimers.get(payload.roomId);
-    if (timer) {
-      clearTimeout(timer);
-      typingTimers.delete(payload.roomId);
-    }
-
-    socket.to(payload.roomId).emit("typing_indicator", {
-      roomId: payload.roomId,
-      userId: user.id,
-      name: user.name,
-      isTyping: false,
-    });
-  });
-
-  // ── Cleanup typing timers on disconnect ───────────────────────────────────
-
-  socket.on("disconnect", () => {
-    for (const [roomId, timer] of typingTimers) {
-      clearTimeout(timer);
-      // Emit final "not typing" to any rooms this socket was part of
-      socket.to(roomId).emit("typing_indicator", {
         roomId,
+        error: error instanceof Error ? error.message : "unknown",
+      });
+
+      // إشعار المُرسِل بفشل الحفظ (للـ UI أن يُظهر علامة تحذير)
+      socket.emit("server_error", {
+        code: "MESSAGE_PERSIST_FAILED",
+        message: `Message ${tempId} could not be saved. It may be lost on page refresh.`,
+        timestamp: new Date().toISOString(),
+      });
+    });
+
+    logger.info("Message broadcasted", {
+      messageId,
+      userId: user.id,
+      roomId,
+      contentLength: trimmedContent.length,
+      hasAttachment: !!fileUrl,
+    });
+  });
+
+  // ── Typing indicators ──────────────────────────────────────────────────────
+  socket.on("typing_start", ({ roomId }) => {
+    if (socket.rooms.has(roomId)) {
+      socket.to(roomId).emit("user_typing", {
         userId: user.id,
-        name: user.name,
-        isTyping: false,
+        userName: user.name,
+        roomId,
       });
     }
-    typingTimers.clear();
   });
+
+  socket.on("typing_stop", ({ roomId }) => {
+    if (socket.rooms.has(roomId)) {
+      socket.to(roomId).emit("user_stopped_typing", {
+        userId: user.id,
+        userName: user.name,
+        roomId,
+      });
+    }
+  });
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+interface RoomContext {
+  courseId: string | null;
+  projectId: string | null;
+  isSupport: boolean;
+}
+
+function parseRoomContext(roomId: string, userId: string): RoomContext | null {
+  if (roomId.startsWith("course-study-group-")) {
+    return {
+      courseId: roomId.replace("course-study-group-", ""),
+      projectId: null,
+      isSupport: false,
+    };
+  }
+
+  if (roomId.startsWith("project-workspace-")) {
+    return {
+      courseId: null,
+      projectId: roomId.replace("project-workspace-", ""),
+      isSupport: false,
+    };
+  }
+
+  if (roomId.startsWith("support-channel-")) {
+    return {
+      courseId: null,
+      projectId: null,
+      isSupport: true,
+    };
+  }
+
+  return null;
+}
+
+interface PersistMessageParams {
+  messageId: string;
+  content: string;
+  fileUrl: string | null;
+  fileType?: FileType;
+  senderId: string;
+  courseId: string | null;
+  projectId: string | null;
+  isSupport: boolean;
+  createdAt: Date;
+}
+
+async function persistMessageToDatabase(
+  params: PersistMessageParams
+): Promise<void> {
+  await prisma.message.create({
+    data: {
+      id: params.messageId,
+      content: params.content,
+      fileUrl: params.fileUrl,
+      fileType: params.fileType ?? null,
+      senderId: params.senderId,
+      courseId: params.courseId,
+      projectId: params.projectId,
+      isSupport: params.isSupport,
+      isSystem: false,
+      createdAt: params.createdAt,
+    },
+  });
+}
+
+interface RateLimitResult {
+  allowed: boolean;
+  retryAfterSeconds?: number;
+}
+
+function checkRateLimit(userId: string): RateLimitResult {
+  const now = Date.now();
+  const key = userId;
+  const existing = rateLimitMap.get(key);
+
+  if (!existing || now > existing.resetAt) {
+    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return { allowed: true };
+  }
+
+  if (existing.count >= RATE_LIMIT_MAX_MESSAGES) {
+    return {
+      allowed: false,
+      retryAfterSeconds: Math.ceil((existing.resetAt - now) / 1000),
+    };
+  }
+
+  existing.count++;
+  return { allowed: true };
 }
