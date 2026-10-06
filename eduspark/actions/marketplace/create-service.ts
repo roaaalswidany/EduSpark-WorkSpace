@@ -83,16 +83,19 @@ export async function createServiceAction(
     //    The creator MUST hold a certificate for the exact course they claim
     //    expertise in. This check runs server-side on every submission;
     //    the client's courseId selection is never trusted in isolation.
-    const certificate = await db.certificate.findUnique({
-      where: {
-        userId_courseId: { userId, courseId },
-      },
-      select: { id: true },
-    });
+   // Admins bypass certificate requirement (they manage the whole platform)
+if (role !== Role.ADMIN) {
+  const certificate = await db.certificate.findUnique({
+    where: {
+      userId_courseId: { userId, courseId },
+    },
+    select: { id: true },
+  });
 
-    if (!certificate) {
-      return { success: false, error: "NO_CERTIFICATE" };
-    }
+  if (!certificate) {
+    return { success: false, error: "NO_CERTIFICATE" };
+  }
+}
 
     // ── 5. Unique slug generation ─────────────────────────────────────────────
     const slug = await resolveUniqueSlug(toBaseSlug(title));

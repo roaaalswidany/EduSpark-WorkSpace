@@ -1,7 +1,13 @@
 /* eslint-disable react-hooks/incompatible-library */
 "use client";
 
-import { useState, useTransition, KeyboardEvent, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useTransition,
+  KeyboardEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,13 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -257,25 +257,70 @@ function NumberInput({
   step?: number;
   placeholder?: string;
 }) {
+  const [text, setText] = useState<string>(() =>
+    value === 0 ? "" : String(value)
+  );
+  const lastEmittedRef = useRef(value);
+
+  // Sync external changes (form reset, edit mode load)
+  useEffect(() => {
+    if (value !== lastEmittedRef.current) {
+      setText(value === 0 ? "" : String(value));
+      lastEmittedRef.current = value;
+    }
+  }, [value]);
+
+  const isDecimal = step < 1;
+  const allowedRegex = isDecimal ? /^\d*\.?\d*$/ : /^\d*$/;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw !== "" && !allowedRegex.test(raw)) return;
+
+    setText(raw);
+
+    if (raw === "" || raw === ".") return;
+
+    const parsed = isDecimal ? parseFloat(raw) : parseInt(raw, 10);
+    if (!isNaN(parsed)) {
+      lastEmittedRef.current = parsed;
+      onChange(parsed);
+    }
+  };
+
+  const handleBlur = () => {
+    if (text === "" || text === ".") {
+      const fallback = min ?? 0;
+      setText(fallback === 0 ? "" : String(fallback));
+      lastEmittedRef.current = fallback;
+      onChange(fallback);
+      return;
+    }
+
+    let parsed = isDecimal ? parseFloat(text) : parseInt(text, 10);
+    if (isNaN(parsed)) parsed = min ?? 0;
+    if (min !== undefined && parsed < min) parsed = min;
+    if (max !== undefined && parsed > max) parsed = max;
+
+    setText(String(parsed));
+    lastEmittedRef.current = parsed;
+    onChange(parsed);
+  };
+
   return (
     <div className="relative flex items-center">
       {prefix && (
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm select-none">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm select-none pointer-events-none">
           {prefix}
         </span>
       )}
       <input
-        type="number"
-        value={value || ""}
-        min={min}
-        max={max}
-        step={step}
+        type="text"
+        inputMode={isDecimal ? "decimal" : "numeric"}
+        value={text}
         placeholder={placeholder}
-        onChange={(e) => {
-          const parsed =
-            step < 1 ? parseFloat(e.target.value) : parseInt(e.target.value, 10);
-          if (!isNaN(parsed)) onChange(parsed);
-        }}
+        onChange={handleChange}
+        onBlur={handleBlur}
         className={cn(
           "w-full py-2.5 rounded-lg text-sm",
           "bg-slate-950 border border-slate-700 text-slate-200",
@@ -287,7 +332,7 @@ function NumberInput({
         )}
       />
       {suffix && (
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs select-none">
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs select-none pointer-events-none">
           {suffix}
         </span>
       )}
@@ -408,90 +453,61 @@ export function ServiceCreationForm({
           title="Service Foundation"
           description="Link your service to a course you've certified in."
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <FormField
-              control={form.control}
-              name="courseId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-slate-300">
-                    Certified Course <span className="text-red-400">*</span>
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-slate-950 border-slate-700 text-slate-200 focus:border-indigo-500 focus:ring-indigo-500 h-10">
-                        <SelectValue placeholder="Select a certified course…" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-slate-900 border-slate-700">
-                      {certifiedCourses.map((cert) => (
-                        <SelectItem
-                          key={cert.courseId}
-                          value={cert.courseId}
-                          className="text-slate-200 focus:bg-indigo-500/10 focus:text-white cursor-pointer"
-                        >
-                          <span className="flex items-center gap-2">
-                            <BookOpen className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-                            <span className="truncate">{cert.courseTitle}</span>
-                            <span className="text-amber-400 text-xs font-semibold shrink-0">
-                              {cert.score}%
-                            </span>
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription className="text-slate-600 text-xs">
-                    Only courses with a passing certificate are listed.
-                  </FormDescription>
-                  <FormMessage className="text-red-400 text-xs" />
-                </FormItem>
-              )}
-            />
+          <FormField
+  control={form.control}
+  name="courseId"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel className="text-slate-300">
+        Certified Course <span className="text-red-400">*</span>
+      </FormLabel>
+      <FormControl>
+        <Combobox
+          options={certifiedCourses.map((cert) => ({
+            value: cert.courseId,
+            label: cert.courseTitle,
+            description: `Score ${cert.score}% · ${cert.courseLevel}`,
+            icon: <BookOpen className="w-3.5 h-3.5 text-indigo-400 shrink-0" />,
+          }))}
+          value={field.value}
+          onChange={(v) => field.onChange(v)}
+          placeholder="Select a certified course…"
+          searchPlaceholder="Search courses…"
+          emptyMessage="No matching courses."
+        />
+      </FormControl>
+      <FormDescription className="text-slate-600 text-xs">
+        Only courses with a passing certificate are listed.
+      </FormDescription>
+      <FormMessage className="text-red-400 text-xs" />
+    </FormItem>
+  )}
+/>
 
-            <FormField
-              control={form.control}
-              name="categoryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-slate-300">Category</FormLabel>
-                  <Select
-                    onValueChange={(v) =>
-                      field.onChange(v === "__none__" ? null : v)
-                    }
-                    value={field.value ?? "__none__"}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-slate-950 border-slate-700 text-slate-200 focus:border-indigo-500 focus:ring-indigo-500 h-10">
-                        <SelectValue placeholder="Select a category…" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-slate-900 border-slate-700">
-                      <SelectItem
-                        value="__none__"
-                        className="text-slate-400 focus:bg-slate-800 cursor-pointer"
-                      >
-                        Uncategorized
-                      </SelectItem>
-                      {categories.map((cat) => (
-                        <SelectItem
-                          key={cat.id}
-                          value={cat.id}
-                          className="text-slate-200 focus:bg-indigo-500/10 focus:text-white cursor-pointer"
-                        >
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage className="text-red-400 text-xs" />
-                </FormItem>
-              )}
-            />
-          </div>
+ <FormField
+  control={form.control}
+  name="categoryId"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel className="text-slate-300">Category</FormLabel>
+      <FormControl>
+        <Combobox
+          options={categories.map((cat) => ({
+            value: cat.id,
+            label: cat.name,
+          }))}
+          value={field.value ?? null}
+          onChange={(v) => field.onChange(v)}
+          placeholder="Select a category…"
+          searchPlaceholder="Search categories…"
+          emptyMessage="No matching categories."
+          clearable
+        />
+      </FormControl>
+      <FormMessage className="text-red-400 text-xs" />
+    </FormItem>
+  )}
+/>
 
           {selectedCourse && (
             <div className="flex items-center gap-3 p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/15">

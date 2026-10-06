@@ -318,7 +318,7 @@ const MessageContent = memo(function MessageContent({
 
   return (
     <div className="space-y-0.5">
-      <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
+      <p className="text-sm leading-relaxed whitespace-pre-wrap wrap-break-word">
         {parts.map((part, i) =>
           part.kind === "link" ? (
             <a

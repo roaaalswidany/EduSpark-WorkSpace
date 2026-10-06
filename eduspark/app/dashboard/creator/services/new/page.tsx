@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -76,39 +77,60 @@ export default async function NewServicePage() {
   }
 
   // Fetch in parallel: certified courses + all categories
-  const [certificates, categories] = await Promise.all([
-    db.certificate.findMany({
-      where: { userId },
-      select: {
-        credentialId: true,
-        score: true,
-        course: {
-          select: {
-            id: true,
-            title: true,
-            level: true,
-          },
-        },
+ const isAdmin = role === "ADMIN";
+
+const [certificates, categories, adminCourses] = await Promise.all([
+  db.certificate.findMany({
+    where: { userId },
+    select: {
+      credentialId: true,
+      score: true,
+      course: {
+        select: { id: true, title: true, level: true },
       },
-      orderBy: { issuedAt: "desc" },
-    }),
-    db.category.findMany({
-      select: { id: true, name: true, slug: true },
-      orderBy: { name: "asc" },
-    }),
-  ]);
+    },
+    orderBy: { issuedAt: "desc" },
+  }),
+  db.category.findMany({
+    select: { id: true, name: true, slug: true },
+    orderBy: { name: "asc" },
+  }),
+  // Admins get ALL published courses to choose from
+  isAdmin
+    ? db.course.findMany({
+        where: { status: "PUBLISHED" },
+        select: {
+          id: true,
+          title: true,
+          level: true,
+        },
+        orderBy: { createdAt: "desc" },
+      })
+    : Promise.resolve([]),
+]);
 
-  if (certificates.length === 0) {
-    return <NoCertificatesGate />;
-  }
 
-  const certifiedCourses: CertifiedCourseOption[] = certificates.map((c) => ({
-    courseId: c.course.id,
-    courseTitle: c.course.title,
-    courseLevel: c.course.level,
-    score: c.score,
-    credentialId: c.credentialId,
-  }));
+// Admins bypass the certificate requirement (they manage the whole platform)
+if (!isAdmin && certificates.length === 0) {
+  redirect("/unauthorized?from=/dashboard/creator/services/new");
+}
+
+// Admin sees all published courses; creators see only their certified ones
+const certifiedCourses: CertifiedCourseOption[] = isAdmin
+  ? adminCourses.map((c) => ({
+      courseId: c.id,
+      courseTitle: c.title,
+      courseLevel: c.level,
+      score: 100, // Admins don't need a score
+      credentialId: "ADMIN-ACCESS",
+    }))
+  : certificates.map((c) => ({
+      courseId: c.course.id,
+      courseTitle: c.course.title,
+      courseLevel: c.course.level,
+      score: c.score,
+      credentialId: c.credentialId,
+    }));
 
   return (
     <div className="min-h-screen bg-slate-950">
