@@ -1,12 +1,18 @@
 // ============================================================================
-// معالج أحداث الغرف (join_room, leave_room)
+// Room Handlers — compatible with ChatBox
 // ============================================================================
 
 import type { TypedSocket, TypedServer } from "../types/socket.types";
-import { parseRoomIdentifier, verifyRoomAccess } from "../guards/room-access";
+import type {
+  JoinRoomPayload,
+  LeaveRoomPayload,
+  JoinRoomSuccess,
+  SocketResponse,
+  BroadcastMessage,
+  OnlineUserInfo,
+} from "../types/socket.types";
 import { prisma } from "../lib/prisma";
 import { logger } from "../lib/logger";
-import type { MessageBroadcastPayload } from "../types/socket.types";
 
 const RECENT_MESSAGES_LIMIT = 50;
 
@@ -16,221 +22,184 @@ export function registerRoomHandlers(
 ): void {
   const user = socket.data.user;
 
-  // ── join_room ──────────────────────────────────────────────────────────────
-  socket.on("join_room", async (payload, callback) => {
-    const { roomType, targetId } = payload;
+  // ── join_room ─────────────────────────────────────────────────────────────
+  socket.on(
+    "join_room",
+    async (
+      payload: JoinRoomPayload,
+      callback: (response: SocketResponse<JoinRoomSuccess>) => void
+    ) => {
+      // ── 1. Extract chatRoomId (accept both formats) ─────────────
+      let chatRoomId: string | null = null;
 
-    if (!roomType || !targetId) {
-      return callback({
-        success: false,
-        error: {
-          code: "INVALID_PAYLOAD",
-          message: "roomType and targetId are required.",
-        },
-      });
-    }
+      if (payload?.roomId) {
+        const colonIdx = payload.roomId.indexOf(":");
+        chatRoomId =
+          colonIdx >= 0 ? payload.roomId.slice(colonIdx + 1) : payload.roomId;
+      } else if (payload?.targetId) {
+        chatRoomId = payload.targetId;
+      }
 
-    // تنظيف وتحليل معرّف الغرفة
-    const parsed = parseRoomIdentifier(roomType, targetId);
+      if (!chatRoomId) {
+        return callback({
+          ok: false,
+          error: {
+            code: "INVALID_PAYLOAD",
+            message: "roomId is required.",
+          },
+        });
+      }
 
-    logger.debug("Room join attempt", {
-      socketId: socket.id,
-      userId: user.id,
-      roomId: parsed.fullRoomId,
-    });
-
-    // التحقّق من حق الوصول عبر قاعدة البيانات
-    const accessResult = await verifyRoomAccess(user, parsed);
-
-    if (!accessResult.granted) {
-      logger.warn("Room join denied", {
-        socketId: socket.id,
-        userId: user.id,
-        roomId: parsed.fullRoomId,
-        reason: accessResult.code,
-      });
-
-      return callback({
-        success: false,
-        error: {
-          code: accessResult.code,
-          message: accessResult.message,
-        },
-      });
-    }
-
-    // الانضمام للغرفة في Socket.io
-    await socket.join(parsed.fullRoomId);
-    socket.data.activeRooms.add(parsed.fullRoomId);
-
-    // إشعار أعضاء الغرفة بالانضمام الجديد
-    socket.to(parsed.fullRoomId).emit("user_joined_room", {
-      userId: user.id,
-      userName: user.name,
-      userImage: user.image,
-      roomId: parsed.fullRoomId,
-      timestamp: new Date().toISOString(),
-    });
-
-    // جلب آخر الرسائل للـ room history
-    const recentMessages = await fetchRecentMessages(parsed);
-
-    const membersCount = getSocketsInRoom(io, parsed.fullRoomId);
-
-    logger.info("User joined room", {
-      socketId: socket.id,
-      userId: user.id,
-      roomId: parsed.fullRoomId,
-      membersCount,
-    });
-
-    callback({
-      success: true,
-      data: {
-        roomId: parsed.fullRoomId,
-        membersCount,
-        recentMessages,
-      },
-    });
-  });
-
-  // ── leave_room ─────────────────────────────────────────────────────────────
-  socket.on("leave_room", async (payload, callback) => {
-    const { roomId } = payload;
-
-    if (!socket.rooms.has(roomId)) {
-      return callback({
-        success: false,
-        error: {
-          code: "NOT_IN_ROOM",
-          message: "You are not a member of this room.",
-        },
-      });
-    }
-
-    await socket.leave(roomId);
-    socket.data.activeRooms.delete(roomId);
-
-    socket.to(roomId).emit("user_left_room", {
-      userId: user.id,
-      userName: user.name,
-      userImage: user.image,
-      roomId,
-      timestamp: new Date().toISOString(),
-    });
-
-    logger.info("User left room", {
-      socketId: socket.id,
-      userId: user.id,
-      roomId,
-    });
-
-    callback({ success: true, data: null });
-  });
-
-  // ── ping_room ──────────────────────────────────────────────────────────────
-  socket.on("ping_room", (payload, callback) => {
-    const { roomId } = payload;
-
-    if (!socket.rooms.has(roomId)) {
-      return callback({
-        success: false,
-        error: { code: "NOT_IN_ROOM", message: "You are not in this room." },
-      });
-    }
-
-    callback({
-      success: true,
-      data: {
-        roomId,
-        membersCount: getSocketsInRoom(io, roomId),
-        isActive: true,
-      },
-    });
-  });
-}
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function getSocketsInRoom(io: TypedServer, roomId: string): number {
-  const room = io.sockets.adapter.rooms.get(roomId);
-  return room ? room.size : 0;
-}
-
-async function fetchRecentMessages(
-  parsed: ReturnType<typeof parseRoomIdentifier>
-): Promise<MessageBroadcastPayload[]> {
-  try {
-    const whereClause = buildMessageWhereClause(parsed);
-
-    const messages = await prisma.message.findMany({
-      where: whereClause,
-      orderBy: { createdAt: "desc" },
-      take: RECENT_MESSAGES_LIMIT,
-      select: {
-        id: true,
-        content: true,
-        fileUrl: true,
-        fileType: true,
-        isSystem: true,
-        createdAt: true,
-        senderId: true,
-        courseId: true,
-        projectId: true,
-        isSupport: true,
-        sender: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            role: true,
+      // ── 2. Verify room + participant ────────────────────────────
+      const room = await prisma.chatRoom.findUnique({
+        where: { id: chatRoomId },
+        select: {
+          id: true,
+          type: true,
+          participants: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                  role: true,
+                },
+              },
+            },
           },
         },
-      },
-    });
+      });
 
-    // عكس الترتيب: من الأقدم للأحدث للعرض الصحيح
-    return messages.reverse().map((msg) => ({
-      id: msg.id,
-      tempId: msg.id, // للرسائل التاريخية نستخدم الـ id الفعلي
-      content: msg.content,
-      fileUrl: msg.fileUrl,
-      fileType: msg.fileType,
-      senderId: msg.sender.id,
-      senderName: msg.sender.name,
-      senderImage: msg.sender.image,
-      senderRole: msg.sender.role,
-      roomId: parsed.fullRoomId,
-      courseId: msg.courseId,
-      projectId: msg.projectId,
-      isSupport: msg.isSupport,
-      isSystem: msg.isSystem,
-      createdAt: msg.createdAt.toISOString(),
-    }));
-  } catch (error) {
-    logger.error("Error fetching recent messages", {
-      roomType: parsed.type,
-      targetId: parsed.targetId,
-      error: error instanceof Error ? error.message : "unknown",
-    });
-    return [];
-  }
-}
+      if (!room) {
+        return callback({
+          ok: false,
+          error: {
+            code: "ROOM_NOT_FOUND",
+            message: "Chat room does not exist.",
+          },
+        });
+      }
 
-function buildMessageWhereClause(
-  parsed: ReturnType<typeof parseRoomIdentifier>
-): Record<string, unknown> {
-  switch (parsed.type) {
-    case "course-study-group":
-      return { courseId: parsed.targetId };
-    case "project-workspace":
-      return { projectId: parsed.targetId };
-    case "support-channel":
-      return {
-        isSupport: true,
-        senderId: parsed.targetId, // targetId هنا هو userId
-      };
-    default:
-      return {};
-  }
+      const isParticipant = room.participants.some(
+        (p) => p.user.id === user.id
+      );
+
+      if (!isParticipant) {
+        logger.warn("Room join denied — not a participant", {
+          socketId: socket.id,
+          userId: user.id,
+          roomId: chatRoomId,
+        });
+        return callback({
+          ok: false,
+          error: {
+            code: "ROOM_ACCESS_DENIED",
+            message: "You are not a participant in this room.",
+          },
+        });
+      }
+
+      // ── 3. Join Socket.io room ──────────────────────────────────
+      const fullRoomId = `chat:${room.id}`;
+      await socket.join(fullRoomId);
+
+      // ── 4. Fetch last N messages ────────────────────────────────
+      const rawMessages = await prisma.chatMessage.findMany({
+        where: { chatRoomId: room.id },
+        orderBy: { createdAt: "desc" },
+        take: RECENT_MESSAGES_LIMIT,
+        select: {
+          id: true,
+          content: true,
+          isSystem: true,
+          createdAt: true,
+          sender: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      });
+
+      const history: BroadcastMessage[] = rawMessages.reverse().map((m) => ({
+        id: m.id,
+        tempId: m.id,
+        chatRoomId: room.id,
+        content: m.content,
+        isSystem: m.isSystem,
+        sender: {
+          id: m.sender.id,
+          name: m.sender.name,
+          image: m.sender.image,
+        },
+        replyToId: null,
+        createdAt: m.createdAt.toISOString(),
+      }));
+
+      // ── 5. Users list ───────────────────────────────────────────
+      const users: OnlineUserInfo[] = room.participants.map((p) => ({
+        userId: p.user.id,
+        name: p.user.name,
+        image: p.user.image,
+        role: p.user.role,
+        connectedAt: new Date().toISOString(),
+      }));
+
+      const membersCount =
+        io.sockets.adapter.rooms.get(fullRoomId)?.size ?? 1;
+
+      logger.info("User joined room", {
+        socketId: socket.id,
+        userId: user.id,
+        roomId: fullRoomId,
+        membersCount,
+      });
+
+      callback({
+        ok: true,
+        data: {
+          roomId: fullRoomId,
+          users,
+          history,
+          totalMessages: history.length,
+        },
+      });
+    }
+  );
+
+  // ── leave_room ────────────────────────────────────────────────────────────
+  socket.on(
+    "leave_room",
+    async (
+      payload: LeaveRoomPayload,
+      callback: (response: SocketResponse<null>) => void
+    ) => {
+      const { roomId } = payload;
+
+      if (!roomId) {
+        return callback({
+          ok: false,
+          error: {
+            code: "INVALID_PAYLOAD",
+            message: "roomId is required.",
+          },
+        });
+      }
+
+      if (socket.rooms.has(roomId)) {
+        await socket.leave(roomId);
+      }
+
+      logger.info("User left room", {
+        socketId: socket.id,
+        userId: user.id,
+        roomId,
+      });
+
+      callback({ ok: true, data: null });
+    }
+  );
 }

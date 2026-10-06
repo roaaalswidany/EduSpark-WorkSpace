@@ -1,12 +1,11 @@
 // ============================================================================
-// تعريفات TypeScript الكاملة لنظام Socket.io
-// كل interface هنا يمثّل عقداً صارماً بين الـ Client والـ Server
+// Socket.io TypeScript Definitions
 // ============================================================================
 
 import type { Socket, Server } from "socket.io";
 import type { Role } from "@prisma/client";
 
-// ─── بيانات المستخدم المُرفَقة بكل socket بعد المصادقة ─────────────────────
+// ─── Authenticated User ──────────────────────────────────────────────────────
 export interface AuthenticatedUser {
   id: string;
   email: string;
@@ -15,20 +14,19 @@ export interface AuthenticatedUser {
   image: string | null;
 }
 
-// ─── أنواع الغرف المدعومة ────────────────────────────────────────────────────
+// ─── Room Types ───────────────────────────────────────────────────────────────
 export type RoomType =
-  | "course-study-group"   // غرفة دراسة مقرّر — محدودة بالمسجَّلين
-  | "project-workspace"    // غرفة مشروع — محدودة بالعميل والمستقل
-  | "support-channel";     // قناة دعم — شخصية للمستخدم
+  | "course-study-group"
+  | "project-workspace"
+  | "support-channel";
 
-// ─── معرّف الغرفة المُنظَّم ──────────────────────────────────────────────────
 export interface ParsedRoomId {
   type: RoomType;
-  targetId: string;          // courseId أو projectId أو userId
-  fullRoomId: string;        // "course-study-group-clx123" المعرّف الكامل
+  targetId: string;
+  fullRoomId: string;
 }
 
-// ─── الأحداث الواردة من العميل إلى الخادم ────────────────────────────────────
+// ─── Client → Server Events ───────────────────────────────────────────────────
 export interface ClientToServerEvents {
   join_room: (
     payload: JoinRoomPayload,
@@ -54,50 +52,43 @@ export interface ClientToServerEvents {
   ) => void;
 }
 
-// ─── الأحداث الصادرة من الخادم إلى العميل ───────────────────────────────────
+// ─── Server → Client Events ───────────────────────────────────────────────────
 export interface ServerToClientEvents {
-  // استقبال رسالة جديدة
   new_message: (data: MessageBroadcastPayload) => void;
-
-  // مؤشّر كتابة
   user_typing: (data: TypingBroadcastPayload) => void;
   user_stopped_typing: (data: TypingBroadcastPayload) => void;
-
-  // تحديثات حالة الغرفة
   user_joined_room: (data: UserRoomEventPayload) => void;
   user_left_room: (data: UserRoomEventPayload) => void;
-
-  // حالة الاتصال
   connection_acknowledged: (data: ConnectionAckPayload) => void;
-
-  // أخطاء الخادم
   server_error: (data: ServerErrorPayload) => void;
 }
 
-// ─── بيانات Socket المُرفَقة ─────────────────────────────────────────────────
+// ─── Socket Data ──────────────────────────────────────────────────────────────
 export interface SocketData {
   user: AuthenticatedUser;
   connectedAt: Date;
   activeRooms: Set<string>;
 }
 
-// ─── Payload Types ───────────────────────────────────────────────────────────
+// ─── Payload Types ────────────────────────────────────────────────────────────
 
+// Accept BOTH formats: { roomId } from ChatBox, or { roomType, targetId } from legacy
 export interface JoinRoomPayload {
-  roomType: RoomType;
-  targetId: string;         // courseId, projectId, أو userId
+  roomId?: string;
+  roomType?: RoomType;
+  targetId?: string;
 }
 
 export interface LeaveRoomPayload {
-  roomId: string;           // المعرّف الكامل للغرفة
+  roomId: string;
 }
 
 export interface SendMessagePayload {
-  roomId: string;           // المعرّف الكامل للغرفة
-  content: string;          // محتوى الرسالة
-  tempId: string;           // معرّف مؤقت من العميل للـ optimistic UI
-  fileUrl?: string;         // رابط ملف مرفق (اختياري)
-  fileType?: string;        // نوع الملف (اختياري)
+  roomId: string;
+  content: string;
+  tempId: string;
+  fileUrl?: string;
+  fileType?: string;
 }
 
 export interface TypingPayload {
@@ -106,10 +97,12 @@ export interface TypingPayload {
 
 // ─── Success Response Types ───────────────────────────────────────────────────
 
+// Matches ChatBox's `RoomUsersPayload` / `RoomJoinedPayload` expectations
 export interface JoinRoomSuccess {
   roomId: string;
-  membersCount: number;
-  recentMessages: MessageBroadcastPayload[];
+  users: OnlineUserInfo[];
+  history: BroadcastMessage[];
+  totalMessages: number;
 }
 
 export interface MessageSentSuccess {
@@ -124,7 +117,30 @@ export interface RoomStatusSuccess {
   isActive: boolean;
 }
 
-// ─── Broadcast Types ─────────────────────────────────────────────────────────
+// ─── Broadcast Types ──────────────────────────────────────────────────────────
+
+export interface BroadcastMessage {
+  id: string;
+  tempId: string;
+  chatRoomId: string;
+  content: string;
+  isSystem: boolean;
+  sender: {
+    id: string;
+    name: string;
+    image: string | null;
+  };
+  replyToId: string | null;
+  createdAt: string;
+}
+
+export interface OnlineUserInfo {
+  userId: string;
+  name: string;
+  image: string | null;
+  role: Role;
+  connectedAt: string;
+}
 
 export interface MessageBroadcastPayload {
   id: string;
@@ -170,12 +186,12 @@ export interface ServerErrorPayload {
   timestamp: string;
 }
 
-// ─── Generic Response Wrapper ─────────────────────────────────────────────────
+// ─── Generic Response Wrapper (uses `ok` to match ChatBox) ────────────────────
 export type SocketResponse<T> =
-  | { success: true; data: T }
-  | { success: false; error: { code: string; message: string } };
+  | { ok: true; data: T }
+  | { ok: false; error: { code: string; message: string } };
 
-// ─── Typed Socket Aliases ────────────────────────────────────────────────────
+// ─── Typed Socket Aliases ─────────────────────────────────────────────────────
 export type TypedSocket = Socket<
   ClientToServerEvents,
   ServerToClientEvents,

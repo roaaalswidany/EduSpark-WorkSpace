@@ -22,6 +22,7 @@ import {
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -137,15 +138,15 @@ function CreatorAvatar({
 // ─── Service Card ─────────────────────────────────────────────────────────────
 
 function ServiceCard({ service }: { service: ServiceCardData }) {
+  const router = useRouter();
   const gradient = getGradient(service.id);
 
   return (
-    <Link
-      href={`/marketplace/services/${service.slug}`}
-      className="group block"
+    <div
+      onClick={() => router.push(`/marketplace/services/${service.slug}`)}
+      className="group block cursor-pointer"
     >
       <article className="h-full rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-2xl hover:shadow-indigo-500/8">
-
         {/* Thumbnail */}
         <div
           className={cn(
@@ -262,7 +263,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
           </div>
         </div>
       </article>
-    </Link>
+    </div>
   );
 }
 

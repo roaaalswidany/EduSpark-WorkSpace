@@ -1,42 +1,76 @@
 import { PrismaClient } from "@prisma/client";
-import { env } from "../config/env";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { logger } from "./logger";
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
-
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log:
-      env.NODE_ENV === "development"
-        ? [
-            { level: "query", emit: "event" },
-            { level: "error", emit: "stdout" },
-            { level: "warn", emit: "stdout" },
-          ]
-        : [{ level: "error", emit: "stdout" }],
-  });
-
-if (env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+declare global {
+  var __prismaChatServer: PrismaClient | undefined;
 }
 
-// تسجيل الاستعلامات البطيئة في وضع التطوير
-if (env.NODE_ENV === "development") {
-  // @ts-expect-error — حدث query متاح فقط في dev mode
-  prisma.$on("query", (e: { query: string; duration: number }) => {
-    if (e.duration > 200) {
-      console.warn(`⚠️ Slow query (${e.duration}ms): ${e.query}`);
-    }
+function createPrismaClient(): PrismaClient {
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    throw new Error(
+      "DATABASE_URL is not defined. Check eduspark-chat-server/.env file."
+    );
+  }
+
+  const adapter = new PrismaPg({ connectionString });
+
+  const client = new PrismaClient({
+    adapter,
+    log: [
+      { level: "error", emit: "event" },
+      { level: "warn", emit: "event" },
+      ...(process.env.NODE_ENV === "development"
+        ? [{ level: "query" as const, emit: "event" as const }]
+        : []),
+    ],
   });
+
+  client.$on("error", (e) => {
+    logger.error("Prisma error", {
+      meta: { message: e.message, target: e.target },
+    });
+  });
+
+  client.$on("warn", (e) => {
+    logger.warn("Prisma warning", {
+      meta: { message: e.message, target: e.target },
+    });
+  });
+
+  if (process.env.NODE_ENV === "development") {
+    client.$on("query", (e: { query: string; duration: number }) => {
+      if (e.duration > 500) {
+        logger.warn("Slow Prisma query", {
+          meta: { duration: e.duration, query: e.query },
+        });
+      }
+    });
+  }
+
+  return client;
 }
 
-export async function checkDatabaseConnection(): Promise<boolean> {
+export const prisma: PrismaClient =
+  globalThis.__prismaChatServer ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalThis.__prismaChatServer = prisma;
+}
+
+export async function checkDatabaseHealth(): Promise<boolean> {
   try {
     await prisma.$queryRaw`SELECT 1`;
     return true;
-  } catch {
+  } catch (error) {
+    logger.error("Database health check failed", {
+      meta: { error: error instanceof Error ? error.message : String(error) },
+    });
     return false;
   }
 }
+
+// Alias — server.ts imports it as checkDatabaseConnection
+export const checkDatabaseConnection = checkDatabaseHealth;
