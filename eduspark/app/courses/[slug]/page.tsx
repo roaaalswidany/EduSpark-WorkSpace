@@ -286,12 +286,15 @@ export default async function CourseDetailPage({ params }: PageProps) {
                       .toUpperCase()}
                   </div>
                 )}
-                <div>
-                  <p className="text-xs text-slate-500">Created by</p>
-                  <p className="text-sm font-semibold text-slate-200">
-                    {course.creator.name}
-                  </p>
-                </div>
+            <div>
+  <p className="text-xs text-slate-500">Created by</p>
+  <Link
+    href={`/profile/${course.creator.id}`}
+    className="text-sm font-semibold text-slate-200 hover:text-indigo-400 transition-colors"
+  >
+    {course.creator.name}
+  </Link>
+</div>
               </div>
             </div>
 
@@ -424,9 +427,12 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   </div>
                 )}
                 <div className="min-w-0">
-                  <h3 className="text-sm font-bold text-white">
-                    {course.creator.name}
-                  </h3>
+                  <Link
+  href={`/profile/${course.creator.id}`}
+  className="text-sm font-bold text-white hover:text-indigo-400 transition-colors"
+>
+  {course.creator.name}
+</Link>
                   {course.creator.headline && (
                     <p className="text-xs text-indigo-400 mt-0.5">
                       {course.creator.headline}

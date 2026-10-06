@@ -87,6 +87,13 @@ async function main(): Promise<void> {
   console.log(`   ✓ Student:    ${student.email}`);
   console.log(`   ✓ Client:     ${client.email}`);
 
+// Delete categories too — they're not tied to users
+await db.category.deleteMany({
+  where: {
+    slug: { in: ["web-development", "data-science"] },
+  },
+});
+
   // ── Step 3: Categories ──────────────────────────────────────────────────────
   console.log("\n📁 Creating categories...");
 
@@ -340,6 +347,48 @@ async function main(): Promise<void> {
       paidAmount: dataScienceCourse.price,
     },
   });
+
+  // ── Step 8: Give the instructor a certificate so she can create services ─
+console.log("\n🎓 Creating certificate for instructor...");
+
+// Create a mock quiz attempt for the instructor
+const instructorAttempt = await db.quizAttempt.create({
+  data: {
+    userId: instructor.id,
+    quizId: quiz.id,
+    courseId: webDevCourse.id,
+    score: 100,
+    passed: true,
+    totalQ: 5,
+    correctQ: 5,
+  },
+});
+
+// Issue the certificate
+await db.certificate.create({
+  data: {
+    userId: instructor.id,
+    courseId: webDevCourse.id,
+    attemptId: instructorAttempt.id,
+    score: 100,
+    credentialId: "EDU-SARAH-INSTRUCTOR-001",
+  },
+});
+
+// Mark her enrollment as passed
+await db.enrollment.create({
+  data: {
+    userId: instructor.id,
+    courseId: webDevCourse.id,
+    paidAmount: webDevCourse.price,
+    progress: 100,
+    isPassed: true,
+    status: "COMPLETED",
+    completedAt: new Date(),
+  },
+});
+
+console.log("   ✓ Certificate: EDU-SARAH-INSTRUCTOR-001");
 
   console.log("   ✓ Enrolled in: Modern Web Development with Next.js");
   console.log("   ✓ Enrolled in: Data Analysis with Python");

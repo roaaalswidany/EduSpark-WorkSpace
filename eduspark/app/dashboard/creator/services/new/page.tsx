@@ -45,7 +45,7 @@ function NoCertificatesGate() {
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
-            href="/marketplace/courses"
+            href="/courses"
             className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition-colors"
           >
             <GraduationCap className="w-4 h-4" />

@@ -1023,10 +1023,13 @@ export function ProjectView({
                       image={project.client.image}
                       size={36}
                     />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-200 truncate">
+                        <div className="flex-1 min-w-0">
+                      <Link
+                        href={`/profile/${project.client.id}`}
+                        className="text-sm font-semibold text-slate-200 truncate hover:text-indigo-400 transition-colors block"
+                      >
                         {project.client.name}
-                      </p>
+                      </Link>
                       {isClient && (
                         <span className="text-[10px] text-indigo-400 font-semibold">
                           You
@@ -1051,9 +1054,12 @@ export function ProjectView({
                         size={36}
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-200 truncate">
-                          {project.creator.name}
-                        </p>
+                  <Link
+  href={`/profile/${project.creator.id}`}
+  className="text-sm font-semibold text-slate-200 truncate hover:text-indigo-400 transition-colors block"
+>
+  {project.creator.name}
+</Link>
                         {project.creator.headline && (
                           <p className="text-[10px] text-slate-500 truncate">
                             {project.creator.headline}

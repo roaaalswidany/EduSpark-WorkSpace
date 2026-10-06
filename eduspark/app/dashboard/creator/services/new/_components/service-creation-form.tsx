@@ -40,22 +40,22 @@ import {
   CheckCircle2,
   Trash2,
 } from "lucide-react";
+import { createServiceAction } from "@/actions/marketplace/create-service";
+import { updateServiceAction } from "@/actions/marketplace/update-service";
 import {
   CreateServiceSchema,
   type CreateServiceInput,
-  createServiceAction,
-} from "@/actions/marketplace/create-service";
+} from "@/actions/marketplace/create-service-schema";
 import type { CertifiedCourseOption, CategoryOption } from "../page";
 import { cn } from "@/lib/utils";
-
-// ─── Props ────────────────────────────────────────────────────────────────────
 
 interface ServiceCreationFormProps {
   certifiedCourses: CertifiedCourseOption[];
   categories: CategoryOption[];
+  mode?: "create" | "edit";
+  serviceId?: string;
+  initialData?: Partial<CreateServiceInput>;
 }
-
-// ─── Section wrapper ──────────────────────────────────────────────────────────
 
 function FormSection({
   title,
@@ -78,8 +78,6 @@ function FormSection({
     </div>
   );
 }
-
-// ─── Tag Input ────────────────────────────────────────────────────────────────
 
 function TagInput({
   value,
@@ -176,8 +174,6 @@ function TagInput({
   );
 }
 
-// ─── Portfolio Links ──────────────────────────────────────────────────────────
-
 function PortfolioLinksInput({
   value,
   onChange,
@@ -242,8 +238,6 @@ function PortfolioLinksInput({
   );
 }
 
-// ─── Number Input ─────────────────────────────────────────────────────────────
-
 function NumberInput({
   value,
   onChange,
@@ -278,7 +272,8 @@ function NumberInput({
         step={step}
         placeholder={placeholder}
         onChange={(e) => {
-          const parsed = step < 1 ? parseFloat(e.target.value) : parseInt(e.target.value, 10);
+          const parsed =
+            step < 1 ? parseFloat(e.target.value) : parseInt(e.target.value, 10);
           if (!isNaN(parsed)) onChange(parsed);
         }}
         className={cn(
@@ -300,16 +295,16 @@ function NumberInput({
   );
 }
 
-// ─── Main Form ────────────────────────────────────────────────────────────────
-
-function getErrorMessage(
-  code: string | undefined
-): string {
+function getErrorMessage(code: string | undefined): string {
   switch (code) {
     case "NO_CERTIFICATE":
       return "Your certificate for this course could not be verified. Please ensure you passed the course quiz.";
     case "FORBIDDEN_ROLE":
       return "Your account is not authorized to create services.";
+    case "FORBIDDEN":
+      return "You don't have permission to edit this service.";
+    case "NOT_FOUND":
+      return "This service no longer exists.";
     case "SERVER_ERROR":
       return "Something went wrong on our end. Please try again.";
     default:
@@ -320,28 +315,33 @@ function getErrorMessage(
 export function ServiceCreationForm({
   certifiedCourses,
   categories,
+  mode = "create",
+  serviceId,
+  initialData,
 }: ServiceCreationFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
- const form = useForm<
+  const isEdit = mode === "edit";
+
+  const form = useForm<
     z.input<typeof CreateServiceSchema>,
     unknown,
     CreateServiceInput
   >({
     resolver: zodResolver(CreateServiceSchema),
     defaultValues: {
-      courseId: "",
-      categoryId: null,
-      title: "",
-      description: "",
-      price: 25,
-      deliveryDays: 3,
-      revisions: 1,
-      tags: [],
-      portfolioLinks: [],
+      courseId: initialData?.courseId ?? "",
+      categoryId: initialData?.categoryId ?? null,
+      title: initialData?.title ?? "",
+      description: initialData?.description ?? "",
+      price: initialData?.price ?? 25,
+      deliveryDays: initialData?.deliveryDays ?? 3,
+      revisions: initialData?.revisions ?? 1,
+      tags: initialData?.tags ?? [],
+      portfolioLinks: initialData?.portfolioLinks ?? [],
     },
     mode: "onBlur",
   });
@@ -358,11 +358,17 @@ export function ServiceCreationForm({
     setServerError(null);
 
     startTransition(async () => {
-      const result = await createServiceAction(data);
+      const result =
+        isEdit && serviceId
+          ? await updateServiceAction({ ...data, serviceId })
+          : await createServiceAction(data);
 
       if (result.success) {
         setSubmitSuccess(true);
-        setTimeout(() => router.push("/dashboard/creator/services"), 1200);
+        setTimeout(
+          () => router.push("/dashboard/creator/services"),
+          1200
+        );
         return;
       }
 
@@ -385,7 +391,9 @@ export function ServiceCreationForm({
         <div className="w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-5">
           <CheckCircle2 className="w-10 h-10 text-emerald-400" />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">Service Created!</h2>
+        <h2 className="text-xl font-bold text-white mb-2">
+          {isEdit ? "Service Updated!" : "Service Created!"}
+        </h2>
         <p className="text-slate-400 text-sm">
           Redirecting to your services…
         </p>
@@ -396,14 +404,11 @@ export function ServiceCreationForm({
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="space-y-6 mt-6">
-
-        {/* ── Section 1: Foundation ─────────────────────────────────────── */}
         <FormSection
           title="Service Foundation"
           description="Link your service to a course you've certified in."
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {/* Certified Course */}
             <FormField
               control={form.control}
               name="courseId"
@@ -414,7 +419,7 @@ export function ServiceCreationForm({
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger className="bg-slate-950 border-slate-700 text-slate-200 focus:border-indigo-500 focus:ring-indigo-500 h-10">
@@ -447,7 +452,6 @@ export function ServiceCreationForm({
               )}
             />
 
-            {/* Category */}
             <FormField
               control={form.control}
               name="categoryId"
@@ -458,7 +462,7 @@ export function ServiceCreationForm({
                     onValueChange={(v) =>
                       field.onChange(v === "__none__" ? null : v)
                     }
-                    defaultValue={field.value ?? "__none__"}
+                    value={field.value ?? "__none__"}
                   >
                     <FormControl>
                       <SelectTrigger className="bg-slate-950 border-slate-700 text-slate-200 focus:border-indigo-500 focus:ring-indigo-500 h-10">
@@ -489,7 +493,6 @@ export function ServiceCreationForm({
             />
           </div>
 
-          {/* Certificate preview strip */}
           {selectedCourse && (
             <div className="flex items-center gap-3 p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/15">
               <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
@@ -514,7 +517,6 @@ export function ServiceCreationForm({
           )}
         </FormSection>
 
-        {/* ── Section 2: Service Details ────────────────────────────────── */}
         <FormSection
           title="Service Details"
           description="Write a compelling title and description to attract buyers."
@@ -571,7 +573,6 @@ export function ServiceCreationForm({
           />
         </FormSection>
 
-        {/* ── Section 3: Pricing & Delivery ────────────────────────────── */}
         <FormSection
           title="Pricing & Delivery"
           description="Set competitive rates based on your expertise level."
@@ -649,12 +650,12 @@ export function ServiceCreationForm({
                   </FormLabel>
                   <FormControl>
                     <NumberInput
-  value={field.value ?? 1}
-  onChange={field.onChange}
-  min={0}
-  max={20}
-  placeholder="1"
-/>
+                      value={field.value ?? 1}
+                      onChange={field.onChange}
+                      min={0}
+                      max={20}
+                      placeholder="1"
+                    />
                   </FormControl>
                   <FormDescription className="text-slate-600 text-xs">
                     0 = no revisions
@@ -666,7 +667,6 @@ export function ServiceCreationForm({
           </div>
         </FormSection>
 
-        {/* ── Section 4: Tags & Portfolio ───────────────────────────────── */}
         <FormSection
           title="Tags & Portfolio"
           description="Help buyers discover your service and see past work."
@@ -723,7 +723,6 @@ export function ServiceCreationForm({
           />
         </FormSection>
 
-        {/* ── Server error ──────────────────────────────────────────────── */}
         {serverError && (
           <div className="flex items-start gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/20">
             <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
@@ -731,12 +730,11 @@ export function ServiceCreationForm({
           </div>
         )}
 
-        {/* ── Submit ────────────────────────────────────────────────────── */}
         <div className="flex items-center justify-end gap-3 pt-2">
           <Button
             type="button"
             variant="ghost"
-            onClick={() => router.back()}
+            onClick={() => router.push("/dashboard/creator/services")}
             disabled={isPending}
             className="text-slate-400 hover:text-slate-200 hover:bg-slate-800"
           >
@@ -750,8 +748,10 @@ export function ServiceCreationForm({
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                Publishing…
+                {isEdit ? "Saving…" : "Publishing…"}
               </>
+            ) : isEdit ? (
+              "Save Changes"
             ) : (
               "Publish Service"
             )}

@@ -202,10 +202,14 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
               image={service.creator.image}
               size={26}
             />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-slate-400 truncate group-hover:text-slate-300 transition-colors">
+              <div className="flex-1 min-w-0">
+              <Link
+                href={`/profile/${service.creator.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="text-xs font-semibold text-slate-400 hover:text-indigo-400 truncate transition-colors block"
+              >
                 {service.creator.name}
-              </p>
+              </Link>
             </div>
             {service._count.orders > 0 && (
               <div className="flex items-center gap-0.5 text-[10px] text-slate-600">
