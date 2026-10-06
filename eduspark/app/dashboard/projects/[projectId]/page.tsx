@@ -6,17 +6,19 @@ import { ProjectView } from "./_components/project-view";
 import type { SerializedProject } from "./_components/project-view";
 
 interface ProjectPageProps {
-  params: { projectId: string };
+  params: Promise<{ projectId: string }>;
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
+  const { projectId } = await params;
+
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/auth/login");
 
   const { id: userId } = session.user;
 
   const project = await db.project.findUnique({
-    where: { id: params.projectId },
+    where: { id: projectId },
     select: {
       id: true,
       title: true,

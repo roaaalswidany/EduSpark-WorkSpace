@@ -16,6 +16,8 @@ import {
   ShieldCheck,
   Briefcase,
   type LucideIcon,
+  Inbox,
+  ShoppingBag,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
@@ -54,14 +56,16 @@ const SECTIONS: NavSection[] = [
     title: "Work",
     items: [
       { label: "Marketplace", href: "/marketplace", icon: Store },
+      { label: "My Orders", href: "/dashboard/orders", icon: ShoppingBag },
       { label: "My Projects", href: "/dashboard/projects", icon: Briefcase },
     ],
   },
-  {
+    {
     title: "Creator Studio",
     roles: ["CREATOR", "ADMIN"],
     items: [
       { label: "My Services", href: "/dashboard/creator/services", icon: Package },
+      { label: "Incoming Orders", href: "/dashboard/creator/orders", icon: Inbox },
       { label: "New Service", href: "/dashboard/creator/services/new", icon: PlusCircle, exact: true },
     ],
   },

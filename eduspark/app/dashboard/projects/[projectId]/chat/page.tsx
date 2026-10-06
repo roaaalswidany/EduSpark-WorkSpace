@@ -12,37 +12,39 @@ import { ArrowLeft, ShieldCheck } from "lucide-react";
 export async function generateMetadata({
   params,
 }: {
-  params: { projectId: string };
+  params: Promise<{ projectId: string }>;
 }): Promise<Metadata> {
+  const { projectId } = await params;
   const project = await db.project.findUnique({
-    where: { id: params.projectId },
+    where: { id: projectId },
     select: { title: true },
   });
 
   return {
     title: project ? `${project.title} — Chat | EduSpark` : "Project Chat | EduSpark",
     description: "Secure, legally-recorded project communication channel.",
-    robots: { index: false, follow: false }, // Private page
+    robots: { index: false, follow: false },
   };
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 interface ProjectChatPageProps {
-  params: { projectId: string };
+  params: Promise<{ projectId: string }>;
 }
 
 export default async function ProjectChatPage({
   params,
 }: ProjectChatPageProps): Promise<React.ReactElement> {
+  const { projectId } = await params;
+
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/auth/login");
 
   const { id: userId, name: userName, image: userImage } = session.user;
 
-  // Fetch project with participants and chatRoom in a single query
   const project = await db.project.findUnique({
-    where: { id: params.projectId },
+    where: { id: projectId },
     select: {
       id: true,
       title: true,
@@ -63,7 +65,6 @@ export default async function ProjectChatPage({
 
   if (!project) notFound();
 
-  // Access control: only project client and creator may access this chat
   const isClient = project.clientId === userId;
   const isCreator = project.creatorId === userId;
 
@@ -71,17 +72,15 @@ export default async function ProjectChatPage({
     redirect("/dashboard/projects");
   }
 
-  // Projects must have a chat room (created at order time via order-service action)
   if (!project.chatRoom) {
     notFound();
   }
 
-  // The room ID format understood by the chat server: "chat:{chatRoomId}"
   const roomId = `chat:${project.chatRoom.id}`;
 
   return (
     <div className="flex flex-col h-screen bg-slate-950 overflow-hidden">
-      {/* ── Back navigation ──────────────────────────────────────────────────── */}
+      {/* Back navigation */}
       <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-slate-900/70 border-b border-slate-800/80">
         <Link
           href={`/dashboard/projects/${project.id}`}
@@ -91,7 +90,6 @@ export default async function ProjectChatPage({
           <span>Back to Project</span>
         </Link>
 
-        {/* Security badge */}
         <div className="flex items-center gap-1.5 text-xs text-slate-500">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
           <span className="hidden sm:inline">End-to-end encrypted channel</span>
@@ -99,7 +97,7 @@ export default async function ProjectChatPage({
         </div>
       </div>
 
-      {/* ── Participants header ───────────────────────────────────────────────── */}
+      {/* Participants header */}
       <div className="shrink-0 flex items-center gap-4 px-4 py-2.5 bg-slate-900/40 border-b border-slate-800/60">
         <div className="flex items-center gap-3">
           <ParticipantChip
@@ -115,7 +113,9 @@ export default async function ProjectChatPage({
               isCurrentUser={project.creatorId === userId}
             />
           ) : (
-            <span className="text-xs text-slate-600 italic">Creator not assigned</span>
+            <span className="text-xs text-slate-600 italic">
+              Creator not assigned
+            </span>
           )}
         </div>
 
@@ -135,7 +135,7 @@ export default async function ProjectChatPage({
         </div>
       </div>
 
-      {/* ── Chat box ─────────────────────────────────────────────────────────── */}
+      {/* Chat box */}
       <div className="flex-1 min-h-0">
         <ChatBox
           roomId={roomId}
@@ -175,9 +175,7 @@ function ParticipantChip({
             className="w-6 h-6 rounded-full object-cover"
           />
         ) : (
-          <div
-            className="w-6 h-6 rounded-full flex items-center justify-center bg-slate-700 text-white text-[9px] font-bold"
-          >
+          <div className="w-6 h-6 rounded-full flex items-center justify-center bg-slate-700 text-white text-[9px] font-bold">
             {user.name.slice(0, 2).toUpperCase()}
           </div>
         )}
@@ -195,7 +193,7 @@ function ParticipantChip({
   );
 }
 
-// ─── cn utility (inline to avoid import issues) ───────────────────────────────
+// ─── cn utility (inline) ──────────────────────────────────────────────────────
 
 function cn(...classes: (string | boolean | undefined | null)[]): string {
   return classes.filter(Boolean).join(" ");
