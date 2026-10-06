@@ -1,5 +1,5 @@
 // ============================================================================
-// Message Handlers — compatible with real ChatMessage schema
+// Message Handlers — compatible with ChatBox (message_new event)
 // ============================================================================
 
 import { randomUUID } from "crypto";
@@ -9,6 +9,7 @@ import type {
   SendMessagePayload,
   SocketResponse,
   MessageSentSuccess,
+  BroadcastMessage,
 } from "../types/socket.types";
 import { prisma } from "../lib/prisma";
 import { logger } from "../lib/logger";
@@ -149,8 +150,8 @@ export function registerMessageHandlers(
       const messageId = randomUUID();
       const createdAt = new Date();
 
-      // ── Broadcast to room ───────────────────────────────────────
-      const broadcastPayload = {
+      // ── Build broadcast payload (matches ChatBox BroadcastMessage) ─────
+      const broadcastPayload: BroadcastMessage = {
         id: messageId,
         tempId,
         chatRoomId: chatRoom.id,
@@ -165,9 +166,10 @@ export function registerMessageHandlers(
         createdAt: createdAt.toISOString(),
       };
 
-      io.to(roomId).emit("new_message", broadcastPayload as never);
+      // ⚠️ IMPORTANT: event name is "message_new" (matches ChatBox listener)
+      io.to(roomId).emit("message_new", broadcastPayload);
 
-      // ── Ack to sender ───────────────────────────────────────────
+      // ── Ack to sender (immediate) ───────────────────────────────────────
       callback({
         ok: true,
         data: {
@@ -177,27 +179,37 @@ export function registerMessageHandlers(
         },
       });
 
-      // ── Persist async ───────────────────────────────────────────
+      // ── Persist async ───────────────────────────────────────────────────
       persistMessageToDatabase({
         messageId,
         content: trimmedContent,
         senderId: user.id,
         chatRoomId: chatRoom.id,
         createdAt,
-      }).catch((error) => {
-        logger.error("Failed to persist message", {
-          messageId,
-          userId: user.id,
-          roomId,
-          error: error instanceof Error ? error.message : "unknown",
-        });
+      })
+        .then(() => {
+          socket.emit("message_saved", {
+            messageId,
+            tempId,
+            createdAt: createdAt.toISOString(),
+          });
+        })
+        .catch((error) => {
+          logger.error("Failed to persist message", {
+            messageId,
+            userId: user.id,
+            roomId,
+            error: error instanceof Error ? error.message : "unknown",
+          });
 
-        socket.emit("server_error", {
-          code: "MESSAGE_PERSIST_FAILED",
-          message: `Message ${tempId} could not be saved.`,
-          timestamp: new Date().toISOString(),
+          socket.emit("message_error", {
+            tempId,
+            error: {
+              code: "SERVER_ERROR",
+              message: "Message could not be saved.",
+            },
+          });
         });
-      });
 
       logger.info("Message broadcast", {
         messageId,
@@ -211,10 +223,11 @@ export function registerMessageHandlers(
   // ── typing_start ──────────────────────────────────────────────────────────
   socket.on("typing_start", ({ roomId }) => {
     if (roomId && socket.rooms.has(roomId)) {
-      socket.to(roomId).emit("user_typing", {
-        userId: user.id,
-        userName: user.name,
+      socket.to(roomId).emit("typing_indicator", {
         roomId,
+        userId: user.id,
+        name: user.name,
+        isTyping: true,
       });
     }
   });
@@ -222,10 +235,11 @@ export function registerMessageHandlers(
   // ── typing_stop ───────────────────────────────────────────────────────────
   socket.on("typing_stop", ({ roomId }) => {
     if (roomId && socket.rooms.has(roomId)) {
-      socket.to(roomId).emit("user_stopped_typing", {
-        userId: user.id,
-        userName: user.name,
+      socket.to(roomId).emit("typing_indicator", {
         roomId,
+        userId: user.id,
+        name: user.name,
+        isTyping: false,
       });
     }
   });

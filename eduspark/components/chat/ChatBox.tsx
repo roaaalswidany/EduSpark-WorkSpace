@@ -559,6 +559,18 @@ export default function ChatBox({
   const [isSendingTyping, setIsSendingTyping] = useState(false);
   const [showOnlineList, setShowOnlineList] = useState(false);
 
+  // ── DEBUG: Log all socket events temporarily ──
+useEffect(() => {
+  if (!socket) return;
+  const onAny = (event: string, ...args: unknown[]) => {
+    console.log(`[SOCKET] ${event}`, args);
+  };
+  socket.onAny(onAny);
+  return () => {
+    socket.offAny(onAny);
+  };
+}, [socket]);
+
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isAtBottomRef = useRef(true);

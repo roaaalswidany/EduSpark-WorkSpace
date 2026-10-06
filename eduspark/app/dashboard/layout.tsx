@@ -14,7 +14,6 @@ export default async function DashboardLayout({
 
   const userId = session.user.id;
 
-  // Fetch user + unread notifications count
   const [user, unreadCount] = await Promise.all([
     db.user.findUnique({
       where: { id: userId },
@@ -37,6 +36,7 @@ export default async function DashboardLayout({
     <DashboardShell
       role={user.role}
       user={{
+        id: user.id,
         name: user.name,
         email: user.email,
         image: user.image,

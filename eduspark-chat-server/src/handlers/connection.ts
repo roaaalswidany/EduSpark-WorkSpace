@@ -1,12 +1,11 @@
 // ============================================================================
-// معالج أحداث الاتصال والانقطاع
+// Connection lifecycle handlers
 // ============================================================================
 
 import type { TypedSocket, TypedServer } from "../types/socket.types";
 import { logger } from "../lib/logger";
-import { env } from "../config/env";
 
-// تتبّع المستخدمين المتصلين في الذاكرة
+// Track connected users in memory
 const connectedUsers = new Map<string, Set<string>>(); // userId → Set<socketId>
 
 export function registerConnectionHandlers(
@@ -15,7 +14,10 @@ export function registerConnectionHandlers(
 ): void {
   const user = socket.data.user;
 
-  // ── تسجيل الاتصال الجديد ──────────────────────────────────────────────────
+  // ── Auto-join the user's personal room for notifications ────────────────
+  void socket.join(`user:${user.id}`);
+
+  // ── Register the new connection ──────────────────────────────────────────
   if (!connectedUsers.has(user.id)) {
     connectedUsers.set(user.id, new Set());
   }
@@ -32,14 +34,7 @@ export function registerConnectionHandlers(
     totalConnectedUsers: connectedUsers.size,
   });
 
-  // إرسال تأكيد الاتصال للعميل
-  socket.emit("connection_acknowledged", {
-    userId: user.id,
-    connectedAt: socket.data.connectedAt.toISOString(),
-    serverVersion: process.env["npm_package_version"] ?? "1.0.0",
-  });
-
-  // ── معالجة الانقطاع ───────────────────────────────────────────────────────
+  // ── Handle disconnect ────────────────────────────────────────────────────
   socket.on("disconnect", (reason) => {
     const userSockets = connectedUsers.get(user.id);
     if (userSockets) {
@@ -63,7 +58,7 @@ export function registerConnectionHandlers(
     });
   });
 
-  // ── معالجة الأخطاء ────────────────────────────────────────────────────────
+  // ── Handle errors ────────────────────────────────────────────────────────
   socket.on("error", (error) => {
     logger.error("Socket error", {
       socketId: socket.id,

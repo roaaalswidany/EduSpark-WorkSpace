@@ -5,7 +5,7 @@ const EnvSchema = z.object({
     .enum(["development", "production", "test"])
     .default("development"),
 
-  PORT: z.coerce.number().int().min(1024).max(65535).default(4000),
+  PORT: z.coerce.number().int().min(1024).max(65535).default(3001),
 
   JWT_SECRET: z
     .string()
@@ -22,14 +22,17 @@ const EnvSchema = z.object({
     .url()
     .default("http://localhost:3000"),
 
-  // قيود تحديد المعدّل
+  // ─── Internal API (server-to-server from Next.js) ─────────────────────────
+  INTERNAL_API_SECRET: z
+    .string()
+    .min(16, "INTERNAL_API_SECRET must be at least 16 characters"),
+
+  // Rate limiting
   MAX_MESSAGES_PER_MINUTE: z.coerce.number().int().min(1).max(500).default(60),
   MAX_CONNECTIONS_PER_USER: z.coerce.number().int().min(1).max(10).default(5),
 
-  // إعدادات السجلّات
-  LOG_LEVEL: z
-    .enum(["error", "warn", "info", "debug"])
-    .default("info"),
+  // Logging
+  LOG_LEVEL: z.enum(["error", "warn", "info", "debug"]).default("info"),
 });
 
 function validateEnv() {

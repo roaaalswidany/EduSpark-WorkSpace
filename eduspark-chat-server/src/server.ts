@@ -11,6 +11,7 @@
 // ============================================================================
 
 import "dotenv/config";
+import { createInternalRouter } from "./routes/internal";
 import express, { type Request, type Response } from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -225,8 +226,14 @@ process.on("uncaughtException", (error) => {
 process.on("unhandledRejection", (reason) => {
   logger.error("Unhandled rejection", {
     reason: reason instanceof Error ? reason.message : String(reason),
+    stack: reason instanceof Error ? reason.stack : undefined,
   });
+  // Don't crash on unhandled rejections — log and continue
 });
+
+
+// Mount internal HTTP routes (used by Next.js to push notifications)
+app.use("/internal", createInternalRouter(io));
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 bootstrap().catch((error) => {

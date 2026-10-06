@@ -50,17 +50,36 @@ export interface ClientToServerEvents {
     payload: { roomId: string },
     callback: (response: SocketResponse<RoomStatusSuccess>) => void
   ) => void;
+
+  get_room_users: (
+    payload: { roomId: string },
+    callback: (response: SocketResponse<{ users: OnlineUserInfo[] }>) => void
+  ) => void;
 }
 
 // ─── Server → Client Events ───────────────────────────────────────────────────
 export interface ServerToClientEvents {
-  new_message: (data: MessageBroadcastPayload) => void;
-  user_typing: (data: TypingBroadcastPayload) => void;
-  user_stopped_typing: (data: TypingBroadcastPayload) => void;
-  user_joined_room: (data: UserRoomEventPayload) => void;
-  user_left_room: (data: UserRoomEventPayload) => void;
-  connection_acknowledged: (data: ConnectionAckPayload) => void;
+  message_new: (data: BroadcastMessage) => void;
+  message_saved: (data: MessageSentSuccess) => void;
+  message_error: (data: {
+    tempId: string;
+    error: { code: string; message: string };
+  }) => void;
+
+  typing_indicator: (data: TypingIndicatorPayload) => void;
+
+  user_joined: (data: UserRoomEventPayload) => void;
+  user_left: (data: UserRoomEventPayload) => void;
+
+  presence_online: (data: PresencePayload) => void;
+  presence_offline: (data: PresencePayload) => void;
+
+  reconnect_ack: (data: { recoveredRooms: string[] }) => void;
+
   server_error: (data: ServerErrorPayload) => void;
+
+  /** Real-time notification (sent to user:${userId} room) */
+  notification_new: (data: NotificationPayload) => void;
 }
 
 // ─── Socket Data ──────────────────────────────────────────────────────────────
@@ -71,8 +90,6 @@ export interface SocketData {
 }
 
 // ─── Payload Types ────────────────────────────────────────────────────────────
-
-// Accept BOTH formats: { roomId } from ChatBox, or { roomType, targetId } from legacy
 export interface JoinRoomPayload {
   roomId?: string;
   roomType?: RoomType;
@@ -96,8 +113,6 @@ export interface TypingPayload {
 }
 
 // ─── Success Response Types ───────────────────────────────────────────────────
-
-// Matches ChatBox's `RoomUsersPayload` / `RoomJoinedPayload` expectations
 export interface JoinRoomSuccess {
   roomId: string;
   users: OnlineUserInfo[];
@@ -118,7 +133,6 @@ export interface RoomStatusSuccess {
 }
 
 // ─── Broadcast Types ──────────────────────────────────────────────────────────
-
 export interface BroadcastMessage {
   id: string;
   tempId: string;
@@ -160,33 +174,46 @@ export interface MessageBroadcastPayload {
   createdAt: string;
 }
 
-export interface TypingBroadcastPayload {
-  userId: string;
-  userName: string;
+export interface TypingIndicatorPayload {
   roomId: string;
+  userId: string;
+  name: string;
+  isTyping: boolean;
 }
 
 export interface UserRoomEventPayload {
-  userId: string;
-  userName: string;
-  userImage: string | null;
   roomId: string;
-  timestamp: string;
+  userId?: string;
+  name?: string;
+  user?: OnlineUserInfo;
 }
 
-export interface ConnectionAckPayload {
+export interface PresencePayload {
   userId: string;
-  connectedAt: string;
-  serverVersion: string;
+  name: string;
+  image: string | null;
+  role?: Role;
+  connectedAt?: string;
+  disconnectedAt?: string;
 }
 
 export interface ServerErrorPayload {
   code: string;
   message: string;
-  timestamp: string;
+  timestamp?: string;
 }
 
-// ─── Generic Response Wrapper (uses `ok` to match ChatBox) ────────────────────
+// ─── Notification Types ───────────────────────────────────────────────────────
+export interface NotificationPayload {
+  id: string;
+  title: string;
+  body: string;
+  link: string | null;
+  isRead: boolean;
+  createdAt: string;
+}
+
+// ─── Generic Response Wrapper ─────────────────────────────────────────────────
 export type SocketResponse<T> =
   | { ok: true; data: T }
   | { ok: false; error: { code: string; message: string } };

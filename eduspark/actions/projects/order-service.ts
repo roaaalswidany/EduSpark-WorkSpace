@@ -11,6 +11,7 @@ import {
   ServiceStatus,
 } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { emitNotification } from "@/lib/notifications/emit";
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 
@@ -63,9 +64,9 @@ export async function orderServiceAction(
       return {
         success: false,
         error: "INVALID_INPUT",
-       fieldErrors: parsed.error.flatten().fieldErrors as Partial<
-  Record<keyof OrderServiceInput, string[]>
->,
+        fieldErrors: parsed.error.flatten().fieldErrors as Partial<
+          Record<keyof OrderServiceInput, string[]>
+        >,
       };
     }
 
@@ -89,7 +90,6 @@ export async function orderServiceAction(
     if (service.status !== ServiceStatus.ACTIVE) {
       return { success: false, error: "SERVICE_INACTIVE" };
     }
-    // Prevent a creator from ordering their own service
     if (service.creatorId === clientId) {
       return { success: false, error: "SELF_ORDER" };
     }
@@ -103,13 +103,13 @@ export async function orderServiceAction(
 
     // ── Atomic transaction ────────────────────────────────────────────────────
     //   ① Create Project
-    //   ② Create Milestone(s) derived from Service definition
-    //   ③ Create ChatRoom of type PROJECT
-    //   ④ Add both parties as ChatRoom participants
-    //   ⑤ Post system message to open the conversation
-    //   ⑥ Notify the creator
+    //   ② Create default Milestone
+    //   ③ Create ChatRoom (PROJECT type)
+    //   ④ Add both parties as participants
+    //   ⑤ Post system message
+    //   ⑥ Create DB notification for creator
 
-    const { project, chatRoom } = await db.$transaction(async (tx) => {
+    const result = await db.$transaction(async (tx) => {
       // ① Project
       const project = await tx.project.create({
         data: {
@@ -126,8 +126,7 @@ export async function orderServiceAction(
         select: { id: true },
       });
 
-      // ② Default milestone derived from service delivery definition.
-      //    The creator may later add additional granular milestones if desired.
+      // ② Default milestone
       await tx.milestone.create({
         data: {
           title: "Final Delivery",
@@ -165,25 +164,48 @@ export async function orderServiceAction(
         },
       });
 
-      // ⑥ Creator notification
-      await tx.notification.create({
+      // ⑥ Creator notification (DB row)
+      const notification = await tx.notification.create({
         data: {
           userId: service.creatorId,
           title: "New Project Order 🎯",
           body: `${clientName ?? "A client"} ordered "${service.title}". Review the requirements and begin work.`,
           link: `/dashboard/projects/${project.id}`,
         },
+        select: {
+          id: true,
+          title: true,
+          body: true,
+          link: true,
+          isRead: true,
+          createdAt: true,
+        },
       });
 
-      return { project, chatRoom };
+      return { project, chatRoom, notification };
+    });
+
+    // ── Emit real-time notification to creator (fire-and-forget) ─────────────
+    void emitNotification({
+      userId: service.creatorId,
+      notification: {
+        id: result.notification.id,
+        title: result.notification.title,
+        body: result.notification.body,
+        link: result.notification.link,
+        isRead: result.notification.isRead,
+        createdAt: result.notification.createdAt.toISOString(),
+      },
     });
 
     revalidatePath("/dashboard/projects");
+    revalidatePath("/dashboard/orders");
+    revalidatePath("/dashboard/creator/orders");
 
     return {
       success: true,
-      projectId: project.id,
-      chatRoomId: chatRoom.id,
+      projectId: result.project.id,
+      chatRoomId: result.chatRoom.id,
     };
   } catch (error) {
     console.error("[ORDER_SERVICE_ACTION]", error);

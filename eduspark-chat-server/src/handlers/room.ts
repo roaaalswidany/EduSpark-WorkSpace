@@ -171,35 +171,41 @@ export function registerRoomHandlers(
   );
 
   // ── leave_room ────────────────────────────────────────────────────────────
-  socket.on(
-    "leave_room",
-    async (
-      payload: LeaveRoomPayload,
-      callback: (response: SocketResponse<null>) => void
-    ) => {
-      const { roomId } = payload;
+ socket.on(
+  "leave_room",
+  async (
+    payload: LeaveRoomPayload,
+    callback?: (response: SocketResponse<null>) => void
+  ) => {
+    const { roomId } = payload;
 
-      if (!roomId) {
-        return callback({
-          ok: false,
-          error: {
-            code: "INVALID_PAYLOAD",
-            message: "roomId is required.",
-          },
-        });
-      }
-
-      if (socket.rooms.has(roomId)) {
-        await socket.leave(roomId);
-      }
-
-      logger.info("User left room", {
-        socketId: socket.id,
-        userId: user.id,
-        roomId,
+    if (!roomId) {
+      callback?.({
+        ok: false,
+        error: {
+          code: "INVALID_PAYLOAD",
+          message: "roomId is required.",
+        },
       });
-
-      callback({ ok: true, data: null });
+      return;
     }
-  );
-}
+
+    if (socket.rooms.has(roomId)) {
+      await socket.leave(roomId);
+
+      socket.to(roomId).emit("user_left", {
+        roomId,
+        userId: user.id,
+        name: user.name,
+      });
+    }
+
+    logger.info("User left room", {
+      socketId: socket.id,
+      userId: user.id,
+      roomId,
+    });
+
+    callback?.({ ok: true, data: null });
+  }
+);}
