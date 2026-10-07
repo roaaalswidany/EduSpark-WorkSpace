@@ -53,10 +53,10 @@ export function DashboardShell({
           {sidebarOpen && (
             <>
               <div
-                className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
+                className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden animate-fade-in"
                 onClick={() => setSidebarOpen(false)}
               />
-              <div className="fixed inset-y-0 left-0 z-50 lg:hidden">
+              <div className="fixed inset-y-0 left-0 z-50 lg:hidden animate-slide-in-left">
                 <div className="relative h-full">
                   <button
                     type="button"
@@ -107,7 +107,7 @@ export function DashboardShell({
               </div>
             </header>
 
-              <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
+            <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
           </div>
         </div>
 
