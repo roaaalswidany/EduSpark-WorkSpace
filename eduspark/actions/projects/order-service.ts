@@ -40,6 +40,7 @@ export type OrderServiceResult =
       success: false;
       error:
         | "UNAUTHORIZED"
+        | "STALE_SESSION"
         | "INVALID_INPUT"
         | "SERVICE_NOT_FOUND"
         | "SERVICE_INACTIVE"
@@ -58,6 +59,20 @@ export async function orderServiceAction(
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
 
     const { id: clientId, name: clientName } = session.user;
+
+    // ── Guard: verify session user still exists in DB ─────────────────────────
+    // Handles stale JWT sessions after DB reset / re-seed.
+    const clientExists = await db.user.findUnique({
+      where: { id: clientId },
+      select: { id: true },
+    });
+
+    if (!clientExists) {
+      console.warn(
+        `[ORDER_SERVICE_ACTION] Stale session for userId=${clientId} — user not found in DB`
+      );
+      return { success: false, error: "STALE_SESSION" };
+    }
 
     const parsed = OrderServiceSchema.safeParse(rawInput);
     if (!parsed.success) {
