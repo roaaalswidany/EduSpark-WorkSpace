@@ -1,11 +1,10 @@
-// eduspark/prisma/seed/01-users.ts
+// eduspark/prisma/seed/users.ts
 import { Role, type User, type PrismaClient } from "@prisma/client";
 import {
   SEED_COUNTS,
   TEST_ACCOUNTS,
   TEST_ACCOUNT_NAMES,
   SEED_PASSWORD_PLAIN,
-  PROTECTED_EMAILS,
   PLACEHOLDER_AVATARS,
 } from "./config";
 import {
@@ -119,14 +118,6 @@ export async function seedUsers(db: PrismaClient): Promise<SeededUsers> {
     );
   }
 
-  // ── Cleanup: delete ALL users except protected accounts ──────────
-  // Cascades to enrollments, courses, services, orders, etc.
-  logInfo("Cleaning up existing users (except protected)...");
-  const deleted = await db.user.deleteMany({
-    where: { email: { notIn: [...PROTECTED_EMAILS] } },
-  });
-  logInfo(`  Deleted ${deleted.count} users`);
-
   // ── Shared password ──────────────────────────────────────────────
   const hashedPassword = await hashPassword(SEED_PASSWORD_PLAIN);
 
@@ -204,7 +195,7 @@ export async function seedUsers(db: PrismaClient): Promise<SeededUsers> {
     if (i >= SEED_COUNTS.students && i < SEED_COUNTS.students + SEED_COUNTS.creators) {
       role = Role.CREATOR;
     } else if (i >= SEED_COUNTS.students + SEED_COUNTS.creators) {
-      role = Role.CREATOR; // mixed users default to CREATOR
+      role = Role.CREATOR;
     }
 
     const name = language === "ar"
