@@ -4,6 +4,7 @@ import { useState, useTransition, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   ChevronRight,
   Star,
@@ -149,6 +150,8 @@ function OrderDialog({
     if (!isValid || isPending) return;
     setError(null);
 
+    const toastId = toast.loading("Creating your order…");
+
     startTransition(async () => {
       const result = await orderServiceAction({
         serviceId: service.id,
@@ -156,7 +159,11 @@ function OrderDialog({
       });
 
       if (result.success) {
-        // Redirect to the project chat
+        toast.success("Order created! 🎯", {
+          id: toastId,
+          description: "Opening your project workspace…",
+        });
+        // Redirect to the project workspace
         router.push(`/dashboard/projects/${result.projectId}`);
         return;
       }
@@ -167,8 +174,18 @@ function OrderDialog({
         SELF_ORDER: "You can't order your own service.",
         INVALID_INPUT: "Please describe your requirements in more detail.",
         UNAUTHORIZED: "Please sign in to place an order.",
+        STALE_SESSION:
+          "Your session has expired. Please sign out and sign in again.",
+        SERVER_ERROR: "Something went wrong. Please try again.",
       };
-      setError(messages[result.error] ?? "Something went wrong. Please try again.");
+      const errorMessage =
+        messages[result.error] ?? "Something went wrong. Please try again.";
+
+      setError(errorMessage);
+      toast.error("Order failed", {
+        id: toastId,
+        description: errorMessage,
+      });
     });
   }, [isValid, isPending, service.id, requirements, router]);
 
@@ -483,12 +500,12 @@ export function ServiceDetailView({
                   size={56}
                 />
                 <div className="min-w-0">
-                 <Link
-  href={`/profile/${service.creator.id}`}
-  className="text-sm font-bold text-white hover:text-indigo-400 transition-colors"
->
-  {service.creator.name}
-</Link>
+                  <Link
+                    href={`/profile/${service.creator.id}`}
+                    className="text-sm font-bold text-white hover:text-indigo-400 transition-colors"
+                  >
+                    {service.creator.name}
+                  </Link>
                   {service.creator.headline && (
                     <p className="text-xs text-indigo-400 mt-0.5">
                       {service.creator.headline}
