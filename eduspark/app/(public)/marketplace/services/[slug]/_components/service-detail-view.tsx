@@ -193,12 +193,12 @@ function OrderDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
       />
 
       {/* Dialog */}
-      <div className="relative w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden animate-scale-in">
         {/* Header */}
         <div className="px-6 py-5 border-b border-slate-800">
           <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-1">
