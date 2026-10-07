@@ -1,414 +1,162 @@
-import { PrismaClient, Role, CourseLevel, CourseStatus } from "@prisma/client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// eduspark/prisma/seed.ts
+// ─────────────────────────────────────────────────────────────────────────────
+// EduSpark Seed Orchestrator
+// Runs all seed modules in correct order. Safe to re-run.
+// Usage: npx tsx prisma/seed.ts
+// ─────────────────────────────────────────────────────────────────────────────
+
+import { config } from "dotenv";
+import { resolve } from "path";
+config({ path: resolve(process.cwd(), ".env.local") });
+config();
+
+import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import bcrypt from "bcryptjs";
-import "dotenv/config";
+
+import { seedUsers } from "./seed/users";
+import { seedCategories } from "./seed/categories";
+import { seedCourses } from "./seed/courses";
+import { seedEnrollments } from "./seed/enrollments";
+import { boostCertificates } from "./seed/certificate-booster";
+import { seedServices } from "./seed/services";
+import { seedOrders } from "./seed/orders";
+import { seedReviews } from "./seed/reviews";
+import { seedChat } from "./seed/chat";
+import { seedNotifications } from "./seed/notifications";
+import { seedAiConversations } from "./seed/ai-conversations";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
 });
-
 const db = new PrismaClient({ adapter });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Seed configuration — adjust freely without touching the logic below
-// ─────────────────────────────────────────────────────────────────────────────
-
-const SEED_PASSWORD_PLAIN = "Password123!";
-
-const SEED_EMAILS = {
-  instructor: "sarah.creator@eduspark.dev",
-  student: "ahmad.student@eduspark.dev",
-  client: "layla.client@eduspark.dev",
-} as const;
-
-const COURSE_SLUGS = {
-  webDev: "modern-web-development-with-nextjs",
-  dataScience: "data-analysis-with-python",
-} as const;
-
-const PLACEHOLDER_VIDEO_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-
 async function main(): Promise<void> {
-  console.log("🌱 Seeding EduSpark database...\n");
+  const startTime = Date.now();
 
-  // ── Step 0: Clean slate ────────────────────────────────────────────────────
-  // Deleting these 3 users cascades automatically (onDelete: Cascade is set
-  // throughout the schema) to every Course, Section, Lesson, Quiz, Question,
-  // Enrollment, LessonProgress, QuizAttempt, QuizAnswer, and Certificate that
-  // belongs to them. This makes the script safely re-runnable.
-  console.log("🧹 Cleaning up any previous seed data...");
-  await db.user.deleteMany({
-    where: { email: { in: Object.values(SEED_EMAILS) } },
-  });
+  console.log("\n" + "═".repeat(70));
+  console.log("  🌱 EduSpark Comprehensive Seed");
+  console.log("  " + new Date().toISOString());
+  console.log("═".repeat(70));
 
-  // ── Step 1: Shared password hash ───────────────────────────────────────────
-  // Cost factor 12 — identical to actions/auth/register.ts for consistency.
-  const hashedPassword = await bcrypt.hash(SEED_PASSWORD_PLAIN, 12);
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is not set — check eduspark/.env.local");
+  }
 
-  // ── Step 2: Users ───────────────────────────────────────────────────────────
-  console.log("👤 Creating users...");
+  // ── 1. Users ──────────────────────────────────────────────────
+  const users = await seedUsers(db);
 
-  const instructor = await db.user.create({
-    data: {
-      name: "Sarah Ahmad",
-      email: SEED_EMAILS.instructor,
-      password: hashedPassword,
-      role: Role.CREATOR,
-      headline: "Senior Full-Stack Instructor",
-      bio: "10+ years building production web applications. Passionate about teaching modern JavaScript frameworks.",
-      isActive: true,
+  // ── 2. Categories ─────────────────────────────────────────────
+  const categories = await seedCategories(db);
+
+  // ── 3. Courses ────────────────────────────────────────────────
+  const courses = await seedCourses(
+    db,
+    { creators: users.creators, instructor: users.instructor },
+    categories
+  );
+
+  // ── 4. Enrollments + Certificates ─────────────────────────────
+  const enrollments = await seedEnrollments(
+    db,
+    {
+      student: users.student,
+      students: users.students,
+      client: users.client,
     },
-  });
+    { all: courses.all, withQuiz: courses.withQuiz }
+  );
 
-  const student = await db.user.create({
-    data: {
-      name: "Ahmad Khaled",
-      email: SEED_EMAILS.student,
-      password: hashedPassword,
-      role: Role.STUDENT,
-      headline: "Aspiring Full-Stack Developer",
-      isActive: true,
+  // ── 5. Certificate Booster ────────────────────────────────────
+  await boostCertificates(db, { withQuiz: courses.withQuiz });
+
+  // ── 6. Services ───────────────────────────────────────────────
+  const services = await seedServices(
+    db,
+    { instructor: users.instructor, creators: users.creators },
+    categories
+  );
+
+  // ── 7. Orders + Projects + Milestones + Proposals ─────────────
+  const orders = await seedOrders(
+    db,
+    {
+      student: users.student,
+      client: users.client,
+      students: users.students,
+      creators: users.creators,
+      instructor: users.instructor,
     },
-  });
+    { all: services.all }
+  );
 
-  const client = await db.user.create({
-    data: {
-      name: "Layla Hassan",
-      email: SEED_EMAILS.client,
-      password: hashedPassword,
-      role: Role.STUDENT,
-      headline: "Startup Founder",
-      bio: "Looking to hire talented developers for my growing startup.",
-      isActive: true,
+  // ── 8. Reviews ────────────────────────────────────────────────
+  await seedReviews(
+    db,
+    { students: users.students, student: users.student, client: users.client },
+    { all: courses.all }
+  );
+
+  // ── 9. Chat + Messages ────────────────────────────────────────
+  await seedChat(
+    db,
+    {
+      students: users.students,
+      student: users.student,
+      client: users.client,
+      creators: users.creators,
+      instructor: users.instructor,
     },
-  });
+    { all: courses.all },
+    { all: orders.projects }
+  );
 
-  console.log(`   ✓ Instructor: ${instructor.email}`);
-  console.log(`   ✓ Student:    ${student.email}`);
-  console.log(`   ✓ Client:     ${client.email}`);
+  // ── 10. Notifications ─────────────────────────────────────────
+  await seedNotifications(db, { all: users.all });
 
-// Delete categories too — they're not tied to users
-await db.category.deleteMany({
-  where: {
-    slug: { in: ["web-development", "data-science"] },
-  },
-});
+  // ── 11. AI Conversations ──────────────────────────────────────
+  await seedAiConversations(db, { all: users.all });
 
-  // ── Step 3: Categories ──────────────────────────────────────────────────────
-  console.log("\n📁 Creating categories...");
+  // ── Final Summary ─────────────────────────────────────────────
+  const duration = ((Date.now() - startTime) / 1000).toFixed(1);
 
-  const webDevCategory = await db.category.create({
-    data: {
-      name: "Web Development",
-      slug: "web-development",
-      description: "Frontend, backend, and full-stack web development courses.",
-      icon: "code",
-    },
-  });
-
-  const dataScienceCategory = await db.category.create({
-    data: {
-      name: "Data Science",
-      slug: "data-science",
-      description: "Data analysis, visualization, and machine learning courses.",
-      icon: "bar-chart",
-    },
-  });
-
-  // ── Step 4: Course #1 — Web Development (with Sections + Lessons) ─────────
-  console.log("\n📚 Creating Course 1: Modern Web Development with Next.js...");
-
-  const webDevCourse = await db.course.create({
-    data: {
-      title: "Modern Web Development with Next.js",
-      slug: COURSE_SLUGS.webDev,
-      description:
-        "Learn to build production-grade full-stack applications using Next.js 14, the App Router, Server Components, and Server Actions. By the end of this course, you will be able to architect, build, and deploy a complete SaaS application from scratch.",
-      thumbnail: null,
-      price: 49.99,
-      level: CourseLevel.INTERMEDIATE,
-      status: CourseStatus.PUBLISHED,
-      language: "en",
-      tags: ["nextjs", "react", "typescript", "fullstack"],
-      creatorId: instructor.id,
-      categoryId: webDevCategory.id,
-      sections: {
-        create: [
-          {
-            title: "Getting Started",
-            order: 1,
-            lessons: {
-              create: [
-                {
-                  title: "Course Introduction",
-                  description: "Overview of what you'll build and learn in this course.",
-                  videoUrl: PLACEHOLDER_VIDEO_URL,
-                  duration: 320,
-                  order: 1,
-                  isFree: true,
-                },
-                {
-                  title: "Setting Up Your Development Environment",
-                  description: "Installing Node.js, VS Code, and the required tooling.",
-                  videoUrl: PLACEHOLDER_VIDEO_URL,
-                  duration: 480,
-                  order: 2,
-                  isFree: true,
-                },
-              ],
-            },
-          },
-          {
-            title: "Building Your First App",
-            order: 2,
-            lessons: {
-              create: [
-                {
-                  title: "Creating Pages & Routes with the App Router",
-                  description: "Understanding file-based routing in Next.js 14.",
-                  videoUrl: PLACEHOLDER_VIDEO_URL,
-                  duration: 600,
-                  order: 1,
-                  isFree: false,
-                },
-                {
-                  title: "Working with Server Components",
-                  description: "The difference between Server and Client Components, and when to use each.",
-                  videoUrl: PLACEHOLDER_VIDEO_URL,
-                  duration: 720,
-                  order: 2,
-                  isFree: false,
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  });
-
-  // ── Step 5: Quiz + 5 Questions for Course #1 ───────────────────────────────
-  console.log("📝 Creating certification quiz with 5 questions...");
-
-  const quiz = await db.quiz.create({
-    data: {
-      title: "Next.js Fundamentals Certification Quiz",
-      description:
-        "Test your understanding of the core concepts covered in this course. A passing score of 80% or higher grants you a verified certificate and unlocks Creator privileges.",
-      passingScore: 80,
-      timeLimit: 600,
-      courseId: webDevCourse.id,
-      questions: {
-        create: [
-          {
-            text: "Which routing system does Next.js 14's App Router use?",
-            options: [
-              "File-based routing",
-              "XML configuration routing",
-              "Manual route registration",
-              "Database-driven routing",
-            ],
-            correctOption: "File-based routing",
-            explanation:
-              "The App Router uses the folder structure inside the app/ directory to define routes automatically.",
-            order: 1,
-          },
-          {
-            text: "What is the default rendering type for components inside the app/ directory?",
-            options: ["Client Component", "Server Component", "Static HTML", "Web Worker"],
-            correctOption: "Server Component",
-            explanation:
-              'Unless explicitly marked with "use client", every component in the App Router renders on the server by default.',
-            order: 2,
-          },
-          {
-            text: "Which directive must be added to a file to make it a Client Component?",
-            options: ['"use server"', '"use client"', '"use effect"', '"use state"'],
-            correctOption: '"use client"',
-            explanation:
-              'The "use client" directive at the top of a file opts that component (and its children) into client-side rendering and interactivity.',
-            order: 3,
-          },
-          {
-            text: "What is the primary purpose of a Server Action in Next.js?",
-            options: [
-              "Styling components with CSS",
-              "Running mutations on the server directly from a Client or Server Component",
-              "Rendering images",
-              "Configuring the database connection",
-            ],
-            correctOption: "Running mutations on the server directly from a Client or Server Component",
-            explanation:
-              'Server Actions, marked with "use server", let you call server-side functions directly without manually building API routes.',
-            order: 4,
-          },
-          {
-            text: "Which Prisma Client method ensures multiple database writes succeed or fail together as a single atomic unit?",
-            options: ["findMany()", "upsert()", "$transaction()", "connect()"],
-            correctOption: "$transaction()",
-            explanation:
-              "$transaction() wraps multiple Prisma operations so that either all of them commit or none of them do, preventing partial writes.",
-            order: 5,
-          },
-        ],
-      },
-    },
-  });
-
-  console.log(`   ✓ Quiz created with 5 questions (passing score: ${quiz.passingScore}%)`);
-
-  // ── Step 6: Course #2 — Data Science (Sections + Lessons, no quiz) ────────
-  console.log("\n📚 Creating Course 2: Data Analysis with Python...");
-
-  const dataScienceCourse = await db.course.create({
-    data: {
-      title: "Data Analysis with Python",
-      slug: COURSE_SLUGS.dataScience,
-      description:
-        "An introduction to data analysis using Python, Pandas, and Matplotlib. Designed for absolute beginners with no prior programming experience.",
-      thumbnail: null,
-      price: 39.99,
-      level: CourseLevel.BEGINNER,
-      status: CourseStatus.PUBLISHED,
-      language: "en",
-      tags: ["python", "pandas", "data-analysis"],
-      creatorId: instructor.id,
-      categoryId: dataScienceCategory.id,
-      sections: {
-        create: [
-          {
-            title: "Python Basics",
-            order: 1,
-            lessons: {
-              create: [
-                {
-                  title: "Introduction to Python",
-                  description: "Why Python is the language of choice for data analysis.",
-                  videoUrl: PLACEHOLDER_VIDEO_URL,
-                  duration: 360,
-                  order: 1,
-                  isFree: true,
-                },
-                {
-                  title: "Data Types & Variables",
-                  description: "Strings, numbers, lists, and dictionaries in Python.",
-                  videoUrl: PLACEHOLDER_VIDEO_URL,
-                  duration: 420,
-                  order: 2,
-                  isFree: false,
-                },
-              ],
-            },
-          },
-          {
-            title: "Working with Data",
-            order: 2,
-            lessons: {
-              create: [
-                {
-                  title: "Introduction to Pandas",
-                  description: "Loading and exploring datasets with the Pandas library.",
-                  videoUrl: PLACEHOLDER_VIDEO_URL,
-                  duration: 540,
-                  order: 1,
-                  isFree: false,
-                },
-                {
-                  title: "Data Visualization Basics",
-                  description: "Creating your first charts with Matplotlib.",
-                  videoUrl: PLACEHOLDER_VIDEO_URL,
-                  duration: 480,
-                  order: 2,
-                  isFree: false,
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  });
-
-  // ── Step 7: Enroll the student in both courses ─────────────────────────────
-  console.log("\n🎓 Enrolling student in both courses...");
-
-  await db.enrollment.create({
-    data: {
-      userId: student.id,
-      courseId: webDevCourse.id,
-      paidAmount: webDevCourse.price,
-    },
-  });
-
-  await db.enrollment.create({
-    data: {
-      userId: student.id,
-      courseId: dataScienceCourse.id,
-      paidAmount: dataScienceCourse.price,
-    },
-  });
-
-  // ── Step 8: Give the instructor a certificate so she can create services ─
-console.log("\n🎓 Creating certificate for instructor...");
-
-// Create a mock quiz attempt for the instructor
-const instructorAttempt = await db.quizAttempt.create({
-  data: {
-    userId: instructor.id,
-    quizId: quiz.id,
-    courseId: webDevCourse.id,
-    score: 100,
-    passed: true,
-    totalQ: 5,
-    correctQ: 5,
-  },
-});
-
-// Issue the certificate
-await db.certificate.create({
-  data: {
-    userId: instructor.id,
-    courseId: webDevCourse.id,
-    attemptId: instructorAttempt.id,
-    score: 100,
-    credentialId: "EDU-SARAH-INSTRUCTOR-001",
-  },
-});
-
-// Mark her enrollment as passed
-await db.enrollment.create({
-  data: {
-    userId: instructor.id,
-    courseId: webDevCourse.id,
-    paidAmount: webDevCourse.price,
-    progress: 100,
-    isPassed: true,
-    status: "COMPLETED",
-    completedAt: new Date(),
-  },
-});
-
-console.log("   ✓ Certificate: EDU-SARAH-INSTRUCTOR-001");
-
-  console.log("   ✓ Enrolled in: Modern Web Development with Next.js");
-  console.log("   ✓ Enrolled in: Data Analysis with Python");
-
-  // ── Done ─────────────────────────────────────────────────────────────────────
-  console.log("\n✅ Seed completed successfully!\n");
-  console.log("──────────────────────────────────────────────");
-  console.log(" Test accounts (all share the same password)");
-  console.log("──────────────────────────────────────────────");
-  console.log(` Password for all accounts: ${SEED_PASSWORD_PLAIN}`);
+  console.log("\n" + "═".repeat(70));
+  console.log("  ✅ SEED COMPLETED SUCCESSFULLY");
+  console.log("═".repeat(70));
+  console.log(`  ⏱️  Duration: ${duration}s`);
   console.log("");
-  console.log(` 🎨 Creator/Instructor : ${SEED_EMAILS.instructor}`);
-  console.log(` 🎓 Student            : ${SEED_EMAILS.student}`);
-  console.log(` 💼 Client             : ${SEED_EMAILS.client}`);
-  console.log("──────────────────────────────────────────────\n");
+  console.log("  📊 Final counts:");
+  console.log(`     Users:          ${await db.user.count()}`);
+  console.log(`     Categories:     ${await db.category.count()}`);
+  console.log(`     Courses:        ${await db.course.count()}`);
+  console.log(`     Lessons:        ${await db.lesson.count()}`);
+  console.log(`     Enrollments:    ${await db.enrollment.count()}`);
+  console.log(`     Certificates:   ${await db.certificate.count()}`);
+  console.log(`     Services:       ${await db.service.count()}`);
+  console.log(`     Orders:         ${await db.order.count()}`);
+  console.log(`     Projects:       ${await db.project.count()}`);
+  console.log(`     Milestones:     ${await db.milestone.count()}`);
+  console.log(`     Reviews:        ${await db.review.count()}`);
+  console.log(`     ChatRooms:      ${await db.chatRoom.count()}`);
+  console.log(`     Messages:       ${await db.chatMessage.count()}`);
+  console.log(`     Notifications:  ${await db.notification.count()}`);
+  console.log(`     AI Convs:       ${await db.aiConversation.count()}`);
+  console.log("");
+  console.log("  🔑 Demo accounts (password: Password123!):");
+  console.log("     👑 Creator:  sarah.creator@eduspark.dev");
+  console.log("     🎓 Student:  ahmad.student@eduspark.dev");
+  console.log("     💼 Client:   layla.client@eduspark.dev");
+  console.log("     🛡️  Admin:    admin@eduspark.dev");
+  console.log("");
+  console.log("  🚀 Ready for demo!");
+  console.log("═".repeat(70) + "\n");
 }
 
 main()
   .catch((error) => {
-    console.error("❌ Seed failed:");
+    console.error("\n" + "═".repeat(70));
+    console.error("  ❌ SEED FAILED");
+    console.error("═".repeat(70));
     console.error(error);
     process.exit(1);
   })
