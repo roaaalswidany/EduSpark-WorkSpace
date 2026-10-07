@@ -139,9 +139,10 @@ model User {
   quizAttempts  QuizAttempt[]
   certificates  Certificate[]
 
-   creatorProjects    Project[]             @relation("CreatorProjects")
+  creatorProjects    Project[]             @relation("CreatorProjects")
   chatMessages       ChatMessage[]
   chatParticipations ChatRoomParticipant[]
+  aiConversations    AiConversation[]
 
   @@index([email])
   @@index([role])
@@ -664,4 +665,35 @@ model Attachment {
   @@index([chatMessageId])
   @@index([uploadedById])
   @@map("attachments")
+}
+
+// ─────────────────────────────────────────────
+// AI ASSISTANT MODELS
+// ─────────────────────────────────────────────
+
+model AiConversation {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String   @default("محادثة جديدة")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AiMessage[]
+
+  @@index([userId])
+  @@map("ai_conversations")
+}
+
+model AiMessage {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           String   // "user" | "assistant"
+  content        String   @db.Text
+  createdAt      DateTime @default(now())
+
+  conversation AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@map("ai_messages")
 }

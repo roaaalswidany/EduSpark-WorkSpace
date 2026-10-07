@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -11,6 +12,7 @@ import { DashboardSidebar } from "./dashboard-sidebar";
 import { SocketProvider } from "@/components/providers/socket-provider";
 import { NotificationsProvider } from "@/components/providers/notifications-provider";
 import { NotificationsBell } from "@/components/notifications/notifications-bell";
+import { AiAssistant } from "@/components/ai/ai-assistant";
 
 interface DashboardShellProps {
   role: Role;
@@ -105,9 +107,12 @@ export function DashboardShell({
               </div>
             </header>
 
-            <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
+              <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
           </div>
         </div>
+
+        {/* AI Assistant — Floating */}
+        <AiAssistant />
       </NotificationsProvider>
     </SocketProvider>
   );
