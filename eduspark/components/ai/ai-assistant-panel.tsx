@@ -73,7 +73,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
       top: scrollRef.current.scrollHeight,
       behavior: "smooth",
     });
-  }, [messages]);
+  }, [messages, isLoading]);
 
   // Focus input
   useEffect(() => {
@@ -235,7 +235,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
         "rounded-2xl bg-slate-900 border border-slate-800",
         "shadow-2xl shadow-black/60",
         "flex flex-col overflow-hidden",
-        "animate-in slide-in-from-bottom-4 fade-in duration-200"
+        "animate-bounce-in"
       )}
     >
       {/* Header */}
@@ -280,7 +280,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
 
       {/* Body */}
       {showHistory ? (
-        <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
+        <div className="flex-1 overflow-y-auto p-3 space-y-1.5 animate-fade-in">
           {conversations.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center px-6">
               <MessageSquare className="w-10 h-10 text-slate-700 mb-3" />
@@ -289,13 +289,15 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
               </p>
             </div>
           ) : (
-            conversations.map((c) => (
+            conversations.map((c, i) => (
               <div
                 key={c.id}
                 onClick={() => void loadConversation(c.id)}
                 className={cn(
                   "group w-full flex items-center gap-2 p-3 rounded-lg",
                   "hover:bg-slate-800 transition-colors cursor-pointer",
+                  "animate-slide-up",
+                  i < 6 && `stagger-${i + 1}`,
                   conversationId === c.id && "bg-slate-800"
                 )}
               >
@@ -330,22 +332,37 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
             className="flex-1 overflow-y-auto p-4 space-y-4"
           >
             {messages.map((m) => (
-              <AiMessageBubble
-                key={m.id}
-                role={m.role}
-                content={m.content}
-              />
+              <div key={m.id} className="animate-slide-up">
+                <AiMessageBubble
+                  role={m.role}
+                  content={m.content}
+                />
+              </div>
             ))}
 
             {isLoading && (
-              <div className="flex items-center gap-2 text-xs text-slate-500">
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                يفكر…
+              <div className="flex items-start gap-2 animate-fade-in">
+                <div className="w-7 h-7 rounded-full bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-3.5 h-3.5 text-white" />
+                </div>
+                <div className="rounded-2xl rounded-tl-sm bg-slate-800/60 border border-slate-700/50 px-4 py-3">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                    <span
+                      className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"
+                      style={{ animationDelay: "0.15s" }}
+                    />
+                    <span
+                      className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"
+                      style={{ animationDelay: "0.3s" }}
+                    />
+                  </div>
+                </div>
               </div>
             )}
 
             {error && (
-              <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20 animate-slide-down">
                 <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                 <p className="text-xs text-red-300">{error}</p>
               </div>
@@ -363,7 +380,9 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                       "px-3 py-1.5 rounded-full text-xs font-medium",
                       "bg-indigo-500/10 text-indigo-300 border border-indigo-500/20",
                       "hover:bg-indigo-500/20 hover:text-indigo-200",
-                      "transition-colors"
+                      "transition-colors",
+                      "animate-slide-up",
+                      i < 4 && `stagger-${i + 1}`
                     )}
                   >
                     {s.label}
@@ -374,12 +393,12 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
 
             {/* Quick prompts */}
             {messages.length === 1 && !isLoading && (
-              <div className="space-y-2 pt-2">
+              <div className="space-y-2 pt-2 animate-fade-in">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
                   أسئلة شائعة
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {QUICK_PROMPTS.map((q) => (
+                  {QUICK_PROMPTS.map((q, i) => (
                     <button
                       key={q}
                       type="button"
@@ -388,7 +407,9 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                         "px-3 py-1.5 rounded-full text-xs",
                         "bg-slate-800 text-slate-300 border border-slate-700",
                         "hover:bg-slate-700 hover:text-white",
-                        "transition-colors"
+                        "transition-colors",
+                        "animate-slide-up",
+                        i < 4 && `stagger-${i + 1}`
                       )}
                     >
                       {q}
