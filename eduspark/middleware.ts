@@ -3,10 +3,11 @@ import { NextResponse } from "next/server";
 import type { Role } from "@prisma/client";
 
 // Route → allowed roles map
+// ADMIN is included everywhere — admins have full platform access.
 const ROUTE_ROLES: Array<{ prefix: string; allowed: Role[] }> = [
   { prefix: "/admin", allowed: ["ADMIN"] },
-  { prefix: "/dashboard/creator", allowed: ["CREATOR"] },
-  { prefix: "/dashboard/student", allowed: ["STUDENT", "CREATOR"] },
+  { prefix: "/dashboard/creator", allowed: ["CREATOR", "ADMIN"] },
+  { prefix: "/dashboard/student", allowed: ["STUDENT", "CREATOR", "ADMIN"] },
 ];
 
 function getRedirectUrl(
