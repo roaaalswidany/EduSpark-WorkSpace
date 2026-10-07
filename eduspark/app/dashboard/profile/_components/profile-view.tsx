@@ -8,12 +8,12 @@ import {
   Save,
   Loader2,
   AlertCircle,
-  CheckCircle2,
   User,
   FileText,
   Globe,
   Sparkles,
 } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
 import { updateProfileAction } from "@/actions/profile/update-profile";
@@ -51,7 +51,6 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [form, setForm] = useState<FormState>({
     name: user.name,
@@ -73,7 +72,8 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
 
   const handleSave = () => {
     setServerError(null);
-    setSuccessMessage(null);
+
+    const toastId = toast.loading("Saving profile…");
 
     startTransition(async () => {
       const result = await updateProfileAction({
@@ -84,19 +84,19 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
       });
 
       if (!result.success) {
-        setServerError(
+        const errorMessage =
           result.error === "INVALID_INPUT"
             ? "Please check the fields and try again."
-            : "Something went wrong. Please try again."
-        );
+            : "Something went wrong. Please try again.";
+
+        setServerError(errorMessage);
+        toast.error(errorMessage, { id: toastId });
         return;
       }
 
-      setSuccessMessage("Profile updated successfully!");
+      toast.success("Profile updated successfully! ✨", { id: toastId });
       setIsEditing(false);
       router.refresh();
-
-      setTimeout(() => setSuccessMessage(null), 3000);
     });
   };
 
@@ -104,14 +104,6 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6">
       {/* Header card (view mode) */}
       {!isEditing && <ProfileHeader user={user} stats={stats} />}
-
-      {/* Success banner */}
-      {successMessage && (
-        <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-          <p className="text-sm text-emerald-300">{successMessage}</p>
-        </div>
-      )}
 
       {/* Edit toggle */}
       <div className="flex items-center justify-between">
@@ -283,7 +275,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
   );
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── Sub-components ─────────────────────────────────────────────────
 
 function Section({
   title,
