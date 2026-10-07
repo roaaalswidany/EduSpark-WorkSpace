@@ -11,6 +11,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -262,7 +263,6 @@ function NumberInput({
   );
   const lastEmittedRef = useRef(value);
 
-  // Sync external changes (form reset, edit mode load)
   useEffect(() => {
     if (value !== lastEmittedRef.current) {
       setText(value === 0 ? "" : String(value));
@@ -402,6 +402,10 @@ export function ServiceCreationForm({
   const onSubmit = form.handleSubmit((data) => {
     setServerError(null);
 
+    const toastId = toast.loading(
+      isEdit ? "Saving changes…" : "Publishing service…"
+    );
+
     startTransition(async () => {
       const result =
         isEdit && serviceId
@@ -410,10 +414,14 @@ export function ServiceCreationForm({
 
       if (result.success) {
         setSubmitSuccess(true);
-        setTimeout(
-          () => router.push("/dashboard/creator/services"),
-          1200
+        toast.success(
+          isEdit ? "Service updated successfully! ✨" : "Service published! 🚀",
+          {
+            id: toastId,
+            description: "Redirecting to your services…",
+          }
         );
+        setTimeout(() => router.push("/dashboard/creator/services"), 1200);
         return;
       }
 
@@ -426,7 +434,15 @@ export function ServiceCreationForm({
         }
       }
 
-      setServerError(getErrorMessage(result.error));
+      const errorMessage = getErrorMessage(result.error);
+      setServerError(errorMessage);
+      toast.error(
+        isEdit ? "Failed to update service" : "Failed to publish service",
+        {
+          id: toastId,
+          description: errorMessage,
+        }
+      );
     });
   });
 
@@ -454,60 +470,62 @@ export function ServiceCreationForm({
           description="Link your service to a course you've certified in."
         >
           <FormField
-  control={form.control}
-  name="courseId"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel className="text-slate-300">
-        Certified Course <span className="text-red-400">*</span>
-      </FormLabel>
-      <FormControl>
-        <Combobox
-          options={certifiedCourses.map((cert) => ({
-            value: cert.courseId,
-            label: cert.courseTitle,
-            description: `Score ${cert.score}% · ${cert.courseLevel}`,
-            icon: <BookOpen className="w-3.5 h-3.5 text-indigo-400 shrink-0" />,
-          }))}
-          value={field.value}
-          onChange={(v) => field.onChange(v)}
-          placeholder="Select a certified course…"
-          searchPlaceholder="Search courses…"
-          emptyMessage="No matching courses."
-        />
-      </FormControl>
-      <FormDescription className="text-slate-600 text-xs">
-        Only courses with a passing certificate are listed.
-      </FormDescription>
-      <FormMessage className="text-red-400 text-xs" />
-    </FormItem>
-  )}
-/>
+            control={form.control}
+            name="courseId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-slate-300">
+                  Certified Course <span className="text-red-400">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Combobox
+                    options={certifiedCourses.map((cert) => ({
+                      value: cert.courseId,
+                      label: cert.courseTitle,
+                      description: `Score ${cert.score}% · ${cert.courseLevel}`,
+                      icon: (
+                        <BookOpen className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                      ),
+                    }))}
+                    value={field.value}
+                    onChange={(v) => field.onChange(v)}
+                    placeholder="Select a certified course…"
+                    searchPlaceholder="Search courses…"
+                    emptyMessage="No matching courses."
+                  />
+                </FormControl>
+                <FormDescription className="text-slate-600 text-xs">
+                  Only courses with a passing certificate are listed.
+                </FormDescription>
+                <FormMessage className="text-red-400 text-xs" />
+              </FormItem>
+            )}
+          />
 
- <FormField
-  control={form.control}
-  name="categoryId"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel className="text-slate-300">Category</FormLabel>
-      <FormControl>
-        <Combobox
-          options={categories.map((cat) => ({
-            value: cat.id,
-            label: cat.name,
-          }))}
-          value={field.value ?? null}
-          onChange={(v) => field.onChange(v)}
-          placeholder="Select a category…"
-          searchPlaceholder="Search categories…"
-          emptyMessage="No matching categories."
-          clearable
-        />
-      </FormControl>
-      <FormMessage className="text-red-400 text-xs" />
-    </FormItem>
-  )}
-/>
+          <FormField
+            control={form.control}
+            name="categoryId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-slate-300">Category</FormLabel>
+                <FormControl>
+                  <Combobox
+                    options={categories.map((cat) => ({
+                      value: cat.id,
+                      label: cat.name,
+                    }))}
+                    value={field.value ?? null}
+                    onChange={(v) => field.onChange(v)}
+                    placeholder="Select a category…"
+                    searchPlaceholder="Search categories…"
+                    emptyMessage="No matching categories."
+                    clearable
+                  />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs" />
+              </FormItem>
+            )}
+          />
 
           {selectedCourse && (
             <div className="flex items-center gap-3 p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/15">
