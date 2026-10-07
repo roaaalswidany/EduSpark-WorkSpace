@@ -148,44 +148,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
-      {/* ── Header ─────────────────────────────────────── */}
-      <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-              <GraduationCap className="w-4 h-4 text-indigo-400" />
-            </div>
-            <span className="text-sm font-bold text-white">EduSpark</span>
-          </Link>
-
-          <nav className="flex items-center gap-2">
-            {session?.user ? (
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors"
-              >
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/auth/login"
-                  className="px-4 py-2 rounded-lg text-slate-400 hover:text-white text-xs font-semibold transition-colors"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/auth/register"
-                  className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors"
-                >
-                  Get started
-                </Link>
-              </>
-            )}
-          </nav>
-        </div>
-      </header>
-
       {/* ── Breadcrumb ─────────────────────────────────── */}
       <div className="border-b border-slate-800 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-1.5 text-xs text-slate-500">
