@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   MoreVertical,
   Eye,
@@ -191,8 +192,14 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
 
     const newStatus: ServiceStatus = status === "ACTIVE" ? "PAUSED" : "ACTIVE";
     const previous = status;
+    const isPausing = newStatus === "PAUSED";
 
+    // Optimistic update
     setStatus(newStatus);
+
+    const toastId = toast.loading(
+      isPausing ? "Pausing service…" : "Activating service…"
+    );
 
     startStatusTransition(async () => {
       const result = await updateServiceStatusAction({
@@ -202,13 +209,27 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
 
       if (!result.success) {
         setStatus(previous);
-        setStatusError(
+        const errorMessage =
           result.error === "FORBIDDEN"
             ? "You don't have permission."
-            : "Failed to update status."
-        );
+            : "Failed to update status.";
+
+        setStatusError(errorMessage);
+        toast.error("Status update failed", {
+          id: toastId,
+          description: errorMessage,
+        });
         setTimeout(() => setStatusError(null), 3000);
       } else {
+        toast.success(
+          isPausing ? "Service paused ⏸️" : "Service activated ▶️",
+          {
+            id: toastId,
+            description: isPausing
+              ? "Your service is now hidden from the marketplace."
+              : "Your service is now visible to buyers.",
+          }
+        );
         router.refresh();
       }
     });
@@ -216,6 +237,9 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
 
   const handleDelete = useCallback(() => {
     setDeleteError(null);
+
+    const toastId = toast.loading("Deleting service…");
+
     startDeleteTransition(async () => {
       const result = await deleteServiceAction({ serviceId: service.id });
 
@@ -226,10 +250,21 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
           FORBIDDEN: "You don't have permission to delete this service.",
           NOT_FOUND: "Service not found.",
         };
-        setDeleteError(messages[result.error] ?? "Failed to delete service.");
+        const errorMessage =
+          messages[result.error] ?? "Failed to delete service.";
+
+        setDeleteError(errorMessage);
+        toast.error("Deletion failed", {
+          id: toastId,
+          description: errorMessage,
+        });
         return;
       }
 
+      toast.success("Service deleted", {
+        id: toastId,
+        description: "The service has been removed from the marketplace.",
+      });
       setDeleteOpen(false);
       router.refresh();
     });
