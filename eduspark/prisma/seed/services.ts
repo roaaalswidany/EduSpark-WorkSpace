@@ -577,7 +577,12 @@ export async function seedServices(
     const spec = allSpecs[i];
     const creator = creatorsPool[i % creatorsPool.length];
     const category = categoryBySlug.get(spec.categorySlug);
-    const slug = `${slugify(spec.title)}-${i + 1}`;
+
+    // For Arabic titles, use clean English slug (category + index) to avoid URL encoding issues
+    const isArabic = /[\u0600-\u06FF]/.test(spec.title);
+    const slug = isArabic
+      ? `${spec.categorySlug}-ar-${i + 1}`
+      : `${slugify(spec.title)}-${i + 1}`;
 
     const service = await db.service.create({
       data: {
