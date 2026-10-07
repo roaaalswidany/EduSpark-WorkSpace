@@ -4,6 +4,7 @@
 import { useState, useTransition, useCallback } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { toast } from "sonner";
 import {
   Search,
   X,
@@ -49,6 +50,12 @@ const ROLE_BADGE: Record<Role, string> = {
   ADMIN: "bg-violet-500/10 text-violet-400 border-violet-500/20",
   CREATOR: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
   STUDENT: "bg-slate-700/50 text-slate-400 border-slate-700",
+};
+
+const ROLE_LABEL: Record<Role, string> = {
+  ADMIN: "Admin 👑",
+  CREATOR: "Creator ✨",
+  STUDENT: "Student 🎓",
 };
 
 const ROLE_FILTERS: { value: string; label: string; count: number }[] = [
@@ -152,6 +159,11 @@ export function UsersTable({
     setActionError(null);
     setPendingUserId(user.id);
 
+    const isSuspending = user.isActive;
+    const toastId = toast.loading(
+      isSuspending ? "Suspending account…" : "Activating account…"
+    );
+
     startTransition(async () => {
       const result = await updateUserAction({
         userId: user.id,
@@ -165,11 +177,26 @@ export function UsersTable({
           FORBIDDEN: "Only admins can perform this action.",
           NOT_FOUND: "User not found.",
         };
-        setActionError(messages[result.error] ?? "Action failed.");
+        const errorMessage = messages[result.error] ?? "Action failed.";
+
+        setActionError(errorMessage);
+        toast.error("Action failed", {
+          id: toastId,
+          description: errorMessage,
+        });
         setTimeout(() => setActionError(null), 4000);
         return;
       }
 
+      toast.success(
+        isSuspending ? "Account suspended" : "Account activated",
+        {
+          id: toastId,
+          description: `${user.name}'s account has been ${
+            isSuspending ? "suspended" : "reactivated"
+          }.`,
+        }
+      );
       router.refresh();
     });
   };
@@ -178,6 +205,8 @@ export function UsersTable({
     setOpenMenuId(null);
     setActionError(null);
     setPendingUserId(user.id);
+
+    const toastId = toast.loading(`Updating role to ${role}…`);
 
     startTransition(async () => {
       const result = await updateUserAction({
@@ -193,11 +222,21 @@ export function UsersTable({
           FORBIDDEN: "Only admins can perform this action.",
           NOT_FOUND: "User not found.",
         };
-        setActionError(messages[result.error] ?? "Action failed.");
+        const errorMessage = messages[result.error] ?? "Action failed.";
+
+        setActionError(errorMessage);
+        toast.error("Role update failed", {
+          id: toastId,
+          description: errorMessage,
+        });
         setTimeout(() => setActionError(null), 4000);
         return;
       }
 
+      toast.success(`Role updated to ${ROLE_LABEL[role]}`, {
+        id: toastId,
+        description: `${user.name}'s role has been changed.`,
+      });
       router.refresh();
     });
   };
