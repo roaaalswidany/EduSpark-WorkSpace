@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2, ShoppingCart, Play, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { enrollInCourseAction } from "@/actions/lms/enroll-in-course";
 
@@ -26,7 +27,7 @@ export function EnrollButton({
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // ── Already enrolled: Continue ─────────────────────────────
+  // ── Already enrolled: Continue ───────────────────────────────
   if (isEnrolled) {
     return (
       <Link
@@ -44,7 +45,7 @@ export function EnrollButton({
     );
   }
 
-  // ── Not logged in: prompt to sign in ───────────────────────
+  // ── Not logged in: prompt to sign in ────────────────────────
   if (!isLoggedIn) {
     return (
       <Link
@@ -61,13 +62,20 @@ export function EnrollButton({
     );
   }
 
-  // ── Logged in: Enroll ─────────────────────────────────────
+  // ── Logged in: Enroll ────────────────────────────────────────
   function handleEnroll() {
     setError(null);
+
+    const toastId = toast.loading("Enrolling…");
+
     startTransition(async () => {
       const result = await enrollInCourseAction({ courseId });
 
       if (result.success) {
+        toast.success("Enrolled successfully! 🎉", {
+          id: toastId,
+          description: "Redirecting to your course…",
+        });
         router.push(`/dashboard/student/courses/${courseId}`);
         return;
       }
@@ -79,7 +87,11 @@ export function EnrollButton({
         NOT_PUBLISHED: "This course isn't available for enrollment yet.",
         UNAUTHORIZED: "Please sign in to enroll.",
       };
-      setError(messages[result.error] ?? "Something went wrong. Please try again.");
+      const errorMessage =
+        messages[result.error] ?? "Something went wrong. Please try again.";
+
+      setError(errorMessage);
+      toast.error(errorMessage, { id: toastId });
     });
   }
 
