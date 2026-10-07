@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -15,6 +16,7 @@ import {
   User,
   ShieldCheck,
   Briefcase,
+  LogOut,
   type LucideIcon,
   Inbox,
   ShoppingBag,
@@ -60,7 +62,7 @@ const SECTIONS: NavSection[] = [
       { label: "My Projects", href: "/dashboard/projects", icon: Briefcase },
     ],
   },
-    {
+  {
     title: "Creator Studio",
     roles: ["CREATOR", "ADMIN"],
     items: [
@@ -74,12 +76,6 @@ const SECTIONS: NavSection[] = [
     roles: ["ADMIN"],
     items: [
       { label: "Admin Panel", href: "/dashboard/admin", icon: ShieldCheck },
-    ],
-  },
-  {
-    title: "Account",
-    items: [
-      { label: "Profile", href: "/dashboard/profile", icon: User },
     ],
   },
 ];
@@ -148,10 +144,11 @@ export function DashboardSidebar({
 
   function isActive(item: NavItem): boolean {
     if (item.exact) return pathname === item.href;
-    // For non-exact, avoid matching /dashboard when on /dashboard
     if (item.href === "/dashboard") return pathname === "/dashboard";
     return pathname === item.href || pathname.startsWith(`${item.href}/`);
   }
+
+  const isProfileActive = pathname === "/dashboard/profile";
 
   return (
     <aside className="w-64 h-full flex flex-col bg-slate-900 border-r border-slate-800">
@@ -213,9 +210,19 @@ export function DashboardSidebar({
         })}
       </nav>
 
-      {/* User footer */}
-      <div className="shrink-0 border-t border-slate-800 p-3">
-        <div className="flex items-center gap-3 px-2 py-2">
+      {/* User footer — Profile link + Sign out */}
+      <div className="shrink-0 border-t border-slate-800 p-3 space-y-1">
+        {/* Profile card */}
+        <Link
+          href="/dashboard/profile"
+          onClick={onNavigate}
+          className={cn(
+            "flex items-center gap-3 px-2 py-2 rounded-lg transition-all border",
+            isProfileActive
+              ? "bg-indigo-500/10 border-indigo-500/20"
+              : "border-transparent hover:bg-slate-800"
+          )}
+        >
           <Avatar name={user.name} image={user.image} size={36} />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-slate-200 truncate">
@@ -223,7 +230,28 @@ export function DashboardSidebar({
             </p>
             <p className="text-[10px] text-slate-600 truncate">{user.email}</p>
           </div>
-        </div>
+          <User
+            className={cn(
+              "w-3.5 h-3.5 shrink-0",
+              isProfileActive ? "text-indigo-400" : "text-slate-600"
+            )}
+          />
+        </Link>
+
+        {/* Sign out */}
+        <button
+          type="button"
+          onClick={() => signOut({ callbackUrl: "/auth/login" })}
+          className={cn(
+            "w-full flex items-center gap-3 px-3 py-2 rounded-lg",
+            "text-sm font-medium text-slate-400",
+            "hover:text-red-400 hover:bg-red-500/10",
+            "transition-all border border-transparent"
+          )}
+        >
+          <LogOut className="w-4 h-4 shrink-0" />
+          <span>Sign out</span>
+        </button>
       </div>
     </aside>
   );
