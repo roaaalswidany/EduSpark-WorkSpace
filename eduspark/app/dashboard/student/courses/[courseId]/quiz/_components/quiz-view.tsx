@@ -8,6 +8,7 @@ import {
   useRef,
 } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import {
   CheckCircle2,
   XCircle,
@@ -30,7 +31,7 @@ import {
 } from "@/actions/lms/submit-quiz";
 import { cn } from "@/lib/utils";
 
-// ─── Types ──────────────────────────────────────────────────
+// ─── Types ─────────────────────────────────────────────────────────
 
 interface QuizQuestion {
   id: string;
@@ -88,7 +89,7 @@ interface ResultData {
   answerFeedback: AnswerFeedback[];
 }
 
-// ─── Helpers ────────────────────────────────────────────────
+// ─── Helpers ───────────────────────────────────────────────────────
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -96,7 +97,7 @@ function formatTime(seconds: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-// ─── Main Component ─────────────────────────────────────────
+// ─── Main Component ────────────────────────────────────────────────
 
 export function QuizView({
   quiz,
@@ -124,43 +125,75 @@ export function QuizView({
     : undefined;
   const totalAnswered = Object.keys(answers).length;
 
-  // ── Submit ─────────────────────────────────────────────────
-  const handleSubmit = useCallback(() => {
-    if (isPending) return;
-    setError(null);
+  // ── Submit ─────────────────────────────────────────────────────
+  const handleSubmit = useCallback(
+    (isAutoSubmit = false) => {
+      if (isPending) return;
+      setError(null);
 
-    // Build full answer list (empty string for unanswered)
-    const payload = {
-      quizId: quiz.id,
-      answers: quiz.questions.map((q) => ({
-        questionId: q.id,
-        selectedOption: answers[q.id] ?? "",
-      })),
-    };
+      const toastId = toast.loading(
+        isAutoSubmit ? "Time's up — submitting…" : "Submitting your quiz…"
+      );
 
-    startTransition(async () => {
-      const res = await submitQuizAction(payload);
+      // Build full answer list (empty string for unanswered)
+      const payload = {
+        quizId: quiz.id,
+        answers: quiz.questions.map((q) => ({
+          questionId: q.id,
+          selectedOption: answers[q.id] ?? "",
+        })),
+      };
 
-      if (!res.success) {
-        setError(
-          res.error === "NOT_ENROLLED"
-            ? "You are not enrolled in this course."
-            : res.error === "QUIZ_NOT_FOUND"
-            ? "Quiz not found."
-            : res.error === "QUESTION_COUNT_MISMATCH"
-            ? "Please answer all questions."
-            : "Something went wrong. Please try again."
-        );
-        return;
-      }
+      startTransition(async () => {
+        const res = await submitQuizAction(payload);
 
-      setResult(res.data);
-      setView("result");
-      if (timerRef.current) clearInterval(timerRef.current);
-    });
-  }, [isPending, quiz.id, quiz.questions, answers]);
+        if (!res.success) {
+          const errorMessage =
+            res.error === "NOT_ENROLLED"
+              ? "You are not enrolled in this course."
+              : res.error === "QUIZ_NOT_FOUND"
+              ? "Quiz not found."
+              : res.error === "QUESTION_COUNT_MISMATCH"
+              ? "Please answer all questions."
+              : "Something went wrong. Please try again.";
 
-  // ── Timer ──────────────────────────────────────────────────
+          setError(errorMessage);
+          toast.error("Submission failed", {
+            id: toastId,
+            description: errorMessage,
+          });
+          return;
+        }
+
+        // Success — differentiate pass vs fail
+        const data = res.data;
+        if (data.passed) {
+          toast.success("🎉 Congratulations! You passed!", {
+            id: toastId,
+            description: `Scored ${data.score.toFixed(0)}% · ${
+              data.certificate ? "Certificate issued ✨" : ""
+            }`,
+            duration: 5000,
+          });
+        } else {
+          toast.warning("Keep trying!", {
+            id: toastId,
+            description: `Scored ${data.score.toFixed(
+              0
+            )}% — need ${data.passingScore}% to pass`,
+            duration: 5000,
+          });
+        }
+
+        setResult(data);
+        setView("result");
+        if (timerRef.current) clearInterval(timerRef.current);
+      });
+    },
+    [isPending, quiz.id, quiz.questions, answers]
+  );
+
+  // ── Timer ──────────────────────────────────────────────────────
   useEffect(() => {
     if (view !== "in-progress" || quiz.timeLimit === null) return;
     if (hasAutoSubmittedRef.current) return;
@@ -172,7 +205,7 @@ export function QuizView({
           if (timerRef.current) clearInterval(timerRef.current);
           if (!hasAutoSubmittedRef.current) {
             hasAutoSubmittedRef.current = true;
-            handleSubmit();
+            handleSubmit(true);
           }
           return 0;
         }
@@ -185,7 +218,7 @@ export function QuizView({
     };
   }, [view, quiz.timeLimit, handleSubmit]);
 
-  // ── Actions ────────────────────────────────────────────────
+  // ── Actions ────────────────────────────────────────────────────
   function startQuiz() {
     setView("in-progress");
     setCurrentIndex(0);
@@ -204,9 +237,9 @@ export function QuizView({
     setAnswers((prev) => ({ ...prev, [questionId]: option }));
   }
 
-  // ═════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════
   // INTRO VIEW
-  // ═════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════
   if (view === "intro") {
     return (
       <div className="min-h-screen bg-slate-950 text-slate-100">
@@ -360,9 +393,9 @@ export function QuizView({
     );
   }
 
-  // ═════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════
   // IN-PROGRESS VIEW
-  // ═════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════
   if (view === "in-progress" && currentQuestion) {
     const progressPct = ((currentIndex + 1) / quiz.questions.length) * 100;
     const answeredPct = (totalAnswered / quiz.questions.length) * 100;
@@ -443,7 +476,7 @@ export function QuizView({
                       "shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center mt-0.5 transition-all",
                       isSelected
                         ? "border-indigo-500 bg-indigo-500"
-                        : "border-slate-600 group-hover:border-slate-500"
+                        : "border-slate-600"
                     )}
                   >
                     {isSelected && (
@@ -542,7 +575,7 @@ export function QuizView({
               </button>
             ) : (
               <button
-                onClick={handleSubmit}
+                onClick={() => handleSubmit(false)}
                 disabled={isPending || totalAnswered < quiz.questions.length}
                 className={cn(
                   "flex items-center gap-1.5 px-5 h-11 rounded-xl text-sm font-bold transition-all",
@@ -575,9 +608,9 @@ export function QuizView({
     );
   }
 
-  // ═════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════
   // RESULT VIEW
-  // ═════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════
   if (view === "result" && result) {
     const passed = result.passed;
 
@@ -711,8 +744,9 @@ export function QuizView({
                     Your account was upgraded!
                   </p>
                   <p className="text-xs text-slate-400">
-                    You are now a <strong className="text-white">Creator</strong>.
-                    Head to your dashboard to start offering services.
+                    You are now a{" "}
+                    <strong className="text-white">Creator</strong>. Head to
+                    your dashboard to start offering services.
                   </p>
                 </div>
               </div>
@@ -722,9 +756,7 @@ export function QuizView({
           {/* Feedback */}
           <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden mb-6">
             <div className="px-5 sm:px-6 py-4 border-b border-slate-800">
-              <h2 className="text-sm font-bold text-white">
-                Answer Review
-              </h2>
+              <h2 className="text-sm font-bold text-white">Answer Review</h2>
               <p className="text-xs text-slate-500 mt-0.5">
                 See how you answered each question
               </p>
