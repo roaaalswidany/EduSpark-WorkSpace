@@ -5,6 +5,7 @@ import { useState, useTransition, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { toast } from "sonner";
 import {
   Search,
   X,
@@ -49,6 +50,24 @@ const STATUS_BADGE: Record<CourseStatus, string> = {
   PUBLISHED: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
   DRAFT: "bg-amber-500/10 text-amber-400 border-amber-500/20",
   ARCHIVED: "bg-slate-700/50 text-slate-400 border-slate-700",
+};
+
+const STATUS_TOAST: Record<
+  CourseStatus,
+  { title: string; description: string }
+> = {
+  PUBLISHED: {
+    title: "Course published 🚀",
+    description: "The course is now visible in the public catalog.",
+  },
+  DRAFT: {
+    title: "Moved to draft 📝",
+    description: "The course is now hidden from students.",
+  },
+  ARCHIVED: {
+    title: "Course archived 🗄️",
+    description: "The course has been archived and is no longer active.",
+  },
 };
 
 function CourseThumb({
@@ -129,6 +148,8 @@ export function CoursesTable({
     setActionError(null);
     setPendingCourseId(course.id);
 
+    const toastId = toast.loading(`Updating to ${status.toLowerCase()}…`);
+
     startTransition(async () => {
       const result = await updateCourseAction({
         courseId: course.id,
@@ -138,15 +159,25 @@ export function CoursesTable({
       setPendingCourseId(null);
 
       if (!result.success) {
-        setActionError(
+        const errorMessage =
           result.error === "FORBIDDEN"
             ? "Only admins can perform this action."
-            : "Action failed."
-        );
+            : "Action failed.";
+
+        setActionError(errorMessage);
+        toast.error("Update failed", {
+          id: toastId,
+          description: errorMessage,
+        });
         setTimeout(() => setActionError(null), 4000);
         return;
       }
 
+      const toastConfig = STATUS_TOAST[status];
+      toast.success(toastConfig.title, {
+        id: toastId,
+        description: toastConfig.description,
+      });
       router.refresh();
     });
   };
