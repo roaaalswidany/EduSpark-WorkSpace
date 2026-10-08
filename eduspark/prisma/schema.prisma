@@ -245,6 +245,8 @@ model Course {
   @@index([slug])
   @@index([status])
   @@index([categoryId])
+  @@index([status, createdAt])
+  @@index([categoryId, status])
   @@map("courses")
 }
 
@@ -303,6 +305,7 @@ model QuizAttempt {
 
   @@index([userId])
   @@index([quizId])
+  @@index([userId, quizId, submittedAt])
   @@map("quiz_attempts")
 }
 
@@ -335,6 +338,7 @@ model Certificate {
 
   @@unique([userId, courseId])
   @@index([userId])
+  @@index([userId, issuedAt])
   @@map("certificates")
 }
 
@@ -350,6 +354,7 @@ model Section {
   lessons Lesson[]
 
   @@index([courseId])
+  @@index([courseId, order])
   @@map("sections")
 }
 
@@ -369,6 +374,7 @@ model Lesson {
   lessonProgress LessonProgress[]
 
   @@index([sectionId])
+  @@index([sectionId, order])
   @@map("lessons")
 }
 
@@ -391,6 +397,7 @@ model Enrollment {
   @@unique([userId, courseId])
   @@index([userId])
   @@index([courseId])
+  @@index([userId, updatedAt])
   @@map("enrollments")
 }
 
@@ -424,6 +431,7 @@ model Review {
 
   @@unique([userId, courseId])
   @@index([courseId])
+  @@index([courseId, createdAt])
   @@map("reviews")
 }
 
@@ -458,6 +466,7 @@ model Service {
   @@index([creatorId])
   @@index([slug])
   @@index([status])
+  @@index([status, createdAt])
   @@map("services")
 }
 
@@ -480,6 +489,7 @@ model Milestone {
   attachments Attachment[]
 
   @@index([projectId])
+  @@index([projectId, order])
   @@map("milestones")
 }
 
@@ -526,6 +536,7 @@ model ChatMessage {
   attachments Attachment[]
 
   @@index([chatRoomId])
+  @@index([chatRoomId, createdAt])
   @@map("chat_messages")
 }
 
@@ -551,6 +562,8 @@ model Order {
   @@index([buyerId])
   @@index([sellerId])
   @@index([status])
+  @@index([buyerId, updatedAt])
+  @@index([sellerId, updatedAt])
   @@map("orders")
 }
 
@@ -564,6 +577,7 @@ model OrderMessage {
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
+  @@index([orderId, createdAt])
   @@map("order_messages")
 }
 
@@ -596,6 +610,8 @@ model Project {
 
   @@index([clientId])
   @@index([status])
+  @@index([clientId, updatedAt])
+  @@index([creatorId, updatedAt])
   @@map("projects")
 }
 
@@ -635,6 +651,8 @@ model Notification {
 
   @@index([userId])
   @@index([isRead])
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
   @@map("notifications")
 }
 
@@ -682,6 +700,7 @@ model AiConversation {
   messages AiMessage[]
 
   @@index([userId])
+  @@index([userId, updatedAt])
   @@map("ai_conversations")
 }
 
@@ -695,5 +714,6 @@ model AiMessage {
   conversation AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([conversationId])
+  @@index([conversationId, createdAt])
   @@map("ai_messages")
 }
