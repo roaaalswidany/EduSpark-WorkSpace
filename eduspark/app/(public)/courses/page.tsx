@@ -9,6 +9,8 @@ import {
   type CategoryOption,
 } from "./_components/courses-filter-bar";
 import { Prisma, CourseStatus, CourseLevel } from "@prisma/client";
+import { cached } from "@/lib/cache";
+import { CacheKeys, CacheTTL } from "@/lib/cache-keys";
 
 interface PageProps {
   searchParams: Promise<{
@@ -71,56 +73,75 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       break;
   }
 
-  // ── Fetch data in parallel ─────────────────────────────
-  const [coursesRaw, total, categoriesRaw] = await Promise.all([
-    db.course.findMany({
-      where,
-      orderBy,
-      skip,
-      take: PAGE_SIZE,
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        description: true,
-        thumbnail: true,
-        price: true,
-        level: true,
-        language: true,
-        tags: true,
-        totalRating: true,
-        ratingCount: true,
-        creator: {
-          select: { id: true, name: true, image: true, headline: true },
-        },
-        category: { select: { id: true, name: true, slug: true } },
-        sections: {
+  // ── Cache key (unique per filter/page combo) ───────────
+  const listCacheKey = CacheKeys.coursesList({
+    q: sp.q,
+    category: sp.category,
+    level: sp.level,
+    sort: sp.sort,
+    page,
+  });
+
+  // ── Fetch data in parallel — with caching ─────────────
+  const [{ coursesRaw, total }, categoriesRaw] = await Promise.all([
+    // Cache: courses list + count (60s TTL)
+    cached(listCacheKey, CacheTTL.medium, async () => {
+      const [courses, count] = await Promise.all([
+        db.course.findMany({
+          where,
+          orderBy,
+          skip,
+          take: PAGE_SIZE,
           select: {
-            lessons: { select: { id: true, duration: true } },
+            id: true,
+            title: true,
+            slug: true,
+            description: true,
+            thumbnail: true,
+            price: true,
+            level: true,
+            language: true,
+            tags: true,
+            totalRating: true,
+            ratingCount: true,
+            creator: {
+              select: { id: true, name: true, image: true, headline: true },
+            },
+            category: { select: { id: true, name: true, slug: true } },
+            sections: {
+              select: {
+                lessons: { select: { id: true, duration: true } },
+              },
+            },
+          },
+        }),
+        db.course.count({ where }),
+      ]);
+      return { coursesRaw: courses, total: count };
+    }),
+
+    // Cache: categories (5 min TTL — changes rarely)
+    cached(CacheKeys.coursesCategories(), CacheTTL.long, () =>
+      db.category.findMany({
+        where: {
+          courses: { some: { status: CourseStatus.PUBLISHED } },
+        },
+        orderBy: { name: "asc" },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          _count: {
+            select: {
+              courses: { where: { status: CourseStatus.PUBLISHED } },
+            },
           },
         },
-      },
-    }),
-    db.course.count({ where }),
-    db.category.findMany({
-      where: {
-        courses: { some: { status: CourseStatus.PUBLISHED } },
-      },
-      orderBy: { name: "asc" },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        _count: {
-          select: {
-            courses: { where: { status: CourseStatus.PUBLISHED } },
-          },
-        },
-      },
-    }),
+      })
+    ),
   ]);
 
-  // ── Enrollments for current user ───────────────────────
+  // ── Enrollments for current user (NOT cached — user-specific) ─
   let enrollmentMap = new Map<
     string,
     { progress: number; isPassed: boolean }
@@ -162,7 +183,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       description: c.description,
       thumbnail: c.thumbnail,
       price: Number(c.price),
-      level: c.level,
+      level: c.level as CourseLevel,
       language: c.language,
       tags: c.tags,
       totalRating: c.totalRating,
@@ -232,7 +253,6 @@ export default async function CoursesPage({ searchParams }: PageProps) {
 
       {/* ── Results ────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        {/* Results count */}
         <div className="flex items-center justify-between mb-5">
           <p className="text-sm text-slate-500">
             {total === 0
@@ -246,7 +266,6 @@ export default async function CoursesPage({ searchParams }: PageProps) {
           )}
         </div>
 
-        {/* Grid or Empty */}
         {courses.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-4">
@@ -277,7 +296,6 @@ export default async function CoursesPage({ searchParams }: PageProps) {
           </div>
         )}
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-10">
             {page > 1 && (
