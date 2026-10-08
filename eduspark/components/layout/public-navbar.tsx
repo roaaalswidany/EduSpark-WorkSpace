@@ -122,7 +122,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <nav className="md:hidden py-3 border-t border-slate-800 space-y-1">
+          <nav className="md:hidden py-3 border-t border-slate-800 space-y-1 animate-slide-down origin-top">
             {NAV_LINKS.map((link) => {
               const Icon = link.icon;
               const isActive =

@@ -378,7 +378,10 @@ export function CoursesTable({
                         <div
                           className={cn(
                             "absolute right-0 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl shadow-black/60 overflow-hidden z-20",
-                            isLastRow ? "bottom-full mb-1" : "top-full mt-1"
+                            "animate-slide-down",
+                            isLastRow
+                              ? "bottom-full mb-1 origin-bottom-right"
+                              : "top-full mt-1 origin-top-right"
                           )}
                         >
                           <a
