@@ -9,8 +9,10 @@ export const metadata = {
   title: "Users — Admin — EduSpark",
 };
 
+const PAGE_SIZE = 20;
+
 interface PageProps {
-  searchParams: Promise<{ q?: string; role?: string }>;
+  searchParams: Promise<{ q?: string; role?: string; page?: string }>;
 }
 
 export default async function AdminUsersPage({ searchParams }: PageProps) {
@@ -20,45 +22,59 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
 
   const sp = await searchParams;
 
-  const users = await db.user.findMany({
-    where: {
-      ...(sp.q && {
-        OR: [
-          { name: { contains: sp.q, mode: "insensitive" } },
-          { email: { contains: sp.q, mode: "insensitive" } },
-        ],
-      }),
-      ...(sp.role && { role: sp.role as "STUDENT" | "CREATOR" | "ADMIN" }),
-    },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      image: true,
-      role: true,
-      isActive: true,
-      createdAt: true,
-      _count: {
-        select: {
-          enrollments: true,
-          certificates: true,
-          services: true,
+  const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
+  const skip = (page - 1) * PAGE_SIZE;
+
+  const where = {
+    ...(sp.q && {
+      OR: [
+        { name: { contains: sp.q, mode: "insensitive" as const } },
+        { email: { contains: sp.q, mode: "insensitive" as const } },
+      ],
+    }),
+    ...(sp.role && {
+      role: sp.role as "STUDENT" | "CREATOR" | "ADMIN",
+    }),
+  };
+
+  // ── Fetch paginated users + total + role counts in parallel ────
+  const [users, total, totals] = await Promise.all([
+    db.user.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: PAGE_SIZE,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+        _count: {
+          select: {
+            enrollments: true,
+            certificates: true,
+            services: true,
+          },
         },
       },
-    },
-  });
-
-  const totals = await db.user.groupBy({
-    by: ["role"],
-    _count: { _all: true },
-  });
+    }),
+    db.user.count({ where }),
+    db.user.groupBy({
+      by: ["role"],
+      _count: { _all: true },
+    }),
+  ]);
 
   const roleCounts = {
     STUDENT: totals.find((t) => t.role === "STUDENT")?._count._all ?? 0,
     CREATOR: totals.find((t) => t.role === "CREATOR")?._count._all ?? 0,
     ADMIN: totals.find((t) => t.role === "ADMIN")?._count._all ?? 0,
   };
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
@@ -85,6 +101,9 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
         roleCounts={roleCounts}
         initialQuery={sp.q ?? ""}
         initialRole={sp.role ?? ""}
+        total={total}
+        currentPage={page}
+        totalPages={totalPages}
       />
     </div>
   );

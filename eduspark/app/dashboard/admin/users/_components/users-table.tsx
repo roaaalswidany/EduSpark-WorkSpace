@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useTransition, useCallback } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -43,6 +44,9 @@ interface UsersTableProps {
   };
   initialQuery: string;
   initialRole: string;
+  total: number;
+  currentPage: number;
+  totalPages: number;
 }
 
 const ROLE_BADGE: Record<Role, string> = {
@@ -94,6 +98,9 @@ export function UsersTable({
   roleCounts,
   initialQuery,
   initialRole,
+  total,
+  currentPage,
+  totalPages,
 }: UsersTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -113,11 +120,24 @@ export function UsersTable({
         if (value === null || value === "") params.delete(key);
         else params.set(key, value);
       }
+      // Reset to page 1 when changing filters/search
+      if (!("page" in updates)) params.delete("page");
       startTransition(() => {
         router.replace(`${pathname}?${params.toString()}`, { scroll: false });
       });
     },
     [pathname, router, searchParams]
+  );
+
+  const buildPageUrl = useCallback(
+    (targetPage: number) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (targetPage > 1) params.set("page", String(targetPage));
+      else params.delete("page");
+      const qs = params.toString();
+      return qs ? `${pathname}?${qs}` : pathname;
+    },
+    [pathname, searchParams]
   );
 
   const handleSearchChange = (value: string) => {
@@ -285,6 +305,19 @@ export function UsersTable({
         </div>
       </div>
 
+      {/* Results count */}
+      {total > 0 && (
+        <p className="text-xs text-slate-500">
+          Showing {users.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–
+          {Math.min(currentPage * 20, total)} of {total}
+          {totalPages > 1 && (
+            <span className="text-slate-600 ml-2">
+              · Page {currentPage} of {totalPages}
+            </span>
+          )}
+        </p>
+      )}
+
       {/* Action Error */}
       {actionError && (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
@@ -307,7 +340,7 @@ export function UsersTable({
       ) : (
         <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-visible">
           {/* Desktop header */}
-<div className="hidden lg:grid grid-cols-[2.5fr_1.5fr_1.5fr_auto_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
+          <div className="hidden lg:grid grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
               User
             </span>
@@ -332,7 +365,7 @@ export function UsersTable({
               return (
                 <div
                   key={u.id}
-className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1.5fr_auto_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
+                  className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
                 >
                   {/* User */}
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
@@ -398,7 +431,7 @@ className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1.5fr_auto_auto] 
                     )}
                   </div>
 
-                  {/* Menu — absolute top-right on mobile, grid column on desktop */}
+                  {/* Menu */}
                   <div className="absolute top-4 right-4 lg:static lg:justify-self-end">
                     {isPendingUser ? (
                       <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
@@ -481,6 +514,61 @@ className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1.5fr_auto_auto] 
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 pt-2">
+          {currentPage > 1 && (
+            <Link
+              href={buildPageUrl(currentPage - 1)}
+              className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+            >
+              ← Previous
+            </Link>
+          )}
+
+          {Array.from({ length: totalPages }).map((_, i) => {
+            const p = i + 1;
+            if (
+              p === 1 ||
+              p === totalPages ||
+              (p >= currentPage - 1 && p <= currentPage + 1)
+            ) {
+              return (
+                <Link
+                  key={p}
+                  href={buildPageUrl(p)}
+                  className={cn(
+                    "w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors",
+                    p === currentPage
+                      ? "bg-indigo-600 text-white font-bold"
+                      : "bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white"
+                  )}
+                >
+                  {p}
+                </Link>
+              );
+            }
+            if (p === currentPage - 2 || p === currentPage + 2) {
+              return (
+                <span key={p} className="text-slate-700 text-xs">
+                  …
+                </span>
+              );
+            }
+            return null;
+          })}
+
+          {currentPage < totalPages && (
+            <Link
+              href={buildPageUrl(currentPage + 1)}
+              className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+            >
+              Next →
+            </Link>
+          )}
         </div>
       )}
     </div>
