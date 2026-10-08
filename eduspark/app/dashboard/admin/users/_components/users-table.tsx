@@ -340,7 +340,7 @@ export function UsersTable({
       ) : (
         <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-visible">
           {/* Desktop header */}
-          <div className="hidden lg:grid grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
+<div className="hidden lg:grid grid-cols-[1.5fr_0.8fr_1.7fr_0.6fr_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
               User
             </span>
@@ -365,7 +365,7 @@ export function UsersTable({
               return (
                 <div
                   key={u.id}
-                  className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
+                  className="relative grid grid-cols-1 lg:grid-cols-[1.5fr_0.8fr_1.7fr_0.6fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
                 >
                   {/* User */}
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
@@ -406,11 +406,11 @@ export function UsersTable({
                     <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center shrink-0">
                       Activity:
                     </span>
-                    <span className="truncate">
-                      {u._count.enrollments} courses ·{" "}
-                      {u._count.certificates} certificates ·{" "}
-                      {u._count.services} services
-                    </span>
+<span className="truncate">
+  {u._count.enrollments} courses ·{" "}
+  {u._count.certificates} certificates ·{" "}
+  {u._count.services} services
+</span>
                   </div>
 
                   {/* Status */}
