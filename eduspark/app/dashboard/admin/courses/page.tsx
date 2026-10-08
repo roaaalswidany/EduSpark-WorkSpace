@@ -9,8 +9,10 @@ export const metadata = {
   title: "Courses — Admin — EduSpark",
 };
 
+const PAGE_SIZE = 20;
+
 interface PageProps {
-  searchParams: Promise<{ q?: string; status?: string }>;
+  searchParams: Promise<{ q?: string; status?: string; page?: string }>;
 }
 
 export default async function AdminCoursesPage({ searchParams }: PageProps) {
@@ -19,45 +21,53 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
   if (session.user.role !== "ADMIN") redirect("/dashboard");
 
   const sp = await searchParams;
+  const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
+  const skip = (page - 1) * PAGE_SIZE;
 
-  const courses = await db.course.findMany({
-    where: {
-      ...(sp.q && {
-        OR: [
-          { title: { contains: sp.q, mode: "insensitive" } },
-          { description: { contains: sp.q, mode: "insensitive" } },
-        ],
-      }),
-      ...(sp.status && {
-        status: sp.status as "DRAFT" | "PUBLISHED" | "ARCHIVED",
-      }),
-    },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      thumbnail: true,
-      status: true,
-      level: true,
-      price: true,
-      createdAt: true,
-      creator: {
-        select: { id: true, name: true, image: true },
-      },
-      category: {
-        select: { id: true, name: true },
-      },
-      _count: {
-        select: { enrollments: true, sections: true },
-      },
-    },
-  });
+  const where = {
+    ...(sp.q && {
+      OR: [
+        { title: { contains: sp.q, mode: "insensitive" as const } },
+        { description: { contains: sp.q, mode: "insensitive" as const } },
+      ],
+    }),
+    ...(sp.status && {
+      status: sp.status as "DRAFT" | "PUBLISHED" | "ARCHIVED",
+    }),
+  };
 
-  const statusCounts = await db.course.groupBy({
-    by: ["status"],
-    _count: { _all: true },
-  });
+  const [courses, total, statusCounts] = await Promise.all([
+    db.course.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: PAGE_SIZE,
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        thumbnail: true,
+        status: true,
+        level: true,
+        price: true,
+        createdAt: true,
+        creator: {
+          select: { id: true, name: true, image: true },
+        },
+        category: {
+          select: { id: true, name: true },
+        },
+        _count: {
+          select: { enrollments: true, sections: true },
+        },
+      },
+    }),
+    db.course.count({ where }),
+    db.course.groupBy({
+      by: ["status"],
+      _count: { _all: true },
+    }),
+  ]);
 
   const counts = {
     DRAFT: statusCounts.find((s) => s.status === "DRAFT")?._count._all ?? 0,
@@ -66,6 +76,8 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
     ARCHIVED:
       statusCounts.find((s) => s.status === "ARCHIVED")?._count._all ?? 0,
   };
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
@@ -91,6 +103,9 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
         statusCounts={counts}
         initialQuery={sp.q ?? ""}
         initialStatus={sp.status ?? ""}
+        total={total}
+        currentPage={page}
+        totalPages={totalPages}
       />
     </div>
   );
