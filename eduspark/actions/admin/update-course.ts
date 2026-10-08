@@ -6,6 +6,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { CourseStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { cacheInvalidatePattern } from "@/lib/cache";
+import { CacheKeys } from "@/lib/cache-keys";
 
 const UpdateCourseSchema = z.object({
   courseId: z.string().cuid(),
@@ -52,6 +54,9 @@ export async function updateCourseAction(
         data: { status: status as CourseStatus },
       });
     }
+
+    // ── Invalidate Redis cache so next visit fetches fresh data ──
+    await cacheInvalidatePattern(CacheKeys.patterns.allCourses);
 
     revalidatePath("/dashboard/admin/courses");
     revalidatePath("/courses");
