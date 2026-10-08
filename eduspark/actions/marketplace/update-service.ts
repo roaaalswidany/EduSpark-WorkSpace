@@ -5,18 +5,20 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { cacheInvalidatePattern } from "@/lib/cache";
+import { CacheKeys } from "@/lib/cache-keys";
 import {
   CreateServiceSchema,
   type CreateServiceInput,
 } from "./create-service-schema";
 
-// ─── Schema ───────────────────────────────────────────────────────────────────
+// ─── Schema ───────────────────────────────────────────────────────
 
 const UpdateServiceSchema = CreateServiceSchema.extend({
   serviceId: z.string().cuid("Invalid service ID."),
 });
 
-// ─── Result Types ─────────────────────────────────────────────────────────────
+// ─── Result Types ─────────────────────────────────────────────────
 
 export type UpdateServiceResult =
   | { success: true; serviceId: string; slug: string }
@@ -32,7 +34,7 @@ export type UpdateServiceResult =
       fieldErrors?: Partial<Record<keyof CreateServiceInput, string[]>>;
     };
 
-// ─── Action ───────────────────────────────────────────────────────────────────
+// ─── Action ───────────────────────────────────────────────────────
 
 export async function updateServiceAction(
   rawInput: CreateServiceInput & { serviceId: string }
@@ -50,8 +52,7 @@ export async function updateServiceAction(
       return {
         success: false,
         error: "INVALID_INPUT",
-        fieldErrors: parsed.error.flatten()
-          .fieldErrors as Partial<
+        fieldErrors: parsed.error.flatten().fieldErrors as Partial<
           Record<keyof CreateServiceInput, string[]>
         >,
       };
@@ -109,6 +110,8 @@ export async function updateServiceAction(
     revalidatePath("/dashboard/creator/services");
     revalidatePath("/marketplace");
     revalidatePath(`/marketplace/services/${updated.slug}`);
+
+    await cacheInvalidatePattern(CacheKeys.patterns.allServices);
 
     return { success: true, serviceId: updated.id, slug: updated.slug };
   } catch (error) {

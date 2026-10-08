@@ -5,13 +5,15 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { Role, ServiceStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { cacheInvalidatePattern } from "@/lib/cache";
+import { CacheKeys } from "@/lib/cache-keys";
 import {
   CreateServiceSchema,
   type CreateServiceInput,
   type CreateServiceResult,
 } from "./create-service-schema";
 
-// ─── Slug Utilities ───────────────────────────────────────────────────────────
+// ─── Slug Utilities ───────────────────────────────────────────────
 
 function toBaseSlug(title: string): string {
   return title
@@ -37,33 +39,32 @@ async function resolveUniqueSlug(base: string): Promise<string> {
   }
 }
 
-
-// ─── Server Action ────────────────────────────────────────────────────────────
+// ─── Server Action ────────────────────────────────────────────────
 
 export async function createServiceAction(
   rawInput: CreateServiceInput
 ): Promise<CreateServiceResult> {
   try {
-    // ── 1. Authentication ─────────────────────────────────────────────────────
+    // 1. Authentication
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
 
     const { id: userId, role } = session.user;
 
-    // ── 2. Role gate: only CREATOR and ADMIN may create services ──────────────
+    // 2. Role gate: only CREATOR and ADMIN may create services
     if (role !== Role.CREATOR && role !== Role.ADMIN) {
       return { success: false, error: "FORBIDDEN_ROLE" };
     }
 
-    // ── 3. Input validation ───────────────────────────────────────────────────
+    // 3. Input validation
     const parsed = CreateServiceSchema.safeParse(rawInput);
     if (!parsed.success) {
       return {
         success: false,
         error: "INVALID_INPUT",
-       fieldErrors: parsed.error.flatten().fieldErrors as Partial<
-  Record<keyof CreateServiceInput, string[]>
->,
+        fieldErrors: parsed.error.flatten().fieldErrors as Partial<
+          Record<keyof CreateServiceInput, string[]>
+        >,
       };
     }
 
@@ -79,28 +80,25 @@ export async function createServiceAction(
       portfolioLinks,
     } = parsed.data;
 
-    // ── 4. Certificate ownership gate ─────────────────────────────────────────
-    //    The creator MUST hold a certificate for the exact course they claim
-    //    expertise in. This check runs server-side on every submission;
-    //    the client's courseId selection is never trusted in isolation.
-   // Admins bypass certificate requirement (they manage the whole platform)
-if (role !== Role.ADMIN) {
-  const certificate = await db.certificate.findUnique({
-    where: {
-      userId_courseId: { userId, courseId },
-    },
-    select: { id: true },
-  });
+    // 4. Certificate ownership gate
+    // Admins bypass certificate requirement
+    if (role !== Role.ADMIN) {
+      const certificate = await db.certificate.findUnique({
+        where: {
+          userId_courseId: { userId, courseId },
+        },
+        select: { id: true },
+      });
 
-  if (!certificate) {
-    return { success: false, error: "NO_CERTIFICATE" };
-  }
-}
+      if (!certificate) {
+        return { success: false, error: "NO_CERTIFICATE" };
+      }
+    }
 
-    // ── 5. Unique slug generation ─────────────────────────────────────────────
+    // 5. Unique slug generation
     const slug = await resolveUniqueSlug(toBaseSlug(title));
 
-    // ── 6. Persist service ────────────────────────────────────────────────────
+    // 6. Persist service
     const service = await db.service.create({
       data: {
         title,
@@ -120,6 +118,8 @@ if (role !== Role.ADMIN) {
 
     revalidatePath("/marketplace");
     revalidatePath("/dashboard/creator/services");
+
+    await cacheInvalidatePattern(CacheKeys.patterns.allServices);
 
     return { success: true, serviceId: service.id, slug: service.slug };
   } catch (error) {

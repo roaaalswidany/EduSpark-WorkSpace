@@ -5,6 +5,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { cacheInvalidatePattern } from "@/lib/cache";
+import { CacheKeys } from "@/lib/cache-keys";
 
 const DeleteServiceSchema = z.object({
   serviceId: z.string().cuid(),
@@ -55,6 +57,8 @@ export async function deleteServiceAction(
 
     revalidatePath("/dashboard/creator/services");
     revalidatePath("/marketplace");
+
+    await cacheInvalidatePattern(CacheKeys.patterns.allServices);
 
     return { success: true };
   } catch (error) {

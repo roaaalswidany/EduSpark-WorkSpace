@@ -6,6 +6,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { ServiceStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { cacheInvalidatePattern } from "@/lib/cache";
+import { CacheKeys } from "@/lib/cache-keys";
 
 const UpdateStatusSchema = z.object({
   serviceId: z.string().cuid(),
@@ -54,6 +56,8 @@ export async function updateServiceStatusAction(
 
     revalidatePath("/dashboard/creator/services");
     revalidatePath("/marketplace");
+
+    await cacheInvalidatePattern(CacheKeys.patterns.allServices);
 
     return { success: true, newStatus: updated.status };
   } catch (error) {
