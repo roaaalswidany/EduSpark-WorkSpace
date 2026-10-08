@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useTransition, useCallback } from "react";
-import Image from "next/image";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -65,15 +64,7 @@ const ROLE_FILTERS: { value: string; label: string; count: number }[] = [
   { value: "ADMIN", label: "Admins", count: 0 },
 ];
 
-function Avatar({
-  name,
-  image,
-  size = 36,
-}: {
-  name: string;
-  image: string | null;
-  size?: number;
-}) {
+function Avatar({ name, size = 36 }: { name: string; size?: number }) {
   const initials = name
     .split(" ")
     .map((n) => n[0])
@@ -81,19 +72,6 @@ function Avatar({
     .join("")
     .toUpperCase();
   const hue = name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
-
-  if (image) {
-    return (
-      <Image
-        src={image}
-        alt={name}
-        width={size}
-        height={size}
-        className="rounded-xl object-cover ring-2 ring-slate-800 shrink-0"
-        style={{ width: size, height: size }}
-      />
-    );
-  }
 
   return (
     <div
@@ -329,7 +307,7 @@ export function UsersTable({
       ) : (
         <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-visible">
           {/* Desktop header */}
-          <div className="hidden lg:grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
+<div className="hidden lg:grid grid-cols-[2.5fr_1.5fr_1.5fr_auto_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
               User
             </span>
@@ -354,11 +332,11 @@ export function UsersTable({
               return (
                 <div
                   key={u.id}
-                  className="grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
+className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1.5fr_auto_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
                 >
                   {/* User */}
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Avatar name={u.name} image={u.image} size={36} />
+                  <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
+                    <Avatar name={u.name} size={36} />
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-white truncate">
                         {u.name}
@@ -375,7 +353,7 @@ export function UsersTable({
                   </div>
 
                   {/* Role */}
-                  <div className="flex lg:block">
+                  <div className="flex lg:block min-w-0">
                     <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">
                       Role:
                     </span>
@@ -391,11 +369,11 @@ export function UsersTable({
                   </div>
 
                   {/* Activity */}
-                  <div className="flex lg:block gap-3 text-xs text-slate-500">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">
+                  <div className="flex lg:block gap-3 text-xs text-slate-500 min-w-0">
+                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center shrink-0">
                       Activity:
                     </span>
-                    <span className="whitespace-nowrap">
+                    <span className="truncate">
                       {u._count.enrollments} courses ·{" "}
                       {u._count.certificates} certificates ·{" "}
                       {u._count.services} services
@@ -403,25 +381,25 @@ export function UsersTable({
                   </div>
 
                   {/* Status */}
-                  <div className="flex lg:block">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">
+                  <div className="flex lg:block min-w-0">
+                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center shrink-0">
                       Status:
                     </span>
                     {u.isActive ? (
-                      <span className="inline-flex items-center gap-1 text-xs text-emerald-400 font-semibold">
+                      <span className="inline-flex items-center gap-1 text-xs text-emerald-400 font-semibold whitespace-nowrap">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         Active
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-xs text-red-400 font-semibold">
+                      <span className="inline-flex items-center gap-1 text-xs text-red-400 font-semibold whitespace-nowrap">
                         <XCircle className="w-3.5 h-3.5" />
                         Suspended
                       </span>
                     )}
                   </div>
 
-                  {/* Menu */}
-                  <div className="relative lg:justify-self-end">
+                  {/* Menu — absolute top-right on mobile, grid column on desktop */}
+                  <div className="absolute top-4 right-4 lg:static lg:justify-self-end">
                     {isPendingUser ? (
                       <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
                     ) : (
@@ -447,7 +425,10 @@ export function UsersTable({
                         <div
                           className={cn(
                             "absolute right-0 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl shadow-black/60 overflow-hidden z-20",
-                            isLastRow ? "bottom-full mb-1" : "top-full mt-1"
+                            "animate-slide-down",
+                            isLastRow
+                              ? "bottom-full mb-1 origin-bottom-right"
+                              : "top-full mt-1 origin-top-right"
                           )}
                         >
                           <div className="px-3 py-2 border-b border-slate-800">
