@@ -1,7 +1,12 @@
 import { db } from "@/lib/db";
 import { ServiceStatus } from "@prisma/client";
 import { CatalogClient } from "./_components/catalog-client";
-import type { ServiceCardData, CategoryFilterOption } from "./_components/catalog-client";
+import type {
+  ServiceCardData,
+  CategoryFilterOption,
+} from "./_components/catalog-client";
+import { cached } from "@/lib/cache";
+import { CacheKeys, CacheTTL } from "@/lib/cache-keys";
 
 // ISR: revalidate catalog every 60 seconds
 export const revalidate = 60;
@@ -13,47 +18,55 @@ export const metadata = {
 };
 
 export default async function MarketplacePage() {
+  // ── Fetch with caching ─────────────────────────────────
   const [rawServices, categories] = await Promise.all([
-    db.service.findMany({
-      where: { status: ServiceStatus.ACTIVE },
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        description: true,
-        thumbnail: true,
-        price: true,
-        deliveryDays: true,
-        revisions: true,
-        tags: true,
-        portfolioLinks: true,
-        createdAt: true,
-        creator: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            headline: true,
+    // Cache: all active services (60s TTL)
+    cached(CacheKeys.servicesList({}), CacheTTL.medium, () =>
+      db.service.findMany({
+        where: { status: ServiceStatus.ACTIVE },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          description: true,
+          thumbnail: true,
+          price: true,
+          deliveryDays: true,
+          revisions: true,
+          tags: true,
+          portfolioLinks: true,
+          createdAt: true,
+          creator: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              headline: true,
+            },
+          },
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+            },
+          },
+          _count: {
+            select: { orders: true },
           },
         },
-        category: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-          },
-        },
-        _count: {
-          select: { orders: true },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 200,
-    }),
-    db.category.findMany({
-      select: { id: true, name: true, slug: true },
-      orderBy: { name: "asc" },
-    }),
+        orderBy: { createdAt: "desc" },
+        take: 200,
+      })
+    ),
+
+    // Cache: categories (5 min TTL)
+    cached(CacheKeys.servicesCategories(), CacheTTL.long, () =>
+      db.category.findMany({
+        select: { id: true, name: true, slug: true },
+        orderBy: { name: "asc" },
+      })
+    ),
   ]);
 
   // Serialize Prisma Decimal → plain number for client component hydration
