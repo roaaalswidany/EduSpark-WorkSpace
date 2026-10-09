@@ -8,6 +8,12 @@ import { classifyIntent } from "@/lib/ai/intent-classifier";
 import { buildUserContext } from "@/lib/ai/context-builder";
 import { generateResponse } from "@/lib/ai/response-generator";
 import { chatWithGemini, type GeminiMessage } from "@/lib/ai/gemini";
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  rateLimitHeaders,
+  RateLimits,
+} from "@/lib/security/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -22,11 +28,33 @@ const ChatSchema = z.object({
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
+    // ── 1. Authentication ─────────────────────────────────────────
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
     }
 
+    const userId = session.user.id;
+
+    // ── 2. Rate Limiting (per user) ───────────────────────────────
+    const identifier = getClientIdentifier(req.headers, userId);
+    const rateLimit = await checkRateLimit(RateLimits.AI_CHAT, identifier);
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          error: "RATE_LIMITED",
+          message: "Too many requests. Please slow down.",
+          retryAfter: rateLimit.retryAfterSec,
+        },
+        {
+          status: 429,
+          headers: rateLimitHeaders(rateLimit),
+        }
+      );
+    }
+
+    // ── 3. Input validation ───────────────────────────────────────
     const body = await req.json();
     const parsed = ChatSchema.safeParse(body);
     if (!parsed.success) {
@@ -35,20 +63,22 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           error: "INVALID_INPUT",
           fieldErrors: parsed.error.flatten().fieldErrors,
         },
-        { status: 400 }
+        { status: 400, headers: rateLimitHeaders(rateLimit) }
       );
     }
 
     const { message, conversationId } = parsed.data;
-    const userId = session.user.id;
 
-    // ── Build user context ────────────────────────────────────────
+    // ── 4. Build user context ─────────────────────────────────────
     const context = await buildUserContext(userId);
     if (!context) {
-      return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 404 });
+      return NextResponse.json(
+        { error: "USER_NOT_FOUND" },
+        { status: 404, headers: rateLimitHeaders(rateLimit) }
+      );
     }
 
-    // ── Fetch conversation history (if existing) ──────────────────
+    // ── 5. Fetch conversation history (if existing) ───────────────
     let history: GeminiMessage[] = [];
     let existingConversationTitle: string | null = null;
 
@@ -69,7 +99,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       if (!existing || existing.userId !== userId) {
         return NextResponse.json(
           { error: "CONVERSATION_NOT_FOUND" },
-          { status: 404 }
+          { status: 404, headers: rateLimitHeaders(rateLimit) }
         );
       }
 
@@ -80,7 +110,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }));
     }
 
-    // ── Try Gemini first ──────────────────────────────────────────
+    // ── 6. Try Gemini first ───────────────────────────────────────
     let assistantContent: string;
     let suggestions: Array<{ label: string; href: string }> = [];
     let usedFallback = false;
@@ -102,13 +132,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       suggestions = generated.suggestions;
 
       if (geminiResult.error === "RATE_LIMITED") {
-        // gentle note appended
         assistantContent +=
           "\n\n---\n_ملاحظة: المساعد الذكي مشغول حالياً، أجبتك بالإجابة الأساسية._";
       }
     }
 
-    // ── Save to DB (transaction) ──────────────────────────────────
+    // ── 7. Save to DB (transaction) ───────────────────────────────
     const result = await db.$transaction(async (tx) => {
       let conversation;
 
@@ -169,7 +198,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         suggestions,
         usedFallback,
       },
-      { status: 200 }
+      {
+        status: 200,
+        headers: rateLimitHeaders(rateLimit),
+      }
     );
   } catch (error) {
     console.error("[AI_CHAT_ROUTE]", error);
