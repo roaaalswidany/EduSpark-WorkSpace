@@ -143,6 +143,7 @@ model User {
   chatMessages       ChatMessage[]
   chatParticipations ChatRoomParticipant[]
   aiConversations    AiConversation[]
+    careerPaths        CareerPath[]
 
   @@index([email])
   @@index([role])
@@ -240,6 +241,7 @@ model Course {
   quiz         Quiz?
   certificates Certificate[]
   chatRoom     ChatRoom?
+    careerPathSteps CareerPathStep[]
 
   @@index([creatorId])
   @@index([slug])
@@ -716,4 +718,50 @@ model AiMessage {
   @@index([conversationId])
   @@index([conversationId, createdAt])
   @@map("ai_messages")
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// CAREER PATH MODELS
+// ─────────────────────────────────────────────────────────────────
+
+model CareerPath {
+  id             String   @id @default(cuid())
+  userId         String
+  goal           String   @db.Text
+  level          String
+  description    String?  @db.Text
+  estimatedWeeks Int
+  status         String   @default("ACTIVE")
+  aiModel        String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  steps CareerPathStep[]
+
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@map("career_paths")
+}
+
+model CareerPathStep {
+  id             String    @id @default(cuid())
+  pathId         String
+  order          Int
+  title          String
+  description    String    @db.Text
+  courseId       String?
+  estimatedWeeks Int
+  skills         String[]
+  status         String    @default("PENDING")
+  completedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  path   CareerPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  course Course?    @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  @@index([pathId, order])
+  @@map("career_path_steps")
 }
