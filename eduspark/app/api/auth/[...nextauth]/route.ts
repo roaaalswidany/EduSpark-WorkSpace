@@ -2,9 +2,15 @@ import NextAuth, { type AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type Role } from "@prisma/client";
+import { headers } from "next/headers";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  RateLimits,
+} from "@/lib/security/rate-limit";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -16,8 +22,8 @@ export const authOptions: AuthOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,     // 30 days
-    updateAge: 24 * 60 * 60,        // re-issue token once per day
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // re-issue token once per day
   },
 
   pages: {
@@ -35,6 +41,7 @@ export const authOptions: AuthOptions = {
       },
 
       async authorize(credentials) {
+        // ── 1. Validate input ─────────────────────────────────────
         const parsed = credentialsSchema.safeParse(credentials);
 
         if (!parsed.success) {
@@ -42,9 +49,40 @@ export const authOptions: AuthOptions = {
         }
 
         const { email, password } = parsed.data;
+        const normalizedEmail = email.toLowerCase().trim();
 
+        // ── 2. Rate limiting (IP + Email) ─────────────────────────
+        //   Runs BEFORE DB lookup and bcrypt.compare → saves resources
+        //   against brute-force attacks.
+        try {
+          const hdrs = await headers();
+          const ipIdentifier = getClientIdentifier(hdrs);
+          const emailIdentifier = `email:${normalizedEmail}`;
+
+          const [ipLimit, emailLimit] = await Promise.all([
+            checkRateLimit(RateLimits.AUTH_LOGIN, ipIdentifier),
+            checkRateLimit(RateLimits.AUTH_LOGIN, emailIdentifier),
+          ]);
+
+          if (!ipLimit.allowed || !emailLimit.allowed) {
+            // Log the block for audit (visible in server logs)
+            console.warn(
+              `[AUTH_RATE_LIMIT] Blocked login attempt — IP:${ipIdentifier} email:${normalizedEmail}`
+            );
+            throw new Error("RATE_LIMITED");
+          }
+        } catch (err) {
+          // If it's our rate-limit error → re-throw
+          if (err instanceof Error && err.message === "RATE_LIMITED") {
+            throw err;
+          }
+          // Otherwise, headers() or Redis failed → fail-open (log + continue)
+          console.warn("[AUTH_RATE_LIMIT] Rate limit check failed:", err);
+        }
+
+        // ── 3. Fetch user ─────────────────────────────────────────
         const user = await db.user.findUnique({
-          where: { email: email.toLowerCase().trim() },
+          where: { email: normalizedEmail },
           select: {
             id: true,
             name: true,
@@ -69,6 +107,7 @@ export const authOptions: AuthOptions = {
           throw new Error("OAUTH_ACCOUNT");
         }
 
+        // ── 4. Verify password ────────────────────────────────────
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
