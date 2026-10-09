@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import Link from "next/link";
@@ -20,6 +21,7 @@ import {
   type LucideIcon,
   Inbox,
   ShoppingBag,
+  Target,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
@@ -57,9 +59,9 @@ const SECTIONS: NavSection[] = [
   {
     title: "Work",
     items: [
-      { label: "Marketplace", href: "/marketplace", icon: Store },
-      { label: "My Orders", href: "/dashboard/orders", icon: ShoppingBag },
-      { label: "My Projects", href: "/dashboard/projects", icon: Briefcase },
+      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
+      { label: "Career Path", href: "/dashboard/career-path", icon: Target },
+      { label: "Messages", href: "/dashboard/chat", icon: MessageSquare },
     ],
   },
   {

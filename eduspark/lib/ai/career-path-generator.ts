@@ -5,7 +5,7 @@ import { z } from "zod";
 // ─── Constants ────────────────────────────────────────────────────
 
 const MODEL_NAME = "gemini-3.8-flash";
-const MAX_OUTPUT_TOKENS = 4096;
+const MAX_OUTPUT_TOKENS = 3072;
 
 // ─── Types ────────────────────────────────────────────────────────
 
