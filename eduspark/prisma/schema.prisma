@@ -146,6 +146,7 @@ model User {
   careerPaths        CareerPath[]
   stats              UserStats?
   badges             UserBadge[]
+  auditLogs          AuditLog[]
 
   @@index([email])
   @@index([role])
@@ -820,4 +821,29 @@ model UserBadge {
   @@unique([userId, badgeId])
   @@index([userId, earnedAt])
   @@map("user_badges")
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// AUDIT LOG MODEL
+// ─────────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String   // e.g. "auth.login.success", "admin.role.change"
+  targetType String?  // "User", "Course", "Service", "Order"
+  targetId   String?
+  metadata   Json?    // additional context (IP, userAgent, changes)
+  ipAddress  String?
+  userAgent  String?
+  severity   String   @default("INFO") // INFO | WARNING | CRITICAL
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
+  @@index([severity, createdAt])
+  @@map("audit_logs")
 }

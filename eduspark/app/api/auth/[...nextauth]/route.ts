@@ -11,6 +11,7 @@ import {
   getClientIdentifier,
   RateLimits,
 } from "@/lib/security/rate-limit";
+import { auditLog, AuditActions } from "@/lib/security/audit";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -66,6 +67,14 @@ export const authOptions: AuthOptions = {
 
           if (!ipLimit.allowed || !emailLimit.allowed) {
             // Log the block for audit (visible in server logs)
+            void auditLog({
+              action: AuditActions.AUTH_LOGIN_RATE_LIMITED,
+              metadata: {
+                email: normalizedEmail,
+                ipIdentifier,
+              },
+              severity: "CRITICAL",
+            });
             console.warn(
               `[AUTH_RATE_LIMIT] Blocked login attempt — IP:${ipIdentifier} email:${normalizedEmail}`
             );
@@ -96,10 +105,23 @@ export const authOptions: AuthOptions = {
         });
 
         if (!user) {
+          void auditLog(
+            {
+              action: AuditActions.AUTH_LOGIN_FAILED,
+              metadata: { email: normalizedEmail, reason: "NO_ACCOUNT" },
+              severity: "WARNING",
+            }
+          );
           throw new Error("NO_ACCOUNT");
         }
 
         if (!user.isActive) {
+          void auditLog({
+            action: AuditActions.AUTH_LOGIN_FAILED,
+            userId: user.id,
+            metadata: { email: normalizedEmail, reason: "ACCOUNT_DISABLED" },
+            severity: "WARNING",
+          });
           throw new Error("ACCOUNT_DISABLED");
         }
 
@@ -111,6 +133,12 @@ export const authOptions: AuthOptions = {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
+          void auditLog({
+            action: AuditActions.AUTH_LOGIN_FAILED,
+            userId: user.id,
+            metadata: { email: normalizedEmail, reason: "INVALID_PASSWORD" },
+            severity: "WARNING",
+          });
           throw new Error("INVALID_PASSWORD");
         }
 
@@ -161,6 +189,13 @@ export const authOptions: AuthOptions = {
 
   events: {
     async signIn({ user, isNewUser }) {
+      // Log successful login
+      void auditLog({
+        action: AuditActions.AUTH_LOGIN_SUCCESS,
+        userId: user.id!,
+        metadata: { isNewUser: !!isNewUser },
+      });
+
       if (isNewUser) {
         await db.notification.create({
           data: {

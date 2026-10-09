@@ -6,6 +6,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { auditLog, AuditActions } from "@/lib/security/audit";
 
 const UpdateUserSchema = z.object({
   userId: z.string().cuid(),
@@ -48,19 +49,48 @@ export async function updateUserAction(
 
     const target = await db.user.findUnique({
       where: { id: userId },
-      select: { id: true, isActive: true, role: true },
+      select: { id: true, isActive: true, role: true, name: true },
     });
     if (!target) return { success: false, error: "NOT_FOUND" };
 
+    // ── Apply change + audit log ──────────────────────────────────
     if (action === "TOGGLE_ACTIVE") {
       await db.user.update({
         where: { id: userId },
         data: { isActive: !target.isActive },
       });
+
+      void auditLog({
+        action: !target.isActive
+          ? AuditActions.ADMIN_USER_ACTIVATED
+          : AuditActions.ADMIN_USER_SUSPENDED,
+        userId: session.user.id,
+        targetType: "User",
+        targetId: userId,
+        metadata: {
+          targetName: target.name,
+          previousState: target.isActive,
+          newState: !target.isActive,
+        },
+        severity: "CRITICAL",
+      });
     } else if (action === "CHANGE_ROLE" && role) {
       await db.user.update({
         where: { id: userId },
         data: { role: role as Role },
+      });
+
+      void auditLog({
+        action: AuditActions.ADMIN_ROLE_CHANGED,
+        userId: session.user.id,
+        targetType: "User",
+        targetId: userId,
+        metadata: {
+          targetName: target.name,
+          previousRole: target.role,
+          newRole: role,
+        },
+        severity: "CRITICAL",
       });
     }
 
