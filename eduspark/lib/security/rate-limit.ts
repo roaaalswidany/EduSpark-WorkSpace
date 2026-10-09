@@ -38,11 +38,8 @@ function getRedis(): Redis | null {
 // ─── Types ────────────────────────────────────────────────────────
 
 export interface RateLimitConfig {
-  /** Unique identifier for the limit (e.g. "ai-chat", "login") */
   key: string;
-  /** Max requests allowed in the window */
   limit: number;
-  /** Window duration in seconds */
   windowSec: number;
 }
 
@@ -55,34 +52,37 @@ export interface RateLimitResult {
 }
 
 // ─── Presets ─────────────────────────────────────────────────────
-// Adjustable in one place — used across the app.
+// OWASP ASVS v4.0 recommends 5 failed login attempts per 15 minutes.
+// In development, the IP limit is relaxed to allow testing multiple
+// accounts from the same machine without manual Redis resets.
+
+const IS_PROD = process.env.NODE_ENV === "production";
 
 export const RateLimits = {
   /** AI chat: 20 messages / 5 minutes */
   AI_CHAT: { key: "ai-chat", limit: 20, windowSec: 300 },
-  /** Login attempts: 5 per 15 minutes */
+
+  /** Login attempts per email: 5 per 15 minutes (OWASP standard) */
   AUTH_LOGIN: { key: "auth-login", limit: 5, windowSec: 900 },
+
+  /** Login attempts per IP: strict in production, relaxed in dev */
+  AUTH_LOGIN_IP: {
+    key: "auth-login-ip",
+    limit: IS_PROD ? 5 : 100,
+    windowSec: 900,
+  },
+
   /** Register: 3 per hour */
   AUTH_REGISTER: { key: "auth-register", limit: 3, windowSec: 3600 },
+
   /** General API writes: 60 per minute */
   API_WRITE: { key: "api-write", limit: 60, windowSec: 60 },
+
   /** Server actions (sensitive): 30 per minute */
   ACTION_SENSITIVE: { key: "action-sensitive", limit: 30, windowSec: 60 },
 } as const;
 
 // ─── Core: Sliding Window ────────────────────────────────────────
-//
-// Algorithm: Redis sorted set (ZSET) where:
-//   - Score = timestamp (milliseconds)
-//   - Member = unique request ID
-//
-// On each request:
-//   1. Remove entries older than `windowSec` seconds
-//   2. Add current request timestamp
-//   3. Count remaining entries
-//   4. Compare against `limit`
-//
-// This is a **sliding window** — more accurate than fixed buckets.
 
 export async function checkRateLimit(
   config: RateLimitConfig,
@@ -90,7 +90,6 @@ export async function checkRateLimit(
 ): Promise<RateLimitResult> {
   const redis = getRedis();
 
-  // Fail-open: if Redis is down, allow the request
   if (!redis) {
     return {
       allowed: true,
@@ -108,18 +107,10 @@ export async function checkRateLimit(
 
   try {
     const pipeline = redis.multi();
-
-    // 1. Remove old entries (outside window)
     pipeline.zremrangebyscore(redisKey, 0, windowStart);
-
-    // 2. Add this request (unique member)
     const member = `${now}-${Math.random().toString(36).slice(2, 9)}`;
     pipeline.zadd(redisKey, now, member);
-
-    // 3. Count entries in window
     pipeline.zcard(redisKey);
-
-    // 4. Set expiration (cleanup)
     pipeline.expire(redisKey, config.windowSec);
 
     const results = await pipeline.exec();
@@ -127,7 +118,6 @@ export async function checkRateLimit(
       throw new Error("Pipeline returned null");
     }
 
-    // results[2] = zcard result → [err, count]
     const count = (results[2]?.[1] as number) ?? 0;
 
     const allowed = count <= config.limit;
@@ -144,7 +134,6 @@ export async function checkRateLimit(
     };
   } catch (err) {
     console.error("[RATE_LIMIT] check failed:", err);
-    // Fail-open on error
     return {
       allowed: true,
       remaining: config.limit,
@@ -155,24 +144,20 @@ export async function checkRateLimit(
   }
 }
 
-// ─── Helper: Get identifier from request ─────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────
 
 export function getClientIdentifier(
   headers: Headers,
   userId?: string | null
 ): string {
-  // Prefer user ID when authenticated (fair per-user limits)
   if (userId) return `user:${userId}`;
 
-  // Fall back to IP for anonymous requests
   const forwarded = headers.get("x-forwarded-for");
   const realIp = headers.get("x-real-ip");
   const ip = forwarded?.split(",")[0]?.trim() ?? realIp ?? "unknown";
 
   return `ip:${ip}`;
 }
-
-// ─── Helper: Standard rate-limit response ────────────────────────
 
 export function rateLimitHeaders(
   result: RateLimitResult

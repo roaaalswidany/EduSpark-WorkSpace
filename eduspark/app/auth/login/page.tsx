@@ -4,7 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Loader2, GraduationCap, AlertCircle } from "lucide-react";
+import { Loader2, GraduationCap, AlertCircle, Clock } from "lucide-react";
 
 const ERROR_MESSAGES: Record<string, string> = {
   NO_ACCOUNT: "No account found with this email.",
@@ -12,6 +12,8 @@ const ERROR_MESSAGES: Record<string, string> = {
   ACCOUNT_DISABLED: "Your account has been disabled. Contact support.",
   OAUTH_ACCOUNT: "This account uses social login. Please use that instead.",
   INVALID_INPUT: "Please enter a valid email and password.",
+  VALIDATION_ERROR: "Please enter a valid email and password.",
+  SERVER_ERROR: "Something went wrong. Please try again later.",
   CredentialsSignin: "Invalid email or password.",
 };
 
@@ -23,36 +25,63 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isRateLimited, setIsRateLimited] = useState(false);
+  const [retryAfter, setRetryAfter] = useState(0);
   const [isPending, setIsPending] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setIsRateLimited(false);
     setIsPending(true);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      callbackUrl,
-    });
+    try {
+      // ── Step 1: Pre-validate (gives us typed error codes) ─────
+      const { loginAction } = await import("@/actions/auth/login");
+      const check = await loginAction({ email, password });
 
-    setIsPending(false);
+      if (!check.success) {
+        if (check.code === "RATE_LIMITED") {
+          setIsRateLimited(true);
+          setRetryAfter(check.retryAfterSec ?? 0);
+          setError(check.error);
+          setIsPending(false);
+          return;
+        }
 
-    if (result?.error) {
-      const code = result.error.split(":").pop() ?? result.error;
-      setError(ERROR_MESSAGES[code] ?? "Sign-in failed. Please try again.");
-      return;
+        setError(check.error);
+        setIsPending(false);
+        return;
+      }
+
+      // ── Step 2: Credentials valid → NextAuth signIn ───────────
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl,
+      });
+
+      if (result?.error) {
+        const code = result.error.split(":").pop() ?? result.error;
+        setError(ERROR_MESSAGES[code] ?? "Sign-in failed. Please try again.");
+        setIsPending(false);
+        return;
+      }
+
+      // ── Step 3: Success ───────────────────────────────────────
+      router.push(callbackUrl);
+      router.refresh();
+    } catch (err) {
+      console.error("[LOGIN_FORM]", err);
+      setError("Something went wrong. Please try again.");
+      setIsPending(false);
     }
-
-    router.push(callbackUrl);
-    router.refresh();
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-4">
             <GraduationCap className="w-7 h-7 text-indigo-400" />
@@ -63,10 +92,8 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Card */}
         <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
             <div>
               <label
                 htmlFor="email"
@@ -87,7 +114,6 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Password */}
             <div>
               <label
                 htmlFor="password"
@@ -108,15 +134,29 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Error */}
-            {error && (
+            {error && isRateLimited && (
+              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-amber-500/5 border border-amber-500/20">
+                <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-amber-300">{error}</p>
+                  {retryAfter > 0 && (
+                    <p className="text-xs text-amber-400/70 mt-1">
+                      Please wait {Math.ceil(retryAfter / 60)} minute
+                      {Math.ceil(retryAfter / 60) === 1 ? "" : "s"} before
+                      trying again.
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {error && !isRateLimited && (
               <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
                 <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                 <p className="text-sm text-red-300">{error}</p>
               </div>
             )}
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={isPending || !email || !password}
@@ -133,7 +173,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Register link */}
           <p className="text-center text-sm text-slate-500 mt-6">
             Don&apos;t have an account?{" "}
             <Link

@@ -23,8 +23,8 @@ export const authOptions: AuthOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 24 * 60 * 60, // re-issue token once per day
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
   },
 
   pages: {
@@ -53,40 +53,37 @@ export const authOptions: AuthOptions = {
         const normalizedEmail = email.toLowerCase().trim();
 
         // ── 2. Rate limiting (IP + Email) ─────────────────────────
-        //   Runs BEFORE DB lookup and bcrypt.compare → saves resources
-        //   against brute-force attacks.
         try {
           const hdrs = await headers();
           const ipIdentifier = getClientIdentifier(hdrs);
           const emailIdentifier = `email:${normalizedEmail}`;
 
           const [ipLimit, emailLimit] = await Promise.all([
-            checkRateLimit(RateLimits.AUTH_LOGIN, ipIdentifier),
+            checkRateLimit(RateLimits.AUTH_LOGIN_IP, ipIdentifier),
             checkRateLimit(RateLimits.AUTH_LOGIN, emailIdentifier),
           ]);
 
           if (!ipLimit.allowed || !emailLimit.allowed) {
-            // Log the block for audit (visible in server logs)
             void auditLog({
               action: AuditActions.AUTH_LOGIN_RATE_LIMITED,
               metadata: {
                 email: normalizedEmail,
                 ipIdentifier,
+                ipRemaining: ipLimit.remaining,
+                emailRemaining: emailLimit.remaining,
               },
               severity: "CRITICAL",
             });
             console.warn(
-              `[AUTH_RATE_LIMIT] Blocked login attempt — IP:${ipIdentifier} email:${normalizedEmail}`
+              `[AUTH_RATE_LIMIT] Blocked — IP:${ipIdentifier} email:${normalizedEmail}`
             );
             throw new Error("RATE_LIMITED");
           }
         } catch (err) {
-          // If it's our rate-limit error → re-throw
           if (err instanceof Error && err.message === "RATE_LIMITED") {
             throw err;
           }
-          // Otherwise, headers() or Redis failed → fail-open (log + continue)
-          console.warn("[AUTH_RATE_LIMIT] Rate limit check failed:", err);
+          console.warn("[AUTH_RATE_LIMIT] Check failed:", err);
         }
 
         // ── 3. Fetch user ─────────────────────────────────────────
@@ -105,13 +102,11 @@ export const authOptions: AuthOptions = {
         });
 
         if (!user) {
-          void auditLog(
-            {
-              action: AuditActions.AUTH_LOGIN_FAILED,
-              metadata: { email: normalizedEmail, reason: "NO_ACCOUNT" },
-              severity: "WARNING",
-            }
-          );
+          void auditLog({
+            action: AuditActions.AUTH_LOGIN_FAILED,
+            metadata: { email: normalizedEmail, reason: "NO_ACCOUNT" },
+            severity: "WARNING",
+          });
           throw new Error("NO_ACCOUNT");
         }
 
@@ -155,7 +150,6 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      // Initial sign-in: populate token from DB user
       if (user) {
         token.id = user.id;
         token.role = user.role as Role;
@@ -164,7 +158,6 @@ export const authOptions: AuthOptions = {
         token.picture = user.image ?? null;
       }
 
-      // Session update triggered by useSession().update()
       if (trigger === "update" && session) {
         if (session.name) token.name = session.name;
         if (session.image) token.picture = session.image;
@@ -189,7 +182,6 @@ export const authOptions: AuthOptions = {
 
   events: {
     async signIn({ user, isNewUser }) {
-      // Log successful login
       void auditLog({
         action: AuditActions.AUTH_LOGIN_SUCCESS,
         userId: user.id!,
