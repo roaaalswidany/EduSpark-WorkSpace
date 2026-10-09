@@ -19,6 +19,14 @@ export function LevelCard({
 }: LevelCardProps) {
   const { current, next, progressPct, xpToNext, xpInLevel } = levelProgress;
 
+  // Consistent number formatting to avoid hydration mismatch
+  const xpFormatted = xp.toLocaleString("en-US");
+  const xpToNextFormatted = xpToNext.toLocaleString("en-US");
+  const xpInLevelFormatted = xpInLevel.toLocaleString("en-US");
+  const levelSpanFormatted = next
+    ? (next.minXP - current.minXP).toLocaleString("en-US")
+    : "0";
+
   return (
     <div
       className={cn(
@@ -27,7 +35,6 @@ export function LevelCard({
         current.bg
       )}
     >
-      {/* Background gradient blob */}
       <div
         className={cn(
           "absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-20 bg-linear-to-br",
@@ -36,7 +43,6 @@ export function LevelCard({
       />
 
       <div className="relative">
-        {/* Top row: Level + Rank */}
         <div className="flex items-start justify-between mb-6 gap-4">
           <div className="flex items-center gap-4">
             <div
@@ -69,18 +75,17 @@ export function LevelCard({
           </div>
         </div>
 
-        {/* XP + progress */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span className="text-sm font-bold text-white tabular-nums">
-                {xp.toLocaleString()} XP
+                {xpFormatted} XP
               </span>
             </div>
             {next && (
               <p className="text-xs text-slate-500 tabular-nums">
-                {xpToNext.toLocaleString()} to {next.label}
+                {xpToNextFormatted} to {next.label}
               </p>
             )}
           </div>
@@ -95,13 +100,11 @@ export function LevelCard({
           </div>
           {next && (
             <p className="text-[10px] text-slate-600 mt-1.5">
-              {xpInLevel.toLocaleString()} / {(next.minXP - current.minXP).toLocaleString()} XP
-              in this level
+              {xpInLevelFormatted} / {levelSpanFormatted} XP in this level
             </p>
           )}
         </div>
 
-        {/* Stats grid */}
         <div className="grid grid-cols-3 gap-3">
           <StatBox
             icon={Trophy}

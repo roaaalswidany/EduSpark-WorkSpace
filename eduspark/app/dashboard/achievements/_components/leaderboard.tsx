@@ -29,7 +29,6 @@ export function Leaderboard({ entries }: LeaderboardProps) {
       </div>
 
       <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-        {/* Top 3 podium */}
         {entries.length >= 3 && (
           <div className="grid grid-cols-3 gap-2 p-4 bg-linear-to-b from-amber-500/5 to-transparent border-b border-slate-800">
             <PodiumCard entry={entries[1]} position={2} />
@@ -38,7 +37,6 @@ export function Leaderboard({ entries }: LeaderboardProps) {
           </div>
         )}
 
-        {/* Rest of the list */}
         <div className="divide-y divide-slate-800">
           {entries.slice(3).map((entry) => (
             <LeaderboardRow key={entry.userId} entry={entry} />
@@ -59,11 +57,30 @@ function PodiumCard({
   if (!entry) return <div />;
 
   const level = getLevelForXP(entry.xp);
+  const xpFormatted = entry.xp.toLocaleString("en-US");
 
   const config = {
-    1: { icon: Crown, color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/30", size: "w-14 h-14" },
-    2: { icon: Trophy, color: "text-slate-300", bg: "bg-slate-300/10", border: "border-slate-300/30", size: "w-12 h-12" },
-    3: { icon: Medal, color: "text-amber-600", bg: "bg-amber-600/10", border: "border-amber-600/30", size: "w-12 h-12" },
+    1: {
+      icon: Crown,
+      color: "text-yellow-400",
+      bg: "bg-yellow-400/10",
+      border: "border-yellow-400/30",
+      size: "w-14 h-14",
+    },
+    2: {
+      icon: Trophy,
+      color: "text-slate-300",
+      bg: "bg-slate-300/10",
+      border: "border-slate-300/30",
+      size: "w-12 h-12",
+    },
+    3: {
+      icon: Medal,
+      color: "text-amber-600",
+      bg: "bg-amber-600/10",
+      border: "border-amber-600/30",
+      size: "w-12 h-12",
+    },
   }[position];
 
   const Icon = config.icon;
@@ -80,7 +97,12 @@ function PodiumCard({
     >
       <Icon className={cn("w-5 h-5", config.color)} />
 
-      <div className={cn("rounded-full ring-2 ring-slate-700 shrink-0 overflow-hidden", config.size)}>
+      <div
+        className={cn(
+          "rounded-full ring-2 ring-slate-700 shrink-0 overflow-hidden",
+          config.size
+        )}
+      >
         {entry.image ? (
           <Image
             src={entry.image}
@@ -101,7 +123,7 @@ function PodiumCard({
           {entry.name.split(" ")[0]}
         </p>
         <p className={cn("text-[10px] font-bold tabular-nums", level.color)}>
-          {entry.xp.toLocaleString()} XP
+          {xpFormatted} XP
         </p>
       </div>
     </Link>
@@ -110,6 +132,7 @@ function PodiumCard({
 
 function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
   const level = getLevelForXP(entry.xp);
+  const xpFormatted = entry.xp.toLocaleString("en-US");
 
   return (
     <Link
@@ -121,14 +144,12 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
           : "hover:bg-slate-800/40"
       )}
     >
-      {/* Rank */}
       <div className="w-8 text-center shrink-0">
         <span className="text-xs font-bold text-slate-500 tabular-nums">
           #{entry.rank}
         </span>
       </div>
 
-      {/* Avatar */}
       <div className="w-9 h-9 rounded-full ring-2 ring-slate-800 overflow-hidden shrink-0">
         {entry.image ? (
           <Image
@@ -145,7 +166,6 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
         )}
       </div>
 
-      {/* Name + level */}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-white truncate">
           {entry.name}
@@ -160,10 +180,9 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
         </p>
       </div>
 
-      {/* XP */}
       <div className="text-right shrink-0">
         <p className="text-sm font-black text-white tabular-nums">
-          {entry.xp.toLocaleString()}
+          {xpFormatted}
         </p>
         <p className="text-[9px] text-slate-600 uppercase tracking-widest">
           XP

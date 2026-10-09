@@ -31,6 +31,10 @@ export function SidebarXpBadge({
   nextLevelLabel,
   onNavigate,
 }: SidebarXpBadgeProps) {
+  // Format numbers consistently across SSR and client to avoid hydration mismatch
+  const xpFormatted = xp.toLocaleString("en-US");
+  const xpToNextFormatted = xpToNext.toLocaleString("en-US");
+
   return (
     <Link
       href="/dashboard/achievements"
@@ -44,7 +48,6 @@ export function SidebarXpBadge({
       )}
     >
       <div className="flex items-center gap-2.5 mb-2">
-        {/* Level icon circle */}
         <div
           className={cn(
             "flex items-center justify-center w-9 h-9 rounded-lg shrink-0",
@@ -55,7 +58,6 @@ export function SidebarXpBadge({
           <span>{levelIcon}</span>
         </div>
 
-        {/* XP + level label */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1">
             <p className={cn("text-xs font-bold truncate", levelColor)}>
@@ -64,12 +66,11 @@ export function SidebarXpBadge({
           </div>
           <p className="text-[10px] text-slate-500 tabular-nums">
             <Sparkles className="w-2.5 h-2.5 inline mr-0.5" />
-            {xp.toLocaleString()} XP
+            {xpFormatted} XP
           </p>
         </div>
       </div>
 
-      {/* Progress bar */}
       <div className="space-y-1">
         <div className="h-1.5 rounded-full bg-slate-950 overflow-hidden">
           <div
@@ -82,7 +83,7 @@ export function SidebarXpBadge({
         </div>
         {nextLevelLabel && (
           <p className="text-[9px] text-slate-600 tabular-nums">
-            {xpToNext.toLocaleString()} XP to {nextLevelLabel}
+            {xpToNextFormatted} XP to {nextLevelLabel}
           </p>
         )}
         {!nextLevelLabel && (
