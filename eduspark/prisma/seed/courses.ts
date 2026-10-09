@@ -613,7 +613,12 @@ export async function seedCourses(
     const spec = allSpecs[i];
     const creator = creators[i % creators.length];
     const category = categoryBySlug.get(spec.categorySlug);
-    const slug = slugify(spec.title);
+      // Arabic titles get clean English slugs (avoids URL encoding issues in
+    // Next.js client-side navigation — fixes 404s from CareerPath timeline).
+    const isArabicTitle = /[\u0600-\u06FF]/.test(spec.title);
+    const slug = isArabicTitle
+      ? `${spec.categorySlug}-ar-${i + 1}`
+      : slugify(spec.title);
     const thumbnail =
       PLACEHOLDER_THUMBNAILS[i % PLACEHOLDER_THUMBNAILS.length];
 
