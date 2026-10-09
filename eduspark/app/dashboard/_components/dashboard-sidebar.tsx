@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { SidebarXpBadge } from "./sidebar-xp-badge";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -22,6 +23,7 @@ import {
   Inbox,
   ShoppingBag,
   Target,
+  Trophy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
@@ -61,6 +63,7 @@ const SECTIONS: NavSection[] = [
     items: [
       { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
       { label: "Career Path", href: "/dashboard/career-path", icon: Target },
+      { label: "Achievements", href: "/dashboard/achievements", icon: Trophy },
       { label: "Messages", href: "/dashboard/chat", icon: MessageSquare },
     ],
   },
@@ -82,6 +85,20 @@ const SECTIONS: NavSection[] = [
   },
 ];
 
+interface GamificationData {
+  xp: number;
+  level: string;
+  levelLabel: string;
+  levelIcon: string;
+  levelColor: string;
+  levelBg: string;
+  levelBorder: string;
+  levelGradient: string;
+  progressPct: number;
+  xpToNext: number;
+  nextLevelLabel: string | null;
+}
+
 interface DashboardSidebarProps {
   role: Role;
   user: {
@@ -89,6 +106,7 @@ interface DashboardSidebarProps {
     email: string;
     image: string | null;
   };
+  gamification: GamificationData;
   onNavigate?: () => void;
 }
 
@@ -140,6 +158,7 @@ function Avatar({
 export function DashboardSidebar({
   role,
   user,
+  gamification,
   onNavigate,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
@@ -214,6 +233,21 @@ export function DashboardSidebar({
 
       {/* User footer — Profile link + Sign out */}
       <div className="shrink-0 border-t border-slate-800 p-3 space-y-1">
+      {/* XP Badge */}
+        <SidebarXpBadge
+          xp={gamification.xp}
+          levelLabel={gamification.levelLabel}
+          levelIcon={gamification.levelIcon}
+          levelColor={gamification.levelColor}
+          levelBg={gamification.levelBg}
+          levelBorder={gamification.levelBorder}
+          levelGradient={gamification.levelGradient}
+          progressPct={gamification.progressPct}
+          xpToNext={gamification.xpToNext}
+          nextLevelLabel={gamification.nextLevelLabel}
+          onNavigate={onNavigate}
+        />
+
         {/* Profile card */}
         <Link
           href="/dashboard/profile"

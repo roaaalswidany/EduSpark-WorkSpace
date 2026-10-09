@@ -23,13 +23,29 @@ interface DashboardShellProps {
     image: string | null;
   };
   unreadNotifications: number;
+  gamification: GamificationData;
   children: React.ReactNode;
+}
+
+interface GamificationData {
+  xp: number;
+  level: string;
+  levelLabel: string;
+  levelIcon: string;
+  levelColor: string;
+  levelBg: string;
+  levelBorder: string;
+  levelGradient: string;
+  progressPct: number;
+  xpToNext: number;
+  nextLevelLabel: string | null;
 }
 
 export function DashboardShell({
   role,
   user,
   unreadNotifications,
+  gamification,
   children,
 }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -45,8 +61,8 @@ export function DashboardShell({
       >
         <div className="min-h-screen bg-slate-950 text-slate-100">
           {/* Desktop sidebar */}
-          <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex">
-            <DashboardSidebar role={role} user={user} />
+            <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex">
+            <DashboardSidebar role={role} user={user} gamification={gamification} />
           </div>
 
           {/* Mobile drawer */}
@@ -69,6 +85,7 @@ export function DashboardShell({
                   <DashboardSidebar
                     role={role}
                     user={user}
+                    gamification={gamification}
                     onNavigate={handleNavigate}
                   />
                 </div>

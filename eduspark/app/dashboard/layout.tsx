@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { DashboardShell } from "./_components/dashboard-shell";
+import { getLevelProgress } from "@/lib/gamification/levels";
 
 export default async function DashboardLayout({
   children,
@@ -14,7 +15,7 @@ export default async function DashboardLayout({
 
   const userId = session.user.id;
 
-  const [user, unreadCount] = await Promise.all([
+  const [user, unreadCount, stats] = await Promise.all([
     db.user.findUnique({
       where: { id: userId },
       select: {
@@ -28,9 +29,16 @@ export default async function DashboardLayout({
     db.notification.count({
       where: { userId, isRead: false },
     }),
+    db.userStats.findUnique({
+      where: { userId },
+      select: { xp: true, level: true },
+    }),
   ]);
 
   if (!user) redirect("/auth/login");
+
+  const xp = stats?.xp ?? 0;
+  const levelProgress = getLevelProgress(xp);
 
   return (
     <DashboardShell
@@ -42,6 +50,19 @@ export default async function DashboardLayout({
         image: user.image,
       }}
       unreadNotifications={unreadCount}
+      gamification={{
+        xp,
+        level: levelProgress.current.key,
+        levelLabel: levelProgress.current.label,
+        levelIcon: levelProgress.current.icon,
+        levelColor: levelProgress.current.color,
+        levelBg: levelProgress.current.bg,
+        levelBorder: levelProgress.current.border,
+        levelGradient: levelProgress.current.gradient,
+        progressPct: levelProgress.progressPct,
+        xpToNext: levelProgress.xpToNext,
+        nextLevelLabel: levelProgress.next?.label ?? null,
+      }}
     >
       {children}
     </DashboardShell>
