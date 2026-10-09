@@ -2,9 +2,15 @@
 
 import { z } from "zod";
 import bcrypt from "bcryptjs";
+import { headers } from "next/headers";
 import { db } from "@/lib/db";
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  RateLimits,
+} from "@/lib/security/rate-limit";
 
-// ─── Schema ───────────────────────────────────────────────────────────────────
+// ─── Schema ───────────────────────────────────────────────────────
 
 const LoginSchema = z.object({
   email: z
@@ -18,22 +24,19 @@ const LoginSchema = z.object({
     .max(72, "Password is too long."),
 });
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────
 
 export type LoginInput = z.infer<typeof LoginSchema>;
 
 type FieldErrors = Partial<Record<keyof LoginInput, string[]>>;
 
-/**
- * LoginResult carries a typed status code so client components can
- * branch behavior without string-matching error messages.
- */
 export type LoginResult =
   | { success: true }
   | {
       success: false;
       code:
         | "VALIDATION_ERROR"
+        | "RATE_LIMITED"
         | "NO_ACCOUNT"
         | "INVALID_PASSWORD"
         | "ACCOUNT_DISABLED"
@@ -41,23 +44,13 @@ export type LoginResult =
         | "SERVER_ERROR";
       error: string;
       fieldErrors?: FieldErrors;
+      retryAfterSec?: number;
     };
 
-// ─── Action ───────────────────────────────────────────────────────────────────
+// ─── Action ───────────────────────────────────────────────────────
 
-/**
- * Pre-validates credentials against the database before the client
- * calls `signIn('credentials', ...)` from next-auth/react.
- *
- * This gives us:
- *  1. Typed, granular error messages (not NextAuth's generic "CredentialsSignin")
- *  2. Full Zod validation on the server before any DB call
- *  3. A single source of truth for credential logic
- *
- * The client component calls this action first, and only invokes
- * NextAuth's `signIn` when this returns `{ success: true }`.
- */
 export async function loginAction(rawInput: LoginInput): Promise<LoginResult> {
+  // ── 1. Validate input ─────────────────────────────────────────
   const parsed = LoginSchema.safeParse(rawInput);
 
   if (!parsed.success) {
@@ -71,6 +64,36 @@ export async function loginAction(rawInput: LoginInput): Promise<LoginResult> {
 
   const { email, password } = parsed.data;
 
+  // ── 2. Rate limiting ──────────────────────────────────────────
+  //   Layer A: per IP (prevents distributed brute force from one host)
+  //   Layer B: per email (prevents targeted attacks from many IPs)
+  const hdrs = await headers();
+  const ipIdentifier = getClientIdentifier(hdrs);
+  const emailIdentifier = `email:${email}`;
+
+  const [ipLimit, emailLimit] = await Promise.all([
+    checkRateLimit(RateLimits.AUTH_LOGIN, ipIdentifier),
+    checkRateLimit(RateLimits.AUTH_LOGIN, emailIdentifier),
+  ]);
+
+  if (!ipLimit.allowed || !emailLimit.allowed) {
+    const retryAfter = Math.max(
+      ipLimit.retryAfterSec,
+      emailLimit.retryAfterSec
+    );
+    const minutes = Math.ceil(retryAfter / 60);
+
+    return {
+      success: false,
+      code: "RATE_LIMITED",
+      error: `Too many login attempts. Please try again in ${minutes} minute${
+        minutes === 1 ? "" : "s"
+      }.`,
+      retryAfterSec: retryAfter,
+    };
+  }
+
+  // ── 3. Fetch user ─────────────────────────────────────────────
   const user = await db.user.findUnique({
     where: { email },
     select: {
@@ -106,6 +129,7 @@ export async function loginAction(rawInput: LoginInput): Promise<LoginResult> {
     };
   }
 
+  // ── 4. Verify password ────────────────────────────────────────
   const passwordMatch = await bcrypt.compare(password, user.password);
 
   if (!passwordMatch) {
