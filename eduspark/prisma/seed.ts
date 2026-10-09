@@ -26,6 +26,7 @@ import { seedChat } from "./seed/chat";
 import { seedNotifications } from "./seed/notifications";
 import { seedAiConversations } from "./seed/ai-conversations";
 import { cleanupAll } from "./seed/cleanup";
+import { seedBadges } from "./seed/badges";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -49,6 +50,8 @@ async function main(): Promise<void> {
 
   // ── 1. Users ──────────────────────────────────────────────────
   const users = await seedUsers(db);
+    // ── Badges ────────────────────────────────────────────────────
+  await seedBadges(db);
 
   // ── 2. Categories ─────────────────────────────────────────────
   const categories = await seedCategories(db);

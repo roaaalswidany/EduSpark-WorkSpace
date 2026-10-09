@@ -79,8 +79,8 @@ function getClient(): GoogleGenAI | null {
         timeout: REQUEST_TIMEOUT_MS,
         retryOptions: {
           attempts: MAX_RETRIES + 1,
-          initialDelayMs: 2000,
-          maxDelayMs: 8000,
+          initialDelay: 2000,
+          maxDelay: 8000,
         },
       },
     });

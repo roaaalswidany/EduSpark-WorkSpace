@@ -143,7 +143,9 @@ model User {
   chatMessages       ChatMessage[]
   chatParticipations ChatRoomParticipant[]
   aiConversations    AiConversation[]
-    careerPaths        CareerPath[]
+  careerPaths        CareerPath[]
+  stats              UserStats?
+  badges             UserBadge[]
 
   @@index([email])
   @@index([role])
@@ -764,4 +766,58 @@ model CareerPathStep {
 
   @@index([pathId, order])
   @@map("career_path_steps")
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// GAMIFICATION MODELS
+// ─────────────────────────────────────────────────────────────────
+
+model UserStats {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  xp             Int       @default(0)
+  level          String    @default("BRONZE")
+  currentStreak  Int       @default(0)
+  longestStreak  Int       @default(0)
+  lastActiveDate DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([xp])
+  @@index([level])
+  @@map("user_stats")
+}
+
+model Badge {
+  id            String   @id @default(cuid())
+  key           String   @unique
+  name          String
+  nameAr        String
+  description   String   @db.Text
+  descriptionAr String   @db.Text
+  icon          String
+  tier          String   @default("COMMON")
+  xpReward      Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  userBadges UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id       String   @id @default(cuid())
+  userId   String
+  badgeId  String
+  earnedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@index([userId, earnedAt])
+  @@map("user_badges")
 }
