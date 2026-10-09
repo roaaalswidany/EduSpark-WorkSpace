@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { EnrollmentStatus } from "@prisma/client";
+import { awardXP } from "@/lib/gamification/award";
 
 // ─── Schema & Types ───────────────────────────────────────────────────────────
 
@@ -69,6 +70,11 @@ export async function trackProgressAction(
 
     // Short-circuit: course already completed — idempotent guard
     if (enrollment.isPassed) {
+    // ── Award XP (fire-and-forget, doesn't block response) ─────────
+    void awardXP(userId, "LESSON_COMPLETED").catch((err) =>
+      console.error("[GAMIFICATION] track-progress lesson XP:", err)
+    );
+
       const [completedLessons, totalLessons] = await Promise.all([
         db.lessonProgress.count({
           where: { enrollmentId: enrollment.id, completed: true },
@@ -129,6 +135,13 @@ export async function trackProgressAction(
         }),
       },
     });
+
+    // ── Award course completion XP (if just finished) ──────────────
+    if (isPassed) {
+      void awardXP(userId, "COURSE_COMPLETED").catch((err) =>
+        console.error("[GAMIFICATION] course completion XP:", err)
+      );
+    }
 
     revalidatePath(`/dashboard/student/courses/${courseId}`);
 

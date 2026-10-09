@@ -12,6 +12,7 @@ import {
 } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { emitNotification } from "@/lib/notifications/emit";
+import { awardXP } from "@/lib/gamification/award";
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 
@@ -201,6 +202,11 @@ export async function orderServiceAction(
     });
 
     // ── Emit real-time notification to creator (fire-and-forget) ─────────────
+        // ── Award XP to seller (fire-and-forget) ────────────────────────
+    void awardXP(service.creatorId, "ORDER_RECEIVED").catch((err) =>
+      console.error("[GAMIFICATION] order received XP:", err)
+    );
+
     void emitNotification({
       userId: service.creatorId,
       notification: {

@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
+import { awardXP } from "@/lib/gamification/award";
 
 const UpdateStepSchema = z.object({
   stepId: z.string().cuid(),
@@ -68,6 +69,94 @@ export async function updateStepStatusAction(
         where: { id: step.path.id },
         data: { status: "COMPLETED" },
       });
+    }
+
+    // ── Award XP based on new status (fire-and-forget) ──────────────
+    if (status === "IN_PROGRESS") {
+      void awardXP(session.user.id, "CAREER_PATH_STEP_STARTED").catch((err) =>
+        console.error("[GAMIFICATION] step started XP:", err)
+      );
+    } else if (status === "COMPLETED") {
+      void awardXP(session.user.id, "CAREER_PATH_STEP_COMPLETED").catch(
+        (err) => console.error("[GAMIFICATION] step completed XP:", err)
+      );
+
+      // If this completed the whole path, award the completion bonus
+      const allSteps = await db.careerPathStep.findMany({
+        where: { pathId: step.path.id },
+        select: { status: true },
+      });
+      if (allSteps.every((s) => s.status === "COMPLETED")) {
+        void awardXP(session.user.id, "CAREER_PATH_COMPLETED").catch((err) =>
+          console.error("[GAMIFICATION] path completed XP:", err)
+        );
+      }
+    }
+
+    // ── Award XP based on new status (fire-and-forget) ──────────────
+    if (status === "IN_PROGRESS") {
+      void awardXP(session.user.id, "CAREER_PATH_STEP_STARTED").catch((err) =>
+        console.error("[GAMIFICATION] step started XP:", err)
+      );
+    } else if (status === "COMPLETED") {
+      void awardXP(session.user.id, "CAREER_PATH_STEP_COMPLETED").catch(
+        (err) => console.error("[GAMIFICATION] step completed XP:", err)
+      );
+
+      // If this completed the whole path, award the completion bonus
+      const allSteps = await db.careerPathStep.findMany({
+        where: { pathId: step.path.id },
+        select: { status: true },
+      });
+      if (allSteps.every((s) => s.status === "COMPLETED")) {
+        void awardXP(session.user.id, "CAREER_PATH_COMPLETED").catch((err) =>
+          console.error("[GAMIFICATION] path completed XP:", err)
+        );
+      }
+    }
+
+     // ── Award XP based on new status (fire-and-forget) ──────────────
+    if (status === "IN_PROGRESS") {
+      void awardXP(session.user.id, "CAREER_PATH_STEP_STARTED").catch((err) =>
+        console.error("[GAMIFICATION] step started XP:", err)
+      );
+    } else if (status === "COMPLETED") {
+      void awardXP(session.user.id, "CAREER_PATH_STEP_COMPLETED").catch(
+        (err) => console.error("[GAMIFICATION] step completed XP:", err)
+      );
+
+      // If this completed the whole path, award the completion bonus
+      const allSteps = await db.careerPathStep.findMany({
+        where: { pathId: step.path.id },
+        select: { status: true },
+      });
+      if (allSteps.every((s) => s.status === "COMPLETED")) {
+        void awardXP(session.user.id, "CAREER_PATH_COMPLETED").catch((err) =>
+          console.error("[GAMIFICATION] path completed XP:", err)
+        );
+      }
+    }
+
+    // ── Award XP based on new status (fire-and-forget) ──────────────
+    if (status === "IN_PROGRESS") {
+      void awardXP(session.user.id, "CAREER_PATH_STEP_STARTED").catch((err) =>
+        console.error("[GAMIFICATION] step started XP:", err)
+      );
+    } else if (status === "COMPLETED") {
+      void awardXP(session.user.id, "CAREER_PATH_STEP_COMPLETED").catch(
+        (err) => console.error("[GAMIFICATION] step completed XP:", err)
+      );
+
+      // If this completed the whole path, award the completion bonus
+      const allSteps = await db.careerPathStep.findMany({
+        where: { pathId: step.path.id },
+        select: { status: true },
+      });
+      if (allSteps.every((s) => s.status === "COMPLETED")) {
+        void awardXP(session.user.id, "CAREER_PATH_COMPLETED").catch((err) =>
+          console.error("[GAMIFICATION] path completed XP:", err)
+        );
+      }
     }
 
     revalidatePath("/dashboard/career-path");

@@ -7,6 +7,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { Role } from "@prisma/client";
+import { awardXP } from "@/lib/gamification/award";
+
 
 // ─── Credential ID Generator ──────────────────────────────────────────────────
 // Format: EDU-<BASE36_TIMESTAMP>-<RANDOM_HEX> — human-readable, URL-safe, unique
@@ -244,13 +246,23 @@ const correctCount = gradedAnswers.filter((a) => a.isCorrect).length;
       };
     });
 
-    // ── 8. Revalidate affected paths ─────────────────────────────────────────
+    // ── Award quiz XP (fire-and-forget, doesn't block response) ─────
+    if (passed) {
+      void awardXP(userId, "QUIZ_PASSED").catch((err) =>
+        console.error("[GAMIFICATION] quiz passed XP:", err)
+      );
+    } else {
+      void awardXP(userId, "QUIZ_FAILED").catch((err) =>
+        console.error("[GAMIFICATION] quiz failed XP:", err)
+      );
+    }
+
+    // ─── 8. Revalidate affected paths ───────────────────────────────
     revalidatePath(`/dashboard/student/courses/${courseId}`);
     if (txResult.roleUpgraded) {
       revalidatePath("/dashboard");
       revalidatePath("/dashboard/creator");
     }
-
     return {
       success: true,
       data: {

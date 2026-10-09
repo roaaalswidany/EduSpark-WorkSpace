@@ -8,6 +8,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { CourseStatus } from "@prisma/client";
 import { generateCareerPath } from "@/lib/ai/career-path-generator";
+import { awardXP } from "@/lib/gamification/award";
 
 // ─── Validation ───────────────────────────────────────────────────
 
@@ -193,6 +194,11 @@ export async function generateCareerPathAction(
     });
 
     // 8. Revalidate
+    // ── Award XP (fire-and-forget) ──────────────────────────────────
+    void awardXP(userId, "CAREER_PATH_CREATED").catch((err) =>
+      console.error("[GAMIFICATION] career path XP:", err)
+    );
+
     revalidatePath("/dashboard/career-path");
 
     return { success: true, pathId: result.pathId };
