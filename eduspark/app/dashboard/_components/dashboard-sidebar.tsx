@@ -47,6 +47,8 @@ const SECTIONS: NavSection[] = [
     title: "Main",
     items: [
       { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
+      { label: "Career Path", href: "/dashboard/career-path", icon: Target },
+      { label: "Achievements", href: "/dashboard/achievements", icon: Trophy },
       { label: "Messages", href: "/dashboard/chat", icon: MessageSquare },
     ],
   },
@@ -61,10 +63,9 @@ const SECTIONS: NavSection[] = [
   {
     title: "Work",
     items: [
-      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
-      { label: "Career Path", href: "/dashboard/career-path", icon: Target },
-      { label: "Achievements", href: "/dashboard/achievements", icon: Trophy },
-      { label: "Messages", href: "/dashboard/chat", icon: MessageSquare },
+      { label: "Marketplace", href: "/marketplace", icon: Store },
+      { label: "My Orders", href: "/dashboard/orders", icon: ShoppingBag },
+      { label: "My Projects", href: "/dashboard/projects", icon: Briefcase },
     ],
   },
   {
