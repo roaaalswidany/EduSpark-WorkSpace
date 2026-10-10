@@ -66,8 +66,8 @@ export default async function HomePage() {
       ═══════════════════════════════════════════════════════ */}
       <section className="relative">
         {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/40 via-slate-950 to-slate-950" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-500/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-b from-indigo-950/40 via-slate-950 to-slate-950" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-200 h-100 bg-indigo-500/20 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 lg:pt-28 lg:pb-32">
           <div className="text-center max-w-3xl mx-auto">
@@ -81,7 +81,7 @@ export default async function HomePage() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.05] mb-6">
               Learn. Certify.
               <br />
-              <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
                 Build your career.
               </span>
             </h1>
@@ -258,7 +258,7 @@ export default async function HomePage() {
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-600/30 to-violet-600/30">
+                      <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-indigo-600/30 to-violet-600/30">
                         <GraduationCap className="w-12 h-12 text-white/30" />
                       </div>
                     )}
@@ -349,9 +349,9 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           EXTRA FEATURES GRID
       ═══════════════════════════════════════════════════════ */}
-      <section className="bg-slate-900/30 border-y border-slate-800/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <section className="relative border-y border-slate-800/60 bg-slate-950/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-8">
             <SmallFeature
               icon={Target}
               title="AI Career Paths"
@@ -390,10 +390,10 @@ export default async function HomePage() {
           FINAL CTA
       ═══════════════════════════════════════════════════════ */}
       <section className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-indigo-950/20 to-slate-950" />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-indigo-950/20 to-slate-950" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="rounded-3xl bg-gradient-to-br from-indigo-600/20 via-violet-600/10 to-fuchsia-600/20 border border-indigo-500/20 p-10 sm:p-14 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-indigo-500/30">
+          <div className="rounded-3xl bg-linear-to-br from-indigo-600/20 via-violet-600/10 to-fuchsia-600/20 border border-indigo-500/20 p-10 sm:p-14 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-indigo-500/30">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
@@ -473,7 +473,7 @@ export default async function HomePage() {
             </div>
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
                   <Sparkles className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-sm font-black text-white">EduSpark</span>
@@ -512,12 +512,12 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="text-center">
-      <Icon className={`w-5 h-5 mx-auto mb-2 ${color}`} />
+    <div className="text-center px-2">
+      <Icon className={`w-5 h-5 mx-auto mb-3 ${color}`} />
       <p className="text-3xl sm:text-4xl font-black text-white tabular-nums leading-none">
         {value.toLocaleString("en-US")}
       </p>
-      <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mt-2">
+      <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-widest text-slate-500 mt-3 leading-tight">
         {label}
       </p>
     </div>
@@ -542,7 +542,7 @@ function FeatureCard({
   const content = (
     <div className="group rounded-3xl bg-slate-900 border border-slate-800 p-7 sm:p-8 h-full transition-all hover:border-slate-700 hover:-translate-y-0.5">
       <div
-        className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-5 shadow-lg`}
+        className={`w-12 h-12 rounded-2xl bg-linear-to-br ${gradient} flex items-center justify-center mb-5 shadow-lg`}
       >
         <Icon className="w-6 h-6 text-white" />
       </div>
@@ -585,7 +585,7 @@ function Step({
   return (
     <div className="relative">
       {/* Connecting line */}
-      <div className="hidden md:block absolute top-8 left-[calc(50%+60px)] right-[calc(-50%+60px)] h-px bg-gradient-to-r from-slate-800 to-transparent" />
+      <div className="hidden md:block absolute top-8 left-[calc(50%+60px)] right-[calc(-50%+60px)] h-px bg-linear-to-r from-slate-800 to-transparent" />
 
       <div className={`relative rounded-3xl ${bg} ${border} border p-7`}>
         <div className="flex items-center gap-4 mb-5">
