@@ -340,12 +340,13 @@ export function ServicesTable({
               const isLastRow = idx === services.length - 1;
 
               return (
-                <div
+                  <div
                   key={s.id}
-                  className="grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
+                  className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
                 >
-                  {/* Service */}
-                  <div className="flex items-center gap-3 min-w-0">
+                
+                   {/* Service */}
+                  <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
                     <ServiceThumb
                       id={s.id}
                       title={s.title}
@@ -410,7 +411,7 @@ export function ServicesTable({
                   </div>
 
                   {/* Menu */}
-                  <div className="relative lg:justify-self-end">
+                  <div className="absolute top-4 right-4 lg:static lg:justify-self-end">
                     {isPendingService ? (
                       <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
                     ) : (
