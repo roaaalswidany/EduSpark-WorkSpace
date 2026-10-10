@@ -4,7 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Loader2, GraduationCap, AlertCircle, Clock } from "lucide-react";
+import { Loader2, GraduationCap, AlertCircle, Clock, Sparkles } from "lucide-react";
 
 const ERROR_MESSAGES: Record<string, string> = {
   NO_ACCOUNT: "No account found with this email.",
@@ -78,15 +78,22 @@ export function LoginForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4">
       <div className="w-full max-w-md">
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-4">
-            <GraduationCap className="w-7 h-7 text-indigo-400" />
-          </div>
-          <h1 className="text-2xl font-bold text-white">Welcome back</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Sign in to continue to EduSpark
-          </p>
-        </div>
+ <div className="flex flex-col items-center mb-8">
+  {/* Logo — clickable, matches landing page branding */}
+  <Link href="/" className="flex items-center gap-2.5 mb-7 group">
+    <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform">
+      <Sparkles className="w-5 h-5 text-white" />
+    </div>
+    <span className="text-xl font-black text-white tracking-tight">
+      EduSpark
+    </span>
+  </Link>
+
+  <h1 className="text-2xl font-bold text-white">Welcome back</h1>
+  <p className="text-sm text-slate-500 mt-1">
+    Sign in to continue to EduSpark
+  </p>
+</div>
 
         <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
