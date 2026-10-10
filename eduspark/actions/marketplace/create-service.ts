@@ -70,7 +70,7 @@ export async function createServiceAction(
 
     const {
       courseId,
-      categoryId,
+      categoryId: userCategoryId,
       title,
       description,
       price,
@@ -80,18 +80,38 @@ export async function createServiceAction(
       portfolioLinks,
     } = parsed.data;
 
+    // The category is DERIVED from the certificate's course (creators)
+    // or taken from user input (admins). Default to user input.
+    let effectiveCategoryId: string | null = userCategoryId;
+
     // 4. Certificate ownership gate
-    // Admins bypass certificate requirement
+    // Admins bypass certificate requirement and keep their chosen category.
     if (role !== Role.ADMIN) {
       const certificate = await db.certificate.findUnique({
         where: {
           userId_courseId: { userId, courseId },
         },
-        select: { id: true },
+        select: {
+          id: true,
+          course: {
+            select: { categoryId: true },
+          },
+        },
       });
 
       if (!certificate) {
         return { success: false, error: "NO_CERTIFICATE" };
+      }
+
+      // 🔒 Lock the category to the certificate's course category.
+      // This prevents a creator from offering a service in a category
+      // they have not been certified in.
+      if (certificate.course.categoryId) {
+        effectiveCategoryId = certificate.course.categoryId;
+      } else {
+        // If the certified course has no category, force null
+        // rather than accepting an arbitrary user-supplied category.
+        effectiveCategoryId = null;
       }
     }
 
@@ -111,7 +131,7 @@ export async function createServiceAction(
         portfolioLinks,
         status: ServiceStatus.ACTIVE,
         creatorId: userId,
-        categoryId: categoryId ?? null,
+        categoryId: effectiveCategoryId,
       },
       select: { id: true, slug: true },
     });
