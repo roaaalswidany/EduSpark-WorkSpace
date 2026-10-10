@@ -70,10 +70,16 @@ export default async function MarketplacePage() {
   ]);
 
   // Serialize Prisma Decimal → plain number for client component hydration
+  // NOTE: When the data comes from Redis cache, createdAt is already a
+  // string (JSON.parse turns Date into string). When it comes fresh from
+  // Prisma, it's a Date object. Handle both cases.
   const services: ServiceCardData[] = rawServices.map((s) => ({
     ...s,
     price: Number(s.price),
-    createdAt: s.createdAt.toISOString(),
+    createdAt:
+      s.createdAt instanceof Date
+        ? s.createdAt.toISOString()
+        : String(s.createdAt),
   }));
 
   const categoryOptions: CategoryFilterOption[] = categories;
