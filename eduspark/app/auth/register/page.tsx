@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, GraduationCap, AlertCircle, Check } from "lucide-react";
+import {
+  Loader2,
+  Sparkles,
+  AlertCircle,
+  Check,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { registerAction, type RegisterInput } from "@/actions/auth/register";
 
 type FieldErrors = Partial<Record<keyof RegisterInput, string[]>>;
@@ -23,6 +30,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [role, setRole] = useState<"STUDENT" | "CREATOR">("STUDENT");
 
   const [isPending, setIsPending] = useState(false);
@@ -51,7 +60,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // نجاح → توجيه لصفحة الدخول مع رسالة نجاح
     router.push("/auth/login?registered=1");
   }
 
@@ -63,16 +71,20 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-4">
-            <GraduationCap className="w-7 h-7 text-indigo-400" />
-          </div>
+          <Link href="/" className="flex items-center gap-2.5 mb-7 group">
+            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-black text-white tracking-tight">
+              EduSpark
+            </span>
+          </Link>
           <h1 className="text-2xl font-bold text-white">Create your account</h1>
           <p className="text-sm text-slate-500 mt-1">
             Join EduSpark and start learning
           </p>
         </div>
 
-        {/* Card */}
         <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name */}
@@ -127,7 +139,7 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Password */}
+            {/* Password — with show/hide toggle */}
             <div>
               <label
                 htmlFor="password"
@@ -135,17 +147,32 @@ export default function RegisterPage() {
               >
                 Password
               </label>
-              <input
-                id="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isPending}
-                placeholder="••••••••"
-                className="w-full h-11 px-3 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={isPending}
+                  placeholder="••••••••"
+                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  disabled={isPending}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-md text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-colors disabled:opacity-50"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
 
               {/* Password rules */}
               {password.length > 0 && (
@@ -178,7 +205,7 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Confirm Password */}
+            {/* Confirm Password — with show/hide toggle */}
             <div>
               <label
                 htmlFor="confirmPassword"
@@ -186,17 +213,34 @@ export default function RegisterPage() {
               >
                 Confirm password
               </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={isPending}
-                placeholder="••••••••"
-                className="w-full h-11 px-3 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
-              />
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={isPending}
+                  placeholder="••••••••"
+                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  disabled={isPending}
+                  aria-label={
+                    showConfirmPassword ? "Hide password" : "Show password"
+                  }
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-md text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-colors disabled:opacity-50"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
               {confirmPassword.length > 0 && !passwordsMatch && (
                 <p className="text-xs text-red-400 mt-1.5">
                   Passwords do not match.
@@ -215,30 +259,30 @@ export default function RegisterPage() {
                 I want to join as
               </label>
               <div className="grid grid-cols-2 gap-2">
-              <button
-  type="button"
-  onClick={() => setRole("STUDENT")}
-  disabled={isPending}
-  className={`h-11 rounded-lg text-sm font-medium transition-all ${
-    role === "STUDENT"
-      ? "bg-indigo-600 text-white border-2 border-indigo-500"
-      : "bg-slate-950 text-slate-400 border border-slate-700 hover:border-slate-600"
-  }`}
->
-  Student
-</button>
-<button
-  type="button"
-  onClick={() => setRole("CREATOR")}
-  disabled={isPending}
-  className={`h-11 rounded-lg text-sm font-medium transition-all ${
-    role === "CREATOR"
-      ? "bg-indigo-600 text-white border-2 border-indigo-500"
-      : "bg-slate-950 text-slate-400 border border-slate-700 hover:border-slate-600"
-  }`}
->
-  Creator
-</button>
+                <button
+                  type="button"
+                  onClick={() => setRole("STUDENT")}
+                  disabled={isPending}
+                  className={`h-11 rounded-lg text-sm font-medium transition-all ${
+                    role === "STUDENT"
+                      ? "bg-indigo-600 text-white border-2 border-indigo-500"
+                      : "bg-slate-950 text-slate-400 border border-slate-700 hover:border-slate-600"
+                  }`}
+                >
+                  Student
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole("CREATOR")}
+                  disabled={isPending}
+                  className={`h-11 rounded-lg text-sm font-medium transition-all ${
+                    role === "CREATOR"
+                      ? "bg-indigo-600 text-white border-2 border-indigo-500"
+                      : "bg-slate-950 text-slate-400 border border-slate-700 hover:border-slate-600"
+                  }`}
+                >
+                  Creator
+                </button>
               </div>
             </div>
 
@@ -274,7 +318,6 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          {/* Login link */}
           <p className="text-center text-sm text-slate-500 mt-6">
             Already have an account?{" "}
             <Link
