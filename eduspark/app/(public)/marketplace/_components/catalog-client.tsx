@@ -43,6 +43,8 @@ export interface ServiceCardData {
     name: string;
     image: string | null;
     headline: string | null;
+    /** Category IDs the creator is certified in */
+    certifiedCategories: string[];
   };
   category: {
     id: string;
@@ -182,15 +184,23 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
             </div>
           )}
 
-          {/* Certified badge */}
-          <div className="absolute top-2.5 right-2.5">
-            <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-black/55 backdrop-blur-sm text-amber-400">
-              <ShieldCheck className="w-3 h-3" />
-              <span className="text-[9px] font-bold uppercase tracking-wider">
-                Certified
-              </span>
-            </div>
-          </div>
+          {/* Certified in [Category] badge */}
+          {service.category &&
+            service.creator.certifiedCategories.includes(
+              service.category.id
+            ) && (
+              <div className="absolute top-2.5 right-2.5 max-w-[calc(100%-1.25rem)]">
+                <div
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg bg-black/55 backdrop-blur-sm text-amber-400"
+                  title={`Certified in ${service.category.name}`}
+                >
+                  <ShieldCheck className="w-3 h-3 shrink-0" />
+                  <span className="text-[9px] font-bold uppercase tracking-wider truncate">
+                    Certified
+                  </span>
+                </div>
+              </div>
+            )}
         </div>
 
         {/* Content */}

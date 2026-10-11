@@ -42,6 +42,13 @@ export default async function MarketplacePage() {
               name: true,
               image: true,
               headline: true,
+              certificates: {
+                select: {
+                  course: {
+                    select: { categoryId: true },
+                  },
+                },
+              },
             },
           },
           category: {
@@ -76,12 +83,19 @@ export default async function MarketplacePage() {
   const services: ServiceCardData[] = rawServices.map((s) => ({
     ...s,
     price: Number(s.price),
-    createdAt:
-      s.createdAt instanceof Date
-        ? s.createdAt.toISOString()
-        : String(s.createdAt),
+    createdAt: s.createdAt instanceof Date
+      ? s.createdAt.toISOString()
+      : String(s.createdAt),
+    creator: {
+      id: s.creator.id,
+      name: s.creator.name,
+      image: s.creator.image,
+      headline: s.creator.headline,
+      certifiedCategories: (s.creator.certificates ?? [])
+        .map((c) => c.course.categoryId)
+        .filter((id): id is string => Boolean(id)),
+    },
   }));
-
   const categoryOptions: CategoryFilterOption[] = categories;
 
   return (
