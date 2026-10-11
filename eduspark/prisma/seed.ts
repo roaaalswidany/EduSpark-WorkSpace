@@ -77,6 +77,18 @@ async function main(): Promise<void> {
   // ── 5. Certificate Booster ────────────────────────────────────
   await boostCertificates(db, { withQuiz: courses.withQuiz });
 
+  // ── 5.5. Promote certified students to creators ───────────────
+  // Any student with at least one certificate should automatically
+  // become a CREATOR so they can offer services in their specialty.
+  const promoted = await db.user.updateMany({
+    where: {
+      role: "STUDENT",
+      certificates: { some: {} },
+    },
+    data: { role: "CREATOR" },
+  });
+  console.log(`   [OK] Promoted ${promoted.count} certified students to CREATOR`);
+
   // ── 6. Services ───────────────────────────────────────────────
   const services = await seedServices(
     db,
