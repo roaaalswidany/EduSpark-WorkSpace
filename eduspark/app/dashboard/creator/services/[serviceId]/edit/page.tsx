@@ -6,10 +6,7 @@ import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 import { GraduationCap, ArrowLeft, Pencil } from "lucide-react";
 import { ServiceCreationForm } from "../../new/_components/service-creation-form";
-import type {
-  CertifiedCourseOption,
-  CategoryOption,
-} from "../../new/page";
+import type { CertifiedCourseOption } from "../../new/page";
 
 interface PageProps {
   params: Promise<{ serviceId: string }>;
@@ -29,7 +26,7 @@ export default async function EditServicePage({ params }: PageProps) {
     redirect("/dashboard/student");
   }
 
-  const [service, certificates, categories] = await Promise.all([
+  const [service, certificates] = await Promise.all([
     db.service.findUnique({
       where: { id: serviceId },
       select: {
@@ -57,10 +54,6 @@ export default async function EditServicePage({ params }: PageProps) {
       },
       orderBy: { issuedAt: "desc" },
     }),
-    db.category.findMany({
-      select: { id: true, name: true, slug: true },
-      orderBy: { name: "asc" },
-    }),
   ]);
 
   if (!service) notFound();
@@ -74,7 +67,6 @@ export default async function EditServicePage({ params }: PageProps) {
     credentialId: c.credentialId,
   }));
 
-  const categoryOptions: CategoryOption[] = categories;
   const defaultCourseId = certifiedCourses[0]?.courseId ?? "";
 
   return (
@@ -113,6 +105,7 @@ export default async function EditServicePage({ params }: PageProps) {
           <p className="text-amber-300/80 text-xs leading-relaxed">
             <span className="font-semibold text-amber-300">Note: </span>
             Changes to your service will appear on the marketplace immediately.
+            The category is locked to your certificate.
           </p>
         </div>
       </div>
@@ -122,7 +115,6 @@ export default async function EditServicePage({ params }: PageProps) {
           mode="edit"
           serviceId={service.id}
           certifiedCourses={certifiedCourses}
-          categories={categoryOptions}
           initialData={{
             courseId: defaultCourseId,
             categoryId: service.categoryId,

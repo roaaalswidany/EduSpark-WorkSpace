@@ -40,6 +40,7 @@ import {
   AlertCircle,
   CheckCircle2,
   Trash2,
+  Sparkles,
 } from "lucide-react";
 import { createServiceAction } from "@/actions/marketplace/create-service";
 import { updateServiceAction } from "@/actions/marketplace/update-service";
@@ -47,12 +48,11 @@ import {
   CreateServiceSchema,
   type CreateServiceInput,
 } from "@/actions/marketplace/create-service-schema";
-import type { CertifiedCourseOption, CategoryOption } from "../page";
+import type { CertifiedCourseOption } from "../page";
 import { cn } from "@/lib/utils";
 
 interface ServiceCreationFormProps {
   certifiedCourses: CertifiedCourseOption[];
-  categories: CategoryOption[];
   mode?: "create" | "edit";
   serviceId?: string;
   initialData?: Partial<CreateServiceInput>;
@@ -359,7 +359,6 @@ function getErrorMessage(code: string | undefined): string {
 
 export function ServiceCreationForm({
   certifiedCourses,
-  categories,
   mode = "create",
   serviceId,
   initialData,
@@ -502,33 +501,8 @@ export function ServiceCreationForm({
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="categoryId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-slate-300">Category</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={categories.map((cat) => ({
-                      value: cat.id,
-                      label: cat.name,
-                    }))}
-                    value={field.value ?? null}
-                    onChange={(v) => field.onChange(v)}
-                    placeholder="Select a category…"
-                    searchPlaceholder="Search categories…"
-                    emptyMessage="No matching categories."
-                    clearable
-                  />
-                </FormControl>
-                <FormMessage className="text-red-400 text-xs" />
-              </FormItem>
-            )}
-          />
-
           {selectedCourse && (
-            <div className="flex items-center gap-3 p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/15">
+            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/15">
               <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
                 <CheckCircle2 className="w-4 h-4 text-amber-400" />
               </div>
@@ -549,6 +523,16 @@ export function ServiceCreationForm({
               </div>
             </div>
           )}
+
+          {/* Category auto-derived notice */}
+          <div className="flex items-start gap-2.5 p-3 rounded-lg bg-indigo-500/5 border border-indigo-500/15">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0 mt-0.5" />
+            <p className="text-[11px] text-indigo-300 leading-relaxed">
+              <span className="font-bold">Category is set automatically</span>{" "}
+              from your certificate. You can only offer services in categories
+              you&apos;re certified in.
+            </p>
+          </div>
         </FormSection>
 
         <FormSection

@@ -8,7 +8,7 @@ import { ServiceCreationForm } from "./_components/service-creation-form";
 import { GraduationCap, Award, AlertCircle } from "lucide-react";
 import Link from "next/link";
 
-// ─── Types passed to client ───────────────────────────────────────────────────
+// ─── Types passed to client ────────────────────────────────────────
 
 export interface CertifiedCourseOption {
   courseId: string;
@@ -18,13 +18,7 @@ export interface CertifiedCourseOption {
   credentialId: string;
 }
 
-export interface CategoryOption {
-  id: string;
-  name: string;
-  slug: string;
-}
-
-// ─── Empty state ──────────────────────────────────────────────────────────────
+// ─── Empty state ──────────────────────────────────────────────────
 
 function NoCertificatesGate() {
   return (
@@ -64,7 +58,7 @@ function NoCertificatesGate() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────
 
 export default async function NewServicePage() {
   const session = await getServerSession(authOptions);
@@ -76,61 +70,56 @@ export default async function NewServicePage() {
     redirect("/dashboard/student");
   }
 
-  // Fetch in parallel: certified courses + all categories
- const isAdmin = role === "ADMIN";
+  const isAdmin = role === "ADMIN";
 
-const [certificates, categories, adminCourses] = await Promise.all([
-  db.certificate.findMany({
-    where: { userId },
-    select: {
-      credentialId: true,
-      score: true,
-      course: {
-        select: { id: true, title: true, level: true },
-      },
-    },
-    orderBy: { issuedAt: "desc" },
-  }),
-  db.category.findMany({
-    select: { id: true, name: true, slug: true },
-    orderBy: { name: "asc" },
-  }),
-  // Admins get ALL published courses to choose from
-  isAdmin
-    ? db.course.findMany({
-        where: { status: "PUBLISHED" },
-        select: {
-          id: true,
-          title: true,
-          level: true,
+  // Fetch in parallel: certified courses + admin-only all published courses
+  const [certificates, adminCourses] = await Promise.all([
+    db.certificate.findMany({
+      where: { userId },
+      select: {
+        credentialId: true,
+        score: true,
+        course: {
+          select: { id: true, title: true, level: true },
         },
-        orderBy: { createdAt: "desc" },
-      })
-    : Promise.resolve([]),
-]);
+      },
+      orderBy: { issuedAt: "desc" },
+    }),
+    // Admins get ALL published courses to choose from
+    isAdmin
+      ? db.course.findMany({
+          where: { status: "PUBLISHED" },
+          select: {
+            id: true,
+            title: true,
+            level: true,
+          },
+          orderBy: { createdAt: "desc" },
+        })
+      : Promise.resolve([]),
+  ]);
 
+  // Admins bypass the certificate requirement (they manage the whole platform)
+  if (!isAdmin && certificates.length === 0) {
+    redirect("/unauthorized?from=/dashboard/creator/services/new");
+  }
 
-// Admins bypass the certificate requirement (they manage the whole platform)
-if (!isAdmin && certificates.length === 0) {
-  redirect("/unauthorized?from=/dashboard/creator/services/new");
-}
-
-// Admin sees all published courses; creators see only their certified ones
-const certifiedCourses: CertifiedCourseOption[] = isAdmin
-  ? adminCourses.map((c) => ({
-      courseId: c.id,
-      courseTitle: c.title,
-      courseLevel: c.level,
-      score: 100, // Admins don't need a score
-      credentialId: "ADMIN-ACCESS",
-    }))
-  : certificates.map((c) => ({
-      courseId: c.course.id,
-      courseTitle: c.course.title,
-      courseLevel: c.course.level,
-      score: c.score,
-      credentialId: c.credentialId,
-    }));
+  // Admin sees all published courses; creators see only their certified ones
+  const certifiedCourses: CertifiedCourseOption[] = isAdmin
+    ? adminCourses.map((c) => ({
+        courseId: c.id,
+        courseTitle: c.title,
+        courseLevel: c.level,
+        score: 100,
+        credentialId: "ADMIN-ACCESS",
+      }))
+    : certificates.map((c) => ({
+        courseId: c.course.id,
+        courseTitle: c.course.title,
+        courseLevel: c.course.level,
+        score: c.score,
+        credentialId: c.credentialId,
+      }));
 
   return (
     <div className="min-h-screen bg-slate-950">
@@ -168,18 +157,15 @@ const certifiedCourses: CertifiedCourseOption[] = isAdmin
               Marketplace Rule:{" "}
             </span>
             Each service must be linked to a course you have officially
-            certified in. This ensures buyers receive expertise that is
-            independently verified by EduSpark.
+            certified in. The service category is set automatically from your
+            certificate.
           </p>
         </div>
       </div>
 
       {/* Form */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
-        <ServiceCreationForm
-          certifiedCourses={certifiedCourses}
-          categories={categories}
-        />
+        <ServiceCreationForm certifiedCourses={certifiedCourses} />
       </div>
     </div>
   );
