@@ -4,6 +4,7 @@ import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
+import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { cacheInvalidatePattern } from "@/lib/cache";
 import { CacheKeys } from "@/lib/cache-keys";
@@ -45,6 +46,7 @@ export async function updateServiceAction(
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
 
     const userId = session.user.id;
+    const role = session.user.role;
 
     // 2. Validate
     const parsed = UpdateServiceSchema.safeParse(rawInput);
@@ -61,7 +63,7 @@ export async function updateServiceAction(
     const {
       serviceId,
       courseId,
-      categoryId,
+      categoryId: userCategoryId,
       title,
       description,
       price,
@@ -70,6 +72,10 @@ export async function updateServiceAction(
       tags,
       portfolioLinks,
     } = parsed.data;
+
+    // The category is DERIVED from the certificate's course (creators)
+    // or taken from user input (admins). Default to user input.
+    let effectiveCategoryId: string | null = userCategoryId;
 
     // 3. Verify service exists and belongs to user
     const existing = await db.service.findUnique({
@@ -82,13 +88,28 @@ export async function updateServiceAction(
       return { success: false, error: "FORBIDDEN" };
     }
 
-    // 4. Re-verify certificate (user must still own it)
-    const certificate = await db.certificate.findUnique({
-      where: { userId_courseId: { userId, courseId } },
-      select: { id: true },
-    });
+    // 4. Certificate ownership gate
+    // Admins bypass certificate requirement and keep their chosen category.
+    if (role !== Role.ADMIN) {
+      const certificate = await db.certificate.findUnique({
+        where: { userId_courseId: { userId, courseId } },
+        select: {
+          id: true,
+          course: {
+            select: { categoryId: true },
+          },
+        },
+      });
 
-    if (!certificate) return { success: false, error: "NO_CERTIFICATE" };
+      if (!certificate) return { success: false, error: "NO_CERTIFICATE" };
+
+      // 🔒 Lock the category to the certificate's course category.
+      if (certificate.course.categoryId) {
+        effectiveCategoryId = certificate.course.categoryId;
+      } else {
+        effectiveCategoryId = null;
+      }
+    }
 
     // 5. Update service
     const updated = await db.service.update({
@@ -101,7 +122,7 @@ export async function updateServiceAction(
         revisions,
         tags,
         portfolioLinks,
-        categoryId: categoryId ?? null,
+        categoryId: effectiveCategoryId,
       },
       select: { id: true, slug: true },
     });

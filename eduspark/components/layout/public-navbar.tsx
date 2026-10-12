@@ -34,10 +34,10 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
-      {/* التعديل هنا: max-w-screen-2xl بدل max-w-7xl */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="h-16 grid grid-cols-3 items-center gap-4 w-full">
+        {/* التعديل هنا: flex justify-between للموبايل + md:grid للديسكتوب */}
+        <div className="h-16 flex justify-between md:grid md:grid-cols-3 items-center gap-4 w-full">
           
           {/* العمود الأيسر: اللوجو */}
           <div className="flex justify-start">
@@ -54,7 +54,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
             </Link>
           </div>
 
-          {/* العمود الأوسط: الروابط */}
+          {/* العمود الأوسط: الروابط (للديسكتوب فقط) */}
           <nav className="hidden md:flex justify-center items-center gap-2">
             {NAV_LINKS.map((link) => {
               const Icon = link.icon;
@@ -81,6 +81,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
 
           {/* العمود الأيمن: الأزرار */}
           <div className="flex justify-end items-center gap-3">
+            {/* أزرار الديسكتوب */}
             <div className="hidden md:flex items-center gap-3">
               {user ? (
                 <Link
@@ -124,9 +125,10 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
               )}
             </div>
 
+            {/* زر الموبايل — هلق رح يطلع على الطرف اليمين */}
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+              className="md:hidden flex items-center justify-center w-11 h-11 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
               aria-label="Toggle menu"
             >
               {mobileOpen ? (
@@ -140,7 +142,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <nav className="md:hidden py-3 border-t border-slate-800 space-y-1 animate-slide-down origin-top">
+          <nav className="md:hidden py-4 border-t border-slate-800 space-y-2 animate-slide-down origin-top">
             {NAV_LINKS.map((link) => {
               const Icon = link.icon;
               const isActive =
@@ -152,26 +154,26 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all",
+                    "flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-semibold transition-all",
                     isActive
                       ? "bg-slate-800 text-white"
                       : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
                   )}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-5 h-5" />
                   {link.label}
                 </Link>
               );
             })}
 
-            <div className="pt-3 mt-3 border-t border-slate-800 space-y-2">
+            <div className="pt-4 mt-2 border-t border-slate-800 space-y-3">
               {user ? (
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all"
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all"
                 >
-                  <LayoutDashboard className="w-4 h-4" />
+                  <LayoutDashboard className="w-5 h-5" />
                   Go to Dashboard
                 </Link>
               ) : (
@@ -179,18 +181,18 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                   <Link
                     href="/auth/login"
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition-all"
                   >
-                    <LogIn className="w-4 h-4" />
+                    <LogIn className="w-5 h-5" />
                     Sign In
                   </Link>
                   <Link
                     href="/auth/register"
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all"
                   >
                     Get Started
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-5 h-5" />
                   </Link>
                 </>
               )}
