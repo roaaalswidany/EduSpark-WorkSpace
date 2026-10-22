@@ -64,7 +64,7 @@ services:
 
   # ─── MinIO (S3-compatible Object Storage) ─────────────────────────────────
   minio:
-    image: minio/minio:latest
+    image: pgsty/silo:latest
     container_name: eduspark-minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
