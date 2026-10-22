@@ -131,8 +131,20 @@ export async function enrollInCourseAction(
       enrollmentId: result.enrollmentId,
       chatRoomId: result.chatRoomId,
     };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("[ENROLL_IN_COURSE_ACTION]", error);
+
+    // Handle unique constraint violation (P2002) — race condition where
+    // the user clicked "Enroll" twice before the first request finished.
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code: string }).code === "P2002"
+    ) {
+      return { success: false, error: "ALREADY_ENROLLED" };
+    }
+
     return { success: false, error: "SERVER_ERROR" };
   }
 }
