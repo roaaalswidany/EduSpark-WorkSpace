@@ -79,17 +79,17 @@ export default async function HomePage() {
 
             {/* Title */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.05] mb-6">
-              Learn. Certify.
+              Learn .. Certify
               <br />
               <span className="bg-linear-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-                Build your career.
+                Build your career
               </span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed mb-10">
               EduSpark combines expert-led courses, verified certificates, and a
-              certified marketplace — where proven learners become trusted
+              certified marketplace  where proven learners become trusted
               creators.
             </p>
 
