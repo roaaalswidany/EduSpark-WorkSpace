@@ -71,6 +71,7 @@ const SECTIONS: NavSection[] = [
     title: "Creator Studio",
     roles: ["CREATOR", "ADMIN"],
     items: [
+      { label: "My Courses", href: "/dashboard/creator/courses", icon: BookOpen },
       { label: "My Services", href: "/dashboard/creator/services", icon: Package },
       { label: "Incoming Orders", href: "/dashboard/creator/orders", icon: Inbox },
       { label: "New Service", href: "/dashboard/creator/services/new", icon: PlusCircle, exact: true },

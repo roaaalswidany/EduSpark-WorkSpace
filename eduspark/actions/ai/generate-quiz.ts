@@ -1,16 +1,36 @@
 "use server";
 
 import { z } from "zod";
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI } from "@google/genai";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// ─── Gemini Client (lazy init) ────────────────────────────────────
 
-// ─── Schemas ──────────────────────────────────────────────────────────────────
+const MODEL_NAME = "gemini-3.8-flash";
+const MAX_OUTPUT_TOKENS = 2500;
+
+let aiClient: GoogleGenAI | null = null;
+
+function getClient(): GoogleGenAI | null {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.warn("[GENERATE_QUIZ] GEMINI_API_KEY not set");
+    return null;
+  }
+  if (!aiClient) {
+    aiClient = new GoogleGenAI({
+      apiKey,
+      httpOptions: { timeout: 30_000 },
+    });
+  }
+  return aiClient;
+}
+
+// ─── Schemas ──────────────────────────────────────────────────────
 
 const GenerateQuizSchema = z.object({
   courseId: z.string().cuid(),
@@ -20,7 +40,6 @@ const GenerateQuizSchema = z.object({
 
 export type GenerateQuizInput = z.infer<typeof GenerateQuizSchema>;
 
-// تحقّق صارم من شكل استجابة النموذج اللغوي قبل أي ثقة بمحتواها
 const LlmQuestionSchema = z
   .object({
     text: z.string().min(10).max(500),
@@ -45,11 +64,13 @@ export type GenerateQuizResult =
         | "FORBIDDEN"
         | "INVALID_INPUT"
         | "COURSE_NOT_FOUND"
+        | "GEMINI_NOT_CONFIGURED"
         | "LLM_RESPONSE_INVALID"
+        | "RATE_LIMITED"
         | "SERVER_ERROR";
     };
 
-// ─── Prompt construction ───────────────────────────────────────────────────────
+// ─── Prompt construction ─────────────────────────────────────────
 
 function buildPrompt(
   courseTitle: string,
@@ -66,7 +87,7 @@ Lesson topics covered: ${lessonTitles.join(", ")}
 
 Generate exactly ${questionCount} multiple-choice questions at ${difficulty} difficulty that test genuine conceptual understanding of the material, not trivial recall. Each question must have exactly 4 plausible options, with exactly one correct answer, and a brief explanation justifying the correct choice.
 
-Respond with ONLY valid JSON, no markdown code fences, no preamble text, in this exact shape:
+Respond with ONLY valid JSON in this exact shape:
 {
   "questions": [
     {
@@ -79,7 +100,7 @@ Respond with ONLY valid JSON, no markdown code fences, no preamble text, in this
 }`;
 }
 
-// ─── Action ───────────────────────────────────────────────────────────────────
+// ─── Action ──────────────────────────────────────────────────────
 
 export async function generateQuizDraftAction(
   rawInput: GenerateQuizInput
@@ -107,12 +128,19 @@ export async function generateQuizDraftAction(
 
     if (!course) return { success: false, error: "COURSE_NOT_FOUND" };
 
-    // فقط منشئ المقرر نفسه (أو الإدارة) يستطيع توليد مسودّات أسئلة له
+    // Only the course creator (or admin) can generate quiz drafts
     if (course.creatorId !== userId && role !== Role.ADMIN) {
       return { success: false, error: "FORBIDDEN" };
     }
 
-    const lessonTitles = course.sections.flatMap((s) => s.lessons.map((l) => l.title));
+    const client = getClient();
+    if (!client) {
+      return { success: false, error: "GEMINI_NOT_CONFIGURED" };
+    }
+
+    const lessonTitles = course.sections.flatMap((s) =>
+      s.lessons.map((l) => l.title)
+    );
 
     const prompt = buildPrompt(
       course.title,
@@ -122,27 +150,48 @@ export async function generateQuizDraftAction(
       difficulty
     );
 
-    const completion = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 2000,
-      messages: [{ role: "user", content: prompt }],
+    // ─── Call Gemini with guaranteed JSON output ──────────────────
+    const response = await client.models.generateContent({
+      model: MODEL_NAME,
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      config: {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: MAX_OUTPUT_TOKENS,
+        responseMimeType: "application/json",
+      },
     });
 
-    const rawText = completion.content
-      .filter((block) => block.type === "text")
-      .map((block) => (block.type === "text" ? block.text : ""))
-      .join("");
+    const rawText = response.text ?? "";
+    if (!rawText.trim()) {
+      return { success: false, error: "LLM_RESPONSE_INVALID" };
+    }
 
+    // Gemini with responseMimeType: "application/json" should return
+    // pure JSON, but we strip code fences defensively just in case.
     let parsedLlmOutput: unknown;
     try {
-      const cleaned = rawText.replace(/```json|```/g, "").trim();
+      const cleaned = rawText
+        .replace(/^```json\s*/i, "")
+        .replace(/^```\s*/i, "")
+        .replace(/```$/i, "")
+        .trim();
       parsedLlmOutput = JSON.parse(cleaned);
     } catch {
+      console.error(
+        "[GENERATE_QUIZ] JSON parse failed. Preview:",
+        rawText.slice(0, 300)
+      );
       return { success: false, error: "LLM_RESPONSE_INVALID" };
     }
 
     const validated = LlmResponseSchema.safeParse(parsedLlmOutput);
     if (!validated.success || validated.data.questions.length === 0) {
+      console.error(
+        "[GENERATE_QUIZ] Validation failed:",
+        validated.success ? "empty" : validated.error.flatten()
+      );
       return { success: false, error: "LLM_RESPONSE_INVALID" };
     }
 
@@ -155,7 +204,8 @@ export async function generateQuizDraftAction(
 
     const existingCount = await db.question.count({ where: { quizId: quiz.id } });
 
-    // ── الخطوة الحاسمة: كل سؤال مولَّد آلياً يدخل بحالة AI_DRAFTED فقط ──────
+    // AI-generated questions enter with status AI_DRAFTED only —
+    // they must be reviewed and published by a human before use.
     await db.question.createMany({
       data: validated.data.questions.map((q, index) => ({
         quizId: quiz.id,
@@ -171,9 +221,19 @@ export async function generateQuizDraftAction(
 
     revalidatePath(`/dashboard/creator/courses/${courseId}/quiz`);
 
-    return { success: true, draftedCount: validated.data.questions.length, quizId: quiz.id };
+    return {
+      success: true,
+      draftedCount: validated.data.questions.length,
+      quizId: quiz.id,
+    };
   } catch (error) {
     console.error("[GENERATE_QUIZ_DRAFT_ACTION]", error);
+
+    const message = error instanceof Error ? error.message : "";
+    if (message.includes("429") || message.toLowerCase().includes("rate")) {
+      return { success: false, error: "RATE_LIMITED" };
+    }
+
     return { success: false, error: "SERVER_ERROR" };
   }
 }
