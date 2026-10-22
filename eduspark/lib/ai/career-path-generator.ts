@@ -5,9 +5,9 @@ import { z } from "zod";
 // ─── Constants ────────────────────────────────────────────────────
 
 const MODEL_NAME = "gemini-3.8-flash";
-const MAX_OUTPUT_TOKENS = 8192;      // ↑ from 4096 (avoids JSON truncation)
-const REQUEST_TIMEOUT_MS = 90_000;   // ↑ from default 10s
-const MAX_RETRIES = 2;
+const MAX_OUTPUT_TOKENS = 2500;
+const REQUEST_TIMEOUT_MS = 20_000;
+const MAX_RETRIES = 0;
 
 // ─── Types ────────────────────────────────────────────────────────
 
@@ -250,6 +250,141 @@ function isRetryableError(err: unknown): boolean {
   );
 }
 
+// ─── Local Fallback (no AI needed) ───────────────────────────────
+//
+// Builds a learning path from DB courses without AI, using keyword
+// matching between the user's goal and course tags/titles.
+
+const STOP_WORDS: Record<"ar" | "en", Set<string>> = {
+  ar: new Set([
+    "أريد", "اريد", "أن", "ان", "أصبح", "اصبح", "أتعلم", "اتعلم",
+    "تعلم", "تعلمي", "تطوير", "تطبيقات", "في", "من", "إلى", "الى",
+    "على", "عن", "مع", "هو", "هي", "أنا", "انا", "مطور", "مبرمج",
+    "خبير", "محترف", "كيف", "ماذا", "لماذا", "هذا", "هذه", "التي",
+    "الذي", "جوال", "موبايل", "ويب", "موقع",
+  ]),
+  en: new Set([
+    "i", "want", "to", "become", "a", "an", "the", "learn", "learning",
+    "developer", "expert", "professional", "in", "of", "and", "or", "for",
+    "how", "what", "why", "this", "that", "which", "with", "my", "me",
+    "app", "apps", "application", "mobile", "web",
+  ]),
+};
+
+function extractKeywords(goal: string, language: "ar" | "en"): string[] {
+  const words = goal
+    .toLowerCase()
+    .replace(/[^\w\s\u0600-\u06FF]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 2);
+
+  const stops = STOP_WORDS[language];
+  return Array.from(new Set(words.filter((w) => !stops.has(w))));
+}
+
+function scoreCourse(
+  course: { title: string; tags: string[]; level: string },
+  keywords: string[]
+): number {
+  if (keywords.length === 0) return 0;
+
+  const title = course.title.toLowerCase();
+  const tags = course.tags.map((t) => t.toLowerCase());
+  const searchable = `${title} ${tags.join(" ")}`;
+
+  let score = 0;
+  for (const kw of keywords) {
+    if (tags.includes(kw)) {
+      score += 3;
+    } else if (searchable.includes(kw)) {
+      score += 1;
+    }
+  }
+  return score;
+}
+
+export function buildLocalPath(
+  goal: string,
+  availableCourses: Array<{
+    title: string;
+    slug: string;
+    level: string;
+    tags: string[];
+  }>,
+  userLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" = "BEGINNER",
+  language: "ar" | "en" = "en"
+): GenerateResult {
+  if (availableCourses.length === 0) {
+    return { success: false, error: "NO_COURSES_AVAILABLE" };
+  }
+
+  const isAr = language === "ar";
+  const keywords = extractKeywords(goal, language);
+
+  const scored = availableCourses.map((c) => ({
+    ...c,
+    score: scoreCourse(c, keywords),
+  }));
+
+  const matching = scored
+    .filter((c) => c.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  const levelOrder: Record<string, number> = {
+    BEGINNER: 0,
+    INTERMEDIATE: 1,
+    ADVANCED: 2,
+  };
+  const nonMatching = scored
+    .filter((c) => c.score === 0)
+    .sort(
+      (a, b) => (levelOrder[a.level] ?? 0) - (levelOrder[b.level] ?? 0)
+    );
+
+  const targetCount = Math.min(
+    Math.max(4, Math.ceil(availableCourses.length / 4)),
+    6
+  );
+  let chosen = matching.slice(0, targetCount);
+  if (chosen.length < 4) {
+    chosen = [...chosen, ...nonMatching.slice(0, 4 - chosen.length)];
+  }
+
+  const steps: GeneratedStep[] = chosen.map((c, i) => {
+    const skillText =
+      c.tags.slice(0, 3).join(isAr ? "، " : ", ") ||
+      (isAr ? "الأساسيات" : "fundamentals");
+    const description = isAr
+      ? `الخطوة ${i + 1}: ركّز على "${c.title}" لإتقان ${skillText}. مستوى الكورس: ${c.level}.`
+      : `Step ${i + 1}: Focus on "${c.title}" to master ${skillText}. Course level: ${c.level}.`;
+
+    return {
+      title: c.title,
+      description,
+      courseSlug: c.slug,
+      estimatedWeeks: 4,
+      skills: c.tags.slice(0, 3).length > 0 ? c.tags.slice(0, 3) : [c.level],
+    };
+  });
+
+  const totalWeeks = steps.reduce((sum, s) => sum + s.estimatedWeeks, 0);
+
+  const description = isAr
+    ? `مسار تعليمي مبني تلقائيًا للوصول إلى هدفك: "${goal}". يتضمن ${steps.length} خطوات مبنية على كورسات المنصة، بإجمالي ${totalWeeks} أسبوع تقريبًا.`
+    : `An automatically generated learning path to reach your goal: "${goal}". Includes ${steps.length} steps built from platform courses, totaling approximately ${totalWeeks} weeks.`;
+
+  return {
+    success: true,
+    data: {
+      goal,
+      level: userLevel,
+      description,
+      estimatedWeeks: totalWeeks,
+      steps,
+    },
+  };
+}
+
 // ─── Main Function ────────────────────────────────────────────────
 
 export async function generateCareerPath(
@@ -262,11 +397,6 @@ export async function generateCareerPath(
     tags: string[];
   }>
 ): Promise<GenerateResult> {
-  const client = getClient();
-  if (!client) {
-    return { success: false, error: "GEMINI_NOT_CONFIGURED" };
-  }
-
   if (!goal || goal.trim().length < 5) {
     return { success: false, error: "GOAL_TOO_SHORT" };
   }
@@ -275,7 +405,22 @@ export async function generateCareerPath(
     return { success: false, error: "NO_COURSES_AVAILABLE" };
   }
 
-  const prompt = buildPrompt(goal.trim(), context, availableCourses);
+  // If Gemini isn't configured → use local fallback immediately
+  const client = getClient();
+  if (!client) {
+    console.warn(
+      "[CAREER_PATH] GEMINI_API_KEY not set — falling back to local path builder"
+    );
+    return buildLocalPath(
+      goal.trim(),
+      availableCourses,
+      context.currentLevel,
+      context.preferredLanguage
+    );
+  }
+
+  const limitedCourses = availableCourses.slice(0, 20);
+  const prompt = buildPrompt(goal.trim(), context, limitedCourses);
 
   let lastError: unknown = null;
 
@@ -319,7 +464,7 @@ export async function generateCareerPath(
           jsonStr.slice(0, 300)
         );
         lastError = new Error("INVALID_JSON");
-        continue; // Retry on JSON parse failure (may be truncated)
+        continue;
       }
 
       const validation = GeneratedPathSchema.safeParse(parsed);
@@ -346,16 +491,19 @@ export async function generateCareerPath(
     }
   }
 
-  // All retries failed — map error
+  // ─── All Gemini attempts failed → use local fallback ────────────
+
   const msg =
     lastError instanceof Error ? lastError.message : "Unknown error";
 
-  if (msg.includes("429") || msg.toLowerCase().includes("rate")) {
-    return { success: false, error: "RATE_LIMITED" };
-  }
-  if (msg === "INVALID_JSON" || msg === "INVALID_STRUCTURE") {
-    return { success: false, error: "GEMINI_ERROR" };
-  }
+  console.warn(
+    `[CAREER_PATH] Gemini failed (${msg.slice(0, 120)}) — using local fallback`
+  );
 
-  return { success: false, error: "GEMINI_ERROR" };
+  return buildLocalPath(
+    goal.trim(),
+    availableCourses,
+    context.currentLevel,
+    context.preferredLanguage
+  );
 }

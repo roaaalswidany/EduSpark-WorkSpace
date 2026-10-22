@@ -26,6 +26,17 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
 
   const isValid = goal.trim().length >= 5;
 
+  // Close immediately. If generation is running, it continues in the
+  // background and the toast will update when it's done.
+  const handleClose = () => {
+    if (isPending) {
+      toast.info("Generation continues in background", {
+        description: "We'll notify you when your path is ready.",
+      });
+    }
+    onClose();
+  };
+
   const handleGenerate = () => {
     if (!isValid || isPending) return;
     setError(null);
@@ -58,7 +69,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
         return;
       }
 
-      toast.success("Career path generated! 🎯", {
+      toast.success("Career path generated! 🎉", {
         id: toastId,
         description: "Your personalized path is ready.",
       });
@@ -71,7 +82,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
-        onClick={isPending ? undefined : onClose}
+        onClick={handleClose}
       />
 
       <div className="relative w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden animate-scale-in">
@@ -90,9 +101,8 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
           </div>
           <button
             type="button"
-            onClick={onClose}
-            disabled={isPending}
-            className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition-colors disabled:opacity-50"
+            onClick={handleClose}
+            className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -159,11 +169,10 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
         <div className="px-6 py-4 border-t border-slate-800 flex items-center justify-end gap-2 bg-slate-950/40">
           <button
             type="button"
-            onClick={onClose}
-            disabled={isPending}
-            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all disabled:opacity-50"
+            onClick={handleClose}
+            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
           >
-            Cancel
+            {isPending ? "Close" : "Cancel"}
           </button>
           <button
             type="button"
