@@ -2,7 +2,7 @@
 
 EduSpark is a full-stack educational platform that combines a Learning Management System (LMS) with a gated freelance marketplace. Students learn, pass certification quizzes, and automatically unlock the ability to sell their services as verified creators.
 
-## 🚀 Key Features
+##  Key Features
 
 ### For Students
 - **Course Enrollment & Tracking:** Browse courses, enroll, and track progress.
@@ -19,25 +19,32 @@ EduSpark is a full-stack educational platform that combines a Learning Managemen
 ### For Admins
 - Full dashboard to manage users, courses, and services.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Frontend & Backend:** Next.js 16 (App Router, Server Actions)
 - **Database:** PostgreSQL + Prisma ORM (v7 with Driver Adapters)
 - **Authentication:** NextAuth.js
 - **AI Integration:** Google Gemini (`@google/genai`)
 - **Real-time Chat:** Socket.io + Redis Adapter
-- **Storage:** AWS S3 / MinIO (Local)
+- **Storage:** Local File Storage / MinIO (Silo fork for sanctioned environments)
 - **Styling:** Tailwind CSS + Radix UI
 - **Infrastructure:** Docker Compose (Postgres, Redis, MinIO)
 
-## 🏗️ Architecture Overview
+##  Architecture Overview
 
 The project is a monorepo containing:
 1. `eduspark`: The main Next.js application (Frontend + Server Actions).
 2. `eduspark-chat-server`: A standalone Node.js + Socket.io server for real-time communication.
 3. `eduspark-infra`: Docker Compose files for local infrastructure.
 
-## 💻 Getting Started
+### System Architecture
+![Architecture Diagram](./docs/Architecture.png)
+
+### Database Schema (ERD)
+![ERD Diagram](./docs/ERD.md)
+*(Note: The full detailed ERD is available in `eduspark/docs/ERD.md` due to the large number of tables.)*
+
+##  Getting Started
 
 ### Prerequisites
 - Node.js (v20+)

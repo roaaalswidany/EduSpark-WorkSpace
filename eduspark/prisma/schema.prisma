@@ -847,3 +847,10 @@ model AuditLog {
   @@index([severity, createdAt])
   @@map("audit_logs")
 }
+
+
+
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "../docs/ERD.md"
+}
