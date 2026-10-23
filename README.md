@@ -41,7 +41,7 @@ The project is a monorepo containing:
 ![Architecture Diagram](./docs/Architecture.png)
 
 ### Database Schema (ERD)
-![ERD Diagram](./docs/ERD.md)
+<img src="./docs/ERD.png" alt="ERD Diagram" width="100%" />
 *(Note: The full detailed ERD is available in `eduspark/docs/ERD.md` due to the large number of tables.)*
 
 ##  Getting Started
