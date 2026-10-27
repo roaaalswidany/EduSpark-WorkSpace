@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useTransition, useCallback } from "react";
+import { useState, useTransition, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { toast } from "sonner";
@@ -111,6 +111,9 @@ export function UsersTable({
   const [actionError, setActionError] = useState<string | null>(null);
   const [pendingUserId, setPendingUserId] = useState<string | null>(null);
 
+  // Proper debounce using useRef to avoid memory leaks
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
   const activeRole = searchParams.get("role") ?? "";
 
   const updateURL = useCallback(
@@ -142,11 +145,19 @@ export function UsersTable({
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
-    const timer = setTimeout(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    
+    debounceRef.current = setTimeout(() => {
       updateURL({ q: value });
     }, 350);
-    return () => clearTimeout(timer);
   };
+
+  // Clear timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   const handleRoleFilter = (role: string) => {
     updateURL({ role });
@@ -283,7 +294,7 @@ export function UsersTable({
           )}
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
           {filters.map((f) => {
             const active = activeRole === f.value;
             return (
@@ -340,7 +351,7 @@ export function UsersTable({
       ) : (
         <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-visible">
           {/* Desktop header */}
-<div className="hidden lg:grid grid-cols-[1.5fr_0.8fr_1.7fr_0.6fr_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
+          <div className="hidden lg:grid grid-cols-[1.5fr_0.8fr_1.7fr_0.6fr_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
               User
             </span>
@@ -371,11 +382,11 @@ export function UsersTable({
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
                     <Avatar name={u.name} size={36} />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">
+                      <p className="text-sm font-semibold text-white truncate flex items-center gap-2">
                         {u.name}
                         {isSelf && (
-                          <span className="ml-2 text-[10px] font-bold text-indigo-400">
-                            (you)
+                          <span className="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded">
+                            YOU
                           </span>
                         )}
                       </p>
@@ -406,11 +417,11 @@ export function UsersTable({
                     <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center shrink-0">
                       Activity:
                     </span>
-<span className="truncate">
-  {u._count.enrollments} courses ·{" "}
-  {u._count.certificates} certificates ·{" "}
-  {u._count.services} services
-</span>
+                    <span className="truncate">
+                      {u._count.enrollments} courses ·{" "}
+                      {u._count.certificates} certificates ·{" "}
+                      {u._count.services} services
+                    </span>
                   </div>
 
                   {/* Status */}

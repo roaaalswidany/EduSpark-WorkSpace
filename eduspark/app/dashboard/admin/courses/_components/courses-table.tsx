@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useTransition, useCallback } from "react";
+import { useState, useTransition, useCallback, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -125,6 +125,7 @@ export function CoursesTable({
   const [actionError, setActionError] = useState<string | null>(null);
   const [pendingCourseId, setPendingCourseId] = useState<string | null>(null);
 
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const activeStatus = searchParams.get("status") ?? "";
 
   const updateURL = useCallback(
@@ -155,9 +156,15 @@ export function CoursesTable({
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
-    const timer = setTimeout(() => updateURL({ q: value }), 350);
-    return () => clearTimeout(timer);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => updateURL({ q: value }), 350);
   };
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   const handleStatusFilter = (status: string) => updateURL({ status });
 
@@ -177,10 +184,11 @@ export function CoursesTable({
       setPendingCourseId(null);
 
       if (!result.success) {
-        const errorMessage =
-          result.error === "FORBIDDEN"
-            ? "Only admins can perform this action."
-            : "Action failed.";
+        const messages: Record<string, string> = {
+          FORBIDDEN: "Only admins can perform this action.",
+          NOT_FOUND: "Course not found.",
+        };
+        const errorMessage = messages[result.error] ?? "Action failed.";
 
         setActionError(errorMessage);
         toast.error("Update failed", {
@@ -244,7 +252,7 @@ export function CoursesTable({
           )}
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
           {filters.map((f) => {
             const active = activeStatus === f.value;
             return (

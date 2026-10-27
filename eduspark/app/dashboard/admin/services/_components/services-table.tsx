@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useTransition, useCallback } from "react";
+import { useState, useTransition, useCallback, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -143,6 +143,7 @@ export function ServicesTable({
   const [actionError, setActionError] = useState<string | null>(null);
   const [pendingServiceId, setPendingServiceId] = useState<string | null>(null);
 
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const activeStatus = searchParams.get("status") ?? "";
 
   const updateURL = useCallback(
@@ -173,9 +174,15 @@ export function ServicesTable({
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
-    const timer = setTimeout(() => updateURL({ q: value }), 350);
-    return () => clearTimeout(timer);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => updateURL({ q: value }), 350);
   };
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   const handleStatusFilter = (status: string) => updateURL({ status });
 
@@ -262,7 +269,7 @@ export function ServicesTable({
           )}
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
           {filters.map((f) => {
             const active = activeStatus === f.value;
             return (
@@ -340,12 +347,11 @@ export function ServicesTable({
               const isLastRow = idx === services.length - 1;
 
               return (
-                  <div
+                <div
                   key={s.id}
                   className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
                 >
-                
-                   {/* Service */}
+                  {/* Service */}
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
                     <ServiceThumb
                       id={s.id}
