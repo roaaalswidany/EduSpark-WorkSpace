@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+﻿import { describe, it, expect, beforeEach } from "vitest";
 import { readFileSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 import { db } from "@/lib/db";
@@ -10,7 +10,7 @@ import { resetDatabase, createUser } from "./helpers/factories";
 
 const LOCAL = "postgresql://u:p@localhost:5432/eduspark";
 
-describe("assertSeedAllowed — the demo seed can never hit production or a remote database by accident", () => {
+describe("assertSeedAllowed â€” the demo seed can never hit production or a remote database by accident", () => {
   it("allows local development hosts", () => {
     for (const host of ["localhost", "127.0.0.1", "postgres", "db"])
       expect(() => assertSeedAllowed({ NODE_ENV: "development", DATABASE_URL: `postgresql://u:p@${host}:5432/x` })).not.toThrow();
@@ -84,10 +84,10 @@ describe("repository hygiene (public repo)", () => {
     const bad = files.filter((f) => /[\w.+-]+@(gmail|hotmail|outlook|yahoo|icloud)\.com/i.test(readFileSync(f, "utf8")));
     expect(bad.map((f) => f.replace(root, ""))).toEqual([]);
   });
-  it("the demo password literal exists ONLY in prisma/seed/config.ts (dev default, guarded)", () => {
+  it("the demo password literal exists ONLY in prisma\seed\config.ts (dev default, guarded)", () => {
     const hits = files.filter((f) => readFileSync(f, "utf8").includes("Password123!")).map((f) => f.replace(root, ""));
-    expect(hits.every((h) => h.endsWith("prisma/seed/config.ts") || h.endsWith("seed.ts") === false)).toBe(true);
-    expect(hits.filter((h) => !h.endsWith("prisma/seed/config.ts"))).toEqual([]);
+    expect(hits.every((h) => h.replace(/\\/g, "/").endsWith("prisma/seed/config.ts") || h.endsWith("seed.ts") === false)).toBe(true);
+    expect(hits.filter((h) => !h.replace(/\\/g, "/").endsWith("prisma/seed/config.ts"))).toEqual([]);
   });
   it("no key-shaped secrets in source", () => {
     const re = /AIza[0-9A-Za-z_-]{30,}|sk-ant-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY/;
@@ -97,3 +97,4 @@ describe("repository hygiene (public repo)", () => {
     expect(walk(root).filter((f) => /\.(backup|bak)$/.test(f))).toEqual([]);
   });
 });
+

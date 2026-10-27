@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import type { Role } from "@prisma/client";
 
 let seq = 0;
@@ -6,6 +6,9 @@ const uid = () => `${Date.now().toString(36)}${(seq++).toString(36)}${Math.rando
 
 /** Wipe all app tables between test files (CASCADE keeps FK order trivial). */
 export async function resetDatabase() {
+  // Ensure CHECK constraint exists on project_reviews (Prisma doesn't support CHECK in schema)
+  await db.$executeRawUnsafe(`ALTER TABLE "project_reviews" ADD CONSTRAINT rating_check CHECK (rating >= 1 AND rating <= 5);`).catch(() => {});
+
   const rows = await db.$queryRaw<{ tablename: string }[]>`
     SELECT tablename FROM pg_tables
     WHERE schemaname = 'public' AND tablename <> '_prisma_migrations'`;
@@ -68,3 +71,5 @@ export async function createCourseWithQuiz(opts: {
 export async function enroll(userId: string, courseId: string) {
   return db.enrollment.create({ data: { userId, courseId, paidAmount: 0 } });
 }
+
+
