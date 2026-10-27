@@ -23,6 +23,7 @@ import {
   ShoppingBag,
   Target,
   Trophy,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
@@ -49,6 +50,7 @@ const SECTIONS: NavSection[] = [
       { label: "Career Path", href: "/dashboard/career-path", icon: Target },
       { label: "Achievements", href: "/dashboard/achievements", icon: Trophy },
       { label: "Messages", href: "/dashboard/chat", icon: MessageSquare },
+      { label: "Settings", href: "/dashboard/settings", icon: Settings }, 
     ],
   },
   {
