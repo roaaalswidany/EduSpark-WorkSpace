@@ -5,6 +5,9 @@ import path from "path";
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
 
 async function main() {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("add-dummy-questions is a development helper and must not run in production.");
+  }
   // Dynamic import ensures lib/db is loaded AFTER dotenv has populated process.env
   const { db: prisma } = await import("../lib/db");
 

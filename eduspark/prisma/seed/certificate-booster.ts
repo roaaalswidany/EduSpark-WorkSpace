@@ -13,17 +13,19 @@ import {
   logSuccess,
   logInfo,
 } from "./helpers";
+import { PROTECTED_EMAILS } from "./config";
 
 // ─── Booster Plan ────────────────────────────────────────────────────────────
 // Guarantees each demo/test account has at least N certificates.
-// Protected accounts (roaaswidany@gmail.com) are ONLY augmented — never deleted.
+// Protected accounts (SEED_PROTECTED_EMAILS) are ONLY augmented — never deleted.
 
 const BOOSTER_PLAN: Record<string, number> = {
   "sarah.creator@eduspark.dev": 3,
   "ahmad.student@eduspark.dev": 5,
   "layla.client@eduspark.dev": 2,
   "admin@eduspark.dev": 4,
-  "roaaswidany@gmail.com": 4, // real admin — only add, never delete
+  // Protected (real) accounts are only ever augmented, never deleted.
+  ...Object.fromEntries(PROTECTED_EMAILS.map((e) => [e, 4])),
 };
 
 // ─── Types ───────────────────────────────────────────────────────────────────

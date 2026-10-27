@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { PrismaClient } from "@prisma/client";
-import { PROTECTED_EMAILS } from "./config";
+import { DEMO_EMAIL_DOMAIN, PROTECTED_EMAILS } from "./config";
 import { logHeader, logInfo, logSuccess } from "./helpers";
 
 export async function cleanupAll(db: PrismaClient): Promise<void> {
@@ -53,7 +53,7 @@ export async function cleanupAll(db: PrismaClient): Promise<void> {
 
   // ── Level 5: Users (except protected) ──────────────────────────
   const deleted = await db.user.deleteMany({
-    where: { email: { notIn: [...PROTECTED_EMAILS] } },
+    where: { email: { endsWith: DEMO_EMAIL_DOMAIN, notIn: [...PROTECTED_EMAILS] } }, // real accounts are never deleted
   });
 
   logSuccess(`Cleanup complete — ${deleted.count} users removed`);

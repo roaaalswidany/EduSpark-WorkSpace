@@ -6,13 +6,20 @@
 
 // ─── Passwords ──────────────────────────────────────────────────────────────
 
-export const SEED_PASSWORD_PLAIN = "Password123!";
+export const SEED_PASSWORD_PLAIN = process.env.SEED_PASSWORD ?? "Password123!"; // dev-only default; override with SEED_PASSWORD
 export const BCRYPT_COST = 12;
 
 // ─── Protected Accounts ─────────────────────────────────────────────────────
-// These accounts are NEVER touched by the seed (real production accounts).
+// Real accounts are never deleted: only users under DEMO_EMAIL_DOMAIN are removed (see cleanup.ts).
 
-export const PROTECTED_EMAILS = ["roaaswidany@gmail.com"] as const;
+// Demo accounts live ONLY under this domain; the seed never deletes users outside it.
+export const DEMO_EMAIL_DOMAIN = "@eduspark.dev";
+
+// Optional extra accounts that must be kept & augmented (comma-separated, set in your own .env.local).
+export const PROTECTED_EMAILS: readonly string[] = (process.env.SEED_PROTECTED_EMAILS ?? "")
+  .split(",")
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
 
 // ─── Demo / Test Accounts (recreated on every seed) ─────────────────────────
 

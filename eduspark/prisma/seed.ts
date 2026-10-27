@@ -27,6 +27,8 @@ import { seedNotifications } from "./seed/notifications";
 import { seedAiConversations } from "./seed/ai-conversations";
 import { cleanupAll } from "./seed/cleanup";
 import { seedBadges } from "./seed/badges";
+import { assertSeedAllowed } from "./seed/guard";
+import { SEED_PASSWORD_PLAIN } from "./seed/config";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -44,6 +46,9 @@ async function main(): Promise<void> {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not set — check eduspark/.env.local");
   }
+
+  // Never wipe a deployed/remote database or run with NODE_ENV=production by accident.
+  assertSeedAllowed();
 
    // ── 0. Cleanup ─────────────────────────────────────────────────
   await cleanupAll(db);
@@ -161,11 +166,12 @@ async function main(): Promise<void> {
   console.log(`     Notifications:  ${await db.notification.count()}`);
   console.log(`     AI Convs:       ${await db.aiConversation.count()}`);
   console.log("");
-  console.log("  🔑 Demo accounts (password: Password123!):");
+  console.log(`  🔑 Demo accounts (password: ${SEED_PASSWORD_PLAIN}):`);
   console.log("     👑 Creator:  sarah.creator@eduspark.dev");
   console.log("     🎓 Student:  ahmad.student@eduspark.dev");
   console.log("     💼 Client:   layla.client@eduspark.dev");
   console.log("     🛡️  Admin:    admin@eduspark.dev");
+  console.warn("\n  WARNING: these demo accounts use a PUBLICLY KNOWN password — never expose this database to the internet.");
   console.log("");
   console.log("  🚀 Ready for demo!");
   console.log("═".repeat(70) + "\n");

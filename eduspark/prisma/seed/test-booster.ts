@@ -7,6 +7,7 @@ config();
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { boostCertificates } from "./certificate-booster";
+import { PROTECTED_EMAILS } from "./config";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -40,7 +41,7 @@ async function main(): Promise<void> {
     "ahmad.student@eduspark.dev",
     "layla.client@eduspark.dev",
     "admin@eduspark.dev",
-    "roaaswidany@gmail.com",
+    ...PROTECTED_EMAILS,
   ];
 
   for (const email of demoEmails) {

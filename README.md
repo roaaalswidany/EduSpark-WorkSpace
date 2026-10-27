@@ -11,8 +11,8 @@ EduSpark is a full-stack educational platform that combines a Learning Managemen
 - **AI Assistant:** Context-aware chatbot for platform navigation and support.
 
 ### For Creators (Instructors & Freelancers)
-- **Course Management:** Create courses, sections, and lessons.
-- **Quiz Builder:** Generate MCQs using Gemini AI or add them manually.
+- **Course Content:** Courses, sections and lessons are currently provisioned by the seed/admin tooling (an authoring UI for them is on the roadmap).
+- **Quiz Builder:** For the courses you own, generate MCQs with Gemini AI or add them manually.
 - **Service Marketplace:** List services (gated by having a relevant certificate).
 - **Project Management:** Handle incoming orders, chat with clients, and manage milestones.
 
@@ -26,7 +26,7 @@ EduSpark is a full-stack educational platform that combines a Learning Managemen
 - **Authentication:** NextAuth.js
 - **AI Integration:** Google Gemini (`@google/genai`)
 - **Real-time Chat:** Socket.io + Redis Adapter
-- **Storage:** Local File Storage / MinIO (Silo fork for sanctioned environments)
+- **Storage:** S3-compatible object storage (MinIO in development) via presigned URLs
 - **Styling:** Tailwind CSS + Radix UI
 - **Infrastructure:** Docker Compose (Postgres, Redis, MinIO)
 
@@ -38,10 +38,10 @@ The project is a monorepo containing:
 3. `eduspark-infra`: Docker Compose files for local infrastructure.
 
 ### System Architecture
-![Architecture Diagram](./docs/Architecture.png)
+![Architecture Diagram](./eduspark/docs/Architecture.png)
 
 ### Database Schema (ERD)
-<img src="./docs/ERD.png" alt="ERD Diagram" width="100%" />
+<img src="./eduspark/docs/ERD.png" alt="ERD Diagram" width="100%" />
 *(Note: The full detailed ERD is available in `eduspark/docs/ERD.md` due to the large number of tables.)*
 
 ##  Getting Started
@@ -53,7 +53,65 @@ The project is a monorepo containing:
 
 ### Installation
 
-1. **Clone the repository:**
-   ```bash
-   git clone <your-repo-url>
-   cd eduspark-workspace
+```bash
+# 1. Clone and install (npm workspaces: ONE install at the repository root)
+git clone https://github.com/roaaalswidany/EduSpark-WorkSpace.git
+cd EduSpark-WorkSpace
+npm install
+
+# 2. Environment files (fill in the CHANGE_ME values; secrets are never committed)
+cp eduspark/.env.example              eduspark/.env.local
+cp eduspark-chat-server/.env.example  eduspark-chat-server/.env
+cp eduspark-infra/.env.example        eduspark-infra/.env
+#    NEXTAUTH_SECRET (web)  must equal  JWT_SECRET (chat)
+#    INTERNAL_API_SECRET    must be the same in web and chat
+
+# 3. Infrastructure (PostgreSQL, Redis, MinIO)
+npm run infra:up
+
+# 4. Database: apply migrations, then create badges / categories / first admin (idempotent)
+cd eduspark
+npx prisma migrate deploy
+ADMIN_EMAIL=you@example.com ADMIN_PASSWORD='use-12+-characters' npm run bootstrap
+cd ..
+
+# 5. Run web + chat together
+npm run dev            # http://localhost:3000
+```
+
+### Optional: demo data (LOCAL DEVELOPMENT ONLY)
+```bash
+npm run db:seed --workspace=eduspark
+```
+The seed **wipes all content** and creates demo accounts (`*@eduspark.dev`) that share a **publicly known
+password**. It refuses to run with `NODE_ENV=production` or against a non-local database host unless you
+explicitly pass `ALLOW_SEED_IN_PRODUCTION=true` / `ALLOW_SEED_REMOTE=true`. Real accounts (any email outside
+`@eduspark.dev`) are never deleted. Never expose a seeded database to the internet.
+
+## Testing
+
+Integration tests run the real Server Actions against a real PostgreSQL + Redis, and **wipe their database**,
+so they must use a dedicated one (the suite refuses to start otherwise):
+
+```bash
+createdb eduspark_test
+(cd eduspark && DATABASE_URL=postgresql://USER:PASS@localhost:5432/eduspark_test npx prisma migrate deploy)
+DATABASE_URL=postgresql://USER:PASS@localhost:5432/eduspark_test REDIS_URL=redis://:PASS@localhost:6379/1 npm test
+```
+Details (and the optional real-WebSocket chat test): [`eduspark/tests/README.md`](./eduspark/tests/README.md).
+
+## Current Scope & Roadmap
+
+Implemented: authentication & roles, courses / enrollment / progress, certification quizzes with server-side
+grading, competency-based promotion to Creator, service marketplace gated by certificates, projects with
+milestone approval, real-time chat, notifications, gamification, AI assistant / career paths / quiz drafting,
+public certificate verification (`/verify/<id>`), project reviews, email verification & password reset.
+
+**Not implemented yet** (do not assume these exist): payments / escrow / wallet / disputes (course enrollment is
+free and `paidAmount` only records the list price), an authoring UI for courses, sections and lessons,
+file-attachment UI (the storage backend is ready), SSO / Keycloak, container packaging and CI for the application.
+
+## Security Notes
+- Report vulnerabilities privately to the maintainer rather than in public issues.
+- The role stored in the session token is never trusted for privileged actions; it is re-read from the database.
+- See `eduspark/tests/` for the executable security regression tests.

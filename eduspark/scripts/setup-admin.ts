@@ -1,81 +1,40 @@
+/**
+ * Creates the first admin and/or promotes an existing account.
+ *
+ *   ADMIN_EMAIL=you@example.com ADMIN_PASSWORD='at-least-12-chars' npx tsx scripts/setup-admin.ts
+ *   PROMOTE_EMAIL=you@example.com npx tsx scripts/setup-admin.ts      # promote an existing user only
+ *
+ * No credentials or personal data live in this file (it is in a public repository).
+ */
 import { config } from "dotenv";
 import { resolve } from "path";
 config({ path: resolve(process.cwd(), ".env.local") });
 
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import bcrypt from "bcryptjs";
-
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  console.error("❌ DATABASE_URL is not defined.");
-  process.exit(1);
-}
-
-const adapter = new PrismaPg({ connectionString });
-const db = new PrismaClient({ adapter });
-
-const ADMIN_EMAIL = "admin@eduspark.dev";
-const ADMIN_PASSWORD = "Password123!";
-const OWNER_EMAIL = "roaaswidany@gmail.com";
+import { ensureAdmin, promoteToAdmin } from "../lib/bootstrap/ensure-base-data";
 
 async function main() {
-  console.log("🔧 Setting up admin access...\n");
-
-  // 1. Create admin account if it doesn't exist
-  const existingAdmin = await db.user.findUnique({
-    where: { email: ADMIN_EMAIL },
-    select: { id: true },
-  });
-
-  if (!existingAdmin) {
-    const hashed = await bcrypt.hash(ADMIN_PASSWORD, 12);
-    await db.user.create({
-      data: {
-        name: "EduSpark Admin",
-        email: ADMIN_EMAIL,
-        password: hashed,
-        role: "ADMIN",
-        headline: "Platform Administrator",
-        isActive: true,
-      },
-    });
-    console.log(`✅ Admin created: ${ADMIN_EMAIL}`);
-  } else {
-    console.log(`ℹ️  Admin already exists: ${ADMIN_EMAIL}`);
+  const { DATABASE_URL, ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME, PROMOTE_EMAIL } = process.env;
+  if (!DATABASE_URL) throw new Error("DATABASE_URL is not defined.");
+  if (!(ADMIN_EMAIL && ADMIN_PASSWORD) && !PROMOTE_EMAIL) {
+    throw new Error("Nothing to do: set ADMIN_EMAIL + ADMIN_PASSWORD (create) and/or PROMOTE_EMAIL (promote).");
   }
 
-  // 2. Upgrade the owner account to ADMIN
-  const owner = await db.user.findUnique({
-    where: { email: OWNER_EMAIL },
-    select: { id: true, role: true },
-  });
-
-  if (owner) {
-    if (owner.role !== "ADMIN") {
-      await db.user.update({
-        where: { id: owner.id },
-        data: { role: "ADMIN" },
-      });
-      console.log(`✅ Upgraded ${OWNER_EMAIL} → ADMIN`);
-    } else {
-      console.log(`ℹ️  ${OWNER_EMAIL} is already ADMIN`);
+  const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: DATABASE_URL }) });
+  try {
+    if (ADMIN_EMAIL && ADMIN_PASSWORD) {
+      // ensureAdmin enforces: password >= 12 chars, never overwrites an existing account.
+      const r = await ensureAdmin(db, { email: ADMIN_EMAIL, password: ADMIN_PASSWORD, name: ADMIN_NAME });
+      console.log(`admin: ${r}`);
     }
-  } else {
-    console.log(`⚠️  Owner account ${OWNER_EMAIL} not found`);
+    if (PROMOTE_EMAIL) console.log(`promote ${PROMOTE_EMAIL}: ${await promoteToAdmin(db, PROMOTE_EMAIL)}`);
+  } finally {
+    await db.$disconnect();
   }
-
-  console.log("\n🎉 Admin setup complete!\n");
-  console.log("📧 Admin credentials:");
-  console.log(`   Email: ${ADMIN_EMAIL}`);
-  console.log(`   Password: ${ADMIN_PASSWORD}`);
 }
 
-main()
-  .catch((e) => {
-    console.error("❌ Error:", e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await db.$disconnect();
-  });
+main().catch((e) => {
+  console.error("setup-admin failed:", e instanceof Error ? e.message : e);
+  process.exit(1);
+});

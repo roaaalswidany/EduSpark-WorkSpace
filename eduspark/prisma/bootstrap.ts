@@ -1,5 +1,7 @@
 // Run on every deployment, after `prisma migrate deploy`:  npm run bootstrap
-import "dotenv/config";
+// Next.js reads .env.local; plain `dotenv/config` would only read .env
+import { config } from "dotenv";
+config({ path: [".env.local", ".env"], quiet: true });
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { ensureBaseData } from "../lib/bootstrap/ensure-base-data";

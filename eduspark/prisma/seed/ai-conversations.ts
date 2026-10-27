@@ -9,6 +9,7 @@ import {
   logSuccess,
   logInfo,
 } from "./helpers";
+import { PROTECTED_EMAILS } from "./config";
 
 // ─── Conversation Templates ─────────────────────────────────────────────────
 
@@ -153,7 +154,7 @@ export async function seedAiConversations(
     "layla.client@eduspark.dev",
     "sarah.creator@eduspark.dev",
     "admin@eduspark.dev",
-    "roaaswidany@gmail.com",
+    ...PROTECTED_EMAILS,
   ];
 
   const demoUsers = await db.user.findMany({
