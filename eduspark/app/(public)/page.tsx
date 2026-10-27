@@ -78,7 +78,7 @@ export default async function HomePage() {
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.05] mb-6">
+            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white tracking-tight leading-[1.05] mb-6">
               Learn .. Certify
               <br />
               <span className="bg-linear-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
@@ -351,7 +351,7 @@ export default async function HomePage() {
       ═══════════════════════════════════════════════════════ */}
       <section className="relative border-y border-slate-800/60 bg-slate-950/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 lg:gap-8">
             <SmallFeature
               icon={Target}
               title="AI Career Paths"
@@ -413,87 +413,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ═══════════════════════════════════════════════════════
-          FOOTER
-      ═══════════════════════════════════════════════════════ */}
-      <footer className="border-t border-slate-800/60 bg-slate-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">
-                Learn
-              </p>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="/courses" className="text-slate-400 hover:text-white transition-colors">
-                    Courses
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/auth/register" className="text-slate-400 hover:text-white transition-colors">
-                    Sign up
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">
-                Marketplace
-              </p>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="/marketplace" className="text-slate-400 hover:text-white transition-colors">
-                    Browse services
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard/creator/services/new" className="text-slate-400 hover:text-white transition-colors">
-                    Publish a service
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">
-                Account
-              </p>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="/auth/login" className="text-slate-400 hover:text-white transition-colors">
-                    Sign in
-                  </Link>
-                </li>
-                <li>
-                  <Link href={isLoggedIn ? "/dashboard" : "/auth/register"} className="text-slate-400 hover:text-white transition-colors">
-                    {isLoggedIn ? "Dashboard" : "Register"}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-sm font-black text-white">EduSpark</span>
-              </div>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Learn, certify, and build your career on one platform.
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-slate-800/60 flex items-center justify-between flex-wrap gap-4">
-            <p className="text-xs text-slate-600">
-              © {new Date().getFullYear()} EduSpark. Graduation Project.
-            </p>
-            <p className="text-xs text-slate-600">
-              Built with Next.js 16 · Prisma 7 · Redis
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

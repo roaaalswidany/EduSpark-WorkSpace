@@ -33,7 +33,11 @@ export function ChangePasswordForm() {
           SAME_PASSWORD: "New password must differ from current one.",
           SERVER_ERROR: "Something went wrong. Try again.",
         };
-        const msg = messages[result.error] ?? "Action failed.";
+        
+        // Handle the possible undefined error gracefully
+        const errorCode = result.error || "SERVER_ERROR"; 
+        const msg = messages[errorCode] ?? "Action failed.";
+        
         setError(msg);
         toast.error("Password not changed", { description: msg });
         return;
