@@ -3,6 +3,7 @@ import type { PrismaClient } from "@prisma/client";
 import { db, db as defaultDb } from "@/lib/db";
 import { XP_REWARDS, type XPReason } from "./xp-rules";
 import { getLevelForXP, getLevelProgress } from "./levels";
+import { nextStreak } from "@/lib/gamification/streak";
 import { checkAndAwardBadges, type EarnedBadge } from "./check-badges";
 
 // ─── Types ────────────────────────────────────────────────────────
@@ -44,32 +45,46 @@ export async function awardXP(
   if (xpGained <= 0) return null;
 
   try {
-    // ── 1. Upsert UserStats ────────────────────────────────────────
-    const previousStats = await db.userStats.upsert({
+    // ── 1. Atomic increment (no read-modify-write → no lost updates) ──
+    const now = new Date();
+    // Streak: concurrent awards on the same day compute identical values, so
+    // writing the absolute result is safe (unlike xp, which uses increment).
+    const previous = await db.userStats.findUnique({
+      where: { userId },
+      select: { currentStreak: true, longestStreak: true, lastActiveDate: true },
+    });
+    const streak = nextStreak(previous, now);
+    const bumped = await db.userStats.upsert({
       where: { userId },
       create: {
         userId,
-        xp: 0,
-        level: "BRONZE",
+        xp: xpGained,
+        level: getLevelForXP(xpGained).key,
+        currentStreak: streak.currentStreak,
+        longestStreak: streak.longestStreak,
+        lastActiveDate: now,
       },
-      update: {},
+      update: {
+        xp: { increment: xpGained },
+        currentStreak: streak.currentStreak,
+        longestStreak: streak.longestStreak,
+        lastActiveDate: now,
+      },
       select: { xp: true, level: true },
     });
 
-    const previousLevel = previousStats.level;
-    const newTotalXP = previousStats.xp + xpGained;
+    const newTotalXP = bumped.xp;
     const newLevel = getLevelForXP(newTotalXP).key;
+    const previousLevel = getLevelForXP(newTotalXP - xpGained).key;
     const leveledUp = newLevel !== previousLevel;
 
-    // ── 2. Update XP + Level + lastActiveDate ─────────────────────
-    await db.userStats.update({
-      where: { userId },
-      data: {
-        xp: newTotalXP,
-        level: newLevel,
-        lastActiveDate: new Date(),
-      },
-    });
+    // ── 2. Keep the stored level in sync with the new XP total ────
+    if (bumped.level !== newLevel) {
+      await db.userStats.update({
+        where: { userId },
+        data: { level: newLevel },
+      });
+    }
 
     // ── 3. Check badges (optional) ────────────────────────────────
     let earnedBadges: EarnedBadge[] = [];

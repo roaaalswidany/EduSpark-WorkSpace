@@ -4,7 +4,8 @@ import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
-import { ChatRoomType, CourseStatus, EnrollmentStatus } from "@prisma/client";
+import { ChatRoomType, CourseStatus, EnrollmentStatus, Prisma } from "@prisma/client";
+import { getFreshUser } from "@/lib/security/fresh-user";
 import { revalidatePath } from "next/cache";
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
@@ -38,6 +39,9 @@ export async function enrollInCourseAction(
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
 
     const userId = session.user.id;
+
+    const actor = await getFreshUser(userId);
+    if (!actor?.isActive) return { success: false, error: "UNAUTHORIZED" };
 
     // 2. Validate
     const parsed = EnrollSchema.safeParse(input);
@@ -73,46 +77,39 @@ export async function enrollInCourseAction(
     if (existing) return { success: false, error: "ALREADY_ENROLLED" };
 
     // 5. Atomic transaction: enrollment + chat room + participant
-    const result = await db.$transaction(async (tx) => {
+    let result: { enrollmentId: string; chatRoomId: string };
+    try {
+    result = await db.$transaction(async (tx) => {
       // 5.1 Create enrollment
       const enrollment = await tx.enrollment.create({
         data: {
           userId,
           courseId,
+          // NOTE: no payment gateway exists yet; this records the list price only.
           paidAmount: course.price,
           status: EnrollmentStatus.ACTIVE,
         },
         select: { id: true },
       });
 
-      // 5.2 Find or create the course chat room (lazy)
-      let chatRoom = await tx.chatRoom.findUnique({
+      // 5.2 Course chat room: upsert is race-safe (courseId is unique), unlike
+      //     find-then-create where two first enrollments collide.
+      // NOTE: Prisma's upsert is NOT atomic here — under concurrency it throws a
+      // unique violation (verified by tests/gamification.test.ts). INSERT ..
+      // ON CONFLICT DO NOTHING (skipDuplicates) followed by a read is.
+      await tx.chatRoom.createMany({
+        data: [{ type: ChatRoomType.COURSE, courseId }],
+        skipDuplicates: true,
+      });
+      const chatRoom = await tx.chatRoom.findUniqueOrThrow({
         where: { courseId },
         select: { id: true },
       });
 
-      if (!chatRoom) {
-        // Create the course room on first enrollment
-        chatRoom = await tx.chatRoom.create({
-          data: {
-            type: ChatRoomType.COURSE,
-            courseId,
-          },
-          select: { id: true },
-        });
-
-        // Add the course creator (instructor) as a participant
-        await tx.chatRoomParticipant.create({
-          data: {
-            userId: course.creatorId,
-            chatRoomId: chatRoom.id,
-          },
-        });
-      }
-
-      // 5.3 Add the student to the room (idempotent)
+      // 5.3 Instructor + student as participants (idempotent)
       await tx.chatRoomParticipant.createMany({
         data: [
+          { userId: course.creatorId, chatRoomId: chatRoom.id },
           { userId, chatRoomId: chatRoom.id },
         ],
         skipDuplicates: true,
@@ -120,6 +117,20 @@ export async function enrollInCourseAction(
 
       return { enrollmentId: enrollment.id, chatRoomId: chatRoom.id };
     });
+    } catch (txError) {
+      // Lost a race for the same (user, course)? Only then is it "already enrolled".
+      if (
+        txError instanceof Prisma.PrismaClientKnownRequestError &&
+        txError.code === "P2002" &&
+        (await db.enrollment.findUnique({
+          where: { userId_courseId: { userId, courseId } },
+          select: { id: true },
+        }))
+      ) {
+        return { success: false, error: "ALREADY_ENROLLED" };
+      }
+      throw txError;
+    }
 
     // 6. Revalidate
     revalidatePath(`/courses`);
@@ -131,20 +142,8 @@ export async function enrollInCourseAction(
       enrollmentId: result.enrollmentId,
       chatRoomId: result.chatRoomId,
     };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("[ENROLL_IN_COURSE_ACTION]", error);
-
-    // Handle unique constraint violation (P2002) — race condition where
-    // the user clicked "Enroll" twice before the first request finished.
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      (error as { code: string }).code === "P2002"
-    ) {
-      return { success: false, error: "ALREADY_ENROLLED" };
-    }
-
     return { success: false, error: "SERVER_ERROR" };
   }
 }

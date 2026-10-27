@@ -4,6 +4,11 @@
    Fonts
    ───────────────────────────────────────────────────────────────────────────── */
 
+:root {
+  --font-inter: "Inter Variable";
+  --font-cairo: "Cairo Variable";
+}
+
 @theme {
   --font-sans: var(--font-inter), var(--font-cairo), ui-sans-serif, system-ui,
     -apple-system, "Segoe UI", Roboto, sans-serif;

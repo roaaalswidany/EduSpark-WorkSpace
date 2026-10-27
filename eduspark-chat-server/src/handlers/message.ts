@@ -13,12 +13,21 @@ import type {
 } from "../types/socket.types";
 import { prisma } from "../lib/prisma";
 import { logger } from "../lib/logger";
+import { env } from "../config/env";
 
 const MAX_MESSAGE_LENGTH = 4000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX_MESSAGES = 60;
+const RATE_LIMIT_MAX_MESSAGES = env.MAX_MESSAGES_PER_MINUTE;
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+// Evict expired windows so the map cannot grow without bound.
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of rateLimitMap) {
+    if (now > entry.resetAt) rateLimitMap.delete(key);
+  }
+}, RATE_LIMIT_WINDOW_MS).unref();
 
 export function registerMessageHandlers(
   socket: TypedSocket,

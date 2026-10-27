@@ -7,6 +7,9 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
+import { getFreshUser } from "@/lib/security/fresh-user";
+import { limitByUser } from "@/lib/security/action-guard";
+import { RateLimits } from "@/lib/security/rate-limit";
 import {
   s3Client,
   UPLOAD_BUCKET,
@@ -47,6 +50,7 @@ export type RequestUploadResult =
         | "INVALID_INPUT"
         | "FORBIDDEN"
         | "CONTEXT_NOT_FOUND"
+        | "RATE_LIMITED"
         | "SERVER_ERROR";
       fieldErrors?: Partial<Record<keyof RequestUploadInput, string[]>>;
     };
@@ -67,6 +71,12 @@ export async function requestUploadAction(
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
     const userId = session.user.id;
 
+    const actor = await getFreshUser(userId);
+    if (!actor?.isActive) return { success: false, error: "FORBIDDEN" };
+
+    const retryAfter = await limitByUser(RateLimits.UPLOAD_REQUEST, userId);
+    if (retryAfter !== null) return { success: false, error: "RATE_LIMITED" };
+
     const parsed = RequestUploadSchema.safeParse(rawInput);
     if (!parsed.success) {
       return {
@@ -84,10 +94,22 @@ export async function requestUploadAction(
     if (context === "MILESTONE") {
       const milestone = await db.milestone.findUnique({
         where: { id: contextId },
-        select: { project: { select: { clientId: true, creatorId: true } } },
+        select: {
+          project: {
+            select: { clientId: true, creatorId: true, status: true },
+          },
+        },
       });
 
       if (!milestone) return { success: false, error: "CONTEXT_NOT_FOUND" };
+
+      // Closed projects are read-only: no new deliverables.
+      if (
+        milestone.project.status === "COMPLETED" ||
+        milestone.project.status === "CANCELLED"
+      ) {
+        return { success: false, error: "FORBIDDEN" };
+      }
 
       const isParticipant =
         milestone.project.clientId === userId ||
@@ -117,7 +139,14 @@ export async function requestUploadAction(
     });
 
     const expiresInSeconds = 300; // 5 دقائق كافية لإكمال أي رفع طبيعي
-    const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: expiresInSeconds });
+    // SECURITY: by default the presigner signs content-length but NOT
+    // content-type, so a client could upload e.g. text/html under an allowed
+    // type. Signing both pins the stored type to the validated mimeType.
+    // (The browser PUT must send exactly: Content-Type: <mimeType>.)
+    const uploadUrl = await getSignedUrl(s3Client, command, {
+      expiresIn: expiresInSeconds,
+      signableHeaders: new Set(["content-length", "content-type"]),
+    });
 
     const attachment = await db.attachment.create({
       data: {

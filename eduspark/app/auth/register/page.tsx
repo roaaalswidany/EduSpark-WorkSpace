@@ -32,7 +32,6 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [role, setRole] = useState<"STUDENT" | "CREATOR">("STUDENT");
 
   const [isPending, setIsPending] = useState(false);
   const [generalError, setGeneralError] = useState<string | null>(null);
@@ -49,7 +48,6 @@ export default function RegisterPage() {
       email,
       password,
       confirmPassword,
-      role,
     });
 
     setIsPending(false);
@@ -253,38 +251,10 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Role */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                I want to join as
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setRole("STUDENT")}
-                  disabled={isPending}
-                  className={`h-11 rounded-lg text-sm font-medium transition-all ${
-                    role === "STUDENT"
-                      ? "bg-indigo-600 text-white border-2 border-indigo-500"
-                      : "bg-slate-950 text-slate-400 border border-slate-700 hover:border-slate-600"
-                  }`}
-                >
-                  Student
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRole("CREATOR")}
-                  disabled={isPending}
-                  className={`h-11 rounded-lg text-sm font-medium transition-all ${
-                    role === "CREATOR"
-                      ? "bg-indigo-600 text-white border-2 border-indigo-500"
-                      : "bg-slate-950 text-slate-400 border border-slate-700 hover:border-slate-600"
-                  }`}
-                >
-                  Creator
-                </button>
-              </div>
-            </div>
+            <p className="text-xs text-slate-500">
+              New accounts start as Students. Pass a course certification quiz
+              to unlock Creator access.
+            </p>
 
             {/* General error */}
             {generalError && (

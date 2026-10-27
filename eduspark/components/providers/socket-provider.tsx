@@ -113,7 +113,13 @@ export function SocketProvider({ enabled, children }: SocketProviderProps) {
 
     const newSocket = io(CHAT_SERVER_URL, {
       ...SOCKET_OPTIONS,
-      auth: { token },
+      auth: (cb) => {
+        // Fresh JWT on every (re)connect: the chat token lives 1h, so a static
+        // token would make every reconnect after expiry fail.
+        fetchSocketToken()
+          .then((t) => cb({ token: t }))
+          .catch(() => cb({ token }));
+      },
     });
 
     newSocket.on("connect", () => {

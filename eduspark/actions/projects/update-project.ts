@@ -100,10 +100,16 @@ export async function startMilestoneAction(
       projectId = milestone.projectId;
 
       // ① Update milestone to IN_PROGRESS
-      await tx.milestone.update({
-        where: { id: milestoneId },
+      const moved = await tx.milestone.updateMany({
+        where: { id: milestoneId, status: milestone.status },
         data: { status: MilestoneStatus.IN_PROGRESS },
       });
+      if (moved.count !== 1) {
+        throw new ActionError(
+          "INVALID_TRANSITION",
+          "This milestone was changed by someone else. Please refresh and retry."
+        );
+      }
 
       // ② Escalate project PENDING → IN_PROGRESS on first milestone start
       if (milestone.project.status === ProjectStatus.PENDING) {
@@ -192,10 +198,16 @@ export async function requestMilestoneReviewAction(
       projectId = milestone.projectId;
 
       // ① Update this milestone
-      await tx.milestone.update({
-        where: { id: milestoneId },
+      const moved = await tx.milestone.updateMany({
+        where: { id: milestoneId, status: milestone.status },
         data: { status: MilestoneStatus.REVIEW_REQUESTED },
       });
+      if (moved.count !== 1) {
+        throw new ActionError(
+          "INVALID_TRANSITION",
+          "This milestone was changed by someone else. Please refresh and retry."
+        );
+      }
 
       // ② Re-fetch all sibling milestones to determine project-level escalation.
       //    Simulate the updated state: treat the current milestone as already
@@ -331,13 +343,17 @@ export async function requestMilestoneRevisionAction(
       projectId = milestone.projectId;
 
       // ① Mark milestone as needing revision, store the note
-      await tx.milestone.update({
-        where: { id: milestoneId },
-        data: {
-          status: MilestoneStatus.REVISION_NEEDED,
-          revisionNote: note,
-        },
+      const moved = await tx.milestone.updateMany({
+        where: { id: milestoneId, status: MilestoneStatus.REVIEW_REQUESTED },
+        data: { status: MilestoneStatus.REVISION_NEEDED,
+          revisionNote: note },
       });
+      if (moved.count !== 1) {
+        throw new ActionError(
+          "INVALID_TRANSITION",
+          "This milestone was changed by someone else. Please refresh and retry."
+        );
+      }
 
       // ② Revert project back to IN_PROGRESS (work is not done)
       if (milestone.project.status === ProjectStatus.REVIEW_REQUESTED) {
@@ -453,21 +469,29 @@ export async function approveProjectCompletionAction(
       });
 
       // ② Mark project as COMPLETED
-      await tx.project.update({
-        where: { id: projectId },
+      const completed = await tx.project.updateMany({
+        where: { id: projectId, status: ProjectStatus.REVIEW_REQUESTED },
         data: {
           status: ProjectStatus.COMPLETED,
           deadline: now,
         },
       });
+      if (completed.count !== 1) {
+        throw new ActionError(
+          "INVALID_TRANSITION",
+          "This project was already updated. Please refresh."
+        );
+      }
 
-      // ③ Notify creator — escrow release would be triggered from here in production
+      // ③ Notify creator.
+      //    NOTE: no payment/escrow integration exists yet — this is a status
+      //    change only. Do not promise payouts in user-facing copy.
       if (project.creatorId) {
         await tx.notification.create({
           data: {
             userId: project.creatorId,
             title: "Project Completed 🎉",
-            body: `"${project.title}" has been approved by the client. Payment will be released shortly.`,
+            body: `"${project.title}" has been approved by the client.`,
             link: `/dashboard/projects/${projectId}`,
           },
         });

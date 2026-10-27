@@ -6,6 +6,7 @@ import type { Role } from "@prisma/client";
 // ADMIN is included everywhere — admins have full platform access.
 const ROUTE_ROLES: Array<{ prefix: string; allowed: Role[] }> = [
   { prefix: "/admin", allowed: ["ADMIN"] },
+  { prefix: "/dashboard/admin", allowed: ["ADMIN"] },
   { prefix: "/dashboard/creator", allowed: ["CREATOR", "ADMIN"] },
   { prefix: "/dashboard/student", allowed: ["STUDENT", "CREATOR", "ADMIN"] },
 ];
@@ -32,7 +33,7 @@ function getRedirectUrl(
 }
 
 export default withAuth(
-  function middleware(req: NextRequestWithAuth) {
+  function proxy(req: NextRequestWithAuth) {
     const role = req.nextauth.token?.role as Role | undefined;
 
     const redirectPath = getRedirectUrl(req, role);

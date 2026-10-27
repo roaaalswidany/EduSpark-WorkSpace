@@ -80,6 +80,33 @@ export const RateLimits = {
 
   /** Server actions (sensitive): 30 per minute */
   ACTION_SENSITIVE: { key: "action-sensitive", limit: 30, windowSec: 60 },
+
+  /** Quiz submissions: 10 per 10 minutes per user (DB-protection layer) */
+  QUIZ_SUBMIT: { key: "quiz-submit", limit: 10, windowSec: 600 },
+
+  /** Creator quiz authoring (manual questions): 60 per hour per user */
+  QUESTION_CREATE: { key: "question-create", limit: 60, windowSec: 3600 },
+
+  /** AI quiz generation (costs money): 10 per hour per user */
+  AI_QUIZ_GENERATE: { key: "ai-quiz-generate", limit: 10, windowSec: 3600 },
+
+  /** Ordering a service: 10 per hour per user */
+  ORDER_CREATE: { key: "order-create", limit: 10, windowSec: 3600 },
+
+  /** Presigned upload requests: 30 per 10 minutes per user */
+  UPLOAD_REQUEST: { key: "upload-request", limit: 30, windowSec: 600 },
+
+  /** Password-reset requests/attempts: 5 per hour per IP and per target email */
+  PASSWORD_RESET: { key: "password-reset", limit: 5, windowSec: 3600 },
+
+  /** Verification emails: 3 per hour per user */
+  EMAIL_VERIFY_SEND: { key: "email-verify-send", limit: 3, windowSec: 3600 },
+
+  /** Public certificate verification (page + JSON API): 60 per minute per IP */
+  PUBLIC_VERIFY: { key: "public-verify", limit: 60, windowSec: 60 },
+
+  /** Writing project reviews: 10 per hour per user */
+  REVIEW_CREATE: { key: "review-create", limit: 10, windowSec: 3600 },
 } as const;
 
 // ─── Core: Sliding Window ────────────────────────────────────────

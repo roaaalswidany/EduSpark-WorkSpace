@@ -117,7 +117,13 @@ export function useSocket(): UseSocketReturn {
 
     const newSocket = io(CHAT_SERVER_URL, {
       ...SOCKET_OPTIONS,
-      auth: { token },
+      auth: (cb) => {
+        // Fresh JWT on every (re)connect: the chat token lives 1h, so a static
+        // token would make every reconnect after expiry fail.
+        fetchSocketToken()
+          .then((t) => cb({ token: t }))
+          .catch(() => cb({ token }));
+      },
       // Enables server-side state recovery after brief disconnections
       // (Socket.io 4.6+ feature — works with the server's connectionStateRecovery)
     });

@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "npm run typecheck && esbuild src/server.ts --bundle --platform=node --format=esm --packages=external --target=node22 --sourcemap --outfile=dist/server.js",
     "start": "node dist/server.js",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1146.0",
@@ -33,6 +34,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.19.43",
     "@types/winston": "^2.4.4",
+    "esbuild": "^0.28.2",
     "prisma": "^7.10.0",
     "tsx": "^4.23.12",
     "typescript": "^5"

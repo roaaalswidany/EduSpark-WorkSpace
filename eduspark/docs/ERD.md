@@ -482,6 +482,14 @@ REJECTED REJECTED
     DateTime createdAt 
     }
   
+
+  "project_reviews" {
+    String id "🗝️"
+    Int rating 
+    String comment "❓"
+    DateTime createdAt 
+    }
+  
     "users" |o--|| "Role" : "enum:role"
     "accounts" }o--|| "users" : "user"
     "sessions" }o--|| "users" : "user"
@@ -547,4 +555,8 @@ REJECTED REJECTED
     "user_badges" }o--|| "users" : "user"
     "user_badges" }o--|| "badges" : "badge"
     "audit_logs" }o--|o "users" : "user"
+    "project_reviews" |o--|| "projects" : "project"
+    "project_reviews" }o--|| "users" : "reviewer"
+    "project_reviews" }o--|| "users" : "creator"
+    "project_reviews" }o--|o "services" : "service"
 ```

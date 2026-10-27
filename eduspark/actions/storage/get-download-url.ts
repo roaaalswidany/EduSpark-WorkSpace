@@ -57,7 +57,12 @@ export async function getAttachmentDownloadUrlAction(
 
     const downloadUrl = await getSignedUrl(
       s3Client,
-      new GetObjectCommand({ Bucket: UPLOAD_BUCKET, Key: attachment.storageKey }),
+      new GetObjectCommand({
+        Bucket: UPLOAD_BUCKET,
+        Key: attachment.storageKey,
+        // Always download, never render inline (defence in depth vs. active content)
+        ResponseContentDisposition: `attachment; filename*=UTF-8''${encodeURIComponent(attachment.fileName)}`,
+      }),
       { expiresIn: 120 } // نافذة زمنية أضيق عمداً، لأنه رابط استهلاك فوري لا رفع
     );
 

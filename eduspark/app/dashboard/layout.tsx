@@ -3,7 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { DashboardShell } from "./_components/dashboard-shell";
+import { AuthSessionProvider } from "@/components/providers/auth-session-provider";
 import { getLevelProgress } from "@/lib/gamification/levels";
+import { VerifyEmailBanner } from "@/components/auth/verify-email-banner";
 
 export default async function DashboardLayout({
   children,
@@ -24,6 +26,7 @@ export default async function DashboardLayout({
         email: true,
         image: true,
         role: true,
+        emailVerified: true,
       },
     }),
     db.notification.count({
@@ -41,6 +44,7 @@ export default async function DashboardLayout({
   const levelProgress = getLevelProgress(xp);
 
   return (
+    <AuthSessionProvider>
     <DashboardShell
       role={user.role}
       user={{
@@ -64,7 +68,9 @@ export default async function DashboardLayout({
         nextLevelLabel: levelProgress.next?.label ?? null,
       }}
     >
+      {!user.emailVerified && <VerifyEmailBanner />}
       {children}
     </DashboardShell>
+    </AuthSessionProvider>
   );
 }

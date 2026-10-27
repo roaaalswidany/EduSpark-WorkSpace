@@ -70,11 +70,6 @@ export async function trackProgressAction(
 
     // Short-circuit: course already completed — idempotent guard
     if (enrollment.isPassed) {
-    // ── Award XP (fire-and-forget, doesn't block response) ─────────
-    void awardXP(userId, "LESSON_COMPLETED").catch((err) =>
-      console.error("[GAMIFICATION] track-progress lesson XP:", err)
-    );
-
       const [completedLessons, totalLessons] = await Promise.all([
         db.lessonProgress.count({
           where: { enrollmentId: enrollment.id, completed: true },
@@ -90,6 +85,13 @@ export async function trackProgressAction(
         totalLessons,
       };
     }
+
+    const alreadyDone = await db.lessonProgress.findUnique({
+      where: {
+        enrollmentId_lessonId: { enrollmentId: enrollment.id, lessonId },
+      },
+      select: { completed: true },
+    });
 
     // Upsert lesson progress — fully idempotent
     await db.lessonProgress.upsert({
@@ -111,6 +113,13 @@ export async function trackProgressAction(
       },
     });
 
+    // XP only the FIRST time a lesson is completed (prevents XP farming).
+    if (!alreadyDone?.completed) {
+      void awardXP(userId, "LESSON_COMPLETED").catch((err) =>
+        console.error("[GAMIFICATION] track-progress lesson XP:", err)
+      );
+    }
+
     // Recalculate progress with fresh counts
     const [completedLessons, totalLessons] = await Promise.all([
       db.lessonProgress.count({
@@ -123,21 +132,29 @@ export async function trackProgressAction(
     const progress = Math.min(100, Math.round(rawRatio * 100));
     const isPassed = progress >= 100;
 
-    // Persist progress — promote to COMPLETED if finished
-    await db.enrollment.update({
-      where: { id: enrollment.id },
-      data: {
-        progress,
-        ...(isPassed && {
+    // Persist progress — promote to COMPLETED if finished.
+    // Compare-and-set: only ONE concurrent request can flip isPassed.
+    let justCompleted = false;
+    if (isPassed) {
+      const flipped = await db.enrollment.updateMany({
+        where: { id: enrollment.id, isPassed: false },
+        data: {
+          progress,
           status: EnrollmentStatus.COMPLETED,
           isPassed: true,
           completedAt: new Date(),
-        }),
-      },
-    });
+        },
+      });
+      justCompleted = flipped.count === 1;
+    } else {
+      await db.enrollment.update({
+        where: { id: enrollment.id },
+        data: { progress },
+      });
+    }
 
-    // ── Award course completion XP (if just finished) ──────────────
-    if (isPassed) {
+    // ── Award course completion XP (only on the transition) ────────
+    if (justCompleted) {
       void awardXP(userId, "COURSE_COMPLETED").catch((err) =>
         console.error("[GAMIFICATION] course completion XP:", err)
       );

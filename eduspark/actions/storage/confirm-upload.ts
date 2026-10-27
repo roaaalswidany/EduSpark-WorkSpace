@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { HeadObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
@@ -21,6 +21,7 @@ export type ConfirmUploadResult =
         | "NOT_FOUND"
         | "FORBIDDEN"
         | "UPLOAD_NOT_FOUND_IN_STORAGE"
+        | "UPLOAD_MISMATCH"
         | "SERVER_ERROR";
     };
 
@@ -43,9 +44,14 @@ export async function confirmUploadAction(
       return { success: false, error: "FORBIDDEN" };
     }
 
+    // Idempotent: only PENDING attachments can be confirmed.
+    if (attachment.status === "CONFIRMED") return { success: true };
+    if (attachment.status !== "PENDING") return { success: false, error: "NOT_FOUND" };
+
     // ── لا نثق بإخبار العميل أن الرفع نجح — نتحقّق فعلياً من وجود الكائن في S3
+    let head;
     try {
-      await s3Client.send(
+      head = await s3Client.send(
         new HeadObjectCommand({ Bucket: UPLOAD_BUCKET, Key: attachment.storageKey })
       );
     } catch {
@@ -54,6 +60,21 @@ export async function confirmUploadAction(
         data: { status: "FAILED" },
       });
       return { success: false, error: "UPLOAD_NOT_FOUND_IN_STORAGE" };
+    }
+
+    // The object must match what was declared (and authorized) at request time.
+    if (
+      head.ContentLength !== attachment.fileSizeBytes ||
+      head.ContentType !== attachment.mimeType
+    ) {
+      await s3Client
+        .send(new DeleteObjectCommand({ Bucket: UPLOAD_BUCKET, Key: attachment.storageKey }))
+        .catch((err) => console.error("[CONFIRM_UPLOAD] cleanup failed:", err));
+      await db.attachment.update({
+        where: { id: attachment.id },
+        data: { status: "FAILED" },
+      });
+      return { success: false, error: "UPLOAD_MISMATCH" };
     }
 
     await db.attachment.update({

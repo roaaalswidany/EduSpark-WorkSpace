@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
+import { getFreshUser } from "@/lib/security/fresh-user";
 import { revalidatePath } from "next/cache";
 import { cacheInvalidatePattern } from "@/lib/cache";
 import { CacheKeys } from "@/lib/cache-keys";
@@ -46,7 +47,10 @@ export async function updateServiceAction(
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
 
     const userId = session.user.id;
-    const role = session.user.role;
+    // Authoritative role (JWT may be stale): decides whether the certificate gate is bypassed.
+    const actor = await getFreshUser(userId);
+    if (!actor?.isActive) return { success: false, error: "UNAUTHORIZED" };
+    const role = actor.role;
 
     // 2. Validate
     const parsed = UpdateServiceSchema.safeParse(rawInput);

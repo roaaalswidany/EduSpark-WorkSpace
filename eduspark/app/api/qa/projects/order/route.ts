@@ -12,6 +12,14 @@ const STATUS_MAP: Record<string, number> = {
 };
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  // Test-only endpoint: hidden in production unless ENABLE_QA_ROUTES=true.
+  if (
+    process.env.NODE_ENV === "production" &&
+    process.env.ENABLE_QA_ROUTES !== "true"
+  ) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
+
   let body: unknown;
   try {
     body = await req.json();

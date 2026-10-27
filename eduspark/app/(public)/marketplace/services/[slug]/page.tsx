@@ -4,6 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { ServiceStatus } from "@prisma/client";
 import { ServiceDetailView } from "./_components/service-detail-view";
+import { ServiceReviews } from "@/components/reviews/service-reviews";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -89,6 +90,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     : [];
 
   return (
+    <>
     <ServiceDetailView
       service={{
         id: service.id,
@@ -113,5 +115,11 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       isLoggedIn={isLoggedIn}
       isOwnService={isOwnService}
     />
+    <div className="bg-slate-950">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <ServiceReviews serviceId={service.id} />
+      </div>
+    </div>
+    </>
   );
 }

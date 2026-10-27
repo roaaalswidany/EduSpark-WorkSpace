@@ -89,7 +89,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           userId: true,
           title: true,
           messages: {
-            orderBy: { createdAt: "asc" },
+            // newest 20 (then reversed below) — "asc" + take returned the OLDEST 20
+            orderBy: { createdAt: "desc" },
             take: 20,
             select: { role: true, content: true },
           },
@@ -104,7 +105,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }
 
       existingConversationTitle = existing.title;
-      history = existing.messages.map((m) => ({
+      history = [...existing.messages].reverse().map((m) => ({
         role: m.role === "user" ? ("user" as const) : ("assistant" as const),
         content: m.content,
       }));

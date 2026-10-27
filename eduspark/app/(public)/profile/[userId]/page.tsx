@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { ServiceStatus } from "@prisma/client";
 import { ProfileHeader } from "@/app/dashboard/profile/_components/profile-header";
 import { PublicServicesGrid } from "./_components/public-services-grid";
+import { CreatorReputationCard } from "@/components/reviews/creator-reputation-card";
 
 interface PageProps {
   params: Promise<{ userId: string }>;
@@ -154,6 +155,8 @@ export default async function PublicProfilePage({ params }: PageProps) {
             </p>
           </div>
         )}
+
+        <CreatorReputationCard creatorId={userId} />
 
         {/* Services */}
         {services.length > 0 && (

@@ -3,6 +3,9 @@
 import { z } from "zod";
 import { GoogleGenAI } from "@google/genai";
 import { getServerSession } from "next-auth";
+import { getFreshUser } from "@/lib/security/fresh-user";
+import { limitByUser } from "@/lib/security/action-guard";
+import { RateLimits } from "@/lib/security/rate-limit";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
@@ -108,7 +111,16 @@ export async function generateQuizDraftAction(
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
-    const { id: userId, role } = session.user;
+    const userId = session.user.id;
+
+    const actor = await getFreshUser(userId);
+    if (!actor?.isActive) return { success: false, error: "UNAUTHORIZED" };
+    const role = actor.role;
+
+    // Each call costs money (Gemini): cap per user.
+    if ((await limitByUser(RateLimits.AI_QUIZ_GENERATE, userId)) !== null) {
+      return { success: false, error: "RATE_LIMITED" };
+    }
 
     const parsed = GenerateQuizSchema.safeParse(rawInput);
     if (!parsed.success) return { success: false, error: "INVALID_INPUT" };

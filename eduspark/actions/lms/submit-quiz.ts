@@ -8,6 +8,15 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { Role } from "@prisma/client";
 import { awardXP } from "@/lib/gamification/award";
+import { randomBytes } from "crypto";
+import {
+  QUIZ_ATTEMPT_WINDOW_HOURS,
+  QUIZ_MAX_ATTEMPTS_PER_WINDOW,
+} from "@/lib/lms/quiz-policy";
+import { limitByUser } from "@/lib/security/action-guard";
+import { getFreshUser } from "@/lib/security/fresh-user";
+import { emailVerificationOk } from "@/lib/auth/email-policy";
+import { RateLimits } from "@/lib/security/rate-limit";
 
 
 // ─── Credential ID Generator ──────────────────────────────────────────────────
@@ -15,7 +24,7 @@ import { awardXP } from "@/lib/gamification/award";
 
 function generateCredentialId(): string {
   const ts = Date.now().toString(36).toUpperCase();
-  const rand = Math.random().toString(16).substring(2, 9).toUpperCase();
+  const rand = randomBytes(6).toString("hex").toUpperCase();
   return `EDU-${ts}-${rand}`;
 }
 
@@ -23,10 +32,8 @@ function generateCredentialId(): string {
 
 const AnswerSchema = z.object({
   questionId: z.string().cuid("Each questionId must be a valid CUID."),
-  selectedOption: z
-    .string()
-    .min(1, "selectedOption cannot be empty.")
-    .max(100, "selectedOption is too long."),
+  // Empty string = unanswered (e.g. timer auto-submit); graded as incorrect.
+  selectedOption: z.string().max(100, "selectedOption is too long."),
 });
 
 const SubmitQuizSchema = z.object({
@@ -77,8 +84,12 @@ export type SubmitQuizResult =
         | "NOT_ENROLLED"
         | "QUESTION_COUNT_MISMATCH"
         | "INVALID_QUESTION_IDS"
+        | "ATTEMPT_LIMIT_REACHED"
+        | "RATE_LIMITED"
+        | "EMAIL_NOT_VERIFIED"
         | "SERVER_ERROR";
       fieldErrors?: Partial<Record<string, string[]>>;
+      retryAt?: string; // ISO date, set with ATTEMPT_LIMIT_REACHED
     };
 
 // ─── Server Action ────────────────────────────────────────────────────────────
@@ -92,6 +103,13 @@ export async function submitQuizAction(
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
 
     const userId = session.user.id;
+
+    const actor = await getFreshUser(userId);
+    if (!actor?.isActive) return { success: false, error: "UNAUTHORIZED" };
+    if (!emailVerificationOk(actor)) return { success: false, error: "EMAIL_NOT_VERIFIED" };
+
+    const retryAfter = await limitByUser(RateLimits.QUIZ_SUBMIT, userId);
+    if (retryAfter !== null) return { success: false, error: "RATE_LIMITED" };
 
     // ── 2. Validate input ────────────────────────────────────────────────────
     const parsed = SubmitQuizSchema.safeParse(rawInput);
@@ -154,7 +172,8 @@ export async function submitQuizAction(
   questionId: q.id,
   selectedOption: answerMap.get(q.id)!,
   correctOption: q.correctOption ?? "",
-  isCorrect: answerMap.get(q.id) === q.correctOption,
+  isCorrect:
+    answerMap.get(q.id) !== "" && answerMap.get(q.id) === q.correctOption,
 }));
 
 const correctCount = gradedAnswers.filter((a) => a.isCorrect).length;
@@ -178,6 +197,36 @@ const correctCount = gradedAnswers.filter((a) => a.isCorrect).length;
     //     co-rolled-back — the two are never orphaned from each other.
 
     const txResult = await db.$transaction(async (tx) => {
+      // ⓪ Serialize this user's submissions (row lock) so the attempt-limit
+      //    check below cannot be bypassed by concurrent requests.
+      await tx.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR UPDATE`;
+
+      const alreadyCertified = await tx.certificate.findUnique({
+        where: { userId_courseId: { userId, courseId } },
+        select: { id: true },
+      });
+
+      if (!alreadyCertified) {
+        const windowMs = QUIZ_ATTEMPT_WINDOW_HOURS * 60 * 60 * 1000;
+        const recent = await tx.quizAttempt.findMany({
+          where: {
+            userId,
+            quizId,
+            submittedAt: { gte: new Date(Date.now() - windowMs) },
+          },
+          orderBy: { submittedAt: "asc" },
+          take: QUIZ_MAX_ATTEMPTS_PER_WINDOW,
+          select: { submittedAt: true },
+        });
+
+        if (recent.length >= QUIZ_MAX_ATTEMPTS_PER_WINDOW) {
+          return {
+            limited: true as const,
+            retryAt: new Date(recent[0].submittedAt.getTime() + windowMs),
+          };
+        }
+      }
+
       // ① Persist the attempt
       const attempt = await tx.quizAttempt.create({
         data: {
@@ -204,7 +253,13 @@ const correctCount = gradedAnswers.filter((a) => a.isCorrect).length;
       });
 
       if (!passed) {
-        return { attempt, certificate: null, roleUpgraded: false };
+        return {
+          limited: false as const,
+          xpEligible: !alreadyCertified,
+          attempt,
+          certificate: null,
+          roleUpgraded: false,
+        };
       }
 
       // ③ Issue certificate — idempotent via unique constraint on [userId, courseId]
@@ -240,14 +295,28 @@ const correctCount = gradedAnswers.filter((a) => a.isCorrect).length;
       });
 
       return {
+        limited: false as const,
+        xpEligible: !alreadyCertified,
         attempt,
         certificate,
         roleUpgraded: upgraded > 0,
       };
     });
 
+    if (txResult.limited) {
+      return {
+        success: false,
+        error: "ATTEMPT_LIMIT_REACHED",
+        retryAt: txResult.retryAt.toISOString(),
+      };
+    }
+
     // ── Award quiz XP (fire-and-forget, doesn't block response) ─────
-    if (passed) {
+    // Only for counted attempts: practice retakes after certification earn no
+    // XP (otherwise a certified user could farm +100 XP per retake).
+    if (!txResult.xpEligible) {
+      // no XP
+    } else if (passed) {
       void awardXP(userId, "QUIZ_PASSED").catch((err) =>
         console.error("[GAMIFICATION] quiz passed XP:", err)
       );
@@ -281,14 +350,16 @@ const correctCount = gradedAnswers.filter((a) => a.isCorrect).length;
               courseId: txResult.certificate.courseId,
             }
           : null,
-        // Full feedback always returned — this is a learning platform.
-        // Showing correct answers promotes genuine understanding.
-        answerFeedback: gradedAnswers.map(({ questionId, selectedOption, correctOption, isCorrect }) => ({
-          questionId,
-          selectedOption,
-          correctOption,
-          isCorrect,
-        })),
+        // The answer key is revealed ONLY after passing. Returning it on a
+        // failed attempt lets a student fail once, then pass with 100%.
+        answerFeedback: passed
+          ? gradedAnswers.map(({ questionId, selectedOption, correctOption, isCorrect }) => ({
+              questionId,
+              selectedOption,
+              correctOption,
+              isCorrect,
+            }))
+          : [],
       },
     };
   } catch (error) {

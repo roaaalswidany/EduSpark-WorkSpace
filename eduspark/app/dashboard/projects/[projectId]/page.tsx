@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { ProjectView } from "./_components/project-view";
+import { ProjectReviewPanel } from "@/components/reviews/project-review-panel";
 import type { SerializedProject } from "./_components/project-view";
 
 interface ProjectPageProps {
@@ -124,11 +125,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   };
 
   return (
-    <ProjectView
-      project={serialized}
-      currentUserId={userId}
-      isClient={isClient}
-      isCreator={isCreator}
-    />
+    <>
+      <ProjectView
+        project={serialized}
+        currentUserId={userId}
+        isClient={isClient}
+        isCreator={isCreator}
+      />
+      {project.creator && (
+        <div className="bg-slate-950">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-10">
+            <ProjectReviewPanel
+              projectId={project.id}
+              status={project.status}
+              isClient={isClient}
+              creatorName={project.creator.name}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

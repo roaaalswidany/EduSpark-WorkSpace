@@ -149,7 +149,7 @@ export const authOptions: AuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
         token.role = user.role as Role;
@@ -158,10 +158,20 @@ export const authOptions: AuthOptions = {
         token.picture = user.image ?? null;
       }
 
-      if (trigger === "update" && session) {
-        if (session.name) token.name = session.name;
-        if (session.image) token.picture = session.image;
-        if (session.role) token.role = session.role as Role;
+      // SECURITY: with NextAuth v4 the `session` argument of this callback is
+      // the request body sent by the browser (`update(data)`), i.e. it is
+      // attacker-controlled. Never copy fields from it. On an update trigger we
+      // simply re-read the authoritative values from the database.
+      if (trigger === "update" && token.id) {
+        const fresh = await db.user.findUnique({
+          where: { id: token.id },
+          select: { role: true, name: true, image: true, isActive: true },
+        });
+        if (fresh?.isActive) {
+          token.role = fresh.role;
+          token.name = fresh.name;
+          token.picture = fresh.image ?? null;
+        }
       }
 
       return token;

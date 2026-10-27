@@ -2,6 +2,8 @@
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getFreshUser } from "@/lib/security/fresh-user";
+import { emailVerificationOk } from "@/lib/auth/email-policy";
 import { db } from "@/lib/db";
 import { Role, ServiceStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -49,7 +51,13 @@ export async function createServiceAction(
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
 
-    const { id: userId, role } = session.user;
+    const userId = session.user.id;
+    // Authoritative role from DB (JWT role may be stale after upgrade/suspension)
+    const fresh = await getFreshUser(userId);
+    const role = fresh?.isActive ? fresh.role : undefined;
+    if (fresh?.isActive && !emailVerificationOk(fresh)) {
+      return { success: false, error: "EMAIL_NOT_VERIFIED" };
+    }
 
     // 2. Role gate: only CREATOR and ADMIN may create services
     if (role !== Role.CREATOR && role !== Role.ADMIN) {

@@ -4,14 +4,14 @@ import { logHeader, logSuccess, logInfo } from "./helpers";
 
 // ─── Category definitions ────────────────────────────────────────────────────
 
-interface CategorySpec {
+export interface CategorySpec {
   name: string;
   slug: string;
   icon: string;
   description: string;
 }
 
-const CATEGORIES: CategorySpec[] = [
+export const CATEGORIES: CategorySpec[] = [
   // English categories (5)
   {
     name: "Web Development",

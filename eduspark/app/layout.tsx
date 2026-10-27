@@ -1,21 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Cairo } from "next/font/google";
+// Self-hosted variable fonts (no build-time call to Google Fonts → offline /
+// Docker builds are reproducible). Families: "Inter Variable", "Cairo Variable".
+import "@fontsource-variable/inter";
+import "@fontsource-variable/cairo";
 import { Toaster } from "sonner";
 import "./globals.css";
-
-// ─── Fonts ───────────────────────────────────────────────────────────────────
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const cairo = Cairo({
-  subsets: ["arabic", "latin"],
-  variable: "--font-cairo",
-  display: "swap",
-});
 
 // ─── Metadata ────────────────────────────────────────────────────────────────
 
@@ -32,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${cairo.variable}`}>
+    <html lang="en">
       <body>
         {children}
         <Toaster

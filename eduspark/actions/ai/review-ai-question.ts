@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getFreshUser } from "@/lib/security/fresh-user";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -42,7 +43,7 @@ export async function reviewAiQuestionAction(
 
     if (
       question.quiz.course.creatorId !== session.user.id &&
-      session.user.role !== Role.ADMIN
+      (await getFreshUser(session.user.id))?.role !== Role.ADMIN
     ) {
       return { success: false, error: "FORBIDDEN" };
     }

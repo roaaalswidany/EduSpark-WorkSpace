@@ -9,6 +9,11 @@ import {
 } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import {
+  QUIZ_ATTEMPT_WINDOW_HOURS,
+  QUIZ_MAX_ATTEMPTS_PER_WINDOW,
+} from "@/lib/lms/quiz-policy";
 import {
   CheckCircle2,
   XCircle,
@@ -110,6 +115,7 @@ export function QuizView({
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const { update: updateSession } = useSession();
   const [result, setResult] = useState<ResultData | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(
     quiz.timeLimit
@@ -155,6 +161,12 @@ export function QuizView({
               ? "Quiz not found."
               : res.error === "QUESTION_COUNT_MISMATCH"
               ? "Please answer all questions."
+              : res.error === "EMAIL_NOT_VERIFIED"
+              ? "Please confirm your email address first — check your inbox."
+              : res.error === "ATTEMPT_LIMIT_REACHED"
+              ? `Attempt limit reached. You can try again after ${
+                  res.retryAt ? new Date(res.retryAt).toLocaleString() : "a while"
+                }.`
               : "Something went wrong. Please try again.";
 
           setError(errorMessage);
@@ -185,12 +197,18 @@ export function QuizView({
           });
         }
 
+        // Role changed server-side → refresh the JWT so middleware and
+        // server actions see CREATOR without a manual re-login.
+        if (data.roleUpgraded) {
+          void updateSession();
+        }
+
         setResult(data);
         setView("result");
         if (timerRef.current) clearInterval(timerRef.current);
       });
     },
-    [isPending, quiz.id, quiz.questions, answers]
+    [isPending, quiz.id, quiz.questions, answers, updateSession]
   );
 
   // ── Timer ──────────────────────────────────────────────────────
@@ -355,11 +373,11 @@ export function QuizView({
             <ul className="space-y-2.5">
               {[
                 `You need a score of ${quiz.passingScore}% or higher to pass`,
-                "You can retake this quiz as many times as you need",
+                `You can attempt this quiz up to ${QUIZ_MAX_ATTEMPTS_PER_WINDOW} times per ${QUIZ_ATTEMPT_WINDOW_HOURS} hours until you pass`,
                 quiz.timeLimit
                   ? "The timer starts as soon as you click Start"
                   : "There is no time limit — take your time",
-                "You'll see detailed feedback for every answer after submitting",
+                "Detailed answer feedback is unlocked once you pass",
                 alreadyPassed
                   ? "You've already earned your certificate for this course"
                   : "Passing grants you a verified certificate",
@@ -753,7 +771,8 @@ export function QuizView({
             </div>
           )}
 
-          {/* Feedback */}
+          {/* Feedback — revealed only after passing */}
+          {passed && result.answerFeedback.length > 0 && (
           <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden mb-6">
             <div className="px-5 sm:px-6 py-4 border-b border-slate-800">
               <h2 className="text-sm font-bold text-white">Answer Review</h2>
@@ -853,6 +872,14 @@ export function QuizView({
               })}
             </div>
           </div>
+          )}
+
+          {!passed && (
+            <p className="text-xs text-slate-500 text-center mb-6">
+              Answer review is unlocked once you pass. Revisit the course
+              lessons, then try again.
+            </p>
+          )}
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3">

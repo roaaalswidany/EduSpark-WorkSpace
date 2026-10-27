@@ -8,6 +8,15 @@ import type { TypedServer } from "../types/socket.types";
 import type { NotificationPayload } from "../types/socket.types";
 import { logger } from "../lib/logger";
 import { env } from "../config/env";
+import { timingSafeEqual } from "crypto";
+
+/** Constant-time comparison of the shared server-to-server secret. */
+export function isValidInternalSecret(provided: unknown): boolean {
+  if (typeof provided !== "string") return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(env.INTERNAL_API_SECRET);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
 
 interface NotifyBody {
   userId: string;
@@ -21,9 +30,7 @@ export function createInternalRouter(io: TypedServer): Router {
   router.post(
     "/notify",
     (req: Request<unknown, unknown, NotifyBody>, res: Response) => {
-      const secret = req.headers["x-internal-secret"];
-
-      if (secret !== env.INTERNAL_API_SECRET) {
+      if (!isValidInternalSecret(req.headers["x-internal-secret"])) {
        logger.warn("Internal notify: unauthorized attempt", {
   meta: { ip: req.ip },
 });

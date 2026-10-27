@@ -77,6 +77,7 @@ export type CreateServiceResult =
         | "UNAUTHORIZED"
         | "FORBIDDEN_ROLE"
         | "NO_CERTIFICATE"
+        | "EMAIL_NOT_VERIFIED"
         | "INVALID_INPUT"
         | "SERVER_ERROR";
       fieldErrors?: Partial<Record<keyof CreateServiceInput, string[]>>;

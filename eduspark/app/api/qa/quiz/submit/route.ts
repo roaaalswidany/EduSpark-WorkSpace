@@ -9,10 +9,20 @@ const STATUS_MAP: Record<string, number> = {
   NOT_ENROLLED: 403,
   QUESTION_COUNT_MISMATCH: 400,
   INVALID_QUESTION_IDS: 400,
+  ATTEMPT_LIMIT_REACHED: 429,
+  RATE_LIMITED: 429,
   SERVER_ERROR: 500,
 };
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  // Test-only endpoint: hidden in production unless ENABLE_QA_ROUTES=true.
+  if (
+    process.env.NODE_ENV === "production" &&
+    process.env.ENABLE_QA_ROUTES !== "true"
+  ) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
+
   let body: unknown;
   try {
     body = await req.json();

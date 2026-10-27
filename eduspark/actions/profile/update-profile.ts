@@ -37,6 +37,11 @@ const UpdateProfileSchema = z.object({
     .string()
     .url("Website must be a valid URL.")
     .max(200, "Website is too long.")
+    // z.url() also accepts javascript: and data: URIs; this value is rendered
+    // as an <a href>, so only allow web URLs.
+    .refine((v) => /^https?:\/\//i.test(v), {
+      message: "Website must start with http:// or https://.",
+    })
     .optional()
     .or(z.literal("")),
 });

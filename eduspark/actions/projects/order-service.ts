@@ -13,6 +13,10 @@ import {
 import { revalidatePath } from "next/cache";
 import { emitNotification } from "@/lib/notifications/emit";
 import { awardXP } from "@/lib/gamification/award";
+import { getFreshUser } from "@/lib/security/fresh-user";
+import { emailVerificationOk } from "@/lib/auth/email-policy";
+import { limitByUser } from "@/lib/security/action-guard";
+import { RateLimits } from "@/lib/security/rate-limit";
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 
@@ -42,6 +46,9 @@ export type OrderServiceResult =
       error:
         | "UNAUTHORIZED"
         | "STALE_SESSION"
+        | "ACCOUNT_DISABLED"
+        | "EMAIL_NOT_VERIFIED"
+        | "RATE_LIMITED"
         | "INVALID_INPUT"
         | "SERVICE_NOT_FOUND"
         | "SERVICE_INACTIVE"
@@ -63,17 +70,21 @@ export async function orderServiceAction(
 
     // ── Guard: verify session user still exists in DB ─────────────────────────
     // Handles stale JWT sessions after DB reset / re-seed.
-    const clientExists = await db.user.findUnique({
-      where: { id: clientId },
-      select: { id: true },
-    });
+    const client = await getFreshUser(clientId);
 
-    if (!clientExists) {
+    if (!client) {
       console.warn(
         `[ORDER_SERVICE_ACTION] Stale session for userId=${clientId} — user not found in DB`
       );
       return { success: false, error: "STALE_SESSION" };
     }
+
+    // A suspended account must not place orders (JWT may still be valid).
+    if (!client.isActive) return { success: false, error: "ACCOUNT_DISABLED" };
+    if (!emailVerificationOk(client)) return { success: false, error: "EMAIL_NOT_VERIFIED" };
+
+    const retryAfter = await limitByUser(RateLimits.ORDER_CREATE, clientId);
+    if (retryAfter !== null) return { success: false, error: "RATE_LIMITED" };
 
     const parsed = OrderServiceSchema.safeParse(rawInput);
     if (!parsed.success) {
@@ -98,12 +109,15 @@ export async function orderServiceAction(
         deliveryDays: true,
         status: true,
         creatorId: true,
-        creator: { select: { id: true, name: true } },
+        creator: { select: { id: true, name: true, isActive: true } },
       },
     });
 
     if (!service) return { success: false, error: "SERVICE_NOT_FOUND" };
     if (service.status !== ServiceStatus.ACTIVE) {
+      return { success: false, error: "SERVICE_INACTIVE" };
+    }
+    if (!service.creator.isActive) {
       return { success: false, error: "SERVICE_INACTIVE" };
     }
     if (service.creatorId === clientId) {

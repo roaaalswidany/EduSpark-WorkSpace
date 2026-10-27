@@ -11,7 +11,7 @@
 // ============================================================================
 
 import "dotenv/config";
-import { createInternalRouter } from "./routes/internal";
+import { createInternalRouter, isValidInternalSecret } from "./routes/internal";
 import express, { type Request, type Response } from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -56,21 +56,20 @@ app.get("/health", async (_req: Request, res: Response) => {
   res.status(dbHealthy ? 200 : 503).json({
     status: dbHealthy ? "healthy" : "degraded",
     timestamp: new Date().toISOString(),
-    version: process.env["npm_package_version"] ?? "1.0.0",
-    uptime: Math.floor(process.uptime()),
-    environment: env.NODE_ENV,
+    // Public endpoint: expose liveness only (no versions, env or counters).
     services: {
       database: dbHealthy ? "connected" : "disconnected",
-      socket: "running",
-    },
-    connections: {
-      uniqueUsers: getConnectedUsersCount(),
-      totalSockets: getTotalConnectionsCount(),
     },
   });
 });
 
-app.get("/metrics", (_req: Request, res: Response) => {
+app.get("/metrics", (req: Request, res: Response) => {
+  // Operational data: server-to-server only.
+  if (!isValidInternalSecret(req.headers["x-internal-secret"])) {
+    res.status(401).json({ ok: false, error: "Unauthorized" });
+    return;
+  }
+
   res.json({
     timestamp: new Date().toISOString(),
     connections: {

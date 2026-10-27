@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getFreshUser } from "@/lib/security/fresh-user";
 import { db } from "@/lib/db";
 import { CourseStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -33,7 +34,8 @@ export async function updateCourseAction(
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
-    if (session.user.role !== "ADMIN") {
+    const actor = await getFreshUser(session.user.id);
+    if (!actor?.isActive || actor.role !== "ADMIN") {
       return { success: false, error: "FORBIDDEN" };
     }
 
