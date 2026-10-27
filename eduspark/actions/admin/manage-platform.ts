@@ -74,7 +74,7 @@ export async function broadcastNotificationAction(input: z.infer<typeof Broadcas
         userId: u.id,
         title,
         body,
-        link: "/dashboard", // Redirect to dashboard when clicked
+        link: null, // Broadcast notifications have no specific target page
       })),
     });
 

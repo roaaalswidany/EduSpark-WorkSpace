@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Bell, CheckCircle2 } from "lucide-react";
+import { Bell } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
-import { cn } from "@/lib/utils";
+import { NotificationsClient } from "./_components/notifications-client";
 
 export const metadata = {
   title: "Notifications — EduSpark",
@@ -24,8 +24,7 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
 
-  // ── Fetch paginated + total in parallel ────────────────────────
-  const [notifications, total] = await Promise.all([
+  const [notifications, total, unreadCount] = await Promise.all([
     db.notification.findMany({
       where: { userId: session.user.id },
       orderBy: { createdAt: "desc" },
@@ -40,8 +39,9 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
         createdAt: true,
       },
     }),
+    db.notification.count({ where: { userId: session.user.id } }),
     db.notification.count({
-      where: { userId: session.user.id },
+      where: { userId: session.user.id, isRead: false },
     }),
   ]);
 
@@ -66,6 +66,11 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
         {total > 0 && (
           <p className="text-sm text-slate-500 mt-2">
             {total} {total === 1 ? "notification" : "notifications"}
+            {unreadCount > 0 && (
+              <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                {unreadCount} unread
+              </span>
+            )}
             {totalPages > 1 && (
               <span className="text-xs text-slate-600 ml-2">
                 · Page {page} of {totalPages}
@@ -88,44 +93,13 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
         </div>
       ) : (
         <>
-          <div className="space-y-2">
-            {notifications.map((n) => (
-              <div
-                key={n.id}
-                className={cn(
-                  "rounded-2xl border p-4 transition-colors",
-                  n.isRead
-                    ? "bg-slate-900 border-slate-800"
-                    : "bg-indigo-500/5 border-indigo-500/20"
-                )}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-indigo-400" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start gap-2 justify-between">
-                      <p className="text-sm font-semibold text-white">
-                        {n.title}
-                      </p>
-                      {!n.isRead && (
-                        <span className="shrink-0 w-2 h-2 rounded-full bg-indigo-400 mt-1.5" />
-                      )}
-                    </div>
-                    <p className="text-xs text-slate-400 mt-1">{n.body}</p>
-                    {n.link && (
-                      <Link
-                        href={n.link}
-                        className="inline-flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 mt-2 font-semibold"
-                      >
-                        View →
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <NotificationsClient
+            notifications={notifications.map((n) => ({
+              ...n,
+              createdAt: n.createdAt.toISOString(),
+            }))}
+            unreadCount={unreadCount}
+          />
 
           {/* Pagination */}
           {totalPages > 1 && (
