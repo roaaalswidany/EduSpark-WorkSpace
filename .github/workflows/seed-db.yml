@@ -6,6 +6,9 @@ on:
 jobs:
   seed:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
+      ALLOW_SEED_REMOTE: "true"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,7 +22,4 @@ jobs:
         run: cd eduspark && npm install
 
       - name: Run Prisma Seed
-        env:
-          DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
-          ALLOW_SEED_REMOTE: "true"
         run: cd eduspark && npx prisma db seed
