@@ -7,6 +7,7 @@ import type {
 } from "./_components/catalog-client";
 import { cached } from "@/lib/cache";
 import { CacheKeys, CacheTTL } from "@/lib/cache-keys";
+export const dynamic = 'force-dynamic';
 
 // ISR: revalidate catalog every 60 seconds
 export const revalidate = 60;

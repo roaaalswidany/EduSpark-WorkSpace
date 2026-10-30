@@ -78,18 +78,31 @@ function emailFromName(name: string): string {
   return name.toLowerCase().replace(/\s+/g, ".").replace(/[^a-z0-9.]/g, "") + "@eduspark.dev";
 }
 
+/**
+ * Process items sequentially with a small delay between each creation.
+ * This avoids overwhelming Supabase's connection pool (max ~15 in session mode).
+ *
+ * Each item is passed to `createFn` one at a time, so only ONE database
+ * connection is used at any moment.
+ */
 async function batchCreate<T, R>(
   items: T[],
   batchSize: number,
-  createFn: (item: T, idx: number) => Promise<R>
+  createFn: (item: T, index: number) => Promise<R>
 ): Promise<R[]> {
   const results: R[] = [];
   for (let i = 0; i < items.length; i += batchSize) {
     const batch = items.slice(i, i + batchSize);
-    const batchResults = await Promise.all(
-      batch.map((item, j) => createFn(item, i + j))
+    for (let j = 0; j < batch.length; j++) {
+      const globalIndex = i + j;
+      const created = await createFn(batch[j], globalIndex);
+      results.push(created);
+      // Delay between each creation to keep the connection pool healthy
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    logInfo(
+      `  Progress: ${Math.min(i + batchSize, items.length)}/${items.length}`
     );
-    results.push(...batchResults);
   }
   return results;
 }
@@ -205,8 +218,8 @@ export async function seedUsers(db: PrismaClient): Promise<SeededUsers> {
     specs.push({ name, language, role });
   }
 
-  // ── Create generated users in batches of 10 ──────────────────────
-  logInfo(`Creating ${specs.length} generated users...`);
+  // ── Create generated users in batches of 10, sequentially ────────
+  logInfo(`Creating ${specs.length} generated users (sequential + batched)...`);
 
   const generatedUsers = await batchCreate(specs, 10, async (spec, idx) => {
     const headline = spec.language === "ar"

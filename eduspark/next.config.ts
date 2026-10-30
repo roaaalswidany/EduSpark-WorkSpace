@@ -73,6 +73,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
     ],
   },
+  staticPageGenerationTimeout: 120,
 };
 
 export default nextConfig;
