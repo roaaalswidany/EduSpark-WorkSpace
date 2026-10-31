@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import Link from "next/link";
@@ -23,6 +24,8 @@ import {
   ShoppingBag,
   Target,
   Trophy,
+  Bell,
+  Users,
   Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -47,14 +50,16 @@ const SECTIONS: NavSection[] = [
     title: "Main",
     items: [
       { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
-      { label: "Career Path", href: "/dashboard/career-path", icon: Target },
-      { label: "Achievements", href: "/dashboard/achievements", icon: Trophy },
+      { label: "Career Path", href: "/dashboard/career-path", icon: Target, roles: ["STUDENT", "CREATOR"] },
+      { label: "Achievements", href: "/dashboard/achievements", icon: Trophy, roles: ["STUDENT", "CREATOR"] },
       { label: "Messages", href: "/dashboard/chat", icon: MessageSquare },
-      { label: "Settings", href: "/dashboard/settings", icon: Settings }, 
+      { label: "Notifications", href: "/dashboard/notifications", icon: Bell },
+      { label: "Settings", href: "/dashboard/settings", icon: Settings },
     ],
   },
   {
     title: "Learn",
+    roles: ["STUDENT", "CREATOR"],
     items: [
       { label: "My Courses", href: "/dashboard/student/courses", icon: BookOpen },
       { label: "Certificates", href: "/dashboard/student/certificates", icon: Award },
@@ -63,6 +68,7 @@ const SECTIONS: NavSection[] = [
   },
   {
     title: "Work",
+    roles: ["STUDENT", "CREATOR"],
     items: [
       { label: "Marketplace", href: "/marketplace", icon: Store },
       { label: "My Orders", href: "/dashboard/orders", icon: ShoppingBag },
@@ -71,7 +77,7 @@ const SECTIONS: NavSection[] = [
   },
   {
     title: "Creator Studio",
-    roles: ["CREATOR", "ADMIN"],
+    roles: ["CREATOR"],
     items: [
       { label: "My Courses", href: "/dashboard/creator/courses", icon: BookOpen },
       { label: "My Services", href: "/dashboard/creator/services", icon: Package },
@@ -80,10 +86,13 @@ const SECTIONS: NavSection[] = [
     ],
   },
   {
-    title: "Admin",
+    title: "Administration",
     roles: ["ADMIN"],
     items: [
-      { label: "Admin Panel", href: "/dashboard/admin", icon: ShieldCheck },
+      { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard, exact: true },
+      { label: "Users", href: "/dashboard/admin/users", icon: Users },
+      { label: "Courses", href: "/dashboard/admin/courses", icon: BookOpen },
+      { label: "Services", href: "/dashboard/admin/services", icon: ShoppingBag },
     ],
   },
 ];
@@ -173,6 +182,7 @@ export function DashboardSidebar({
   }
 
   const isProfileActive = pathname === "/dashboard/profile";
+  const isAdmin = role === "ADMIN";
 
   return (
     <aside className="w-64 h-full flex flex-col bg-slate-900 border-r border-slate-800">
@@ -184,6 +194,11 @@ export function DashboardSidebar({
           </div>
           <span className="text-sm font-bold text-white">EduSpark</span>
         </Link>
+        {isAdmin && (
+          <span className="ml-auto text-[9px] font-bold uppercase tracking-wider text-violet-400 bg-violet-500/10 border border-violet-500/20 px-1.5 py-0.5 rounded">
+            Admin
+          </span>
+        )}
       </div>
 
       {/* Navigation */}
@@ -234,22 +249,24 @@ export function DashboardSidebar({
         })}
       </nav>
 
-      {/* User footer — Profile link + Sign out */}
+      {/* User footer */}
       <div className="shrink-0 border-t border-slate-800 p-3 space-y-1">
-      {/* XP Badge */}
-        <SidebarXpBadge
-          xp={gamification.xp}
-          levelLabel={gamification.levelLabel}
-          levelIcon={gamification.levelIcon}
-          levelColor={gamification.levelColor}
-          levelBg={gamification.levelBg}
-          levelBorder={gamification.levelBorder}
-          levelGradient={gamification.levelGradient}
-          progressPct={gamification.progressPct}
-          xpToNext={gamification.xpToNext}
-          nextLevelLabel={gamification.nextLevelLabel}
-          onNavigate={onNavigate}
-        />
+        {/* XP Badge — only for STUDENT / CREATOR */}
+        {!isAdmin && (
+          <SidebarXpBadge
+            xp={gamification.xp}
+            levelLabel={gamification.levelLabel}
+            levelIcon={gamification.levelIcon}
+            levelColor={gamification.levelColor}
+            levelBg={gamification.levelBg}
+            levelBorder={gamification.levelBorder}
+            levelGradient={gamification.levelGradient}
+            progressPct={gamification.progressPct}
+            xpToNext={gamification.xpToNext}
+            nextLevelLabel={gamification.nextLevelLabel}
+            onNavigate={onNavigate}
+          />
+        )}
 
         {/* Profile card */}
         <Link

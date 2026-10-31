@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   Circle,
   ChevronDown,
+  ChevronLeft,
   ChevronRight,
   Play,
   SkipForward,
@@ -540,7 +541,16 @@ export function CourseLearningView({
   return (
     <div className="flex flex-col h-screen bg-slate-950 text-slate-100 overflow-hidden">
       {/* ──────────────────────────────────────── Top header */}
-      <header className="h-14 shrink-0 bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 flex items-center px-4 gap-3 z-50">
+      <header className="h-14 shrink-0 bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 flex items-center px-4 gap-2 z-50">
+        {/* Back to My Courses */}
+        <Link
+          href="/dashboard/student/courses"
+          title="Back to My Courses"
+          className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
+        >
+          <ChevronLeft className="w-4.5 h-4.5" />
+        </Link>
+
         {/* Mobile sidebar toggle */}
         <button
           onClick={() => setSidebarOpen((v) => !v)}

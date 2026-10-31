@@ -9,6 +9,7 @@ import {
   MilestoneStatus,
   ChatRoomType,
   ServiceStatus,
+  Role,
 } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { emitNotification } from "@/lib/notifications/emit";
@@ -53,7 +54,12 @@ export type OrderServiceResult =
         | "SERVICE_NOT_FOUND"
         | "SERVICE_INACTIVE"
         | "SELF_ORDER"
+        | "SERVER_ERROR"
+        | "CANNOT_ENROLL_OWN_COURSE"
+        | "ADMIN_CANNOT_PARTICIPATE"
+        | "INVALID_INPUT"
         | "SERVER_ERROR";
+        
       fieldErrors?: Partial<Record<keyof OrderServiceInput, string[]>>;
     };
 
@@ -67,6 +73,10 @@ export async function orderServiceAction(
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
 
     const { id: clientId, name: clientName } = session.user;
+
+    if (session.user.role === Role.ADMIN) {
+  return { success: false, error: "ADMIN_CANNOT_PARTICIPATE" };
+}
 
     // ── Guard: verify session user still exists in DB ─────────────────────────
     // Handles stale JWT sessions after DB reset / re-seed.

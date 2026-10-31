@@ -44,6 +44,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
+  const userRole = session?.user?.role;
 
   // ── Fetch course ──────────────────────────────────────────
   const course = await db.course.findUnique({
@@ -248,15 +249,15 @@ export default async function CourseDetailPage({ params }: PageProps) {
                       .toUpperCase()}
                   </div>
                 )}
-            <div>
-  <p className="text-xs text-slate-500">Created by</p>
-  <Link
-    href={`/profile/${course.creator.id}`}
-    className="text-sm font-semibold text-slate-200 hover:text-indigo-400 transition-colors"
-  >
-    {course.creator.name}
-  </Link>
-</div>
+                <div>
+                  <p className="text-xs text-slate-500">Created by</p>
+                  <Link
+                    href={`/profile/${course.creator.id}`}
+                    className="text-sm font-semibold text-slate-200 hover:text-indigo-400 transition-colors"
+                  >
+                    {course.creator.name}
+                  </Link>
+                </div>
               </div>
             </div>
 
@@ -302,6 +303,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                     isEnrolled={isEnrolled}
                     isLoggedIn={isLoggedIn}
                     courseSlug={course.slug}
+                    userRole={userRole}
                   />
 
                   {/* What's included */}
@@ -390,11 +392,11 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 )}
                 <div className="min-w-0">
                   <Link
-  href={`/profile/${course.creator.id}`}
-  className="text-sm font-bold text-white hover:text-indigo-400 transition-colors"
->
-  {course.creator.name}
-</Link>
+                    href={`/profile/${course.creator.id}`}
+                    className="text-sm font-bold text-white hover:text-indigo-400 transition-colors"
+                  >
+                    {course.creator.name}
+                  </Link>
                   {course.creator.headline && (
                     <p className="text-xs text-indigo-400 mt-0.5">
                       {course.creator.headline}
@@ -430,6 +432,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 isEnrolled={isEnrolled}
                 isLoggedIn={isLoggedIn}
                 courseSlug={course.slug}
+                userRole={userRole}
               />
             </div>
           </aside>

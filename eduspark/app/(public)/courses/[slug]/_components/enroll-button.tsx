@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ShoppingCart, Play, AlertCircle } from "lucide-react";
+import { Loader2, ShoppingCart, Play, AlertCircle, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { enrollInCourseAction } from "@/actions/lms/enroll-in-course";
@@ -14,6 +14,7 @@ interface EnrollButtonProps {
   isEnrolled: boolean;
   isLoggedIn: boolean;
   courseSlug: string;
+  userRole?: string;
 }
 
 export function EnrollButton({
@@ -22,10 +23,28 @@ export function EnrollButton({
   isEnrolled,
   isLoggedIn,
   courseSlug,
+  userRole,
 }: EnrollButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+
+  // ── Admin: cannot participate ────────────────────────────────
+  if (userRole === "ADMIN") {
+    return (
+      <div className="flex items-start gap-3 p-4 rounded-xl bg-violet-500/5 border border-violet-500/20">
+        <ShieldAlert className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
+        <div>
+          <p className="text-sm font-semibold text-violet-300">
+            Admin Account
+          </p>
+          <p className="text-xs text-violet-400/80 mt-1">
+            Admins manage the platform and cannot enroll in courses.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // ── Already enrolled: Continue ───────────────────────────────
   if (isEnrolled) {
@@ -86,12 +105,19 @@ export function EnrollButton({
         COURSE_NOT_FOUND: "Course not found.",
         NOT_PUBLISHED: "This course isn't available for enrollment yet.",
         UNAUTHORIZED: "Please sign in to enroll.",
+        ADMIN_CANNOT_PARTICIPATE:
+          "Admins cannot enroll in courses. Use a student account to participate.",
+        INVALID_INPUT: "Invalid course data. Please refresh and try again.",
+        SERVER_ERROR: "Server error. Please try again in a moment.",
       };
       const errorMessage =
         messages[result.error] ?? "Something went wrong. Please try again.";
 
       setError(errorMessage);
-      toast.error(errorMessage, { id: toastId });
+      toast.error("Enrollment failed", {
+        id: toastId,
+        description: errorMessage,
+      });
     });
   }
 

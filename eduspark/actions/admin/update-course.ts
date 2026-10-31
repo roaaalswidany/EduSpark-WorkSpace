@@ -9,6 +9,8 @@ import { CourseStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { cacheInvalidatePattern } from "@/lib/cache";
 import { CacheKeys } from "@/lib/cache-keys";
+import { sendMail } from "@/lib/email/mailer";
+import { courseArchivedEmail } from "@/lib/email/templates";
 
 const UpdateCourseSchema = z.object({
   courseId: z.string().cuid(),
@@ -46,15 +48,32 @@ export async function updateCourseAction(
 
     const course = await db.course.findUnique({
       where: { id: courseId },
-      select: { id: true },
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        creator: { select: { email: true, name: true } },
+      },
     });
     if (!course) return { success: false, error: "NOT_FOUND" };
 
     if (action === "CHANGE_STATUS" && status) {
+      const oldStatus = course.status;
       await db.course.update({
         where: { id: courseId },
         data: { status: status as CourseStatus },
       });
+
+      // Notify creator only on transition TO ARCHIVED
+      if (status === "ARCHIVED" && oldStatus !== "ARCHIVED") {
+        void sendMail(
+          courseArchivedEmail(
+            course.creator.email,
+            course.creator.name,
+            course.title
+          )
+        ).catch((err) => console.error("[ADMIN_EMAIL_COURSE]", err));
+      }
     }
 
     // ── Invalidate Redis cache so next visit fetches fresh data ──

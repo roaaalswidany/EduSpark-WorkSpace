@@ -4,6 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { ProjectView } from "./_components/project-view";
 import { ProjectReviewPanel } from "@/components/reviews/project-review-panel";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import type { SerializedProject } from "./_components/project-view";
 
 interface ProjectPageProps {
@@ -126,6 +127,19 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <>
+      {/* ── Breadcrumb bar ─────────────────────────── */}
+      <div className="border-b border-slate-800 bg-slate-950">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3">
+          <Breadcrumbs
+            items={[
+              { label: "Dashboard", href: "/dashboard" },
+              { label: "Projects", href: "/dashboard/projects" },
+              { label: project.title, truncate: true },
+            ]}
+          />
+        </div>
+      </div>
+
       <ProjectView
         project={serialized}
         currentUserId={userId}

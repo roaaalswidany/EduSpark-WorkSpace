@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { ServiceStatus } from "@prisma/client";
 import { ServiceDetailView } from "./_components/service-detail-view";
 import { ServiceReviews } from "@/components/reviews/service-reviews";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -91,35 +92,56 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
   return (
     <>
-    <ServiceDetailView
-      service={{
-        id: service.id,
-        title: service.title,
-        slug: service.slug,
-        description: service.description,
-        thumbnail: service.thumbnail,
-        price: Number(service.price),
-        deliveryDays: service.deliveryDays,
-        revisions: service.revisions,
-        tags: service.tags,
-        portfolioLinks: service.portfolioLinks,
-        createdAt: service.createdAt.toISOString(),
-        orderCount: service._count.orders,
-        creator: service.creator,
-        category: service.category,
-      }}
-      relatedServices={relatedServices.map((s) => ({
-        ...s,
-        price: Number(s.price),
-      }))}
-      isLoggedIn={isLoggedIn}
-      isOwnService={isOwnService}
-    />
-    <div className="bg-slate-950">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <ServiceReviews serviceId={service.id} />
+      {/* ── Breadcrumb bar ─────────────────────────── */}
+      <div className="border-b border-slate-800 bg-slate-950">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <Breadcrumbs
+            showHome
+            items={[
+              { label: "Marketplace", href: "/marketplace" },
+              ...(service.category
+                ? [
+                    {
+                      label: service.category.name,
+                      href: `/marketplace?category=${service.category.id}`,
+                    },
+                  ]
+                : []),
+              { label: service.title, truncate: true },
+            ]}
+          />
+        </div>
       </div>
-    </div>
+
+      <ServiceDetailView
+        service={{
+          id: service.id,
+          title: service.title,
+          slug: service.slug,
+          description: service.description,
+          thumbnail: service.thumbnail,
+          price: Number(service.price),
+          deliveryDays: service.deliveryDays,
+          revisions: service.revisions,
+          tags: service.tags,
+          portfolioLinks: service.portfolioLinks,
+          createdAt: service.createdAt.toISOString(),
+          orderCount: service._count.orders,
+          creator: service.creator,
+          category: service.category,
+        }}
+        relatedServices={relatedServices.map((s) => ({
+          ...s,
+          price: Number(s.price),
+        }))}
+        isLoggedIn={isLoggedIn}
+        isOwnService={isOwnService}
+      />
+      <div className="bg-slate-950">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+          <ServiceReviews serviceId={service.id} />
+        </div>
+      </div>
     </>
   );
 }

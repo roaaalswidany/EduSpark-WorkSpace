@@ -4,7 +4,7 @@ import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
-import { ChatRoomType, CourseStatus, EnrollmentStatus, Prisma } from "@prisma/client";
+import { ChatRoomType, CourseStatus, EnrollmentStatus, Prisma, Role } from "@prisma/client";
 import { getFreshUser } from "@/lib/security/fresh-user";
 import { revalidatePath } from "next/cache";
 
@@ -24,6 +24,7 @@ export type EnrollInCourseResult =
         | "NOT_PUBLISHED"
         | "ALREADY_ENROLLED"
         | "CANNOT_ENROLL_OWN_COURSE"
+        | "ADMIN_CANNOT_PARTICIPATE"
         | "INVALID_INPUT"
         | "SERVER_ERROR";
     };
@@ -39,6 +40,11 @@ export async function enrollInCourseAction(
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
 
     const userId = session.user.id;
+
+    // Admins are platform operators, not participants.
+    if (session.user.role === Role.ADMIN) {
+      return { success: false, error: "ADMIN_CANNOT_PARTICIPATE" };
+    }
 
     const actor = await getFreshUser(userId);
     if (!actor?.isActive) return { success: false, error: "UNAUTHORIZED" };
@@ -79,44 +85,41 @@ export async function enrollInCourseAction(
     // 5. Atomic transaction: enrollment + chat room + participant
     let result: { enrollmentId: string; chatRoomId: string };
     try {
-    result = await db.$transaction(async (tx) => {
-      // 5.1 Create enrollment
-      const enrollment = await tx.enrollment.create({
-        data: {
-          userId,
-          courseId,
-          // NOTE: no payment gateway exists yet; this records the list price only.
-          paidAmount: course.price,
-          status: EnrollmentStatus.ACTIVE,
-        },
-        select: { id: true },
-      });
+      result = await db.$transaction(async (tx) => {
+        // 5.1 Create enrollment
+        const enrollment = await tx.enrollment.create({
+          data: {
+            userId,
+            courseId,
+            // NOTE: no payment gateway exists yet; this records the list price only.
+            paidAmount: course.price,
+            status: EnrollmentStatus.ACTIVE,
+          },
+          select: { id: true },
+        });
 
-      // 5.2 Course chat room: upsert is race-safe (courseId is unique), unlike
-      //     find-then-create where two first enrollments collide.
-      // NOTE: Prisma's upsert is NOT atomic here — under concurrency it throws a
-      // unique violation (verified by tests/gamification.test.ts). INSERT ..
-      // ON CONFLICT DO NOTHING (skipDuplicates) followed by a read is.
-      await tx.chatRoom.createMany({
-        data: [{ type: ChatRoomType.COURSE, courseId }],
-        skipDuplicates: true,
-      });
-      const chatRoom = await tx.chatRoom.findUniqueOrThrow({
-        where: { courseId },
-        select: { id: true },
-      });
+        // 5.2 Course chat room: createMany with skipDuplicates is race-safe
+        //     (courseId is unique), unlike find-then-create.
+        await tx.chatRoom.createMany({
+          data: [{ type: ChatRoomType.COURSE, courseId }],
+          skipDuplicates: true,
+        });
+        const chatRoom = await tx.chatRoom.findUniqueOrThrow({
+          where: { courseId },
+          select: { id: true },
+        });
 
-      // 5.3 Instructor + student as participants (idempotent)
-      await tx.chatRoomParticipant.createMany({
-        data: [
-          { userId: course.creatorId, chatRoomId: chatRoom.id },
-          { userId, chatRoomId: chatRoom.id },
-        ],
-        skipDuplicates: true,
-      });
+        // 5.3 Instructor + student as participants (idempotent)
+        await tx.chatRoomParticipant.createMany({
+          data: [
+            { userId: course.creatorId, chatRoomId: chatRoom.id },
+            { userId, chatRoomId: chatRoom.id },
+          ],
+          skipDuplicates: true,
+        });
 
-      return { enrollmentId: enrollment.id, chatRoomId: chatRoom.id };
-    });
+        return { enrollmentId: enrollment.id, chatRoomId: chatRoom.id };
+      });
     } catch (txError) {
       // Lost a race for the same (user, course)? Only then is it "already enrolled".
       if (

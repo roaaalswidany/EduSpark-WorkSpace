@@ -9,6 +9,8 @@ import { ServiceStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { cacheInvalidatePattern } from "@/lib/cache";
 import { CacheKeys } from "@/lib/cache-keys";
+import { sendMail } from "@/lib/email/mailer";
+import { serviceArchivedEmail } from "@/lib/email/templates";
 
 const UpdateServiceSchema = z.object({
   serviceId: z.string().cuid(),
@@ -46,16 +48,39 @@ export async function updateServiceAction(
 
     const service = await db.service.findUnique({
       where: { id: serviceId },
-      select: { id: true },
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        creator: { select: { email: true, name: true } },
+      },
     });
     if (!service) return { success: false, error: "NOT_FOUND" };
 
     if (action === "CHANGE_STATUS" && status) {
+      const oldStatus = service.status;
       await db.service.update({
         where: { id: serviceId },
         data: { status: status as ServiceStatus },
       });
+
+      if (status === "ARCHIVED" && oldStatus !== "ARCHIVED") {
+        void sendMail(
+          serviceArchivedEmail(
+            service.creator.email,
+            service.creator.name,
+            service.title
+          )
+        ).catch((err) => console.error("[ADMIN_EMAIL_SERVICE]", err));
+      }
     }
+
+    revalidatePath("/dashboard/admin/services");
+    revalidatePath("/marketplace");
+
+    await cacheInvalidatePattern(CacheKeys.patterns.allServices);
+
+    return { success: true };
 
     revalidatePath("/dashboard/admin/services");
     revalidatePath("/marketplace");
