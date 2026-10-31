@@ -41,7 +41,7 @@ export function QuizGenerator({ courseId }: Props) {
         {activeTab === "ai" ? (
           <AIGeneratorForm courseId={courseId} />
         ) : (
-          <ManualQuestionForm courseId={courseId} onSuccess={() => setActiveTab("ai")} />
+          <ManualQuestionForm courseId={courseId} onSuccess={() => {}} />
         )}
       </div>
     </div>
