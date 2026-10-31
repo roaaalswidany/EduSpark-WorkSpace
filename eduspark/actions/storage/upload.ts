@@ -10,6 +10,7 @@ import { db } from "@/lib/db";
 import { getFreshUser } from "@/lib/security/fresh-user";
 import { limitByUser } from "@/lib/security/action-guard";
 import { RateLimits } from "@/lib/security/rate-limit";
+import { Role } from "@prisma/client";
 import {
   s3Client,
   UPLOAD_BUCKET,
@@ -17,7 +18,7 @@ import {
   ALLOWED_MIME_TYPES,
 } from "@/lib/s3-client";
 
-// ─── Schema ───────────────────────────────────────────────────────────────────
+// ─── Schema ──────────────────────────────────────────────────────
 
 const RequestUploadSchema = z.object({
   fileName: z.string().min(1, "File name is required.").max(255),
@@ -29,7 +30,7 @@ const RequestUploadSchema = z.object({
     .int()
     .positive()
     .max(MAX_FILE_SIZE_BYTES, "File exceeds the 25MB limit."),
-  context: z.enum(["MILESTONE", "CHAT_ROOM"]),
+  context: z.enum(["MILESTONE", "CHAT_ROOM", "LESSON"]),
   contextId: z.string().cuid("Invalid context identifier."),
 });
 
@@ -55,13 +56,13 @@ export type RequestUploadResult =
       fieldErrors?: Partial<Record<keyof RequestUploadInput, string[]>>;
     };
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────
 
 function sanitizeFileName(name: string): string {
   return name.replace(/[^a-zA-Z0-9.\-_]/g, "_").slice(-100);
 }
 
-// ─── Action ───────────────────────────────────────────────────────────────────
+// ─── Action ──────────────────────────────────────────────────────
 
 export async function requestUploadAction(
   rawInput: RequestUploadInput
@@ -90,7 +91,7 @@ export async function requestUploadAction(
 
     const { fileName, mimeType, fileSizeBytes, context, contextId } = parsed.data;
 
-    // ── بوّابة التفويض: التحقّق أن المستخدم فعلياً مخوَّل لرفع ملف لهذا السياق ──
+    // ── Authorization: check the user can upload to this context ──
     if (context === "MILESTONE") {
       const milestone = await db.milestone.findUnique({
         where: { id: contextId },
@@ -103,7 +104,6 @@ export async function requestUploadAction(
 
       if (!milestone) return { success: false, error: "CONTEXT_NOT_FOUND" };
 
-      // Closed projects are read-only: no new deliverables.
       if (
         milestone.project.status === "COMPLETED" ||
         milestone.project.status === "CANCELLED"
@@ -116,21 +116,34 @@ export async function requestUploadAction(
         milestone.project.creatorId === userId;
 
       if (!isParticipant) return { success: false, error: "FORBIDDEN" };
-    } else {
+    } else if (context === "CHAT_ROOM") {
       const participant = await db.chatRoomParticipant.findUnique({
         where: { userId_chatRoomId: { userId, chatRoomId: contextId } },
         select: { userId: true },
       });
 
       if (!participant) return { success: false, error: "FORBIDDEN" };
+    } else if (context === "LESSON") {
+      // Only the course creator (or admin) can attach materials to a lesson.
+      const lesson = await db.lesson.findUnique({
+        where: { id: contextId },
+        select: {
+          section: {
+            select: { course: { select: { creatorId: true } } },
+          },
+        },
+      });
+
+      if (!lesson) return { success: false, error: "CONTEXT_NOT_FOUND" };
+
+      const isOwner = lesson.section.course.creatorId === userId;
+      const isAdmin = actor.role === Role.ADMIN;
+      if (!isOwner && !isAdmin) return { success: false, error: "FORBIDDEN" };
     }
 
-    // ── مفتاح تخزين فريد ومُنظَّم هرمياً، يمنع تعارض الأسماء ─────────────────
+    // ── Unique, hierarchical storage key ──
     const storageKey = `${context.toLowerCase()}/${contextId}/${randomUUID()}-${sanitizeFileName(fileName)}`;
 
-    // ── ContentLength هنا ليس تفصيلاً ثانوياً: تثبيته داخل الأمر الموقَّع يجعل
-    //    التوقيع غير صالح لو حاول العميل رفع ملف بحجم مختلف عمّا أعلن عنه،
-    //    وهذا يمنع ثغرة "تجاوز الحجم عبر رابط موقَّع صغير" (Signed-Size Bypass)
     const command = new PutObjectCommand({
       Bucket: UPLOAD_BUCKET,
       Key: storageKey,
@@ -138,11 +151,7 @@ export async function requestUploadAction(
       ContentLength: fileSizeBytes,
     });
 
-    const expiresInSeconds = 300; // 5 دقائق كافية لإكمال أي رفع طبيعي
-    // SECURITY: by default the presigner signs content-length but NOT
-    // content-type, so a client could upload e.g. text/html under an allowed
-    // type. Signing both pins the stored type to the validated mimeType.
-    // (The browser PUT must send exactly: Content-Type: <mimeType>.)
+    const expiresInSeconds = 300;
     const uploadUrl = await getSignedUrl(s3Client, command, {
       expiresIn: expiresInSeconds,
       signableHeaders: new Set(["content-length", "content-type"]),
@@ -158,7 +167,9 @@ export async function requestUploadAction(
         uploadedById: userId,
         ...(context === "MILESTONE"
           ? { milestoneId: contextId }
-          : { chatRoomId: contextId }),
+          : context === "CHAT_ROOM"
+          ? { chatRoomId: contextId }
+          : { lessonId: contextId }),
       },
       select: { id: true },
     });

@@ -35,6 +35,23 @@ export async function getAttachmentDownloadUrlAction(
           select: { project: { select: { clientId: true, creatorId: true } } },
         },
         chatRoom: { select: { participants: { select: { userId: true } } } },
+        lesson: {
+          select: {
+            section: {
+              select: {
+                course: {
+                  select: {
+                    creatorId: true,
+                    enrollments: {
+                      where: { userId: session.user.id },
+                      select: { id: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -51,7 +68,18 @@ export async function getAttachmentDownloadUrlAction(
     const isRoomParticipant =
       attachment.chatRoom?.participants.some((p) => p.userId === userId) ?? false;
 
-    if (!isOwner && !isProjectParticipant && !isRoomParticipant) {
+    // Lesson attachments: allowed for course creator OR enrolled students.
+    const isLessonAccessible =
+      attachment.lesson !== null &&
+      (attachment.lesson.section.course.creatorId === userId ||
+        attachment.lesson.section.course.enrollments.length > 0);
+
+    if (
+      !isOwner &&
+      !isProjectParticipant &&
+      !isRoomParticipant &&
+      !isLessonAccessible
+    ) {
       return { success: false, error: "FORBIDDEN" };
     }
 
@@ -60,10 +88,9 @@ export async function getAttachmentDownloadUrlAction(
       new GetObjectCommand({
         Bucket: UPLOAD_BUCKET,
         Key: attachment.storageKey,
-        // Always download, never render inline (defence in depth vs. active content)
         ResponseContentDisposition: `attachment; filename*=UTF-8''${encodeURIComponent(attachment.fileName)}`,
       }),
-      { expiresIn: 120 } // نافذة زمنية أضيق عمداً، لأنه رابط استهلاك فوري لا رفع
+      { expiresIn: 120 }
     );
 
     return { success: true, downloadUrl, fileName: attachment.fileName };

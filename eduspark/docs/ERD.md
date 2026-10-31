@@ -546,6 +546,7 @@ REJECTED REJECTED
     "attachments" }o--|o "milestones" : "milestone"
     "attachments" }o--|o "chat_rooms" : "chatRoom"
     "attachments" }o--|o "chat_messages" : "chatMessage"
+    "attachments" }o--|o "lessons" : "lesson"
     "ai_conversations" }o--|| "users" : "user"
     "ai_messages" }o--|| "ai_conversations" : "conversation"
     "career_paths" }o--|| "users" : "user"

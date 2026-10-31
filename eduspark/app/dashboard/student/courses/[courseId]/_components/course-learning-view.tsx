@@ -35,6 +35,7 @@ import {
 import { trackProgressAction } from "@/actions/lms/track-progress";
 import type { CourseData, SectionData, LessonData } from "@/actions/lms/get-course";
 import { cn, formatDuration } from "@/lib/utils";
+import { LessonAttachmentsViewer } from "./lesson-attachments-viewer";
 
 // ─── Video Player ─────────────────────────────────────────────────────────────
 
@@ -693,6 +694,11 @@ export function CourseLearningView({
                   {activeLesson.description}
                 </p>
               </div>
+            )}
+
+             {/* Lesson Attachments */}
+            {activeLesson.attachments && activeLesson.attachments.length > 0 && (
+              <LessonAttachmentsViewer attachments={activeLesson.attachments} />
             )}
 
             {/* Prev / dot tracker / Next */}

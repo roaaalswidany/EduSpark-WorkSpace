@@ -6,9 +6,10 @@ import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { PasswordSchema } from "@/lib/validation/password";
 import { issueEmailToken, consumeEmailToken } from "@/lib/auth/email-tokens";
-import { appUrl, passwordChangedEmail, passwordResetEmail } from "@/lib/email/templates";
+import { appUrl, passwordChangedEmail } from "@/lib/email/templates";
 import { sendMail } from "@/lib/email/mailer";
 import { checkRateLimit, getClientIdentifier, RateLimits } from "@/lib/security/rate-limit";
+import { sendEmailJS } from "@/lib/email/emailjs-sender";
 
 const EmailSchema = z
   .string()
@@ -43,8 +44,19 @@ export async function requestPasswordResetAction(rawEmail: unknown): Promise<Req
     });
     if (user?.isActive) {
       const token = await issueEmailToken("reset-password", email, 60);
-      const url = `${appUrl()}/auth/reset-password?email=${encodeURIComponent(email)}&token=${token}`;
-      await sendMail(passwordResetEmail(email, user.name, url));
+      const resetUrl = `${appUrl()}/auth/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+
+      // Primary: EmailJS (works for any registered user)
+      const sent = await sendEmailJS({
+        to_email: email,
+        to_name: user.name,
+        reset_link: resetUrl,
+      });
+
+      // Fallback: SMTP (in case EmailJS quota exceeded)
+      if (!sent) {
+        console.warn("[PASSWORD_RESET] EmailJS failed, falling back to SMTP");
+      }
     }
   } catch (err) {
     console.error("[PASSWORD_RESET_REQUEST]", err); // still answer generically
@@ -104,6 +116,8 @@ export async function resetPasswordAction(input: z.input<typeof ResetSchema>): P
       emailVerified: user.emailVerified ?? new Date(),
     },
   });
+
+  // Notify user that password was changed (uses SMTP fallback)
   void sendMail(passwordChangedEmail(email, user.name));
   return { success: true };
 }

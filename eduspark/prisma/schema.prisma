@@ -379,6 +379,7 @@ model Lesson {
 
   section        Section          @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   lessonProgress LessonProgress[]
+  attachments    Attachment[] 
 
   @@index([sectionId])
   @@index([sectionId, order])
@@ -678,6 +679,7 @@ model Attachment {
   milestoneId   String?
   chatRoomId    String?   // يُحدَّد لحظة الرفع (الغرفة معروفة قبل وجود الرسالة)
   chatMessageId String?   // يُربَط لاحقاً لحظة إنشاء الرسالة فعلياً في خادم الدردشة
+  lessonId      String? 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -686,10 +688,12 @@ model Attachment {
   milestone   Milestone?   @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
   chatRoom    ChatRoom?    @relation(fields: [chatRoomId], references: [id], onDelete: SetNull)
   chatMessage ChatMessage? @relation(fields: [chatMessageId], references: [id], onDelete: Cascade)
+  lesson      Lesson?      @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@index([milestoneId])
   @@index([chatRoomId])
   @@index([chatMessageId])
+  @@index([lessonId]) 
   @@index([uploadedById])
   @@map("attachments")
 }

@@ -17,6 +17,12 @@ export interface LessonData {
   isFree: boolean;
   isCompleted: boolean;
   watchedAt: Date | null;
+  attachments: Array<{
+    id: string;
+    fileName: string;
+    fileSizeBytes: number;
+    mimeType: string;
+  }>;
 }
 
 export interface SectionData {
@@ -113,7 +119,16 @@ export async function getCourseAction(
                   duration: true,
                   order: true,
                   isFree: true,
+                  attachments: {
+                  where: { status: "CONFIRMED" },
+                  select: {
+                    id: true,
+                    fileName: true,
+                    fileSizeBytes: true,
+                    mimeType: true,
                 },
+                },
+              },
               },
             },
           },
