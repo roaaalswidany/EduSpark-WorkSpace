@@ -162,8 +162,10 @@ export async function checkAndAwardBadges(
 
   for (const badge of newlyEarned) {
     try {
-      await db.userBadge.create({
-        data: { userId, badgeId: badge.id },
+      await db.userBadge.upsert({
+        where: { userId_badgeId: { userId, badgeId: badge.id } },
+        update: {},
+        create: { userId, badgeId: badge.id },
       });
       bonusXP += badge.xpReward;
     } catch (err) {

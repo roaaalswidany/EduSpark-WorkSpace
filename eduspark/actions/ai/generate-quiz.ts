@@ -27,7 +27,7 @@ function getClient(): GoogleGenAI | null {
   if (!aiClient) {
     aiClient = new GoogleGenAI({
       apiKey,
-      httpOptions: { timeout: 30_000 },
+      httpOptions: { timeout: 60_000 },
     });
   }
   return aiClient;
@@ -163,17 +163,35 @@ export async function generateQuizDraftAction(
     );
 
     // ─── Call Gemini with guaranteed JSON output ──────────────────
-    const response = await client.models.generateContent({
-      model: MODEL_NAME,
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      config: {
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: MAX_OUTPUT_TOKENS,
-        responseMimeType: "application/json",
-      },
-    });
+    // Retry once on 503 (model overloaded — transient, Google-side).
+    async function callGemini() {
+      return client!.models.generateContent({
+        model: MODEL_NAME,
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        config: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: MAX_OUTPUT_TOKENS,
+          responseMimeType: "application/json",
+        },
+      });
+    }
+
+    let response;
+    try {
+      response = await callGemini();
+    } catch (err) {
+      const is503 =
+        err &&
+        typeof err === "object" &&
+        "status" in err &&
+        (err as { status?: number }).status === 503;
+      if (!is503) throw err;
+      console.warn("[GENERATE_QUIZ] Gemini 503 — retrying in 2s…");
+      await new Promise((r) => setTimeout(r, 2000));
+      response = await callGemini();
+    }
 
     const rawText = response.text ?? "";
     if (!rawText.trim()) {
