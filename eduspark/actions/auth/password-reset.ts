@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { PasswordSchema } from "@/lib/validation/password";
 import { issueEmailToken, consumeEmailToken } from "@/lib/auth/email-tokens";
-import { appUrl, passwordChangedEmail } from "@/lib/email/templates";
+import { appUrl, passwordChangedEmail, passwordResetEmail } from "@/lib/email/templates";
 import { sendMail } from "@/lib/email/mailer";
 import { checkRateLimit, getClientIdentifier, RateLimits } from "@/lib/security/rate-limit";
 import { sendEmailJS } from "@/lib/email/emailjs-sender";
@@ -53,9 +53,14 @@ export async function requestPasswordResetAction(rawEmail: unknown): Promise<Req
         reset_link: resetUrl,
       });
 
-      // Fallback: SMTP (in case EmailJS quota exceeded)
+      // Fallback: SMTP (in case EmailJS quota exceeded or not configured)
       if (!sent) {
         console.warn("[PASSWORD_RESET] EmailJS failed, falling back to SMTP");
+        void sendMail(
+          passwordResetEmail(email, user.name, resetUrl)
+        ).catch((err) =>
+          console.error("[PASSWORD_RESET] SMTP fallback failed:", err)
+        );
       }
     }
   } catch (err) {

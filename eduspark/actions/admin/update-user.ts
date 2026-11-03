@@ -19,6 +19,8 @@ const UpdateUserSchema = z.object({
   userId: z.string().cuid(),
   action: z.enum(["TOGGLE_ACTIVE", "CHANGE_ROLE"]),
   role: z.enum(["STUDENT", "CREATOR", "ADMIN"]).optional(),
+  // Optional rationale recorded in the audit log; required for suspensions.
+  reason: z.string().trim().max(500).optional(),
 });
 
 export type UpdateUserResult =
@@ -48,7 +50,7 @@ export async function updateUserAction(
     const parsed = UpdateUserSchema.safeParse(input);
     if (!parsed.success) return { success: false, error: "INVALID_INPUT" };
 
-    const { userId, action, role } = parsed.data;
+    const { userId, action, role, reason } = parsed.data;
 
     // Prevent admin from modifying themselves
     if (userId === session.user.id) {
@@ -67,9 +69,14 @@ export async function updateUserAction(
     });
     if (!target) return { success: false, error: "NOT_FOUND" };
 
-    // ── Apply change + audit log + email notification ─────────────
+    // ── Apply change + audit log + email notification ───────────────────
     if (action === "TOGGLE_ACTIVE") {
       const willBeActive = !target.isActive;
+
+      // Suspensions require a rationale; activations do not.
+      if (!willBeActive && !reason?.trim()) {
+        return { success: false, error: "INVALID_INPUT" };
+      }
 
       await db.user.update({
         where: { id: userId },
@@ -87,6 +94,7 @@ export async function updateUserAction(
           targetName: target.name,
           previousState: target.isActive,
           newState: willBeActive,
+          reason: reason?.trim() ?? null,
         },
         severity: "CRITICAL",
       });
@@ -95,7 +103,7 @@ export async function updateUserAction(
       void sendMail(
         willBeActive
           ? accountReactivatedEmail(target.email, target.name)
-          : accountSuspendedEmail(target.email, target.name)
+          : accountSuspendedEmail(target.email, target.name, reason?.trim())
       ).catch((err) => console.error("[ADMIN_EMAIL_STATUS]", err));
     } else if (action === "CHANGE_ROLE" && role) {
       const oldRole = target.role;
@@ -116,6 +124,7 @@ export async function updateUserAction(
             targetName: target.name,
             previousRole: oldRole,
             newRole: role,
+            reason: reason?.trim() ?? null,
           },
           severity: "CRITICAL",
         });

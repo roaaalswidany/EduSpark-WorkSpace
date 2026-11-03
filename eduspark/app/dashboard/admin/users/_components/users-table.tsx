@@ -109,7 +109,13 @@ export function UsersTable({
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [pendingUserId, setPendingUserId] = useState<string | null>(null);
+    const [pendingUserId, setPendingUserId] = useState<string | null>(null);
+  const [suspendDialog, setSuspendDialog] = useState<{
+    userId: string;
+    userName: string;
+  } | null>(null);
+  const [reasonInput, setReasonInput] = useState("");
+  const [reasonError, setReasonError] = useState<string | null>(null);
 
   // Proper debounce using useRef to avoid memory leaks
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -163,9 +169,8 @@ export function UsersTable({
     updateURL({ role });
   };
 
-  const handleToggleActive = (user: UserRow) => {
-    setOpenMenuId(null);
-    setActionError(null);
+  // Low-level executor — runs the actual action and shows toasts.
+  const executeToggle = (user: UserRow, reason?: string) => {
     setPendingUserId(user.id);
 
     const isSuspending = user.isActive;
@@ -177,6 +182,7 @@ export function UsersTable({
       const result = await updateUserAction({
         userId: user.id,
         action: "TOGGLE_ACTIVE",
+        reason,
       });
       setPendingUserId(null);
 
@@ -185,6 +191,7 @@ export function UsersTable({
           CANNOT_MODIFY_SELF: "You cannot deactivate your own account.",
           FORBIDDEN: "Only admins can perform this action.",
           NOT_FOUND: "User not found.",
+          INVALID_INPUT: "A valid reason is required to suspend an account.",
         };
         const errorMessage = messages[result.error] ?? "Action failed.";
 
@@ -208,6 +215,44 @@ export function UsersTable({
       );
       router.refresh();
     });
+  };
+
+  // User-facing handler — opens the reason dialog when suspending.
+  const handleToggleActive = (user: UserRow) => {
+    setOpenMenuId(null);
+    setActionError(null);
+
+    // Reactivation — no reason needed, execute immediately.
+    if (!user.isActive) {
+      executeToggle(user, undefined);
+      return;
+    }
+
+    // Suspension — require a reason first.
+    setSuspendDialog({ userId: user.id, userName: user.name });
+    setReasonInput("");
+    setReasonError(null);
+  };
+
+  // Dialog submit — validates the reason, then executes.
+  const handleConfirmSuspend = () => {
+    if (!suspendDialog) return;
+
+    const trimmed = reasonInput.trim();
+    if (trimmed.length < 10) {
+      setReasonError(
+        "Please provide at least 10 characters explaining the reason."
+      );
+      return;
+    }
+
+    const target = users.find((u) => u.id === suspendDialog.userId);
+    if (!target) return;
+
+    executeToggle(target, trimmed);
+    setSuspendDialog(null);
+    setReasonInput("");
+    setReasonError(null);
   };
 
   const handleChangeRole = (user: UserRow, role: Role) => {
@@ -581,6 +626,99 @@ export function UsersTable({
             </Link>
           )}
         </div>
+      )}
+            {/* Suspend reason dialog */}
+      {suspendDialog && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+            onClick={() => {
+              setSuspendDialog(null);
+              setReasonInput("");
+              setReasonError(null);
+            }}
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-5 space-y-4 pointer-events-auto">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <XCircle className="w-5 h-5 text-red-400" />
+                  <h3 className="text-lg font-bold text-white">
+                    Suspend account
+                  </h3>
+                </div>
+                <p className="text-sm text-slate-400">
+                  Please provide a reason for suspending{" "}
+                  <strong className="text-slate-200">
+                    {suspendDialog.userName}
+                  </strong>
+                  . This reason will be sent to the user by email.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                  Reason (required)
+                </label>
+                <textarea
+                  value={reasonInput}
+                  onChange={(e) => {
+                    setReasonInput(e.target.value);
+                    setReasonError(null);
+                  }}
+                  rows={4}
+                  autoFocus
+                  maxLength={500}
+                  className={cn(
+                    "w-full bg-slate-950 border rounded-lg px-3 py-2 text-sm text-slate-200 resize-none",
+                    "focus:outline-none",
+                    reasonError
+                      ? "border-red-500"
+                      : "border-slate-700 focus:border-indigo-500"
+                  )}
+                  placeholder="e.g., Violation of platform terms of service."
+                />
+                {reasonError && (
+                  <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {reasonError}
+                  </p>
+                )}
+                <p className="text-xs text-slate-600 mt-1.5">
+                  {reasonInput.trim().length}/500 characters (minimum 10)
+                </p>
+              </div>
+
+              <div className="flex gap-2 justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSuspendDialog(null);
+                    setReasonInput("");
+                    setReasonError(null);
+                  }}
+                  disabled={isPending}
+                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmSuspend}
+                  disabled={isPending || reasonInput.trim().length < 10}
+                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                >
+                  {isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <XCircle className="w-4 h-4" />
+                  )}
+                  Suspend account
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

@@ -56,3 +56,6 @@ next-env.d.ts
 # editor/manual backups
 *.backup
 *.bak
+
+# Test environment (contains secrets)
+.env.test
