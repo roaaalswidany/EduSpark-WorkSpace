@@ -350,6 +350,8 @@ function getErrorMessage(code: string | undefined): string {
       return "You don't have permission to edit this service.";
     case "NOT_FOUND":
       return "This service no longer exists.";
+    case "MALICIOUS_URL_BLOCKED":
+      return "One or more portfolio links were flagged as malicious. Please remove them before saving.";
     case "SERVER_ERROR":
       return "Something went wrong on our end. Please try again.";
     default:

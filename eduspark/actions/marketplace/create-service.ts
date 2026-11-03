@@ -14,6 +14,7 @@ import {
   type CreateServiceInput,
   type CreateServiceResult,
 } from "./create-service-schema";
+import { scanUrls } from "@/lib/virustotal";
 
 // ─── Slug Utilities ───────────────────────────────────────────────
 
@@ -122,6 +123,33 @@ export async function createServiceAction(
         effectiveCategoryId = null;
       }
     }
+
+    // 4.5. Security scan — block malicious portfolio links (fail-closed)
+    // Errors/timeouts are fail-open (logged, not blocked) to protect the demo
+    // if VirusTotal is unreachable or the quota is exhausted.
+    const scanResults = await scanUrls(portfolioLinks.filter(Boolean));
+    const malicious = scanResults.filter((r) => r.status === "malicious");
+    if (malicious.length > 0) {
+      return {
+        success: false,
+        error: "MALICIOUS_URL_BLOCKED",
+        fieldErrors: {
+          portfolioLinks: [
+            `Blocked by VirusTotal: ${malicious.map((r) => r.url).join(", ")}`,
+          ],
+        },
+      };
+    }
+    scanResults
+      .filter((r) => r.status === "error" || r.status === "disabled" || r.status === "unknown")
+      .forEach((r) =>
+        console.warn(
+          "[CREATE_SERVICE] URL scan did not complete (fail-open):",
+          r.url,
+          r.status,
+          r.errorMessage
+        )
+      );
 
     // 5. Unique slug generation
     const slug = await resolveUniqueSlug(toBaseSlug(title));

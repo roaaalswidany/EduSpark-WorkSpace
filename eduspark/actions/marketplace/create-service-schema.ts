@@ -73,12 +73,13 @@ export type CreateServiceResult =
   | { success: true; serviceId: string; slug: string }
   | {
       success: false;
-      error:
+            error:
         | "UNAUTHORIZED"
         | "FORBIDDEN_ROLE"
         | "NO_CERTIFICATE"
         | "EMAIL_NOT_VERIFIED"
         | "INVALID_INPUT"
+        | "MALICIOUS_URL_BLOCKED"
         | "SERVER_ERROR";
       fieldErrors?: Partial<Record<keyof CreateServiceInput, string[]>>;
     };

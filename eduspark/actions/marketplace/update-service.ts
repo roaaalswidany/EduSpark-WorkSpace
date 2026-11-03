@@ -13,6 +13,7 @@ import {
   CreateServiceSchema,
   type CreateServiceInput,
 } from "./create-service-schema";
+import { scanUrls } from "@/lib/virustotal";
 
 // ─── Schema ───────────────────────────────────────────────────────
 
@@ -32,6 +33,7 @@ export type UpdateServiceResult =
         | "NOT_FOUND"
         | "NO_CERTIFICATE"
         | "INVALID_INPUT"
+        | "MALICIOUS_URL_BLOCKED"
         | "SERVER_ERROR";
       fieldErrors?: Partial<Record<keyof CreateServiceInput, string[]>>;
     };
@@ -114,6 +116,32 @@ export async function updateServiceAction(
         effectiveCategoryId = null;
       }
     }
+
+        // 4.5. Security scan — block malicious portfolio links (fail-closed)
+    // Fail-open on errors/timeouts (see create-service.ts for rationale).
+    const scanResults = await scanUrls(portfolioLinks.filter(Boolean));
+    const malicious = scanResults.filter((r) => r.status === "malicious");
+    if (malicious.length > 0) {
+      return {
+        success: false,
+        error: "MALICIOUS_URL_BLOCKED",
+        fieldErrors: {
+          portfolioLinks: [
+            `Blocked by VirusTotal: ${malicious.map((r) => r.url).join(", ")}`,
+          ],
+        },
+      };
+    }
+    scanResults
+      .filter((r) => r.status === "error" || r.status === "disabled" || r.status === "unknown")
+      .forEach((r) =>
+        console.warn(
+          "[UPDATE_SERVICE] URL scan did not complete (fail-open):",
+          r.url,
+          r.status,
+          r.errorMessage
+        )
+      );
 
     // 5. Update service
     const updated = await db.service.update({
