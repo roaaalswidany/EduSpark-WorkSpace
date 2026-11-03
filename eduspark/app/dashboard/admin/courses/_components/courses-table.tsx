@@ -11,6 +11,7 @@ import {
   X,
   Loader2,
   AlertCircle,
+  XCircle,
   MoreVertical,
   ExternalLink,
   GraduationCap,
@@ -123,7 +124,13 @@ export function CoursesTable({
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [pendingCourseId, setPendingCourseId] = useState<string | null>(null);
+    const [pendingCourseId, setPendingCourseId] = useState<string | null>(null);
+  const [archiveDialog, setArchiveDialog] = useState<{
+    courseId: string;
+    courseTitle: string;
+  } | null>(null);
+  const [reasonInput, setReasonInput] = useState("");
+  const [reasonError, setReasonError] = useState<string | null>(null);
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const activeStatus = searchParams.get("status") ?? "";
@@ -168,9 +175,12 @@ export function CoursesTable({
 
   const handleStatusFilter = (status: string) => updateURL({ status });
 
-  const handleChangeStatus = (course: CourseRow, status: CourseStatus) => {
-    setOpenMenuId(null);
-    setActionError(null);
+  // Low-level executor — runs the actual status change and shows toasts.
+  const executeChangeStatus = (
+    course: CourseRow,
+    status: CourseStatus,
+    reason?: string
+  ) => {
     setPendingCourseId(course.id);
 
     const toastId = toast.loading(`Updating to ${status.toLowerCase()}…`);
@@ -180,6 +190,7 @@ export function CoursesTable({
         courseId: course.id,
         action: "CHANGE_STATUS",
         status,
+        reason,
       });
       setPendingCourseId(null);
 
@@ -187,6 +198,7 @@ export function CoursesTable({
         const messages: Record<string, string> = {
           FORBIDDEN: "Only admins can perform this action.",
           NOT_FOUND: "Course not found.",
+          INVALID_INPUT: "A valid reason is required to archive a course.",
         };
         const errorMessage = messages[result.error] ?? "Action failed.";
 
@@ -206,6 +218,43 @@ export function CoursesTable({
       });
       router.refresh();
     });
+  };
+
+  // User-facing handler — opens the reason dialog when archiving.
+  const handleChangeStatus = (course: CourseRow, status: CourseStatus) => {
+    setOpenMenuId(null);
+    setActionError(null);
+
+    // Archiving a non-archived course requires a reason first.
+    if (status === "ARCHIVED" && course.status !== "ARCHIVED") {
+      setArchiveDialog({ courseId: course.id, courseTitle: course.title });
+      setReasonInput("");
+      setReasonError(null);
+      return;
+    }
+
+    executeChangeStatus(course, status);
+  };
+
+  // Dialog submit — validates the reason, then executes.
+  const handleConfirmArchive = () => {
+    if (!archiveDialog) return;
+
+    const trimmed = reasonInput.trim();
+    if (trimmed.length < 10) {
+      setReasonError(
+        "Please provide at least 10 characters explaining the reason."
+      );
+      return;
+    }
+
+    const target = courses.find((c) => c.id === archiveDialog.courseId);
+    if (!target) return;
+
+    executeChangeStatus(target, "ARCHIVED", trimmed);
+    setArchiveDialog(null);
+    setReasonInput("");
+    setReasonError(null);
   };
 
   const filters = [
@@ -526,6 +575,99 @@ export function CoursesTable({
             </Link>
           )}
         </div>
+      )}
+            {/* Archive reason dialog */}
+      {archiveDialog && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+            onClick={() => {
+              setArchiveDialog(null);
+              setReasonInput("");
+              setReasonError(null);
+            }}
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-5 space-y-4 pointer-events-auto">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <XCircle className="w-5 h-5 text-red-400" />
+                  <h3 className="text-lg font-bold text-white">
+                    Archive course
+                  </h3>
+                </div>
+                <p className="text-sm text-slate-400">
+                  Please provide a reason for archiving{" "}
+                  <strong className="text-slate-200">
+                    &quot;{archiveDialog.courseTitle}&quot;
+                  </strong>
+                  . This reason will be sent to the course creator by email.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                  Reason (required)
+                </label>
+                <textarea
+                  value={reasonInput}
+                  onChange={(e) => {
+                    setReasonInput(e.target.value);
+                    setReasonError(null);
+                  }}
+                  rows={4}
+                  autoFocus
+                  maxLength={500}
+                  className={cn(
+                    "w-full bg-slate-950 border rounded-lg px-3 py-2 text-sm text-slate-200 resize-none",
+                    "focus:outline-none",
+                    reasonError
+                      ? "border-red-500"
+                      : "border-slate-700 focus:border-indigo-500"
+                  )}
+                  placeholder="e.g., Content violates platform quality guidelines."
+                />
+                {reasonError && (
+                  <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {reasonError}
+                  </p>
+                )}
+                <p className="text-xs text-slate-600 mt-1.5">
+                  {reasonInput.trim().length}/500 characters (minimum 10)
+                </p>
+              </div>
+
+              <div className="flex gap-2 justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setArchiveDialog(null);
+                    setReasonInput("");
+                    setReasonError(null);
+                  }}
+                  disabled={isPending}
+                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmArchive}
+                  disabled={isPending || reasonInput.trim().length < 10}
+                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                >
+                  {isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <XCircle className="w-4 h-4" />
+                  )}
+                  Archive course
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

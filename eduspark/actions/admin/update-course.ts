@@ -11,11 +11,14 @@ import { cacheInvalidatePattern } from "@/lib/cache";
 import { CacheKeys } from "@/lib/cache-keys";
 import { sendMail } from "@/lib/email/mailer";
 import { courseArchivedEmail } from "@/lib/email/templates";
+import { auditLog, AuditActions } from "@/lib/security/audit";
 
 const UpdateCourseSchema = z.object({
   courseId: z.string().cuid(),
   action: z.enum(["CHANGE_STATUS"]),
   status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional(),
+  // Optional rationale recorded in the audit log; required for archiving.
+  reason: z.string().trim().max(500).optional(),
 });
 
 export type UpdateCourseResult =
@@ -44,7 +47,7 @@ export async function updateCourseAction(
     const parsed = UpdateCourseSchema.safeParse(input);
     if (!parsed.success) return { success: false, error: "INVALID_INPUT" };
 
-    const { courseId, action, status } = parsed.data;
+    const { courseId, action, status, reason } = parsed.data;
 
     const course = await db.course.findUnique({
       where: { id: courseId },
@@ -59,9 +62,34 @@ export async function updateCourseAction(
 
     if (action === "CHANGE_STATUS" && status) {
       const oldStatus = course.status;
+
+      // Archiving requires a rationale (only when transitioning TO ARCHIVED).
+      if (
+        status === "ARCHIVED" &&
+        oldStatus !== "ARCHIVED" &&
+        !reason?.trim()
+      ) {
+        return { success: false, error: "INVALID_INPUT" };
+      }
+
       await db.course.update({
         where: { id: courseId },
         data: { status: status as CourseStatus },
+      });
+
+      // ── Audit trail — every status change is recorded ──
+      void auditLog({
+        action: AuditActions.ADMIN_COURSE_STATUS_CHANGED,
+        userId: session.user.id,
+        targetType: "Course",
+        targetId: courseId,
+        metadata: {
+          title: course.title,
+          previousStatus: oldStatus,
+          newStatus: status,
+          reason: reason?.trim() ?? null,
+        },
+        severity: "CRITICAL",
       });
 
       // Notify creator only on transition TO ARCHIVED
@@ -70,7 +98,8 @@ export async function updateCourseAction(
           courseArchivedEmail(
             course.creator.email,
             course.creator.name,
-            course.title
+            course.title,
+            reason?.trim()
           )
         ).catch((err) => console.error("[ADMIN_EMAIL_COURSE]", err));
       }
