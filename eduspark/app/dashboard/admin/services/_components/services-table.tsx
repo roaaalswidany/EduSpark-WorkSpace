@@ -11,6 +11,7 @@ import {
   X,
   Loader2,
   AlertCircle,
+  XCircle,
   MoreVertical,
   ExternalLink,
   Store,
@@ -142,6 +143,12 @@ export function ServicesTable({
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [pendingServiceId, setPendingServiceId] = useState<string | null>(null);
+  const [archiveDialog, setArchiveDialog] = useState<{
+    serviceId: string;
+    serviceTitle: string;
+  } | null>(null);
+  const [reasonInput, setReasonInput] = useState("");
+  const [reasonError, setReasonError] = useState<string | null>(null);
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const activeStatus = searchParams.get("status") ?? "";
@@ -186,9 +193,12 @@ export function ServicesTable({
 
   const handleStatusFilter = (status: string) => updateURL({ status });
 
-  const handleChangeStatus = (service: ServiceRow, status: ServiceStatus) => {
-    setOpenMenuId(null);
-    setActionError(null);
+  // Low-level executor — runs the actual status change and shows toasts.
+  const executeChangeStatus = (
+    service: ServiceRow,
+    status: ServiceStatus,
+    reason?: string
+  ) => {
     setPendingServiceId(service.id);
 
     const toastId = toast.loading(`Updating to ${status.toLowerCase()}…`);
@@ -198,14 +208,17 @@ export function ServicesTable({
         serviceId: service.id,
         action: "CHANGE_STATUS",
         status,
+        reason,
       });
       setPendingServiceId(null);
 
       if (!result.success) {
-        const errorMessage =
-          result.error === "FORBIDDEN"
-            ? "Only admins can perform this action."
-            : "Action failed.";
+        const messages: Record<string, string> = {
+          FORBIDDEN: "Only admins can perform this action.",
+          NOT_FOUND: "Service not found.",
+          INVALID_INPUT: "A valid reason is required to archive a service.",
+        };
+        const errorMessage = messages[result.error] ?? "Action failed.";
 
         setActionError(errorMessage);
         toast.error("Update failed", {
@@ -223,6 +236,49 @@ export function ServicesTable({
       });
       router.refresh();
     });
+  };
+
+  // User-facing handler — opens the reason dialog when archiving.
+  const handleChangeStatus = (
+    service: ServiceRow,
+    status: ServiceStatus
+  ) => {
+    setOpenMenuId(null);
+    setActionError(null);
+
+    // Archiving a non-archived service requires a reason first.
+    if (status === "ARCHIVED" && service.status !== "ARCHIVED") {
+      setArchiveDialog({
+        serviceId: service.id,
+        serviceTitle: service.title,
+      });
+      setReasonInput("");
+      setReasonError(null);
+      return;
+    }
+
+    executeChangeStatus(service, status);
+  };
+
+  // Dialog submit — validates the reason, then executes.
+  const handleConfirmArchive = () => {
+    if (!archiveDialog) return;
+
+    const trimmed = reasonInput.trim();
+    if (trimmed.length < 10) {
+      setReasonError(
+        "Please provide at least 10 characters explaining the reason."
+      );
+      return;
+    }
+
+    const target = services.find((s) => s.id === archiveDialog.serviceId);
+    if (!target) return;
+
+    executeChangeStatus(target, "ARCHIVED", trimmed);
+    setArchiveDialog(null);
+    setReasonInput("");
+    setReasonError(null);
   };
 
   const filters = [
@@ -551,6 +607,99 @@ export function ServicesTable({
             </Link>
           )}
         </div>
+      )}
+            {/* Archive reason dialog */}
+      {archiveDialog && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+            onClick={() => {
+              setArchiveDialog(null);
+              setReasonInput("");
+              setReasonError(null);
+            }}
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-5 space-y-4 pointer-events-auto">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <XCircle className="w-5 h-5 text-red-400" />
+                  <h3 className="text-lg font-bold text-white">
+                    Archive service
+                  </h3>
+                </div>
+                <p className="text-sm text-slate-400">
+                  Please provide a reason for archiving{" "}
+                  <strong className="text-slate-200">
+                    &quot;{archiveDialog.serviceTitle}&quot;
+                  </strong>
+                  . This reason will be sent to the service creator by email.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                  Reason (required)
+                </label>
+                <textarea
+                  value={reasonInput}
+                  onChange={(e) => {
+                    setReasonInput(e.target.value);
+                    setReasonError(null);
+                  }}
+                  rows={4}
+                  autoFocus
+                  maxLength={500}
+                  className={cn(
+                    "w-full bg-slate-950 border rounded-lg px-3 py-2 text-sm text-slate-200 resize-none",
+                    "focus:outline-none",
+                    reasonError
+                      ? "border-red-500"
+                      : "border-slate-700 focus:border-indigo-500"
+                  )}
+                  placeholder="e.g., Service offering violates marketplace policy."
+                />
+                {reasonError && (
+                  <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {reasonError}
+                  </p>
+                )}
+                <p className="text-xs text-slate-600 mt-1.5">
+                  {reasonInput.trim().length}/500 characters (minimum 10)
+                </p>
+              </div>
+
+              <div className="flex gap-2 justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setArchiveDialog(null);
+                    setReasonInput("");
+                    setReasonError(null);
+                  }}
+                  disabled={isPending}
+                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmArchive}
+                  disabled={isPending || reasonInput.trim().length < 10}
+                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                >
+                  {isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <XCircle className="w-4 h-4" />
+                  )}
+                  Archive service
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
