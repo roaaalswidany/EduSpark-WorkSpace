@@ -32,8 +32,13 @@ export async function deleteAttachmentAction(
         uploadedById: true,
         lesson: {
           select: {
-            section: { select: { courseId: true, course: { select: { creatorId: true } } } },
+            section: {
+              select: { courseId: true, course: { select: { creatorId: true } } },
+            },
           },
+        },
+        milestone: {
+          select: { project: { select: { status: true } } },
         },
       },
     });
@@ -41,26 +46,44 @@ export async function deleteAttachmentAction(
     if (!att) return { success: false, error: "NOT_FOUND" };
 
     const isUploader = att.uploadedById === session.user.id;
-    const isCourseOwner = att.lesson?.section.course.creatorId === session.user.id;
+    const isCourseOwner =
+      att.lesson?.section.course.creatorId === session.user.id;
     const isAdmin = user.role === Role.ADMIN;
 
     if (!isUploader && !isCourseOwner && !isAdmin) {
       return { success: false, error: "FORBIDDEN" };
     }
 
-    // Delete from S3 first, then DB. If S3 fails, keep the DB record.
+    // Audit guard: completed/cancelled project attachments are immutable
+    // (except for admins, who may need to remove content for legal reasons).
+    const projectStatus = att.milestone?.project.status;
+    if (
+      !isAdmin &&
+      (projectStatus === "COMPLETED" || projectStatus === "CANCELLED")
+    ) {
+      return { success: false, error: "FORBIDDEN" };
+    }
+
+    // Delete from S3 first. If it fails, keep the DB record so the object
+    // is not orphaned (data leak). The caller can retry.
     try {
       await s3Client.send(
         new DeleteObjectCommand({ Bucket: UPLOAD_BUCKET, Key: att.storageKey })
       );
     } catch (err) {
-      console.warn("[DELETE_ATTACHMENT] S3 delete failed, continuing with DB:", err);
+      console.error(
+        "[DELETE_ATTACHMENT] S3 delete failed; DB record kept:",
+        err
+      );
+      return { success: false, error: "STORAGE_ERROR" };
     }
 
     await db.attachment.delete({ where: { id: attachmentId } });
 
     if (att.lesson?.section.courseId) {
-      revalidatePath(`/dashboard/creator/courses/${att.lesson.section.courseId}/edit`);
+      revalidatePath(
+        `/dashboard/creator/courses/${att.lesson.section.courseId}/edit`
+      );
     }
     return { success: true };
   } catch (e) {
