@@ -6,13 +6,24 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
+import { getFreshUser } from "@/lib/security/fresh-user";
+import { limitByUser } from "@/lib/security/action-guard";
+import { RateLimits } from "@/lib/security/rate-limit";
 import { s3Client, UPLOAD_BUCKET } from "@/lib/s3-client";
 
 const Schema = z.object({ attachmentId: z.string().cuid() });
 
 export type GetDownloadUrlResult =
   | { success: true; downloadUrl: string; fileName: string }
-  | { success: false; error: "UNAUTHORIZED" | "NOT_FOUND" | "FORBIDDEN" | "SERVER_ERROR" };
+  | {
+      success: false;
+      error:
+        | "UNAUTHORIZED"
+        | "FORBIDDEN"
+        | "NOT_FOUND"
+        | "RATE_LIMITED"
+        | "SERVER_ERROR";
+    };
 
 export async function getAttachmentDownloadUrlAction(
   rawInput: z.infer<typeof Schema>
@@ -20,6 +31,17 @@ export async function getAttachmentDownloadUrlAction(
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
+
+    // Authoritative state from DB (JWT can be stale after suspension)
+    const actor = await getFreshUser(session.user.id);
+    if (!actor?.isActive) return { success: false, error: "FORBIDDEN" };
+
+    // Rate limit: 120 per 10 minutes per user
+    const retryAfter = await limitByUser(
+      RateLimits.DOWNLOAD_URL,
+      session.user.id
+    );
+    if (retryAfter !== null) return { success: false, error: "RATE_LIMITED" };
 
     const parsed = Schema.safeParse(rawInput);
     if (!parsed.success) return { success: false, error: "NOT_FOUND" };
@@ -66,9 +88,9 @@ export async function getAttachmentDownloadUrlAction(
       (attachment.milestone.project.clientId === userId ||
         attachment.milestone.project.creatorId === userId);
     const isRoomParticipant =
-      attachment.chatRoom?.participants.some((p) => p.userId === userId) ?? false;
+      attachment.chatRoom?.participants.some((p) => p.userId === userId) ??
+      false;
 
-    // Lesson attachments: allowed for course creator OR enrolled students.
     const isLessonAccessible =
       attachment.lesson !== null &&
       (attachment.lesson.section.course.creatorId === userId ||
@@ -88,7 +110,9 @@ export async function getAttachmentDownloadUrlAction(
       new GetObjectCommand({
         Bucket: UPLOAD_BUCKET,
         Key: attachment.storageKey,
-        ResponseContentDisposition: `attachment; filename*=UTF-8''${encodeURIComponent(attachment.fileName)}`,
+        ResponseContentDisposition: `attachment; filename*=UTF-8''${encodeURIComponent(
+          attachment.fileName
+        )}`,
       }),
       { expiresIn: 120 }
     );
