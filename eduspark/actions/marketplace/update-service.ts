@@ -14,6 +14,8 @@ import {
   type CreateServiceInput,
 } from "./create-service-schema";
 import { scanUrls } from "@/lib/virustotal";
+import { limitByUser } from "@/lib/security/action-guard";
+import { RateLimits } from "@/lib/security/rate-limit";
 
 // ─── Schema ───────────────────────────────────────────────────────
 
@@ -34,7 +36,8 @@ export type UpdateServiceResult =
         | "NO_CERTIFICATE"
         | "INVALID_INPUT"
         | "MALICIOUS_URL_BLOCKED"
-        | "SERVER_ERROR";
+        | "SERVER_ERROR"
+        | "RATE_LIMITED";
       fieldErrors?: Partial<Record<keyof CreateServiceInput, string[]>>;
     };
 
@@ -53,6 +56,10 @@ export async function updateServiceAction(
     const actor = await getFreshUser(userId);
     if (!actor?.isActive) return { success: false, error: "UNAUTHORIZED" };
     const role = actor.role;
+
+    // Rate limit (protects the VirusTotal quota and the DB)
+    const retryAfter = await limitByUser(RateLimits.SERVICE_WRITE, userId);
+    if (retryAfter !== null) return { success: false, error: "RATE_LIMITED" };
 
     // 2. Validate
     const parsed = UpdateServiceSchema.safeParse(rawInput);
@@ -86,7 +93,7 @@ export async function updateServiceAction(
     // 3. Verify service exists and belongs to user
     const existing = await db.service.findUnique({
       where: { id: serviceId },
-      select: { id: true, creatorId: true, slug: true },
+      select: { id: true, creatorId: true, slug: true, portfolioLinks: true },
     });
 
     if (!existing) return { success: false, error: "NOT_FOUND" };
@@ -117,9 +124,12 @@ export async function updateServiceAction(
       }
     }
 
-        // 4.5. Security scan — block malicious portfolio links (fail-closed)
+    // 4.5. Security scan — only NEW links (unchanged links were already scanned).
     // Fail-open on errors/timeouts (see create-service.ts for rationale).
-    const scanResults = await scanUrls(portfolioLinks.filter(Boolean));
+    const newLinks = portfolioLinks.filter(
+      (l) => l && !existing.portfolioLinks.includes(l)
+    );
+    const scanResults = await scanUrls(newLinks);
     const malicious = scanResults.filter((r) => r.status === "malicious");
     if (malicious.length > 0) {
       return {

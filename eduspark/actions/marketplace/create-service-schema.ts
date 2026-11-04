@@ -56,15 +56,18 @@ export const CreateServiceSchema = z.object({
       message: "Tags must be unique.",
     }),
 
-  portfolioLinks: z
-    .array(
-      z
-        .string()
-        .url("Each portfolio link must be a valid URL.")
-        .max(500, "URL is too long.")
-    )
-    .max(5, "Maximum 5 portfolio links.")
-    .default([]),
+portfolioLinks: z
+  .array(
+    z.string()
+      .url("Each portfolio link must be a valid URL.")
+      .max(500, "URL is too long.")
+      .refine(
+        (u) => { try { return new URL(u).protocol === "https:"; } catch { return false; } },
+        "Only https:// links are allowed."
+      )
+  )
+  .max(5, "Maximum 5 portfolio links.")
+  .default([]),
 });
 
 export type CreateServiceInput = z.infer<typeof CreateServiceSchema>;
@@ -80,6 +83,7 @@ export type CreateServiceResult =
         | "EMAIL_NOT_VERIFIED"
         | "INVALID_INPUT"
         | "MALICIOUS_URL_BLOCKED"
-        | "SERVER_ERROR";
+        | "SERVER_ERROR"
+        | "RATE_LIMITED";
       fieldErrors?: Partial<Record<keyof CreateServiceInput, string[]>>;
     };

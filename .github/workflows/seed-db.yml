@@ -1,25 +1,29 @@
 name: Seed Database
 
 on:
-  workflow_dispatch: # This allows manual trigger from GitHub
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type WIPE-AND-SEED to confirm (this DELETES data)"
+        required: true
 
 jobs:
   seed:
+    if: ${{ inputs.confirm == 'WIPE-AND-SEED' }}
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
       ALLOW_SEED_REMOTE: "true"
+      SEED_PASSWORD: ${{ secrets.SEED_PASSWORD }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Require a non-default seed password
+        run: |
+          if [ -z "$SEED_PASSWORD" ]; then
+            echo "Add a SEED_PASSWORD secret first."; exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-
-      - name: Install dependencies
-        run: cd eduspark && npm install
-
-      - name: Run Prisma Seed
-        run: cd eduspark && npx prisma db seed
+          node-version: "22"
+      - run: cd eduspark && npm install
+      - run: cd eduspark && npx prisma db seed

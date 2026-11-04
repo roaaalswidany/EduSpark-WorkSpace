@@ -12,6 +12,7 @@ import { randomBytes } from "crypto";
 import {
   QUIZ_ATTEMPT_WINDOW_HOURS,
   QUIZ_MAX_ATTEMPTS_PER_WINDOW,
+  QUIZ_MIN_QUESTIONS_FOR_CERTIFICATION,
 } from "@/lib/lms/quiz-policy";
 import { limitByUser } from "@/lib/security/action-guard";
 import { getFreshUser } from "@/lib/security/fresh-user";
@@ -142,6 +143,9 @@ export async function submitQuizAction(
     if (!quiz) return { success: false, error: "QUIZ_NOT_FOUND" };
 
     const { courseId, passingScore, questions } = quiz;
+    if (questions.length < QUIZ_MIN_QUESTIONS_FOR_CERTIFICATION) {
+  return { success: false, error: "QUIZ_NOT_FOUND" };
+}
 
     // ── 4. Verify enrollment ─────────────────────────────────────────────────
     const enrollment = await db.enrollment.findUnique({

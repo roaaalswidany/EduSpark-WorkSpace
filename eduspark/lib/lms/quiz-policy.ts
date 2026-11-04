@@ -2,3 +2,4 @@
 // those may only export async functions.
 export const QUIZ_MAX_ATTEMPTS_PER_WINDOW = 3;
 export const QUIZ_ATTEMPT_WINDOW_HOURS = 24;
+export const QUIZ_MIN_QUESTIONS_FOR_CERTIFICATION = 4;

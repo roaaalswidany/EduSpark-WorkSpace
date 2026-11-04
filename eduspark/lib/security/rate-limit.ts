@@ -99,6 +99,8 @@ export const RateLimits = {
   /** Presigned download URLs: 120 per 10 minutes per user */
   DOWNLOAD_URL: { key: "download-url", limit: 120, windowSec: 600 },
 
+  SERVICE_WRITE: { key: "service-write", limit: 20, windowSec: 3600 },
+
   /** Password-reset requests/attempts: 5 per hour per IP and per target email */
   PASSWORD_RESET: { key: "password-reset", limit: 5, windowSec: 3600 },
 

@@ -7,18 +7,14 @@ import { getFreshUser } from "@/lib/security/fresh-user";
 import { db } from "@/lib/db";
 import { Role, CourseStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { QUIZ_MIN_QUESTIONS_FOR_CERTIFICATION } from "@/lib/lms/quiz-policy";
 
 const Schema = z.object({
   courseId: z.string().cuid(),
   status: z.enum(["DRAFT", "PUBLISHED"]),
 });
 
-// Two-tier quiz quality policy:
-// - HARD_BLOCK: cannot publish below this threshold (prevents empty quizzes)
-// - SOFT_WARN:  publishes, but logs a recommendation for admin awareness
-//   (full policy: 10 questions + admin review — Future Work)
-const QUIZ_MIN_QUESTIONS_HARD_BLOCK = 4;
-const QUIZ_MIN_QUESTIONS_SOFT_WARN = 10;
+
 
 export async function updateCourseStatusAction(
   raw: z.infer<typeof Schema>
@@ -66,16 +62,9 @@ export async function updateCourseStatusAction(
 
       const publishedQuestions = quiz?._count.questions ?? 0;
 
-      if (publishedQuestions > 0 && publishedQuestions < QUIZ_MIN_QUESTIONS_HARD_BLOCK) {
-        return { success: false, error: "QUIZ_TOO_SHORT" };
-      }
-
-      if (publishedQuestions > 0 && publishedQuestions < QUIZ_MIN_QUESTIONS_SOFT_WARN) {
-        console.warn(
-          `[PUBLISH_COURSE] Course ${courseId} published with only ${publishedQuestions} ` +
-          `published quiz questions. Recommended: ${QUIZ_MIN_QUESTIONS_SOFT_WARN}+ for certification quality.`
-        );
-      }
+      if (publishedQuestions > 0 && publishedQuestions < QUIZ_MIN_QUESTIONS_FOR_CERTIFICATION) {
+  return { success: false, error: "QUIZ_TOO_SHORT" };
+}
     }
 
     await db.course.update({

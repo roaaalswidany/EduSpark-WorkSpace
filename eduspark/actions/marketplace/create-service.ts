@@ -15,6 +15,8 @@ import {
   type CreateServiceResult,
 } from "./create-service-schema";
 import { scanUrls } from "@/lib/virustotal";
+import { limitByUser } from "@/lib/security/action-guard";
+import { RateLimits } from "@/lib/security/rate-limit";
 
 // ─── Slug Utilities ───────────────────────────────────────────────
 
@@ -64,6 +66,9 @@ export async function createServiceAction(
     if (role !== Role.CREATOR && role !== Role.ADMIN) {
       return { success: false, error: "FORBIDDEN_ROLE" };
     }
+
+    const retryAfter = await limitByUser(RateLimits.SERVICE_WRITE, userId);
+    if (retryAfter !== null) return { success: false, error: "RATE_LIMITED" };
 
     // 3. Input validation
     const parsed = CreateServiceSchema.safeParse(rawInput);
