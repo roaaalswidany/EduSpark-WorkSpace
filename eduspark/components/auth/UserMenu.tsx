@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { signOut } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 import { LogOut, LayoutDashboard, User, ChevronDown } from "lucide-react";
 import type { Session } from "next-auth";
@@ -36,19 +35,11 @@ export function UserMenu({ user }: { user: Session["user"] }) {
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-800 transition-colors"
       >
-        {user?.image ? (
-          <Image
-            src={user.image}
-            alt={user.name ?? "User"}
-            width={32}
-            height={32}
-            className="rounded-full object-cover"
-          />
-        ) : (
-          <div className="w-8 h-8 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">
-            {initials}
-          </div>
-        )}
+        {/* إلغاء الصورة وعرض الأحرف الأولى دائماً */}
+        <div className="w-8 h-8 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">
+          {initials}
+        </div>
+        
         <span className="hidden sm:block text-sm text-slate-300 max-w-30 truncate">
           {user?.name}
         </span>

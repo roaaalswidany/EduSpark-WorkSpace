@@ -6,6 +6,8 @@ import { ServiceStatus } from "@prisma/client";
 import { ServiceDetailView } from "./_components/service-detail-view";
 import { ServiceReviews } from "@/components/reviews/service-reviews";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+const session = await getServerSession(authOptions);
+const userRole = session?.user?.role;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -136,6 +138,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         }))}
         isLoggedIn={isLoggedIn}
         isOwnService={isOwnService}
+        isAdmin={userRole === "ADMIN"}
       />
       <div className="bg-slate-950">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">

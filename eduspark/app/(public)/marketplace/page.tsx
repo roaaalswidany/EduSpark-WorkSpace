@@ -90,7 +90,7 @@ export default async function MarketplacePage() {
     creator: {
       id: s.creator.id,
       name: s.creator.name,
-      image: s.creator.image,
+      image: null,
       headline: s.creator.headline,
       certifiedCategories: (s.creator.certificates ?? [])
         .map((c) => c.course.categoryId)

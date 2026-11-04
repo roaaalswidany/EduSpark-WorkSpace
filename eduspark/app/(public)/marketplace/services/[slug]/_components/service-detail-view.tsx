@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useTransition, useCallback } from "react";
@@ -64,6 +65,7 @@ interface ServiceDetailViewProps {
   relatedServices: RelatedService[];
   isLoggedIn: boolean;
   isOwnService: boolean;
+  isAdmin: boolean;
 }
 
 // ─── Helpers ────────────────────────────────────────────────
@@ -86,7 +88,7 @@ function getGradient(id: string): string {
 
 function CreatorAvatar({
   name,
-  image,
+  image, 
   size = 40,
 }: {
   name: string;
@@ -101,20 +103,6 @@ function CreatorAvatar({
     .toUpperCase();
   const hue =
     name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
-
-  if (image) {
-    return (
-      <Image
-        src={image}
-        alt={name}
-        width={size}
-        height={size}
-        className="rounded-full object-cover ring-2 ring-slate-700"
-        style={{ width: size, height: size }}
-      />
-    );
-  }
-
   return (
     <div
       className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-slate-700 shrink-0"
@@ -312,6 +300,7 @@ export function ServiceDetailView({
   relatedServices,
   isLoggedIn,
   isOwnService,
+  isAdmin, 
 }: ServiceDetailViewProps) {
   const [orderOpen, setOrderOpen] = useState(false);
   const gradient = getGradient(service.id);
@@ -532,38 +521,43 @@ export function ServiceDetailView({
                   </span>
                 </div>
 
-                {/* CTA */}
-                {isOwnService ? (
-                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-800 text-slate-400 text-xs font-medium">
-                    <User className="w-4 h-4 shrink-0" />
-                    This is your own service
-                  </div>
-                ) : isLoggedIn ? (
-                  <button
-                    onClick={() => setOrderOpen(true)}
-                    className={cn(
-                      "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-                      "bg-indigo-600 hover:bg-indigo-500 text-white",
-                      "text-sm font-bold transition-all active:scale-[0.98]",
-                      "shadow-lg shadow-indigo-500/20"
-                    )}
-                  >
-                    <Package className="w-4 h-4" />
-                    Order Now
-                  </button>
-                ) : (
-                  <Link
-                    href={`/auth/login?callbackUrl=/marketplace/services/${service.slug}`}
-                    className={cn(
-                      "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-                      "bg-indigo-600 hover:bg-indigo-500 text-white",
-                      "text-sm font-bold transition-all active:scale-[0.98]",
-                      "shadow-lg shadow-indigo-500/20"
-                    )}
-                  >
-                    Sign in to order
-                  </Link>
-                )}
+{/* CTA */}
+{isAdmin ? (
+  <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium text-center">
+    <ShieldCheck className="w-4 h-4 shrink-0" />
+    Admins cannot order services.
+  </div>
+) : isOwnService ? (
+  <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-800 text-slate-400 text-xs font-medium">
+    <User className="w-4 h-4 shrink-0" />
+    This is your own service
+  </div>
+) : isLoggedIn ? (
+  <button
+    onClick={() => setOrderOpen(true)}
+    className={cn(
+      "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
+      "bg-indigo-600 hover:bg-indigo-500 text-white",
+      "text-sm font-bold transition-all active:scale-[0.98]",
+      "shadow-lg shadow-indigo-500/20"
+    )}
+  >
+    <Package className="w-4 h-4" />
+    Order Now
+  </button>
+) : (
+  <Link
+    href={`/auth/login?callbackUrl=/marketplace/services/${service.slug}`}
+    className={cn(
+      "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
+      "bg-indigo-600 hover:bg-indigo-500 text-white",
+      "text-sm font-bold transition-all active:scale-[0.98]",
+      "shadow-lg shadow-indigo-500/20"
+    )}
+  >
+    Sign in to order
+  </Link>
+)}
 
                 {/* Features */}
                 <div className="pt-4 border-t border-slate-800 space-y-3">

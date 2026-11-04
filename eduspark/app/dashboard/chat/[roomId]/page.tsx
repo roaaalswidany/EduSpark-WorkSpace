@@ -105,7 +105,7 @@ export default async function ChatRoomPage({ params }: PageProps) {
           currentUser={{
             id: userId,
             name: session.user.name ?? "Unknown",
-            image: session.user.image ?? null,
+            image: null,
           }}
           showLegalDisclaimer
         />

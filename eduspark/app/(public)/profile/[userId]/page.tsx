@@ -129,7 +129,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
           user={{
             name: user.name,
             email: user.email,
-            image: user.image,
+            image: null,
             role: user.role,
             headline: user.headline ?? "",
             website: user.website ?? "",

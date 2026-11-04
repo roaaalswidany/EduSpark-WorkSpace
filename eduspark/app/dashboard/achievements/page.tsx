@@ -96,7 +96,7 @@ export default async function AchievementsPage() {
           rank: i + 1,
           userId: u.user.id,
           name: u.user.name,
-          image: u.user.image,
+          image: null,
           xp: u.xp,
           level: u.level,
           isCurrentUser: u.userId === userId,

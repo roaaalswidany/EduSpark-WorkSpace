@@ -51,7 +51,7 @@ export default async function DashboardLayout({
         id: user.id,
         name: user.name,
         email: user.email,
-        image: user.image,
+        image: null,
       }}
       unreadNotifications={unreadCount}
       gamification={{
