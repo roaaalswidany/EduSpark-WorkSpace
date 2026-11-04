@@ -22,6 +22,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   VALIDATION_ERROR: "Please enter a valid email and password.",
   SERVER_ERROR: "Something went wrong. Please try again later.",
   CredentialsSignin: "Invalid email or password.",
+  RATE_LIMITED: "Too many login attempts. Please try again in 15 minutes.",
 };
 
 export function LoginForm() {
@@ -34,7 +35,6 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isRateLimited, setIsRateLimited] = useState(false);
-  const [retryAfter, setRetryAfter] = useState(0);
   const [isPending, setIsPending] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -44,22 +44,8 @@ export function LoginForm() {
     setIsPending(true);
 
     try {
-      const { loginAction } = await import("@/actions/auth/login");
-      const check = await loginAction({ email, password });
-
-      if (!check.success) {
-        if (check.code === "RATE_LIMITED") {
-          setIsRateLimited(true);
-          setRetryAfter(check.retryAfterSec ?? 0);
-          setError(check.error);
-          setIsPending(false);
-          return;
-        }
-        setError(check.error);
-        setIsPending(false);
-        return;
-      }
-
+      // نستخدم signIn مباشرة ليتحقق من كلمة المرور ويصدر الكوكيز في خطوة واحدة
+      // هذا يمنع الحظر المزدوج ويحل المشكلة
       const result = await signIn("credentials", {
         email,
         password,
@@ -69,11 +55,18 @@ export function LoginForm() {
 
       if (result?.error) {
         const code = result.error.split(":").pop() ?? result.error;
-        setError(ERROR_MESSAGES[code] ?? "Sign-in failed. Please try again.");
+        
+        if (code === "RATE_LIMITED") {
+          setIsRateLimited(true);
+          setError(ERROR_MESSAGES[code]);
+        } else {
+          setError(ERROR_MESSAGES[code] ?? "Invalid email or password.");
+        }
         setIsPending(false);
         return;
       }
 
+      // نجاح
       router.push(callbackUrl);
       router.refresh();
     } catch (err) {
@@ -125,7 +118,7 @@ export function LoginForm() {
               />
             </div>
 
-            {/* Password — with show/hide toggle */}
+            {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label
@@ -175,13 +168,6 @@ export function LoginForm() {
                 <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-amber-300">{error}</p>
-                  {retryAfter > 0 && (
-                    <p className="text-xs text-amber-400/70 mt-1">
-                      Please wait {Math.ceil(retryAfter / 60)} minute
-                      {Math.ceil(retryAfter / 60) === 1 ? "" : "s"} before
-                      trying again.
-                    </p>
-                  )}
                 </div>
               </div>
             )}
