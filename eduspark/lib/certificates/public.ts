@@ -1,7 +1,8 @@
 import { db } from "@/lib/db";
 
 /** EDU-<base36 timestamp>-<48-bit random hex> — see generateCredentialId(). */
-export const CREDENTIAL_ID_RE = /^EDU-[0-9A-Z]{6,12}-[0-9A-F]{12}$/;
+// Accepts both legacy short IDs (EDU-XXXXXXXX) and current long IDs (EDU-XXXXXXXX-XXXXXXXXXXXXXXXX)
+export const CREDENTIAL_ID_RE = /^EDU-[0-9A-Z]{6,12}(-[0-9A-F]{12})?$/;
 
 /** Everything a third party may learn from a credential ID — nothing more. */
 export interface PublicCertificate {

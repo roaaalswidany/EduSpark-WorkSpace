@@ -6,8 +6,6 @@ import { ServiceStatus } from "@prisma/client";
 import { ServiceDetailView } from "./_components/service-detail-view";
 import { ServiceReviews } from "@/components/reviews/service-reviews";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-const session = await getServerSession(authOptions);
-const userRole = session?.user?.role;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -21,14 +19,17 @@ export async function generateMetadata({ params }: PageProps) {
   });
   if (!service) return { title: "Service not found" };
   return {
-    title: `${service.title} — EduSpark Marketplace`,
+    title: `${service.title} | EduSpark Marketplace`,
     description: service.description.slice(0, 160),
   };
 }
 
 export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug } = await params;
+  
+  // ✅ تم نقل استدعاء الجلسة إلى داخل الدالة
   const session = await getServerSession(authOptions);
+  const userRole = session?.user?.role;
 
   const service = await db.service.findUnique({
     where: { slug },
@@ -94,7 +95,6 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
   return (
     <>
-      {/* ── Breadcrumb bar ─────────────────────────── */}
       <div className="border-b border-slate-800 bg-slate-950">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <Breadcrumbs
