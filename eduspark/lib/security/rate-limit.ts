@@ -8,6 +8,20 @@ const globalForRateLimit = globalThis as unknown as {
   rateLimitRedis: Redis | undefined;
 };
 
+// Fail-open in dev (don't block local work), fail-closed in prod (safer).
+const FAIL_CLOSED = process.env.RATE_LIMIT_FAIL_CLOSED === "true";
+
+function failClosedResult(config: RateLimitConfig): RateLimitResult {
+  return {
+    allowed: !FAIL_CLOSED,
+    remaining: 0,
+    limit: config.limit,
+    resetAt: Date.now() + config.windowSec * 1000,
+    retryAfterSec: FAIL_CLOSED ? config.windowSec : 0,
+  };
+}
+
+
 function getRedis(): Redis | null {
   const url = process.env.REDIS_URL;
   if (!url) {
@@ -122,14 +136,8 @@ export async function checkRateLimit(
 ): Promise<RateLimitResult> {
   const redis = getRedis();
 
-  if (!redis) {
-    return {
-      allowed: true,
-      remaining: config.limit,
-      limit: config.limit,
-      resetAt: Date.now() + config.windowSec * 1000,
-      retryAfterSec: 0,
-    };
+    if (!redis) {
+    return failClosedResult(config);
   }
 
   const now = Date.now();
@@ -166,13 +174,7 @@ export async function checkRateLimit(
     };
   } catch (err) {
     console.error("[RATE_LIMIT] check failed:", err);
-    return {
-      allowed: true,
-      remaining: config.limit,
-      limit: config.limit,
-      resetAt: now + windowMs,
-      retryAfterSec: 0,
-    };
+    return failClosedResult(config);
   }
 }
 
