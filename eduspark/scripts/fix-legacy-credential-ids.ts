@@ -1,11 +1,12 @@
 import * as dotenv from "dotenv";
 import path from "path";
+import { randomBytes } from "crypto";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
 
 function generateCredentialId(): string {
   const ts = Date.now().toString(36).toUpperCase();
-  const rand = Math.random().toString(16).substring(2, 14).toUpperCase();
+  const rand = randomBytes(6).toString("hex").toUpperCase();
   return `EDU-${ts}-${rand}`;
 }
 

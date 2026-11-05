@@ -61,5 +61,6 @@ next-env.d.ts
 .env.test
 
 # Backup files
-*.sql
-!prisma/migrations/**/*.sql
+backup*.sql
+fix-*.sql
+dump*.sql

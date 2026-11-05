@@ -5,6 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 import { BCRYPT_COST } from "./config";
 
 // ─── Randomness ─────────────────────────────────────────────────────────────
@@ -73,12 +74,9 @@ export function uniqueSlug(base: string, index: number): string {
 }
 
 export function generateCredentialId(prefix = "EDU"): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  for (let i = 0; i < 8; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return `${prefix}-${code}`;
+  // Same format as actions/lms/submit-quiz.ts: <PREFIX>-<BASE36_TS>-<12 HEX (crypto)>
+  const ts = Date.now().toString(36).toUpperCase();
+  return `${prefix}-${ts}-${randomBytes(6).toString("hex").toUpperCase()}`;
 }
 
 // ─── Password ───────────────────────────────────────────────────────────────

@@ -307,31 +307,6 @@ export function ServiceDetailView({
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
-      {/* Breadcrumb */}
-      <div className="border-b border-slate-800 bg-slate-950">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-1.5 text-xs text-slate-500">
-          <Link
-            href="/marketplace"
-            className="hover:text-slate-300 transition-colors"
-          >
-            Marketplace
-          </Link>
-          {service.category && (
-            <>
-              <ChevronRight className="w-3 h-3" />
-              <Link
-                href={`/marketplace?category=${service.category.id}`}
-                className="hover:text-slate-300 transition-colors"
-              >
-                {service.category.name}
-              </Link>
-            </>
-          )}
-          <ChevronRight className="w-3 h-3" />
-          <span className="text-slate-400 truncate">{service.title}</span>
-        </div>
-      </div>
-
       {/* Main content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
