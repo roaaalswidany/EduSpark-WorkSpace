@@ -1,0 +1,12 @@
+﻿node_modules
+.next
+.git
+.github
+**/.env*
+**/backup*.sql
+**/fix-*.sql
+**/dump*.sql
+docs
+tests
+*.md
+!README.md
