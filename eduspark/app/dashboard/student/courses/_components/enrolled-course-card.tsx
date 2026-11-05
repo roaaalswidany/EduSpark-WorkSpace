@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -9,6 +10,7 @@ import {
   CheckCircle2,
   TrendingUp,
   RotateCcw,
+  ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CourseLevel } from "@prisma/client";
@@ -205,31 +207,45 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
           </span>
         </div>
 
-        {/* CTA */}
-        <div
-          className={cn(
-            "flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all",
-            isCompleted
-              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 group-hover:bg-emerald-500/15"
-              : "bg-indigo-600 hover:bg-indigo-500 text-white group-hover:shadow-lg group-hover:shadow-indigo-500/20"
-          )}
-        >
-          {isCompleted ? (
-            <>
-              <RotateCcw className="w-3.5 h-3.5" />
-              Review Course
-            </>
-          ) : progress > 0 ? (
-            <>
-              <Play className="w-3.5 h-3.5 fill-current" />
-              Continue Learning
-            </>
-          ) : (
-            <>
-              <Play className="w-3.5 h-3.5 fill-current" />
-              Start Learning
-            </>
-          )}
+        {/* CTA row */}
+        <div className="flex items-center gap-2">
+          <div
+            className={cn(
+              "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all",
+              isCompleted
+                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 group-hover:bg-emerald-500/15"
+                : "bg-indigo-600 hover:bg-indigo-500 text-white group-hover:shadow-lg group-hover:shadow-indigo-500/20"
+            )}
+          >
+            {isCompleted ? (
+              <>
+                <RotateCcw className="w-3.5 h-3.5" />
+                Review Course
+              </>
+            ) : progress > 0 ? (
+              <>
+                <Play className="w-3.5 h-3.5 fill-current" />
+                Continue Learning
+              </>
+            ) : (
+              <>
+                <Play className="w-3.5 h-3.5 fill-current" />
+                Start Learning
+              </>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.open(`/courses/${course.courseSlug}`, "_blank");
+            }}
+            title="View public page with reviews"
+            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-500 hover:text-indigo-300 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     </Link>

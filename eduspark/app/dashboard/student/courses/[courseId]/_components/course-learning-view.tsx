@@ -30,6 +30,7 @@ import {
   GraduationCap,
   Video,
   ArrowRight,
+  ExternalLink,
 } from "lucide-react";
 
 import { trackProgressAction } from "@/actions/lms/track-progress";
@@ -612,6 +613,14 @@ export function CourseLearningView({
               {progress}%
             </span>
           </div>
+          <Link
+            href={`/courses/${course.slug}`}
+            target="_blank"
+            title="View public page (reviews & ratings)"
+            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-slate-700 text-slate-400 hover:text-indigo-300 transition-colors shrink-0"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </header>
 

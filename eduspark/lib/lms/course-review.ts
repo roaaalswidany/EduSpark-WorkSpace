@@ -34,9 +34,10 @@ export async function checkCourseReadiness(
   // A course without a quiz grants no certificate, so it is allowed.
   // A course WITH a quiz must meet the minimum size.
   const published = quiz?._count.questions ?? 0;
-  if (published > 0 && published < QUIZ_MIN_QUESTIONS_FOR_CERTIFICATION) {
-    return "QUIZ_TOO_SHORT";
-  }
+ // Every published course grants a certificate, so it MUST have a vetted quiz.
+if (published < QUIZ_MIN_QUESTIONS_FOR_CERTIFICATION) {
+  return "QUIZ_TOO_SHORT";
+}
   return null;
 }
 

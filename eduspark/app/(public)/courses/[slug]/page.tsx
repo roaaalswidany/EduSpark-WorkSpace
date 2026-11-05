@@ -23,6 +23,7 @@ import {
   type CurriculumSection,
 } from "./_components/curriculum-accordion";
 import { EnrollButton } from "./_components/enroll-button";
+import { CourseReviews } from "@/components/reviews/course-reviews";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -109,6 +110,28 @@ export default async function CourseDetailPage({ params }: PageProps) {
     });
     enrollment = e;
   }
+
+    // ── Reviews ─────────────────────────────────────────────────────
+  const [reviewsData, userReview] = await Promise.all([
+    db.review.findMany({
+      where: { courseId: course.id },
+      select: {
+        id: true,
+        rating: true,
+        comment: true,
+        createdAt: true,
+        user: { select: { id: true, name: true, image: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+    }),
+    userId
+      ? db.review.findFirst({
+          where: { userId, courseId: course.id },
+          select: { id: true },
+        })
+      : Promise.resolve(null),
+  ]);
 
   // ── Compute derived data ──────────────────────────────────
   const totalLessons = course.sections.reduce(
@@ -365,6 +388,19 @@ export default async function CourseDetailPage({ params }: PageProps) {
               totalDuration={totalDuration}
               isEnrolled={isEnrolled}
             />
+
+              <CourseReviews
+              courseId={course.id}
+              reviews={reviewsData.map((r) => ({
+                ...r,
+                createdAt: r.createdAt.toISOString(),
+              }))}
+              averageRating={course.totalRating}
+              ratingCount={course.ratingCount}
+              canReview={isEnrolled}
+              alreadyReviewed={userReview !== null}
+            />
+
 
             {/* Instructor */}
             <section className="rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6">

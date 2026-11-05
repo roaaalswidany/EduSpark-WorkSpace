@@ -11,6 +11,7 @@ import {
   Trash2,
   Download,
   AlertCircle,
+  AlertTriangle,
 } from "lucide-react";
 import { requestUploadAction } from "@/actions/storage/upload";
 import { confirmUploadAction } from "@/actions/storage/confirm-upload";
@@ -42,6 +43,10 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
   const [isPending, startTransition] = useTransition();
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    id: string;
+    fileName: string;
+  } | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -50,7 +55,6 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
     setUploading(true);
 
     try {
-      // 1. Request presigned URL
       const reqRes = await requestUploadAction({
         fileName: file.name,
         mimeType: file.type,
@@ -73,7 +77,6 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
         return;
       }
 
-      // 2. PUT the file directly to S3/MinIO
       const putRes = await fetch(reqRes.uploadUrl, {
         method: "PUT",
         body: file,
@@ -86,7 +89,6 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
         return;
       }
 
-      // 3. Confirm the upload
       const confirmRes = await confirmUploadAction({ attachmentId: reqRes.attachmentId });
       if (!confirmRes.success) {
         setError("Could not confirm the upload.");
@@ -121,10 +123,13 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
     });
   };
 
-  const handleDelete = (attachmentId: string, fileName: string) => {
-    if (!confirm(`Delete "${fileName}"?`)) return;
+  const handleDeleteConfirmed = () => {
+    if (!deleteDialog) return;
+    const { id } = deleteDialog;
+    setDeleteDialog(null);
+
     startTransition(async () => {
-      const res = await deleteAttachmentAction({ attachmentId });
+      const res = await deleteAttachmentAction({ attachmentId: id });
       if (res.success) {
         toast.success("Attachment deleted");
         router.refresh();
@@ -207,7 +212,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
                 </button>
               )}
               <button
-                onClick={() => handleDelete(att.id, att.fileName)}
+                onClick={() => setDeleteDialog({ id: att.id, fileName: att.fileName })}
                 disabled={isPending}
                 className="w-6 h-6 flex items-center justify-center rounded hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-colors disabled:opacity-50"
               >
@@ -216,6 +221,56 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Delete confirmation dialog */}
+      {deleteDialog && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+            onClick={() => setDeleteDialog(null)}
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-5 space-y-4 pointer-events-auto">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-red-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base font-bold text-white">Delete attachment?</h3>
+                  <p className="text-sm text-slate-400 mt-1">
+                    <span className="font-mono text-slate-300">{deleteDialog.fileName}</span>
+                    {" "}will be permanently removed. This cannot be undone.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setDeleteDialog(null)}
+                  disabled={isPending}
+                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirmed}
+                  disabled={isPending}
+                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-colors disabled:opacity-50 inline-flex items-center gap-2"
+                >
+                  {isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

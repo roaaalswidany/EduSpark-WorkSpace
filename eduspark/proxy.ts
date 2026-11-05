@@ -12,6 +12,13 @@ import type { Role } from "@prisma/client";
 // Any route NOT listed here passes through for authenticated users
 // (e.g. /dashboard/chat, /dashboard/notifications, /dashboard/profile,
 //  /dashboard/settings, and the main /dashboard hub).
+// Admin needs to view creator pages when reviewing courses.
+// These specific paths are exempt from the CREATOR-only rule below.
+const ADMIN_REVIEW_PATHS = [
+  /^\/dashboard\/creator\/courses\/[^/]+\/edit(\/.*)?$/,
+  /^\/dashboard\/creator\/courses\/[^/]+\/quiz(\/.*)?$/,
+];
+
 const ROUTE_ROLES: Array<{ prefix: string; allowed: Role[] }> = [
   // ── Admin-only ────────────────────────────────────────────────
   { prefix: "/admin", allowed: ["ADMIN"] },
@@ -31,6 +38,11 @@ function getRedirectUrl(
   role: Role | undefined
 ): string | null {
   const { pathname } = req.nextUrl;
+
+  // Admins may view course editing/quiz pages for review purposes.
+  if (role === "ADMIN" && ADMIN_REVIEW_PATHS.some((re) => re.test(pathname))) {
+    return null;
+  }
 
   for (const rule of ROUTE_ROLES) {
     if (!pathname.startsWith(rule.prefix)) continue;

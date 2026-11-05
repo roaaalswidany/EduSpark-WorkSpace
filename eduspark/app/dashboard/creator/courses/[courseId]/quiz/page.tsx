@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { QuizGenerator } from "./_components/quiz-generator";
+import { QuizLockBanner } from "./_components/quiz-lock-banner";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -21,6 +22,7 @@ export default async function QuizPage({
     select: {
       id: true,
       title: true,
+      status: true,
       creatorId: true,
       quiz: {
         select: {
@@ -39,9 +41,12 @@ export default async function QuizPage({
     redirect("/unauthorized");
   }
 
+  const isAdmin = session.user.role === "ADMIN";
+  const canEdit = isAdmin || course.status === "DRAFT";
+  const isLocked = !canEdit;
+
   return (
     <div className="container mx-auto max-w-4xl p-4 sm:p-6 space-y-6">
-      {/* Header */}
       <div>
         <Link
           href="/dashboard/creator/courses"
@@ -53,18 +58,25 @@ export default async function QuizPage({
         <p className="text-sm text-slate-400 mt-1">Course: {course.title}</p>
       </div>
 
-      {/* Generator / Form */}
-      <QuizGenerator courseId={course.id} />
+      {isLocked && (
+        <QuizLockBanner
+          courseId={course.id}
+          courseStatus={course.status as "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "ARCHIVED"}
+        />
+      )}
 
-      {/* Existing Questions List */}
+      {canEdit && <QuizGenerator courseId={course.id} />}
+
       <div className="mt-8">
         <h2 className="text-lg font-bold text-white mb-4">
           Current Questions ({course.quiz?.questions.length ?? 0})
         </h2>
-        
+
         {!course.quiz || course.quiz.questions.length === 0 ? (
           <div className="text-center p-8 bg-slate-900 border border-slate-800 rounded-xl text-slate-500 text-sm">
-            No questions yet. Use the tools above to add questions.
+            {canEdit
+              ? "No questions yet. Use the tools above to add questions."
+              : "No questions yet. Unpublish the course to add questions."}
           </div>
         ) : (
           <div className="space-y-3">
@@ -76,9 +88,13 @@ export default async function QuizPage({
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-slate-200 leading-relaxed">{q.text}</p>
-                    <span className={`inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                      q.status === "PUBLISHED" ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-400"
-                    }`}>
+                    <span
+                      className={`inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                        q.status === "PUBLISHED"
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : "bg-amber-500/10 text-amber-400"
+                      }`}
+                    >
                       {q.status}
                     </span>
                   </div>

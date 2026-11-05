@@ -7,17 +7,9 @@ import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import {
-  Search,
-  X,
-  Loader2,
-  AlertCircle,
-  XCircle,
-  MoreVertical,
-  ExternalLink,
-  GraduationCap,
-  Users,
-  BookOpen,
-  CheckCircle2,
+  Search, X, Loader2, AlertCircle, XCircle, MoreVertical,
+  ExternalLink, GraduationCap, Users, BookOpen, CheckCircle2,
+  Eye, HelpCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CourseStatus, CourseLevel } from "@prisma/client";
@@ -25,14 +17,8 @@ import { updateCourseAction } from "@/actions/admin/update-course";
 import { reviewCourseAction } from "@/actions/admin/review-course";
 
 interface CourseRow {
-  id: string;
-  title: string;
-  slug: string;
-  thumbnail: string | null;
-  status: CourseStatus;
-  level: CourseLevel;
-  price: number;
-  createdAt: string;
+  id: string; title: string; slug: string; thumbnail: string | null;
+  status: CourseStatus; level: CourseLevel; price: number; createdAt: string;
   creator: { id: string; name: string; image: string | null };
   category: { id: string; name: string } | null;
   _count: { enrollments: number; sections: number };
@@ -40,17 +26,9 @@ interface CourseRow {
 
 interface CoursesTableProps {
   courses: CourseRow[];
-  statusCounts: {
-    DRAFT: number;
-    PENDING_REVIEW: number;
-    PUBLISHED: number;
-    ARCHIVED: number;
-  };
-  initialQuery: string;
-  initialStatus: string;
-  total: number;
-  currentPage: number;
-  totalPages: number;
+  statusCounts: { DRAFT: number; PENDING_REVIEW: number; PUBLISHED: number; ARCHIVED: number; };
+  initialQuery: string; initialStatus: string; total: number;
+  currentPage: number; totalPages: number;
 }
 
 const STATUS_BADGE: Record<CourseStatus, string> = {
@@ -60,71 +38,25 @@ const STATUS_BADGE: Record<CourseStatus, string> = {
   ARCHIVED: "bg-slate-700/50 text-slate-400 border-slate-700",
 };
 
-const STATUS_TOAST: Record<
-  CourseStatus,
-  { title: string; description: string }
-> = {
-  PUBLISHED: {
-    title: "Course published 🚀",
-    description: "The course is now visible in the public catalog.",
-  },
-  DRAFT: {
-    title: "Moved to draft 📝",
-    description: "The course is now hidden from students.",
-  },
-  PENDING_REVIEW: {
-    title: "Submitted for review",
-    description: "The course is waiting for an administrator decision.",
-  },
-  ARCHIVED: {
-    title: "Course archived 🗄️",
-    description: "The course has been archived and is no longer active.",
-  },
+const STATUS_TOAST: Record<CourseStatus, { title: string; description: string }> = {
+  PUBLISHED: { title: "Course published 🚀", description: "The course is now visible in the public catalog." },
+  DRAFT: { title: "Moved to draft 📌", description: "The course is now hidden from students." },
+  PENDING_REVIEW: { title: "Submitted for review", description: "The course is waiting for an administrator decision." },
+  ARCHIVED: { title: "Course archived 🗄️", description: "The course has been archived and is no longer active." },
 };
 
-function CourseThumb({
-  title,
-  thumbnail,
-  size = 44,
-}: {
-  title: string;
-  thumbnail: string | null;
-  size?: number;
-}) {
+function CourseThumb({ title, thumbnail, size = 44 }: { title: string; thumbnail: string | null; size?: number }) {
   if (thumbnail) {
-    return (
-      <Image
-        src={thumbnail}
-        alt={title}
-        width={size}
-        height={size}
-        className="rounded-xl object-cover ring-2 ring-slate-800 shrink-0"
-        style={{ width: size, height: size }}
-      />
-    );
+    return <Image src={thumbnail} alt={title} width={size} height={size} className="rounded-xl object-cover ring-2 ring-slate-800 shrink-0" style={{ width: size, height: size }} />;
   }
-
   return (
-    <div
-      className="rounded-xl flex items-center justify-center bg-linear-to-br from-indigo-500/20 to-violet-500/20 ring-2 ring-slate-800 shrink-0"
-      style={{ width: size, height: size }}
-    >
-      <span className="text-white/60 font-bold" style={{ fontSize: size * 0.4 }}>
-        {title.charAt(0)}
-      </span>
+    <div className="rounded-xl flex items-center justify-center bg-linear-to-br from-indigo-500/20 to-violet-500/20 ring-2 ring-slate-800 shrink-0" style={{ width: size, height: size }}>
+      <span className="text-white/60 font-bold" style={{ fontSize: size * 0.4 }}>{title.charAt(0)}</span>
     </div>
   );
 }
 
-export function CoursesTable({
-  courses,
-  statusCounts,
-  initialQuery,
-  initialStatus,
-  total,
-  currentPage,
-  totalPages,
-}: CoursesTableProps) {
+export function CoursesTable({ courses, statusCounts, initialQuery, initialStatus, total, currentPage, totalPages }: CoursesTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -132,43 +64,30 @@ export function CoursesTable({
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-    const [pendingCourseId, setPendingCourseId] = useState<string | null>(null);
-  const [archiveDialog, setArchiveDialog] = useState<{
-    courseId: string;
-    courseTitle: string;
-    mode: "ARCHIVE" | "REJECT";
-  } | null>(null);
+  const [pendingCourseId, setPendingCourseId] = useState<string | null>(null);
+  const [archiveDialog, setArchiveDialog] = useState<{ courseId: string; courseTitle: string; mode: "ARCHIVE" | "REJECT"; } | null>(null);
   const [reasonInput, setReasonInput] = useState("");
   const [reasonError, setReasonError] = useState<string | null>(null);
-
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const activeStatus = searchParams.get("status") ?? "";
 
-  const updateURL = useCallback(
-    (updates: Record<string, string | null>) => {
-      const params = new URLSearchParams(searchParams.toString());
-      for (const [key, value] of Object.entries(updates)) {
-        if (value === null || value === "") params.delete(key);
-        else params.set(key, value);
-      }
-      if (!("page" in updates)) params.delete("page");
-      startTransition(() => {
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-      });
-    },
-    [pathname, router, searchParams]
-  );
+  const updateURL = useCallback((updates: Record<string, string | null>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    for (const [key, value] of Object.entries(updates)) {
+      if (value === null || value === "") params.delete(key);
+      else params.set(key, value);
+    }
+    if (!("page" in updates)) params.delete("page");
+    startTransition(() => { router.replace(`${pathname}?${params.toString()}`, { scroll: false }); });
+  }, [pathname, router, searchParams]);
 
-  const buildPageUrl = useCallback(
-    (targetPage: number) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (targetPage > 1) params.set("page", String(targetPage));
-      else params.delete("page");
-      const qs = params.toString();
-      return qs ? `${pathname}?${qs}` : pathname;
-    },
-    [pathname, searchParams]
-  );
+  const buildPageUrl = useCallback((targetPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (targetPage > 1) params.set("page", String(targetPage));
+    else params.delete("page");
+    const qs = params.toString();
+    return qs ? `${pathname}?${qs}` : pathname;
+  }, [pathname, searchParams]);
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
@@ -176,33 +95,15 @@ export function CoursesTable({
     debounceRef.current = setTimeout(() => updateURL({ q: value }), 350);
   };
 
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, []);
-
+  useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current); }, []);
   const handleStatusFilter = (status: string) => updateURL({ status });
 
-  // Low-level executor — runs the actual status change and shows toasts.
-  const executeChangeStatus = (
-    course: CourseRow,
-    status: CourseStatus,
-    reason?: string
-  ) => {
+  const executeChangeStatus = (course: CourseRow, status: "DRAFT" | "PUBLISHED" | "ARCHIVED", reason?: string) => {
     setPendingCourseId(course.id);
-
     const toastId = toast.loading(`Updating to ${status.toLowerCase()}…`);
-
     startTransition(async () => {
-      const result = await updateCourseAction({
-        courseId: course.id,
-        action: "CHANGE_STATUS",
-        status,
-        reason,
-      });
+      const result = await updateCourseAction({ courseId: course.id, action: "CHANGE_STATUS", status, reason });
       setPendingCourseId(null);
-
       if (!result.success) {
         const messages: Record<string, string> = {
           FORBIDDEN: "Only admins can perform this action.",
@@ -212,64 +113,40 @@ export function CoursesTable({
           QUIZ_TOO_SHORT: "The course quiz is below the minimum number of questions.",
         };
         const errorMessage = messages[result.error] ?? "Action failed.";
-
         setActionError(errorMessage);
-        toast.error("Update failed", {
-          id: toastId,
-          description: errorMessage,
-        });
+        toast.error("Update failed", { id: toastId, description: errorMessage });
         setTimeout(() => setActionError(null), 4000);
         return;
       }
-
       const toastConfig = STATUS_TOAST[status];
-      toast.success(toastConfig.title, {
-        id: toastId,
-        description: toastConfig.description,
-      });
+      toast.success(toastConfig.title, { id: toastId, description: toastConfig.description });
       router.refresh();
     });
   };
 
-  // User-facing handler — opens the reason dialog when archiving.
-  const handleChangeStatus = (course: CourseRow, status: CourseStatus) => {
+  const handleChangeStatus = (course: CourseRow, status: "DRAFT" | "PUBLISHED" | "ARCHIVED") => {
     setOpenMenuId(null);
     setActionError(null);
-
-    // Archiving a non-archived course requires a reason first.
     if (status === "ARCHIVED" && course.status !== "ARCHIVED") {
       setArchiveDialog({ courseId: course.id, courseTitle: course.title, mode: "ARCHIVE" });
       setReasonInput("");
       setReasonError(null);
       return;
     }
-
     executeChangeStatus(course, status);
   };
 
-  // Review decision (admin gate): approve → published; reject → back to draft with a note.
-  const runReview = (
-    course: CourseRow,
-    decision: "APPROVE" | "REJECT",
-    note?: string
-  ) => {
+  const runReview = (course: CourseRow, decision: "APPROVE" | "REJECT", note?: string) => {
     setPendingCourseId(course.id);
-    const toastId = toast.loading(
-      decision === "APPROVE" ? "Approving…" : "Sending feedback…"
-    );
+    const toastId = toast.loading(decision === "APPROVE" ? "Approving…" : "Sending feedback…");
     startTransition(async () => {
-      const result = await reviewCourseAction({
-        courseId: course.id,
-        decision,
-        note,
-      });
+      const result = await reviewCourseAction({ courseId: course.id, decision, note });
       setPendingCourseId(null);
-
       if (!result.success) {
         const messages: Record<string, string> = {
           FORBIDDEN: "Only admins can review courses.",
           INVALID_STATE: "This course is no longer waiting for review.",
-          INVALID_INPUT: "A note of at least 10 characters is required to request changes.",
+          INVALID_INPUT: "A note of at least 10 characters is required.",
           CANNOT_PUBLISH_EMPTY_COURSE: "The course has no lessons yet.",
           QUIZ_TOO_SHORT: "The course quiz is below the minimum number of questions.",
           NOT_FOUND: "Course not found.",
@@ -281,75 +158,35 @@ export function CoursesTable({
         router.refresh();
         return;
       }
-
-      toast.success(
-        decision === "APPROVE" ? "Course approved 🚀" : "Feedback sent 📝",
-        {
-          id: toastId,
-          description:
-            decision === "APPROVE"
-              ? "The course is now public."
-              : "The course is back in draft with your note.",
-        }
-      );
+      toast.success(decision === "APPROVE" ? "Course approved 🚀" : "Feedback sent 📌", {
+        id: toastId,
+        description: decision === "APPROVE" ? "The course is now public." : "The course is back in draft with your note.",
+      });
       router.refresh();
     });
   };
 
-  const handleApprove = (course: CourseRow) => {
-    setOpenMenuId(null);
-    setActionError(null);
-    runReview(course, "APPROVE");
-  };
-
+  const handleApprove = (course: CourseRow) => { setOpenMenuId(null); setActionError(null); runReview(course, "APPROVE"); };
   const handleRequestChanges = (course: CourseRow) => {
-    setOpenMenuId(null);
-    setActionError(null);
+    setOpenMenuId(null); setActionError(null);
     setArchiveDialog({ courseId: course.id, courseTitle: course.title, mode: "REJECT" });
-    setReasonInput("");
-    setReasonError(null);
+    setReasonInput(""); setReasonError(null);
   };
 
-  // Dialog submit — validates the reason, then executes (archive or request-changes).
   const handleConfirmArchive = () => {
     if (!archiveDialog) return;
-
     const trimmed = reasonInput.trim();
-    if (trimmed.length < 10) {
-      setReasonError(
-        "Please provide at least 10 characters explaining the reason."
-      );
-      return;
-    }
-
+    if (trimmed.length < 10) { setReasonError("Please provide at least 10 characters explaining the reason."); return; }
     const target = courses.find((c) => c.id === archiveDialog.courseId);
     if (!target) return;
-
-    if (archiveDialog.mode === "REJECT") {
-      runReview(target, "REJECT", trimmed);
-    } else {
-      executeChangeStatus(target, "ARCHIVED", trimmed);
-    }
-    setArchiveDialog(null);
-    setReasonInput("");
-    setReasonError(null);
+    if (archiveDialog.mode === "REJECT") runReview(target, "REJECT", trimmed);
+    else executeChangeStatus(target, "ARCHIVED", trimmed);
+    setArchiveDialog(null); setReasonInput(""); setReasonError(null);
   };
 
   const filters = [
-    {
-      value: "",
-      label: "All",
-      count:
-        statusCounts.DRAFT +
-        statusCounts.PENDING_REVIEW +
-        statusCounts.PUBLISHED +
-        statusCounts.ARCHIVED,
-    },
-    {
-      value: "PENDING_REVIEW",
-      label: "Pending review",
-      count: statusCounts.PENDING_REVIEW,
-    },
+    { value: "", label: "All", count: statusCounts.DRAFT + statusCounts.PENDING_REVIEW + statusCounts.PUBLISHED + statusCounts.ARCHIVED },
+    { value: "PENDING_REVIEW", label: "Pending review", count: statusCounts.PENDING_REVIEW },
     { value: "PUBLISHED", label: "Published", count: statusCounts.PUBLISHED },
     { value: "DRAFT", label: "Draft", count: statusCounts.DRAFT },
     { value: "ARCHIVED", label: "Archived", count: statusCounts.ARCHIVED },
@@ -357,266 +194,91 @@ export function CoursesTable({
 
   return (
     <div className="space-y-4">
-      {/* Search + Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-          <input
-            type="text"
-            value={searchInput}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Search by title or description…"
-            className={cn(
-              "w-full h-11 pl-10 pr-10 rounded-xl",
-              "bg-slate-900 border border-slate-800 text-slate-200",
-              "placeholder:text-slate-600",
-              "focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-            )}
-          />
-          {isPending && (
-            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 animate-spin" />
-          )}
-          {!isPending && searchInput && (
-            <button
-              type="button"
-              onClick={() => handleSearchChange("")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
+          <input type="text" value={searchInput} onChange={(e) => handleSearchChange(e.target.value)} placeholder="Search by title or description…" className={cn("w-full h-11 pl-10 pr-10 rounded-xl", "bg-slate-900 border border-slate-800 text-slate-200", "placeholder:text-slate-600", "focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500")} />
+          {isPending && <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 animate-spin" />}
+          {!isPending && searchInput && <button type="button" onClick={() => handleSearchChange("")} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"><X className="w-4 h-4" /></button>}
         </div>
-
         <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
           {filters.map((f) => {
             const active = activeStatus === f.value;
             return (
-              <button
-                key={f.value}
-                type="button"
-                onClick={() => handleStatusFilter(f.value)}
-                className={cn(
-                  "shrink-0 px-3.5 py-2 rounded-full text-xs font-bold border transition-all",
-                  active
-                    ? "bg-indigo-500/10 text-indigo-300 border-indigo-500/30"
-                    : "bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-300"
-                )}
-              >
-                {f.label} ({f.count})
-              </button>
+              <button key={f.value} type="button" onClick={() => handleStatusFilter(f.value)} className={cn("shrink-0 px-3.5 py-2 rounded-full text-xs font-bold border transition-all", active ? "bg-indigo-500/10 text-indigo-300 border-indigo-500/30" : "bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-300")}>{f.label} ({f.count})</button>
             );
           })}
         </div>
       </div>
 
-      {/* Results count */}
-      {total > 0 && (
-        <p className="text-xs text-slate-500">
-          Showing {courses.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–
-          {Math.min(currentPage * 20, total)} of {total}
-          {totalPages > 1 && (
-            <span className="text-slate-600 ml-2">
-              · Page {currentPage} of {totalPages}
-            </span>
-          )}
-        </p>
-      )}
+      {total > 0 && <p className="text-xs text-slate-500">Showing {courses.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–{Math.min(currentPage * 20, total)} of {total}{totalPages > 1 && <span className="text-slate-600 ml-2">· Page {currentPage} of {totalPages}</span>}</p>}
 
-      {actionError && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-          <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-          <p className="text-sm text-red-300">{actionError}</p>
-        </div>
-      )}
+      {actionError && <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20"><AlertCircle className="w-4 h-4 text-red-400 shrink-0" /><p className="text-sm text-red-300">{actionError}</p></div>}
 
       {courses.length === 0 ? (
         <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-5">
-            <GraduationCap className="w-7 h-7 text-slate-600" />
-          </div>
-          <h2 className="text-lg font-bold text-white mb-1.5">
-            No courses found
-          </h2>
-          <p className="text-sm text-slate-500">
-            Try adjusting your search or filters.
-          </p>
+          <div className="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-5"><GraduationCap className="w-7 h-7 text-slate-600" /></div>
+          <h2 className="text-lg font-bold text-white mb-1.5">No courses found</h2>
+          <p className="text-sm text-slate-500">Try adjusting your search or filters.</p>
         </div>
       ) : (
         <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-visible">
           <div className="hidden lg:grid grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-              Course
-            </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-              Creator
-            </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-              Stats
-            </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-              Status
-            </span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Course</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Creator</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Stats</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Status</span>
             <span className="w-8" />
           </div>
-
           <div className="divide-y divide-slate-800">
             {courses.map((c, idx) => {
               const isPendingCourse = pendingCourseId === c.id;
               const isLastRow = idx === courses.length - 1;
-
               return (
-                <div
-                  key={c.id}
-                  className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
-                >
-                  {/* Course */}
+                <div key={c.id} className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors">
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
                     <CourseThumb title={c.title} thumbnail={c.thumbnail} />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">
-                        {c.title}
-                      </p>
-                      <p className="text-xs text-slate-500 truncate mt-0.5">
-                        {c.category?.name ?? "Uncategorized"} ·{" "}
-                        {c.level.toLowerCase()} · ${c.price.toFixed(2)}
-                      </p>
+                      <p className="text-sm font-semibold text-white truncate">{c.title}</p>
+                      <p className="text-xs text-slate-500 truncate mt-0.5">{c.category?.name ?? "Uncategorized"} · {c.level.toLowerCase()} · ${c.price.toFixed(2)}</p>
                     </div>
                   </div>
-
-                  {/* Creator */}
-                  <div className="flex lg:block">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">
-                      Creator:
-                    </span>
-                    <Link
-                      href={`/profile/${c.creator.id}`}
-                      className="text-xs text-slate-400 hover:text-indigo-400 transition-colors"
-                    >
-                      {c.creator.name}
-                    </Link>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="flex lg:block gap-3 text-xs text-slate-500">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">
-                      Stats:
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                      <Users className="w-3 h-3" />
-                      {c._count.enrollments}
-                    </span>
-                    <span className="inline-flex items-center gap-1 ml-2">
-                      <BookOpen className="w-3 h-3" />
-                      {c._count.sections}
-                    </span>
-                  </div>
-
-                  {/* Status */}
-                  <div className="flex lg:block">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">
-                      Status:
-                    </span>
-                    <span
-                      className={cn(
-                        "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border",
-                        STATUS_BADGE[c.status]
-                      )}
-                    >
-                      {c.status.replace("_", " ")}
-                    </span>
-                  </div>
-
-                  {/* Menu */}
+                  <div className="flex lg:block"><span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">Creator:</span><Link href={`/profile/${c.creator.id}`} className="text-xs text-slate-400 hover:text-indigo-400 transition-colors">{c.creator.name}</Link></div>
+                  <div className="flex lg:block gap-3 text-xs text-slate-500"><span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">Stats:</span><span className="inline-flex items-center gap-1"><Users className="w-3 h-3" />{c._count.enrollments}</span><span className="inline-flex items-center gap-1 ml-2"><BookOpen className="w-3 h-3" />{c._count.sections}</span></div>
+                  <div className="flex lg:block"><span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">Status:</span><span className={cn("inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border", STATUS_BADGE[c.status])}>{c.status.replace("_", " ")}</span></div>
                   <div className="absolute top-4 right-4 lg:static lg:justify-self-end">
-                    {isPendingCourse ? (
-                      <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setOpenMenuId(openMenuId === c.id ? null : c.id)
-                        }
-                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-white transition-colors"
-                        aria-label="Course actions"
-                      >
-                        <MoreVertical className="w-4 h-4" />
-                      </button>
+                    {isPendingCourse ? <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" /> : (
+                      <button type="button" onClick={() => setOpenMenuId(openMenuId === c.id ? null : c.id)} className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-white transition-colors" aria-label="Course actions"><MoreVertical className="w-4 h-4" /></button>
                     )}
-
                     {openMenuId === c.id && (
                       <>
-                        <div
-                          className="fixed inset-0 z-10"
-                          onClick={() => setOpenMenuId(null)}
-                        />
-                        <div
-                          className={cn(
-                            "absolute right-0 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl shadow-black/60 overflow-hidden z-20",
-                            "animate-slide-down",
-                            isLastRow
-                              ? "bottom-full mb-1 origin-bottom-right"
-                              : "top-full mt-1 origin-top-right"
-                          )}
-                        >
-                          <a
-                            href={`/courses/${c.slug}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-                          >
-                            <ExternalLink className="w-3.5 h-3.5" />
-                            View Public
-                          </a>
-                          <div className="h-px bg-slate-800" />
-                          <div className="px-3 py-2 border-b border-slate-800">
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
-                              Change status
-                            </p>
-                          </div>
+                        <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
+                        <div className={cn("absolute right-0 w-56 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl shadow-black/60 overflow-hidden z-20", "animate-slide-down", isLastRow ? "bottom-full mb-1 origin-bottom-right" : "top-full mt-1 origin-top-right")}>
                           {c.status === "PENDING_REVIEW" && (
                             <>
-                              <button
-                                type="button"
-                                onClick={() => handleApprove(c)}
-                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors inline-flex items-center gap-2"
-                              >
-                                <CheckCircle2 className="w-3.5 h-3.5" />
-                                Approve &amp; publish
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleRequestChanges(c)}
-                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors"
-                              >
-                                Request changes…
-                              </button>
+                              <div className="px-3 py-2 border-b border-slate-800"><p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Review</p></div>
+                              <Link href={`/dashboard/creator/courses/${c.id}/edit`} target="_blank" className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                                <Eye className="w-3.5 h-3.5" /> Review Content &amp; Lessons
+                              </Link>
+                              <Link href={`/dashboard/creator/courses/${c.id}/quiz`} target="_blank" className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                                <HelpCircle className="w-3.5 h-3.5" /> Review Quiz ({c._count.sections} sections)
+                              </Link>
                               <div className="h-px bg-slate-800" />
                             </>
                           )}
-                          <button
-                            type="button"
-                            onClick={() => handleChangeStatus(c, "PUBLISHED")}
-                            disabled={c.status === "PUBLISHED" || c.status === "PENDING_REVIEW"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                          >
-                            Publish
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleChangeStatus(c, "DRAFT")}
-                            disabled={c.status === "DRAFT" || c.status === "PENDING_REVIEW"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                          >
-                            Set as Draft
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleChangeStatus(c, "ARCHIVED")}
-                            disabled={c.status === "ARCHIVED"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                          >
-                            Archive
-                          </button>
+                          <a href={`/courses/${c.slug}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"><ExternalLink className="w-3.5 h-3.5" />View Public</a>
+                          <div className="h-px bg-slate-800" />
+                          <div className="px-3 py-2 border-b border-slate-800"><p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Actions</p></div>
+                          {c.status === "PENDING_REVIEW" && (
+                            <>
+                              <button type="button" onClick={() => handleApprove(c)} className="w-full text-left px-3.5 py-2 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors inline-flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" />Approve &amp; publish</button>
+                              <button type="button" onClick={() => handleRequestChanges(c)} className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors">Request changes…</button>
+                              <div className="h-px bg-slate-800" />
+                            </>
+                          )}
+                          <button type="button" onClick={() => handleChangeStatus(c, "PUBLISHED")} disabled={c.status === "PUBLISHED" || c.status === "PENDING_REVIEW"} className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Publish</button>
+                          <button type="button" onClick={() => handleChangeStatus(c, "DRAFT")} disabled={c.status === "DRAFT" || c.status === "PENDING_REVIEW"} className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Set as Draft</button>
+                          <button type="button" onClick={() => handleChangeStatus(c, "ARCHIVED")} disabled={c.status === "ARCHIVED"} className="w-full text-left px-3.5 py-2 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Archive</button>
                         </div>
                       </>
                     )}
@@ -628,150 +290,40 @@ export function CoursesTable({
         </div>
       )}
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 pt-2">
-          {currentPage > 1 && (
-            <Link
-              href={buildPageUrl(currentPage - 1)}
-              className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
-            >
-              ← Previous
-            </Link>
-          )}
-
+          {currentPage > 1 && <Link href={buildPageUrl(currentPage - 1)} className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors">← Previous</Link>}
           {Array.from({ length: totalPages }).map((_, i) => {
             const p = i + 1;
-            if (
-              p === 1 ||
-              p === totalPages ||
-              (p >= currentPage - 1 && p <= currentPage + 1)
-            ) {
-              return (
-                <Link
-                  key={p}
-                  href={buildPageUrl(p)}
-                  className={cn(
-                    "w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors",
-                    p === currentPage
-                      ? "bg-indigo-600 text-white font-bold"
-                      : "bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white"
-                  )}
-                >
-                  {p}
-                </Link>
-              );
+            if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
+              return <Link key={p} href={buildPageUrl(p)} className={cn("w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors", p === currentPage ? "bg-indigo-600 text-white font-bold" : "bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white")}>{p}</Link>;
             }
-            if (p === currentPage - 2 || p === currentPage + 2) {
-              return (
-                <span key={p} className="text-slate-700 text-xs">
-                  …
-                </span>
-              );
-            }
+            if (p === currentPage - 2 || p === currentPage + 2) return <span key={p} className="text-slate-700 text-xs">…</span>;
             return null;
           })}
-
-          {currentPage < totalPages && (
-            <Link
-              href={buildPageUrl(currentPage + 1)}
-              className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
-            >
-              Next →
-            </Link>
-          )}
+          {currentPage < totalPages && <Link href={buildPageUrl(currentPage + 1)} className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors">Next →</Link>}
         </div>
       )}
-            {/* Archive reason dialog */}
+
       {archiveDialog && (
         <>
-          <div
-            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
-            onClick={() => {
-              setArchiveDialog(null);
-              setReasonInput("");
-              setReasonError(null);
-            }}
-          />
+          <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm" onClick={() => { setArchiveDialog(null); setReasonInput(""); setReasonError(null); }} />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
             <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-5 space-y-4 pointer-events-auto">
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <XCircle className="w-5 h-5 text-red-400" />
-                  <h3 className="text-lg font-bold text-white">
-                    {archiveDialog.mode === "REJECT" ? "Request changes" : "Archive course"}
-                  </h3>
-                </div>
-                <p className="text-sm text-slate-400">
-                  {archiveDialog.mode === "REJECT"
-                    ? "Tell the creator what must change before"
-                    : "Please provide a reason for archiving"}{" "}
-                  <strong className="text-slate-200">
-                    &quot;{archiveDialog.courseTitle}&quot;
-                  </strong>
-                  {archiveDialog.mode === "REJECT"
-                    ? " can be published. The course returns to draft and this note is shown to the creator."
-                    : ". This reason will be sent to the course creator by email."}
-                </p>
+                <div className="flex items-center gap-2 mb-1"><XCircle className="w-5 h-5 text-red-400" /><h3 className="text-lg font-bold text-white">{archiveDialog.mode === "REJECT" ? "Request changes" : "Archive course"}</h3></div>
+                <p className="text-sm text-slate-400">{archiveDialog.mode === "REJECT" ? "Tell the creator what must change before" : "Please provide a reason for archiving"} <strong className="text-slate-200">&quot;{archiveDialog.courseTitle}&quot;</strong>{archiveDialog.mode === "REJECT" ? " can be published." : ". This reason will be sent to the course creator by email."}</p>
               </div>
-
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
-                  Reason (required)
-                </label>
-                <textarea
-                  value={reasonInput}
-                  onChange={(e) => {
-                    setReasonInput(e.target.value);
-                    setReasonError(null);
-                  }}
-                  rows={4}
-                  autoFocus
-                  maxLength={500}
-                  className={cn(
-                    "w-full bg-slate-950 border rounded-lg px-3 py-2 text-sm text-slate-200 resize-none",
-                    "focus:outline-none",
-                    reasonError
-                      ? "border-red-500"
-                      : "border-slate-700 focus:border-indigo-500"
-                  )}
-                  placeholder="e.g., Content violates platform quality guidelines."
-                />
-                {reasonError && (
-                  <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {reasonError}
-                  </p>
-                )}
-                <p className="text-xs text-slate-600 mt-1.5">
-                  {reasonInput.trim().length}/500 characters (minimum 10)
-                </p>
+                <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Reason (required)</label>
+                <textarea value={reasonInput} onChange={(e) => { setReasonInput(e.target.value); setReasonError(null); }} rows={4} autoFocus maxLength={500} className={cn("w-full bg-slate-950 border rounded-lg px-3 py-2 text-sm text-slate-200 resize-none", "focus:outline-none", reasonError ? "border-red-500" : "border-slate-700 focus:border-indigo-500")} placeholder="e.g., Content violates platform quality guidelines." />
+                {reasonError && <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{reasonError}</p>}
+                <p className="text-xs text-slate-600 mt-1.5">{reasonInput.trim().length}/500 characters (minimum 10)</p>
               </div>
-
               <div className="flex gap-2 justify-end pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setArchiveDialog(null);
-                    setReasonInput("");
-                    setReasonError(null);
-                  }}
-                  disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleConfirmArchive}
-                  disabled={isPending || reasonInput.trim().length < 10}
-                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
-                >
-                  {isPending ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <XCircle className="w-4 h-4" />
-                  )}
+                <button type="button" onClick={() => { setArchiveDialog(null); setReasonInput(""); setReasonError(null); }} disabled={isPending} className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50">Cancel</button>
+                <button type="button" onClick={handleConfirmArchive} disabled={isPending || reasonInput.trim().length < 10} className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2">
+                  {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
                   {archiveDialog.mode === "REJECT" ? "Send feedback" : "Archive course"}
                 </button>
               </div>
