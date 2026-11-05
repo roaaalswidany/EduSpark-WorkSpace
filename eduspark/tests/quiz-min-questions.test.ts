@@ -28,20 +28,19 @@ describe("certification requires a minimum quiz size", () => {
     expect((await db.user.findUniqueOrThrow({ where: { id: student.id } })).role).toBe("STUDENT");
   });
 
-  it("bypass attempt: publish with no quiz, then add a single question", async () => {
+  it("bypass attempt: a published course cannot get a quiz added afterwards", async () => {
     const creator = await createUser("CREATOR");
     const slug = `bare-${Date.now()}`;
     const course = await db.course.create({
       data: { title: slug, slug, description: "d", price: 0, status: "PUBLISHED", creatorId: creator.id },
     });
     actAs({ id: creator.id, role: "CREATOR" });
-    await createQuestionAction({
+    const res = await createQuestionAction({
       courseId: course.id, text: "What does concept one describe?",
       options: ["right", "w1", "w2", "w3"], correctOption: "right", explanation: "Because it is the right one.",
     });
-    const student = await createUser("STUDENT"); await enroll(student.id, course.id);
-    const res = await attempt(course.id, student.id, "right");
-    expect(res.success).toBe(false);
+    expect(res).toMatchObject({ success: false, error: "COURSE_LOCKED" });
+    expect(await db.question.count()).toBe(0);
     expect(await db.certificate.count()).toBe(0);
   });
 

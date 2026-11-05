@@ -111,7 +111,12 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
       if (res.success) {
         window.open(res.downloadUrl, "_blank");
       } else {
-        toast.error("Could not generate download link");
+        toast.error("Could not generate download link", {
+          description:
+            res.error === "RATE_LIMITED"
+              ? "Too many downloads. Please wait a few minutes."
+              : undefined,
+        });
       }
     });
   };
@@ -124,7 +129,14 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
         toast.success("Attachment deleted");
         router.refresh();
       } else {
-        toast.error("Could not delete attachment");
+        toast.error("Could not delete attachment", {
+          description:
+            res.error === "STORAGE_ERROR"
+              ? "Storage is unavailable right now. Please try again later."
+              : res.error === "FORBIDDEN"
+                ? "This attachment can no longer be deleted."
+                : undefined,
+        });
       }
     });
   };

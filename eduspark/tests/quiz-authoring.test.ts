@@ -3,13 +3,20 @@ import { db } from "@/lib/db";
 import { createQuestionAction } from "@/actions/lms/create-question";
 import { generateQuizDraftAction } from "@/actions/ai/generate-quiz";
 import { submitQuizAction } from "@/actions/lms/submit-quiz";
+import { updateCourseStatusAction } from "@/actions/creator/publish-course";
+import { reviewCourseAction } from "@/actions/admin/review-course";
 import { resetDatabase, createUser, createCategory, enroll } from "./helpers/factories";
 import { actAs, resetSession } from "./helpers/session";
 
 /** A course WITHOUT a quiz — the creator authors it from scratch (real app format: string options). */
 async function bareCourse(creatorId: string, categoryId?: string) {
   const slug = `bare-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-  return db.course.create({ data: { title: slug, slug, description: "d", price: 0, status: "PUBLISHED", creatorId, ...(categoryId ? { categoryId } : {}) } });
+  // DRAFT: creators can only author the quiz while the course is a draft (quiz is frozen afterwards).
+  // One lesson so the course can be submitted for review.
+  return db.course.create({ data: {
+    title: slug, slug, description: "d", price: 0, status: "DRAFT", creatorId, ...(categoryId ? { categoryId } : {}),
+    sections: { create: { title: "S1", order: 1, lessons: { create: [{ title: "L1", order: 1 }] } } },
+  } });
 }
 const q = (i: number, over: Record<string, unknown> = {}) => ({
   courseId: "", text: `What does concept number ${i} describe?`, options: ["right", "w1", "w2", "w3"],
@@ -19,7 +26,7 @@ const q = (i: number, over: Record<string, unknown> = {}) => ({
 beforeEach(async () => { await resetDatabase(); resetSession(); delete process.env.GEMINI_API_KEY; });
 
 describe("manual quiz authoring (createQuestionAction)", () => {
-  it("END-TO-END: creator authors 4 questions → student passes the quiz → certificate + CREATOR upgrade", async () => {
+  it("END-TO-END: creator authors 4 questions → admin approves the course → student passes the quiz → certificate + CREATOR upgrade", async () => {
     const creator = await createUser("CREATOR"); const course = await bareCourse(creator.id, (await createCategory()).id);
     actAs({ id: creator.id, role: "CREATOR" });
     for (let i = 1; i <= 4; i++) expect((await createQuestionAction({ ...q(i), courseId: course.id })).success).toBe(true);
@@ -27,6 +34,12 @@ describe("manual quiz authoring (createQuestionAction)", () => {
     const quiz = await db.quiz.findUniqueOrThrow({ where: { courseId: course.id }, include: { questions: { orderBy: { order: "asc" } } } });
     expect(quiz.questions.map((x) => x.order)).toEqual([1, 2, 3, 4]);
     expect(quiz.questions[0]).toMatchObject({ options: ["right", "w1", "w2", "w3"], correctOption: "right", generatedBy: "MANUAL" });
+
+    // The creator cannot publish; an admin must approve (the competency gate).
+    expect(await updateCourseStatusAction({ courseId: course.id, status: "PUBLISHED" })).toMatchObject({ success: false, error: "REVIEW_REQUIRED" });
+    expect((await updateCourseStatusAction({ courseId: course.id, status: "PENDING_REVIEW" })).success).toBe(true);
+    const admin = await createUser("ADMIN"); actAs({ id: admin.id, role: "ADMIN" });
+    expect((await reviewCourseAction({ courseId: course.id, decision: "APPROVE" })).success).toBe(true);
 
     const student = await createUser("STUDENT"); await enroll(student.id, course.id);
     actAs({ id: student.id, role: "STUDENT" });

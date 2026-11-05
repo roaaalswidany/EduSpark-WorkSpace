@@ -73,10 +73,12 @@ export default async function CreatorCoursesPage() {
                         ? "bg-emerald-500/10 text-emerald-400"
                         : course.status === "DRAFT"
                         ? "bg-amber-500/10 text-amber-400"
+                        : course.status === "PENDING_REVIEW"
+                        ? "bg-sky-500/10 text-sky-400"
                         : "bg-slate-700/50 text-slate-400"
                     }`}
                   >
-                    {course.status}
+                    {course.status.replace("_", " ")}
                   </span>
                 </div>
                 <div className="flex items-center gap-4 mt-3 text-xs text-slate-400 flex-wrap">

@@ -23,6 +23,7 @@ export default async function EditCoursePage({ params }: PageProps) {
       title: true,
       slug: true,
       status: true,
+      reviewNote: true,
       creatorId: true,
       _count: { select: { enrollments: true } },
       sections: {
@@ -72,6 +73,7 @@ export default async function EditCoursePage({ params }: PageProps) {
         title: course.title,
         slug: course.slug,
         status: course.status,
+        reviewNote: course.reviewNote,
         enrollmentCount: course._count.enrollments,
       }}
       sections={course.sections}

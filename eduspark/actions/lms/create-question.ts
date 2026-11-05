@@ -9,6 +9,7 @@ import { getFreshUser } from "@/lib/security/fresh-user";
 import { limitByUser } from "@/lib/security/action-guard";
 import { RateLimits } from "@/lib/security/rate-limit";
 import { revalidatePath } from "next/cache";
+import { canEditQuiz } from "@/lib/lms/course-review";
 
 const CreateQuestionSchema = z
   .object({
@@ -56,12 +57,17 @@ export async function createQuestionAction(rawInput: CreateQuestionInput) {
 
     const course = await db.course.findUnique({
       where: { id: courseId },
-      select: { creatorId: true, quiz: true },
+      select: { creatorId: true, status: true, quiz: true },
     });
 
     if (!course) return { success: false, error: "COURSE_NOT_FOUND" };
     if (course.creatorId !== userId && role !== Role.ADMIN) {
       return { success: false, error: "FORBIDDEN" };
+    }
+
+    // The quiz is the certification promise: once the course left DRAFT only an admin may change it.
+    if (!canEditQuiz(course.status, role === Role.ADMIN)) {
+      return { success: false, error: "COURSE_LOCKED" };
     }
 
     // ON CONFLICT DO NOTHING + read: race-safe lazy creation (courseId is unique).

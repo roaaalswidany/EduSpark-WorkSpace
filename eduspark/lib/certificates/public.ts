@@ -2,7 +2,9 @@ import { db } from "@/lib/db";
 
 /** EDU-<base36 timestamp>-<48-bit random hex> — see generateCredentialId(). */
 // Accepts both legacy short IDs (EDU-XXXXXXXX) and current long IDs (EDU-XXXXXXXX-XXXXXXXXXXXXXXXX)
-export const CREDENTIAL_ID_RE = /^EDU-[0-9A-Z]{6,12}(-[0-9A-F]{12})?$/;
+// New format only: EDU-<base36 timestamp>-<12 hex from crypto.randomBytes>.
+// Legacy 8-char IDs must be migrated first: npx tsx scripts/fix-legacy-credential-ids.ts
+export const CREDENTIAL_ID_RE = /^EDU-[0-9A-Z]{6,12}-[0-9A-F]{12}$/;
 
 /** Everything a third party may learn from a credential ID — nothing more. */
 export interface PublicCertificate {

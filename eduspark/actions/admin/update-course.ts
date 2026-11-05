@@ -12,6 +12,7 @@ import { CacheKeys } from "@/lib/cache-keys";
 import { sendMail } from "@/lib/email/mailer";
 import { courseArchivedEmail } from "@/lib/email/templates";
 import { auditLog, AuditActions } from "@/lib/security/audit";
+import { checkCourseReadiness } from "@/lib/lms/course-review";
 
 const UpdateCourseSchema = z.object({
   courseId: z.string().cuid(),
@@ -30,6 +31,8 @@ export type UpdateCourseResult =
         | "FORBIDDEN"
         | "NOT_FOUND"
         | "INVALID_INPUT"
+        | "CANNOT_PUBLISH_EMPTY_COURSE"
+        | "QUIZ_TOO_SHORT"
         | "SERVER_ERROR";
     };
 
@@ -72,9 +75,20 @@ export async function updateCourseAction(
         return { success: false, error: "INVALID_INPUT" };
       }
 
+      // Publishing (even by an admin) must meet the same objective rules as a review approval.
+      if (status === "PUBLISHED" && oldStatus !== "PUBLISHED") {
+        const notReady = await checkCourseReadiness(courseId);
+        if (notReady) return { success: false, error: notReady };
+      }
+
       await db.course.update({
         where: { id: courseId },
-        data: { status: status as CourseStatus },
+        data: {
+          status: status as CourseStatus,
+          ...(status === "PUBLISHED" && oldStatus !== "PUBLISHED"
+            ? { reviewedAt: new Date(), reviewedById: session.user.id }
+            : {}),
+        },
       });
 
       // ── Audit trail — every status change is recorded ──

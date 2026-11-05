@@ -7,6 +7,7 @@ import { getFreshUser } from "@/lib/security/fresh-user";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { canEditQuiz } from "@/lib/lms/course-review";
 
 const ReviewSchema = z.object({
   questionId: z.string().cuid(),
@@ -18,7 +19,7 @@ export type ReviewAiQuestionResult =
   | { success: true; status: "PUBLISHED" | "REJECTED" }
   | {
       success: false;
-      error: "UNAUTHORIZED" | "FORBIDDEN" | "NOT_FOUND" | "INVALID_INPUT" | "SERVER_ERROR";
+      error: "UNAUTHORIZED" | "FORBIDDEN" | "NOT_FOUND" | "INVALID_INPUT" | "COURSE_LOCKED" | "SERVER_ERROR";
     };
 
 export async function reviewAiQuestionAction(
@@ -35,17 +36,26 @@ export async function reviewAiQuestionAction(
       where: { id: parsed.data.questionId },
       select: {
         id: true,
-        quiz: { select: { course: { select: { creatorId: true } } } },
+        quiz: { select: { course: { select: { creatorId: true, status: true } } } },
       },
     });
 
     if (!question) return { success: false, error: "NOT_FOUND" };
 
-    if (
-      question.quiz.course.creatorId !== session.user.id &&
-      (await getFreshUser(session.user.id))?.role !== Role.ADMIN
-    ) {
+    const actor = await getFreshUser(session.user.id);
+    if (!actor?.isActive) return { success: false, error: "UNAUTHORIZED" };
+    const isAdmin = actor.role === Role.ADMIN;
+
+    if (question.quiz.course.creatorId !== session.user.id && !isAdmin) {
       return { success: false, error: "FORBIDDEN" };
+    }
+
+    // Approving publishes a question into the certification quiz → same lock as manual authoring.
+    if (
+      parsed.data.decision === "APPROVE" &&
+      !canEditQuiz(question.quiz.course.status, isAdmin)
+    ) {
+      return { success: false, error: "COURSE_LOCKED" };
     }
 
     const newStatus = parsed.data.decision === "APPROVE" ? "PUBLISHED" : "REJECTED";

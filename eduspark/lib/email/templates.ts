@@ -152,6 +152,55 @@ export function courseArchivedEmail(
   };
 }
 
+export function courseApprovedEmail(
+  to: string,
+  name: string,
+  courseTitle: string,
+  note?: string
+): MailMessage {
+  return {
+    to,
+    subject: `Your course "${courseTitle}" is now published`,
+    text: `Hi ${name},\n\nGood news — your course "${courseTitle}" was approved by an administrator and is now visible to students.${
+      note ? `\n\nReviewer note: ${note}` : ""
+    }`,
+    html: layout(
+      "Course approved",
+      `<p>Hi ${esc(name)},</p>
+       <p>Good news — your course <strong>"${esc(courseTitle)}"</strong> was approved by an administrator and is now visible to students.</p>
+       ${
+         note
+           ? `<p style="background:#1e293b;padding:12px;border-radius:8px;border-left:3px solid #10b981"><strong>Reviewer note:</strong> ${esc(note)}</p>`
+           : ""
+       }`,
+      `${appUrl()}/dashboard/creator/courses`,
+      "View my courses"
+    ),
+  };
+}
+
+export function courseRejectedEmail(
+  to: string,
+  name: string,
+  courseTitle: string,
+  note: string
+): MailMessage {
+  return {
+    to,
+    subject: `Changes requested for "${courseTitle}"`,
+    text: `Hi ${name},\n\nYour course "${courseTitle}" was reviewed and needs changes before it can be published.\n\nReviewer note: ${note}\n\nThe course is back in draft. Update it and submit it for review again.`,
+    html: layout(
+      "Changes requested",
+      `<p>Hi ${esc(name)},</p>
+       <p>Your course <strong>"${esc(courseTitle)}"</strong> was reviewed and needs changes before it can be published.</p>
+       <p style="background:#1e293b;padding:12px;border-radius:8px;border-left:3px solid #f59e0b"><strong>Reviewer note:</strong> ${esc(note)}</p>
+       <p>The course is back in draft. Update it and submit it for review again.</p>`,
+      `${appUrl()}/dashboard/creator/courses`,
+      "Edit my course"
+    ),
+  };
+}
+
 export function serviceArchivedEmail(
   to: string,
   name: string,

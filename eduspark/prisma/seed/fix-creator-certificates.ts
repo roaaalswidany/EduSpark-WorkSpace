@@ -1,5 +1,6 @@
 import { config } from "dotenv";
 import { resolve } from "path";
+import { randomBytes } from "crypto";
 config({ path: resolve(process.cwd(), ".env.local") });
 config();
 
@@ -12,12 +13,8 @@ const adapter = new PrismaPg({
 const db = new PrismaClient({ adapter });
 
 function generateCredentialId(prefix = "EDU"): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  for (let i = 0; i < 8; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return `${prefix}-${code}`;
+  const ts = Date.now().toString(36).toUpperCase();
+  return `${prefix}-${ts}-${randomBytes(6).toString("hex").toUpperCase()}`;
 }
 
 async function main() {

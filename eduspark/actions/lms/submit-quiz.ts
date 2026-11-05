@@ -132,6 +132,7 @@ export async function submitQuizAction(
     id: true,
     passingScore: true,
     courseId: true,
+    course: { select: { status: true } },
     questions: {
       where: { status: "PUBLISHED" }, // ← الإضافة الحاسمة: تستثني AI_DRAFTED و REJECTED
       orderBy: { order: "asc" },
@@ -146,6 +147,11 @@ export async function submitQuizAction(
     if (questions.length < QUIZ_MIN_QUESTIONS_FOR_CERTIFICATION) {
   return { success: false, error: "QUIZ_NOT_FOUND" };
 }
+
+    // Certificates are issued only by courses an administrator approved (only admins can publish).
+    if (quiz.course.status !== "PUBLISHED") {
+      return { success: false, error: "QUIZ_NOT_FOUND" };
+    }
 
     // ── 4. Verify enrollment ─────────────────────────────────────────────────
     const enrollment = await db.enrollment.findUnique({

@@ -36,7 +36,7 @@ export default async function AdminDashboardPage() {
       _sum: { totalAmount: true },
     }),
     db.course.findMany({
-      where: { status: CourseStatus.DRAFT },
+      where: { status: CourseStatus.PENDING_REVIEW },
       orderBy: { createdAt: "desc" },
       take: 3,
       select: {
@@ -134,8 +134,8 @@ export default async function AdminDashboardPage() {
               {pendingTotal} item{pendingTotal > 1 ? "s" : ""} awaiting your review
             </p>
             <p className="text-xs text-amber-400/80 mt-1">
-              {pendingCourses.length} draft course
-              {pendingCourses.length !== 1 ? "s" : ""} ·{" "}
+              {pendingCourses.length} course
+              {pendingCourses.length !== 1 ? "s" : ""} awaiting review ·{" "}
               {pendingServices.length} paused service
               {pendingServices.length !== 1 ? "s" : ""}
             </p>

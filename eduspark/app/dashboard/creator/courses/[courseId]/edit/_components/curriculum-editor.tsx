@@ -18,6 +18,7 @@ import {
   Clock,
   Eye,
   EyeOff,
+  Send,
   Loader2,
   Save,
   X,
@@ -62,7 +63,8 @@ interface Course {
   id: string;
   title: string;
   slug: string;
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  status: "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "ARCHIVED";
+  reviewNote?: string | null;
   enrollmentCount: number;
 }
 
@@ -80,9 +82,10 @@ export function CurriculumEditor({ course, sections }: Props) {
 
   const totalLessons = sections.reduce((s, sec) => s + sec.lessons.length, 0);
 
-  const handleTogglePublish = () => {
-    const newStatus = course.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED";
-    const verb = newStatus === "PUBLISHED" ? "Publish" : "Unpublish";
+  // Creators cannot publish: DRAFT → PENDING_REVIEW (admin decides) · PENDING_REVIEW/PUBLISHED → DRAFT.
+  const handleStatusAction = () => {
+    const newStatus =
+      course.status === "DRAFT" ? "PENDING_REVIEW" : "DRAFT";
 
     startTransition(async () => {
       const result = await updateCourseStatusAction({
@@ -93,7 +96,11 @@ export function CurriculumEditor({ course, sections }: Props) {
       if (!result.success) {
         const messages: Record<string, string> = {
           CANNOT_PUBLISH_EMPTY_COURSE:
-            "Add at least one lesson before publishing.",
+            "Add at least one lesson before submitting for review.",
+          QUIZ_TOO_SHORT:
+            "The course quiz needs at least 4 published questions before submitting.",
+          REVIEW_REQUIRED: "Only an administrator can publish a course.",
+          INVALID_STATE: "The course status changed. Refresh the page.",
           FORBIDDEN: "You don't have permission.",
           UNAUTHORIZED: "Please sign in again.",
           NOT_FOUND: "Course not found.",
@@ -105,17 +112,19 @@ export function CurriculumEditor({ course, sections }: Props) {
         return;
       }
 
-      toast.success(
-        newStatus === "PUBLISHED"
-          ? "Course published! 🚀"
-          : "Course moved to draft 📝",
-        {
+      if (newStatus === "PENDING_REVIEW") {
+        toast.success("Submitted for review 📬", {
           description:
-            newStatus === "PUBLISHED"
-              ? "Students can now enroll and learn."
-              : "Hidden from students.",
-        }
-      );
+            "An administrator will review your course. Editing is locked meanwhile.",
+        });
+      } else {
+        toast.success("Course moved to draft 📝", {
+          description:
+            course.status === "PENDING_REVIEW"
+              ? "Submission withdrawn. You can edit again."
+              : "Hidden from students. Resubmit it for review after your changes.",
+        });
+      }
       router.refresh();
     });
   };
@@ -147,10 +156,12 @@ export function CurriculumEditor({ course, sections }: Props) {
                   ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                   : course.status === "DRAFT"
                   ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                  : course.status === "PENDING_REVIEW"
+                  ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
                   : "bg-slate-700/50 text-slate-400 border-slate-700"
               )}
             >
-              {course.status}
+              {course.status.replace("_", " ")}
             </span>
             <span className="text-xs text-slate-500 flex items-center gap-1">
               <Users className="w-3 h-3" /> {course.enrollmentCount} enrolled
@@ -171,29 +182,58 @@ export function CurriculumEditor({ course, sections }: Props) {
             <ExternalLink className="w-3.5 h-3.5" />
             Preview
           </Link>
-          <button
-            type="button"
-            onClick={handleTogglePublish}
-            disabled={isPending}
-            className={cn(
-              "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all",
-              course.status === "PUBLISHED"
-                ? "bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300"
-                : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/20",
-              isPending && "opacity-60"
-            )}
-          >
-            {isPending ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-            ) : course.status === "PUBLISHED" ? (
-              <EyeOff className="w-3.5 h-3.5" />
-            ) : (
-              <Eye className="w-3.5 h-3.5" />
-            )}
-            {course.status === "PUBLISHED" ? "Unpublish" : "Publish"}
-          </button>
+          {course.status !== "ARCHIVED" && (
+            <button
+              type="button"
+              onClick={handleStatusAction}
+              disabled={isPending}
+              className={cn(
+                "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all",
+                course.status === "DRAFT"
+                  ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
+                  : "bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300",
+                isPending && "opacity-60"
+              )}
+            >
+              {isPending ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : course.status === "DRAFT" ? (
+                <Send className="w-3.5 h-3.5" />
+              ) : (
+                <EyeOff className="w-3.5 h-3.5" />
+              )}
+              {course.status === "DRAFT"
+                ? "Submit for review"
+                : course.status === "PENDING_REVIEW"
+                ? "Withdraw"
+                : "Unpublish"}
+            </button>
+          )}
         </div>
       </div>
+
+      {course.status === "PENDING_REVIEW" && (
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-sky-500/10 border border-sky-500/20">
+          <Clock className="w-5 h-5 text-sky-400 shrink-0 mt-0.5" />
+          <p className="text-sm text-sky-200">
+            <strong>Under review.</strong> Editing is locked until an administrator decides.
+            You can withdraw the submission to keep editing.
+          </p>
+        </div>
+      )}
+      {course.status === "DRAFT" && course.reviewNote && (
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+          <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <p className="text-sm text-amber-200">
+            <strong>Changes requested:</strong> {course.reviewNote}
+          </p>
+        </div>
+      )}
+      {course.status === "PUBLISHED" && (
+        <p className="text-xs text-slate-500">
+          This course was approved. To change its quiz, unpublish it first — it will need a new review.
+        </p>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3">

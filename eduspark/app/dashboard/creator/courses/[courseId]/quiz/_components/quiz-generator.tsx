@@ -168,7 +168,17 @@ function ManualQuestionForm({ courseId, onSuccess }: { courseId: string; onSucce
       });
 
       if (!result.success) {
-        setError(typeof result.error === "string" ? result.error : "Failed to save question.");
+        const friendly: Record<string, string> = {
+          COURSE_LOCKED:
+            "This course is no longer a draft, so its quiz is locked. Unpublish or withdraw it, edit the quiz, then submit it for review again.",
+          RATE_LIMITED: "Too many questions in a short time. Please wait a few minutes.",
+          FORBIDDEN: "You don't have permission to edit this quiz.",
+        };
+        setError(
+          typeof result.error === "string"
+            ? friendly[result.error] ?? result.error
+            : "Failed to save question."
+        );
         toast.error("Save failed", { id: toastId });
         return;
       }

@@ -32,14 +32,18 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
       ],
     }),
     ...(sp.status && {
-      status: sp.status as "DRAFT" | "PUBLISHED" | "ARCHIVED",
+      status: sp.status as "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "ARCHIVED",
     }),
   };
 
   const [courses, total, statusCounts] = await Promise.all([
     db.course.findMany({
       where,
-      orderBy: { createdAt: "desc" },
+      // Review queue: oldest submission first.
+      orderBy:
+        sp.status === "PENDING_REVIEW"
+          ? { submittedAt: "asc" as const }
+          : { createdAt: "desc" as const },
       skip,
       take: PAGE_SIZE,
       select: {
@@ -71,6 +75,8 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
 
   const counts = {
     DRAFT: statusCounts.find((s) => s.status === "DRAFT")?._count._all ?? 0,
+    PENDING_REVIEW:
+      statusCounts.find((s) => s.status === "PENDING_REVIEW")?._count._all ?? 0,
     PUBLISHED:
       statusCounts.find((s) => s.status === "PUBLISHED")?._count._all ?? 0,
     ARCHIVED:
@@ -90,7 +96,7 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
           Courses
         </h1>
         <p className="text-sm text-slate-500 mt-2">
-          Review, publish, or archive courses across the platform.
+          Review submitted courses, publish, or archive courses across the platform.
         </p>
       </div>
 

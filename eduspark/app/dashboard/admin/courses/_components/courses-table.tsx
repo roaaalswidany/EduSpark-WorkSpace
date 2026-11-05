@@ -17,10 +17,12 @@ import {
   GraduationCap,
   Users,
   BookOpen,
+  CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CourseStatus, CourseLevel } from "@prisma/client";
 import { updateCourseAction } from "@/actions/admin/update-course";
+import { reviewCourseAction } from "@/actions/admin/review-course";
 
 interface CourseRow {
   id: string;
@@ -40,6 +42,7 @@ interface CoursesTableProps {
   courses: CourseRow[];
   statusCounts: {
     DRAFT: number;
+    PENDING_REVIEW: number;
     PUBLISHED: number;
     ARCHIVED: number;
   };
@@ -53,6 +56,7 @@ interface CoursesTableProps {
 const STATUS_BADGE: Record<CourseStatus, string> = {
   PUBLISHED: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
   DRAFT: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  PENDING_REVIEW: "bg-sky-500/10 text-sky-400 border-sky-500/20",
   ARCHIVED: "bg-slate-700/50 text-slate-400 border-slate-700",
 };
 
@@ -67,6 +71,10 @@ const STATUS_TOAST: Record<
   DRAFT: {
     title: "Moved to draft 📝",
     description: "The course is now hidden from students.",
+  },
+  PENDING_REVIEW: {
+    title: "Submitted for review",
+    description: "The course is waiting for an administrator decision.",
   },
   ARCHIVED: {
     title: "Course archived 🗄️",
@@ -128,6 +136,7 @@ export function CoursesTable({
   const [archiveDialog, setArchiveDialog] = useState<{
     courseId: string;
     courseTitle: string;
+    mode: "ARCHIVE" | "REJECT";
   } | null>(null);
   const [reasonInput, setReasonInput] = useState("");
   const [reasonError, setReasonError] = useState<string | null>(null);
@@ -199,6 +208,8 @@ export function CoursesTable({
           FORBIDDEN: "Only admins can perform this action.",
           NOT_FOUND: "Course not found.",
           INVALID_INPUT: "A valid reason is required to archive a course.",
+          CANNOT_PUBLISH_EMPTY_COURSE: "The course has no lessons yet.",
+          QUIZ_TOO_SHORT: "The course quiz is below the minimum number of questions.",
         };
         const errorMessage = messages[result.error] ?? "Action failed.";
 
@@ -227,7 +238,7 @@ export function CoursesTable({
 
     // Archiving a non-archived course requires a reason first.
     if (status === "ARCHIVED" && course.status !== "ARCHIVED") {
-      setArchiveDialog({ courseId: course.id, courseTitle: course.title });
+      setArchiveDialog({ courseId: course.id, courseTitle: course.title, mode: "ARCHIVE" });
       setReasonInput("");
       setReasonError(null);
       return;
@@ -236,7 +247,70 @@ export function CoursesTable({
     executeChangeStatus(course, status);
   };
 
-  // Dialog submit — validates the reason, then executes.
+  // Review decision (admin gate): approve → published; reject → back to draft with a note.
+  const runReview = (
+    course: CourseRow,
+    decision: "APPROVE" | "REJECT",
+    note?: string
+  ) => {
+    setPendingCourseId(course.id);
+    const toastId = toast.loading(
+      decision === "APPROVE" ? "Approving…" : "Sending feedback…"
+    );
+    startTransition(async () => {
+      const result = await reviewCourseAction({
+        courseId: course.id,
+        decision,
+        note,
+      });
+      setPendingCourseId(null);
+
+      if (!result.success) {
+        const messages: Record<string, string> = {
+          FORBIDDEN: "Only admins can review courses.",
+          INVALID_STATE: "This course is no longer waiting for review.",
+          INVALID_INPUT: "A note of at least 10 characters is required to request changes.",
+          CANNOT_PUBLISH_EMPTY_COURSE: "The course has no lessons yet.",
+          QUIZ_TOO_SHORT: "The course quiz is below the minimum number of questions.",
+          NOT_FOUND: "Course not found.",
+        };
+        const errorMessage = messages[result.error] ?? "Action failed.";
+        setActionError(errorMessage);
+        toast.error("Review failed", { id: toastId, description: errorMessage });
+        setTimeout(() => setActionError(null), 4000);
+        router.refresh();
+        return;
+      }
+
+      toast.success(
+        decision === "APPROVE" ? "Course approved 🚀" : "Feedback sent 📝",
+        {
+          id: toastId,
+          description:
+            decision === "APPROVE"
+              ? "The course is now public."
+              : "The course is back in draft with your note.",
+        }
+      );
+      router.refresh();
+    });
+  };
+
+  const handleApprove = (course: CourseRow) => {
+    setOpenMenuId(null);
+    setActionError(null);
+    runReview(course, "APPROVE");
+  };
+
+  const handleRequestChanges = (course: CourseRow) => {
+    setOpenMenuId(null);
+    setActionError(null);
+    setArchiveDialog({ courseId: course.id, courseTitle: course.title, mode: "REJECT" });
+    setReasonInput("");
+    setReasonError(null);
+  };
+
+  // Dialog submit — validates the reason, then executes (archive or request-changes).
   const handleConfirmArchive = () => {
     if (!archiveDialog) return;
 
@@ -251,7 +325,11 @@ export function CoursesTable({
     const target = courses.find((c) => c.id === archiveDialog.courseId);
     if (!target) return;
 
-    executeChangeStatus(target, "ARCHIVED", trimmed);
+    if (archiveDialog.mode === "REJECT") {
+      runReview(target, "REJECT", trimmed);
+    } else {
+      executeChangeStatus(target, "ARCHIVED", trimmed);
+    }
     setArchiveDialog(null);
     setReasonInput("");
     setReasonError(null);
@@ -262,7 +340,15 @@ export function CoursesTable({
       value: "",
       label: "All",
       count:
-        statusCounts.DRAFT + statusCounts.PUBLISHED + statusCounts.ARCHIVED,
+        statusCounts.DRAFT +
+        statusCounts.PENDING_REVIEW +
+        statusCounts.PUBLISHED +
+        statusCounts.ARCHIVED,
+    },
+    {
+      value: "PENDING_REVIEW",
+      label: "Pending review",
+      count: statusCounts.PENDING_REVIEW,
     },
     { value: "PUBLISHED", label: "Published", count: statusCounts.PUBLISHED },
     { value: "DRAFT", label: "Draft", count: statusCounts.DRAFT },
@@ -436,7 +522,7 @@ export function CoursesTable({
                         STATUS_BADGE[c.status]
                       )}
                     >
-                      {c.status}
+                      {c.status.replace("_", " ")}
                     </span>
                   </div>
 
@@ -487,10 +573,30 @@ export function CoursesTable({
                               Change status
                             </p>
                           </div>
+                          {c.status === "PENDING_REVIEW" && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleApprove(c)}
+                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors inline-flex items-center gap-2"
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                Approve &amp; publish
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRequestChanges(c)}
+                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors"
+                              >
+                                Request changes…
+                              </button>
+                              <div className="h-px bg-slate-800" />
+                            </>
+                          )}
                           <button
                             type="button"
                             onClick={() => handleChangeStatus(c, "PUBLISHED")}
-                            disabled={c.status === "PUBLISHED"}
+                            disabled={c.status === "PUBLISHED" || c.status === "PENDING_REVIEW"}
                             className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Publish
@@ -498,7 +604,7 @@ export function CoursesTable({
                           <button
                             type="button"
                             onClick={() => handleChangeStatus(c, "DRAFT")}
-                            disabled={c.status === "DRAFT"}
+                            disabled={c.status === "DRAFT" || c.status === "PENDING_REVIEW"}
                             className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Set as Draft
@@ -593,15 +699,19 @@ export function CoursesTable({
                 <div className="flex items-center gap-2 mb-1">
                   <XCircle className="w-5 h-5 text-red-400" />
                   <h3 className="text-lg font-bold text-white">
-                    Archive course
+                    {archiveDialog.mode === "REJECT" ? "Request changes" : "Archive course"}
                   </h3>
                 </div>
                 <p className="text-sm text-slate-400">
-                  Please provide a reason for archiving{" "}
+                  {archiveDialog.mode === "REJECT"
+                    ? "Tell the creator what must change before"
+                    : "Please provide a reason for archiving"}{" "}
                   <strong className="text-slate-200">
                     &quot;{archiveDialog.courseTitle}&quot;
                   </strong>
-                  . This reason will be sent to the course creator by email.
+                  {archiveDialog.mode === "REJECT"
+                    ? " can be published. The course returns to draft and this note is shown to the creator."
+                    : ". This reason will be sent to the course creator by email."}
                 </p>
               </div>
 
@@ -662,7 +772,7 @@ export function CoursesTable({
                   ) : (
                     <XCircle className="w-4 h-4" />
                   )}
-                  Archive course
+                  {archiveDialog.mode === "REJECT" ? "Send feedback" : "Archive course"}
                 </button>
               </div>
             </div>

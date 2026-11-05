@@ -26,10 +26,12 @@ async function requireCreator(): Promise<{
 async function requireCourseOwner(courseId: string, userId: string) {
   const course = await db.course.findUnique({
     where: { id: courseId },
-    select: { id: true, creatorId: true, slug: true },
+    select: { id: true, creatorId: true, slug: true, status: true },
   });
   if (!course) throw new Error("NOT_FOUND");
   if (course.creatorId !== userId) throw new Error("FORBIDDEN");
+  // What the reviewer is looking at must not change under their feet.
+  if (course.status === "PENDING_REVIEW") throw new Error("COURSE_LOCKED");
   return course;
 }
 
@@ -81,10 +83,11 @@ export async function updateSectionAction(
 
     const existing = await db.section.findUnique({
       where: { id: sectionId },
-      select: { courseId: true, course: { select: { creatorId: true } } },
+      select: { courseId: true, course: { select: { creatorId: true, status: true } } },
     });
     if (!existing) return { success: false, error: "NOT_FOUND" };
     if (existing.course.creatorId !== user.id) return { success: false, error: "FORBIDDEN" };
+    if (existing.course.status === "PENDING_REVIEW") return { success: false, error: "COURSE_LOCKED" };
 
     await db.section.update({
       where: { id: sectionId },
@@ -108,10 +111,11 @@ export async function deleteSectionAction(sectionId: string): Promise<{ success:
 
     const existing = await db.section.findUnique({
       where: { id: sectionId },
-      select: { courseId: true, course: { select: { creatorId: true } } },
+      select: { courseId: true, course: { select: { creatorId: true, status: true } } },
     });
     if (!existing) return { success: false, error: "NOT_FOUND" };
     if (existing.course.creatorId !== user.id) return { success: false, error: "FORBIDDEN" };
+    if (existing.course.status === "PENDING_REVIEW") return { success: false, error: "COURSE_LOCKED" };
 
     await db.section.delete({ where: { id: sectionId } });
 
@@ -147,10 +151,11 @@ export async function createLessonAction(
 
     const section = await db.section.findUnique({
       where: { id: data.sectionId },
-      select: { courseId: true, course: { select: { creatorId: true } } },
+      select: { courseId: true, course: { select: { creatorId: true, status: true } } },
     });
     if (!section) return { success: false, error: "NOT_FOUND" };
     if (section.course.creatorId !== user.id) return { success: false, error: "FORBIDDEN" };
+    if (section.course.status === "PENDING_REVIEW") return { success: false, error: "COURSE_LOCKED" };
 
     const count = await db.lesson.count({ where: { sectionId: data.sectionId } });
     const lesson = await db.lesson.create({
@@ -189,11 +194,12 @@ export async function updateLessonAction(
       where: { id: lessonId },
       select: {
         sectionId: true,
-        section: { select: { courseId: true, course: { select: { creatorId: true } } } },
+        section: { select: { courseId: true, course: { select: { creatorId: true, status: true } } } },
       },
     });
     if (!existing) return { success: false, error: "NOT_FOUND" };
     if (existing.section.course.creatorId !== user.id) return { success: false, error: "FORBIDDEN" };
+    if (existing.section.course.status === "PENDING_REVIEW") return { success: false, error: "COURSE_LOCKED" };
 
     await db.lesson.update({
       where: { id: lessonId },
@@ -222,11 +228,12 @@ export async function deleteLessonAction(lessonId: string): Promise<{ success: b
       where: { id: lessonId },
       select: {
         sectionId: true,
-        section: { select: { courseId: true, course: { select: { creatorId: true } } } },
+        section: { select: { courseId: true, course: { select: { creatorId: true, status: true } } } },
       },
     });
     if (!existing) return { success: false, error: "NOT_FOUND" };
     if (existing.section.course.creatorId !== user.id) return { success: false, error: "FORBIDDEN" };
+    if (existing.section.course.status === "PENDING_REVIEW") return { success: false, error: "COURSE_LOCKED" };
 
     await db.lesson.delete({ where: { id: lessonId } });
 

@@ -19,6 +19,7 @@ ADVANCED ADVANCED
 
         CourseStatus {
             DRAFT DRAFT
+PENDING_REVIEW PENDING_REVIEW
 PUBLISHED PUBLISHED
 ARCHIVED ARCHIVED
         }
@@ -170,6 +171,10 @@ REJECTED REJECTED
     Int ratingCount 
     DateTime createdAt 
     DateTime updatedAt 
+    DateTime submittedAt "❓"
+    DateTime reviewedAt "❓"
+    String reviewedById "❓"
+    String reviewNote "❓"
     }
   
 

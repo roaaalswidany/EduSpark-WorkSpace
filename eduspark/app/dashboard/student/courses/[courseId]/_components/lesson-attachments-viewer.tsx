@@ -53,7 +53,12 @@ export function LessonAttachmentsViewer({ attachments }: Props) {
       if (res.success) {
         window.open(res.downloadUrl, "_blank");
       } else {
-        toast.error("Could not generate download link");
+        toast.error("Could not generate download link", {
+          description:
+            res.error === "RATE_LIMITED"
+              ? "Too many downloads. Please wait a few minutes."
+              : undefined,
+        });
       }
     });
   };
