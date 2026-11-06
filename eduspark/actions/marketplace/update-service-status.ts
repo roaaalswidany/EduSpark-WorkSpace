@@ -11,7 +11,7 @@ import { CacheKeys } from "@/lib/cache-keys";
 
 const UpdateStatusSchema = z.object({
   serviceId: z.string().cuid(),
-  status: z.enum(["ACTIVE", "PAUSED", "ARCHIVED"]),
+  status: z.enum(["PENDING_REVIEW", "ACTIVE", "PAUSED", "ARCHIVED"]),
 });
 
 export type UpdateServiceStatusResult =
@@ -23,6 +23,7 @@ export type UpdateServiceStatusResult =
         | "NOT_FOUND"
         | "FORBIDDEN"
         | "INVALID_INPUT"
+        | "INVALID_TRANSITION"
         | "SERVER_ERROR";
     };
 
@@ -40,12 +41,21 @@ export async function updateServiceStatusAction(
 
     const service = await db.service.findUnique({
       where: { id: serviceId },
-      select: { creatorId: true },
+      select: { creatorId: true, status: true },
     });
 
     if (!service) return { success: false, error: "NOT_FOUND" };
     if (service.creatorId !== session.user.id) {
       return { success: false, error: "FORBIDDEN" };
+    }
+
+    // 🛡️ SECURITY FIX: Creators cannot self-activate a pending review service.
+    // Only an ADMIN can move a service from PENDING_REVIEW → ACTIVE.
+    if (service.status === "PENDING_REVIEW" && status === "ACTIVE") {
+      return { 
+        success: false, 
+        error: "INVALID_TRANSITION" 
+      };
     }
 
     const updated = await db.service.update({

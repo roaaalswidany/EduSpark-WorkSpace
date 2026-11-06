@@ -115,6 +115,9 @@ export const RateLimits = {
 
   SERVICE_WRITE: { key: "service-write", limit: 20, windowSec: 3600 },
 
+  /** Course ratings: 10 per hour per user */
+  COURSE_REVIEW: { key: "course-review", limit: 10, windowSec: 3600 },
+
   /** Password-reset requests/attempts: 5 per hour per IP and per target email */
   PASSWORD_RESET: { key: "password-reset", limit: 5, windowSec: 3600 },
 

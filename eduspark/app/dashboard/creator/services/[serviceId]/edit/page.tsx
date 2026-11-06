@@ -7,6 +7,7 @@ import { Role } from "@prisma/client";
 import { GraduationCap, ArrowLeft, Pencil } from "lucide-react";
 import { ServiceCreationForm } from "../../new/_components/service-creation-form";
 import type { CertifiedCourseOption } from "../../new/page";
+import { ServiceThumbnailUploader } from "../../_components/service-thumbnail-uploader"; 
 
 interface PageProps {
   params: Promise<{ serviceId: string }>;
@@ -34,6 +35,7 @@ export default async function EditServicePage({ params }: PageProps) {
         title: true,
         slug: true,
         description: true,
+        thumbnail: true, // 👈 إضافة الصورة هنا
         price: true,
         deliveryDays: true,
         revisions: true,
@@ -99,7 +101,12 @@ export default async function EditServicePage({ params }: PageProps) {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 space-y-6">
+        <ServiceThumbnailUploader 
+          serviceId={service.id} 
+          currentThumbnail={service.thumbnail} 
+        />
+
         <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/15">
           <GraduationCap className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <p className="text-amber-300/80 text-xs leading-relaxed">
@@ -108,9 +115,7 @@ export default async function EditServicePage({ params }: PageProps) {
             The category is locked to your certificate.
           </p>
         </div>
-      </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
         <ServiceCreationForm
           mode="edit"
           serviceId={service.id}

@@ -31,9 +31,9 @@ export default async function AdminServicesPage({ searchParams }: PageProps) {
         { description: { contains: sp.q, mode: "insensitive" as const } },
       ],
     }),
-    ...(sp.status && {
-      status: sp.status as "ACTIVE" | "PAUSED" | "ARCHIVED",
-    }),
+...(sp.status && {
+  status: sp.status as "PENDING_REVIEW" | "ACTIVE" | "PAUSED" | "ARCHIVED",
+}),
   };
 
   const [services, total, statusCounts] = await Promise.all([
@@ -46,10 +46,14 @@ export default async function AdminServicesPage({ searchParams }: PageProps) {
         id: true,
         title: true,
         slug: true,
+        description: true,        
         thumbnail: true,
         status: true,
         price: true,
         deliveryDays: true,
+        revisions: true,          
+        tags: true,               
+        portfolioLinks: true,     
         createdAt: true,
         creator: {
           select: { id: true, name: true, image: true },
@@ -70,6 +74,7 @@ export default async function AdminServicesPage({ searchParams }: PageProps) {
   ]);
 
   const counts = {
+    PENDING_REVIEW: statusCounts.find((s) => s.status === "PENDING_REVIEW")?._count._all ?? 0,
     ACTIVE: statusCounts.find((s) => s.status === "ACTIVE")?._count._all ?? 0,
     PAUSED: statusCounts.find((s) => s.status === "PAUSED")?._count._all ?? 0,
     ARCHIVED:

@@ -170,7 +170,7 @@ export async function createServiceAction(
         revisions,
         tags,
         portfolioLinks,
-        status: ServiceStatus.ACTIVE,
+        status: ServiceStatus.PENDING_REVIEW,
         creatorId: userId,
         categoryId: effectiveCategoryId,
       },

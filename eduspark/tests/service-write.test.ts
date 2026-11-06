@@ -200,7 +200,8 @@ describe("createServiceAction — success", () => {
     if (r.success) {
       const created = await db.service.findUnique({ where: { id: r.serviceId } });
       expect(created?.categoryId).toBe(cat.id);
-      expect(created?.status).toBe("ACTIVE");
+      // 🆕 Services now start as PENDING_REVIEW (requires admin approval)
+      expect(created?.status).toBe("PENDING_REVIEW");
     }
   });
 

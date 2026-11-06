@@ -23,6 +23,7 @@ import {
   Loader2,
   Briefcase,
   TrendingUp,
+  RotateCcw, 
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ServiceStatus } from "@prisma/client";
@@ -49,6 +50,11 @@ const STATUS_CONFIG: Record<
   ServiceStatus,
   { label: string; dot: string; badge: string }
 > = {
+  PENDING_REVIEW: { 
+    label: "Pending Review",
+    dot: "bg-sky-500",
+    badge: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+  },
   ACTIVE: {
     label: "Active",
     dot: "bg-emerald-500",
@@ -186,20 +192,19 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
     return () => document.removeEventListener("mousedown", handler);
   }, [menuOpen]);
 
-  const handleToggleStatus = useCallback(() => {
+  const handleStatusChange = useCallback((newStatus: ServiceStatus) => {
     setMenuOpen(false);
     setStatusError(null);
 
-    const newStatus: ServiceStatus = status === "ACTIVE" ? "PAUSED" : "ACTIVE";
     const previous = status;
-    const isPausing = newStatus === "PAUSED";
-
-    // Optimistic update
     setStatus(newStatus);
 
-    const toastId = toast.loading(
-      isPausing ? "Pausing service…" : "Activating service…"
-    );
+    let loadingMessage = "Updating status…";
+    if (newStatus === "PAUSED") loadingMessage = "Pausing service…";
+    if (newStatus === "ACTIVE") loadingMessage = "Activating service…";
+    if (newStatus === "PENDING_REVIEW") loadingMessage = "Submitting for review…";
+
+    const toastId = toast.loading(loadingMessage);
 
     startStatusTransition(async () => {
       const result = await updateServiceStatusAction({
@@ -210,8 +215,8 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
       if (!result.success) {
         setStatus(previous);
         const errorMessage =
-          result.error === "FORBIDDEN"
-            ? "You don't have permission."
+          result.error === "FORBIDDEN" || result.error === "INVALID_TRANSITION"
+            ? "You don't have permission to activate this service yet."
             : "Failed to update status.";
 
         setStatusError(errorMessage);
@@ -221,15 +226,10 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
         });
         setTimeout(() => setStatusError(null), 3000);
       } else {
-        toast.success(
-          isPausing ? "Service paused ⏸️" : "Service activated ▶️",
-          {
-            id: toastId,
-            description: isPausing
-              ? "Your service is now hidden from the marketplace."
-              : "Your service is now visible to buyers.",
-          }
-        );
+        toast.success("Status updated", {
+          id: toastId,
+          description: "Your service status has been updated.",
+        });
         router.refresh();
       }
     });
@@ -237,7 +237,6 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
 
   const handleDelete = useCallback(() => {
     setDeleteError(null);
-
     const toastId = toast.loading("Deleting service…");
 
     startDeleteTransition(async () => {
@@ -245,13 +244,11 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
 
       if (!result.success) {
         const messages: Record<string, string> = {
-          HAS_ORDERS:
-            "This service has orders or projects. Pause it instead of deleting.",
+          HAS_ORDERS: "This service has orders or projects. Pause it instead of deleting.",
           FORBIDDEN: "You don't have permission to delete this service.",
           NOT_FOUND: "Service not found.",
         };
-        const errorMessage =
-          messages[result.error] ?? "Failed to delete service.";
+        const errorMessage = messages[result.error] ?? "Failed to delete service.";
 
         setDeleteError(errorMessage);
         toast.error("Deletion failed", {
@@ -345,23 +342,37 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
                   <Pencil className="w-3.5 h-3.5" />
                   Edit Service
                 </Link>
-                <button
-                  type="button"
-                  onClick={handleToggleStatus}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-left"
-                >
-                  {status === "ACTIVE" ? (
-                    <>
-                      <Pause className="w-3.5 h-3.5" />
-                      Pause Service
-                    </>
-                  ) : (
-                    <>
-                      <Play className="w-3.5 h-3.5" />
-                      Activate Service
-                    </>
-                  )}
-                </button>
+                
+                {status === "ACTIVE" && (
+                  <button
+                    type="button"
+                    onClick={() => handleStatusChange("PAUSED")}
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-left"
+                  >
+                    <Pause className="w-3.5 h-3.5" /> Pause Service
+                  </button>
+                )}
+
+                {status === "PENDING_REVIEW" && (
+                  <button
+                    type="button"
+                    onClick={() => handleStatusChange("PAUSED")}
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors text-left"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" /> Withdraw Submission
+                  </button>
+                )}
+
+                {status === "PAUSED" && (
+                  <button
+                    type="button"
+                    onClick={() => handleStatusChange("PENDING_REVIEW")}
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-sky-400 hover:bg-sky-500/10 hover:text-sky-300 transition-colors text-left"
+                  >
+                    <Play className="w-3.5 h-3.5" /> Submit for Review
+                  </button>
+                )}
+
                 <div className="h-px bg-slate-800" />
                 <button
                   type="button"
