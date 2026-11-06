@@ -22,6 +22,8 @@ interface Props {
   ratingCount: number;
   canReview: boolean;
   alreadyReviewed: boolean;
+  /** Enrolled, but not far enough into the course to rate it yet. */
+  needsProgress?: boolean;
 }
 
 function StarPicker({ value, onChange }: { value: number; onChange: (v: number) => void }) {
@@ -64,6 +66,12 @@ function ReviewForm({ courseId, onDone }: { courseId: string; onDone: () => void
             ? "You already reviewed this course."
             : res.error === "NOT_ENROLLED"
             ? "You must be enrolled to review."
+            : res.error === "NOT_ENOUGH_PROGRESS"
+            ? "Complete a bit more of the course before reviewing it."
+            : res.error === "RATE_LIMITED"
+            ? "Too many reviews in a short time. Please try again later."
+            : res.error === "OWN_COURSE"
+            ? "You cannot review your own course."
             : "Could not submit review.";
         setError(msg);
         toast.error("Failed", { id: toastId, description: msg });
@@ -121,6 +129,7 @@ export function CourseReviews({
   ratingCount,
   canReview,
   alreadyReviewed,
+  needsProgress = false,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
 
@@ -148,6 +157,12 @@ export function CourseReviews({
 
       {alreadyReviewed && (
         <p className="text-xs text-emerald-400">✓ You have already reviewed this course.</p>
+      )}
+
+      {needsProgress && !alreadyReviewed && (
+        <p className="text-xs text-slate-500">
+          You can review this course after completing a part of it.
+        </p>
       )}
 
       {showForm && <ReviewForm courseId={courseId} onDone={() => setShowForm(false)} />}

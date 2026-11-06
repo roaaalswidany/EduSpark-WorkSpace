@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { COURSE_REVIEW_MIN_PROGRESS } from "@/lib/lms/review-policy";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -393,7 +394,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
               }))}
               averageRating={course.totalRating}
               ratingCount={course.ratingCount}
-              canReview={isEnrolled}
+              canReview={isEnrolled && (enrollment?.progress ?? 0) >= COURSE_REVIEW_MIN_PROGRESS}
+              needsProgress={isEnrolled && (enrollment?.progress ?? 0) < COURSE_REVIEW_MIN_PROGRESS}
               alreadyReviewed={userReview !== null}
             />
 

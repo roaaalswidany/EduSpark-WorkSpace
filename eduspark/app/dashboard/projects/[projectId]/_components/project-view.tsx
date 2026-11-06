@@ -39,6 +39,7 @@ import {
   approveProjectCompletionAction,
 } from "@/actions/projects/update-project";
 import { cn } from "@/lib/utils";
+import { isHttpsUrl } from "@/lib/security/safe-url";
 
 // ─── Public Types ─────────────────────────────────────────────────────────────
 
@@ -259,7 +260,8 @@ function SubmissionForm({
 }) {
   const [note, setNote] = useState("");
   const [url, setUrl] = useState("");
-  const isValid = note.trim().length >= 10;
+  const urlOk = url.trim() === "" || isHttpsUrl(url.trim());
+  const isValid = note.trim().length >= 10 && urlOk;
 
   return (
     <div className="mt-4 p-4 rounded-xl bg-slate-800/70 border border-indigo-500/20 space-y-3">
@@ -274,6 +276,19 @@ function SubmissionForm({
         maxLength={500}
         className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
       />
+      <div>
+        <input
+          type="url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="Delivery link (optional) — https://…"
+          maxLength={500}
+          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+        />
+        {!urlOk && (
+          <p className="mt-1 text-[10px] text-red-400">Only https:// links are allowed.</p>
+        )}
+      </div>
       <div className="flex items-center justify-between">
         <span className="text-[10px] text-slate-600">{note.length}/500</span>
         <div className="flex items-center gap-2">
@@ -496,7 +511,7 @@ function MilestoneCard({
               </div>
             </div>
           )}
-          {milestone.submissionUrl && (
+          {isHttpsUrl(milestone.submissionUrl) && (
             <a
               href={milestone.submissionUrl}
               target="_blank"

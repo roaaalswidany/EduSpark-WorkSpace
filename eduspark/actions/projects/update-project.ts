@@ -6,6 +6,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { ProjectStatus, MilestoneStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { isHttpsUrl } from "@/lib/security/safe-url";
 
 // ─── Shared Result Type ───────────────────────────────────────────────────────
 
@@ -18,6 +19,7 @@ export type ProjectActionResult =
         | "NOT_FOUND"
         | "FORBIDDEN"
         | "INVALID_TRANSITION"
+        | "INVALID_INPUT"
         | "SERVER_ERROR";
       message?: string;
     };
@@ -149,15 +151,45 @@ export async function startMilestoneAction(
 
 // ─── 2. Request Milestone Review — Creator only ───────────────────────────────
 
+// Delivery details are shown to the client (and pasted into the chat): bound them and
+// accept only https links — a creator must not be able to hand the client a javascript:/data: link.
+const SubmissionSchema = z.object({
+  submissionNote: z
+    .string()
+    .trim()
+    .max(2000, "The delivery note is too long (max 2000 characters).")
+    .optional(),
+  submissionUrl: z
+    .string()
+    .trim()
+    .max(500, "The delivery link is too long (max 500 characters).")
+    .refine((u) => u === "" || isHttpsUrl(u), "The delivery link must start with https://")
+    .optional(),
+});
+
 export async function requestMilestoneReviewAction(
   milestoneId: string,
-  submissionNote?: string,
-  submissionUrl?: string
+  rawSubmissionNote?: string,
+  rawSubmissionUrl?: string
 ): Promise<ProjectActionResult> {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return { success: false, error: "UNAUTHORIZED" };
     const { id: userId } = session.user;
+
+    const meta = SubmissionSchema.safeParse({
+      submissionNote: rawSubmissionNote,
+      submissionUrl: rawSubmissionUrl,
+    });
+    if (!meta.success) {
+      return {
+        success: false,
+        error: "INVALID_INPUT",
+        message: meta.error.issues[0]?.message ?? "Invalid delivery details.",
+      };
+    }
+    const submissionNote = meta.data.submissionNote;
+    const submissionUrl = meta.data.submissionUrl;
 
     let projectId: string;
 
