@@ -487,21 +487,23 @@ model Service {
 }
 
 model Milestone {
-  id           String          @id @default(cuid())
-  title        String
-  description  String?         @db.Text
-  dueDate      DateTime?
-  status       MilestoneStatus @default(PENDING)
-  order        Int             @default(1)
-  amount       Decimal?        @db.Decimal(10, 2)
-  completedAt  DateTime?
-  revisionNote String?         @db.Text
-  projectId    String
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  id             String          @id @default(cuid())
+  title          String
+  description    String?         @db.Text
+  dueDate        DateTime?
+  status         MilestoneStatus @default(PENDING)
+  order          Int             @default(1)
+  amount         Decimal?        @db.Decimal(10, 2)
+  completedAt    DateTime?
+  revisionNote   String?         @db.Text
+  // ── NEW: Submission details ──
+  submissionNote String?         @db.Text
+  submissionUrl  String?
+  projectId      String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
   attachments Attachment[]
 
   @@index([projectId])

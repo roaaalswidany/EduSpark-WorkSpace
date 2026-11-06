@@ -29,6 +29,8 @@ import {
   ExternalLink,
   Package,
   ShieldCheck,
+  LinkIcon,
+  FileText,
 } from "lucide-react";
 import { MilestoneStatus, ProjectStatus } from "@/lib/enums";
 import {
@@ -51,6 +53,8 @@ export interface SerializedMilestone {
   amount: number | null;
   completedAt: string | null;
   revisionNote: string | null;
+  submissionNote: string | null; // NEW
+  submissionUrl: string | null;  // NEW
   createdAt: string;
   updatedAt: string;
 }
@@ -257,7 +261,64 @@ function ParticipantAvatar({
   );
 }
 
-// ─── Revision Note Form ───────────────────────────────────────────────────────
+// ─── Submission Form (NEW) ───────────────────────────────────────────────────
+
+function SubmissionForm({
+  onSubmit,
+  onCancel,
+  isPending,
+}: {
+  onSubmit: (note: string, url: string) => void;
+  onCancel: () => void;
+  isPending: boolean;
+}) {
+  const [note, setNote] = useState("");
+  const [url, setUrl] = useState("");
+  const isValid = note.trim().length >= 10;
+
+  return (
+    <div className="mt-4 p-4 rounded-xl bg-slate-800/70 border border-indigo-500/20 space-y-3">
+      <p className="text-xs font-semibold text-indigo-400">
+        Add delivery details:
+      </p>
+      <textarea
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder="Describe what you've delivered (e.g., 'Final logo files in SVG, PNG, and AI formats. Brand guidelines included.')"
+        rows={3}
+        maxLength={500}
+        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+      />
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] text-slate-600">{note.length}/500</span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-3 py-1.5 rounded-lg text-xs text-slate-500 hover:text-slate-300 hover:bg-slate-700 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={() => isValid && onSubmit(note.trim(), url.trim())}
+            disabled={!isValid || isPending}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all",
+              "bg-indigo-600 hover:bg-indigo-500 text-white",
+              "disabled:opacity-40 disabled:cursor-not-allowed"
+            )}
+          >
+            {isPending && <Loader2 className="w-3 h-3 animate-spin" />}
+            Submit Delivery
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Revision Form ───────────────────────────────────────────────────────────
 
 function RevisionForm({
   onSubmit,
@@ -336,11 +397,13 @@ function MilestoneCard({
   isClient: boolean;
   projectStatus: ProjectStatus;
   onStart: (id: string) => void;
-  onRequestReview: (id: string) => void;
+  onRequestReview: (id: string, note: string, url: string) => void;
   onRequestRevision: (id: string, note: string) => void;
   pendingId: string | null;
 }) {
   const [revisionOpen, setRevisionOpen] = useState(false);
+  const [submissionOpen, setSubmissionOpen] = useState(false);
+  
   const config = MILESTONE_STATUS[milestone.status];
   const StatusIcon = config.icon;
   const due = dueDateMeta(milestone.dueDate);
@@ -436,6 +499,30 @@ function MilestoneCard({
             </p>
           )}
 
+          {/* Submission Details (NEW) */}
+          {milestone.submissionNote && (
+            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-indigo-500/5 border border-indigo-500/15 mb-3">
+              <FileText className="w-3.5 h-3.5 text-indigo-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wide mb-0.5">
+                  Delivery Note
+                </p>
+                <p className="text-xs text-indigo-200/80">{milestone.submissionNote}</p>
+              </div>
+            </div>
+          )}
+          {milestone.submissionUrl && (
+            <a
+              href={milestone.submissionUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 mb-3 transition-colors"
+            >
+              <LinkIcon className="w-3.5 h-3.5" />
+              View Delivery Link
+            </a>
+          )}
+
           {/* Revision note callout */}
           {milestone.revisionNote &&
             milestone.status === MilestoneStatus.REVISION_NEEDED && (
@@ -500,9 +587,10 @@ function MilestoneCard({
                 )}
 
                 {(milestone.status === MilestoneStatus.IN_PROGRESS ||
-                  milestone.status === MilestoneStatus.REVISION_NEEDED) && (
+                  milestone.status === MilestoneStatus.REVISION_NEEDED) &&
+                  !submissionOpen && (
                   <button
-                    onClick={() => onRequestReview(milestone.id)}
+                    onClick={() => setSubmissionOpen(true)}
                     disabled={isPending}
                     className={cn(
                       "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
@@ -582,7 +670,19 @@ function MilestoneCard({
               </div>
             )}
 
-            {/* Revision form (client only, inline) */}
+            {/* Submission form (creator only) */}
+            {isCreator && submissionOpen && (
+              <SubmissionForm
+                isPending={isPending}
+                onCancel={() => setSubmissionOpen(false)}
+                onSubmit={(note, url) => {
+                  setSubmissionOpen(false);
+                  onRequestReview(milestone.id, note, url);
+                }}
+              />
+            )}
+
+            {/* Revision form (client only) */}
             {isClient && revisionOpen && (
               <RevisionForm
                 isPending={isPending}
@@ -667,7 +767,7 @@ export function ProjectView({
   );
 
   const handleRequestReview = useCallback(
-    (milestoneId: string) => {
+    (milestoneId: string, note: string, url: string) => {
       if (isPending) return;
       setActionError(null);
       setPendingMilestoneId(milestoneId);
@@ -675,7 +775,7 @@ export function ProjectView({
       // Optimistic update
       const updatedMilestones = localMilestones.map((m) =>
         m.id === milestoneId
-          ? { ...m, status: MilestoneStatus.REVIEW_REQUESTED }
+          ? { ...m, status: MilestoneStatus.REVIEW_REQUESTED, submissionNote: note, submissionUrl: url }
           : m
       );
       setLocalMilestones(updatedMilestones);
@@ -690,7 +790,7 @@ export function ProjectView({
       if (allSubmitted) setLocalProjectStatus(ProjectStatus.REVIEW_REQUESTED);
 
       startTransition(async () => {
-        const result = await requestMilestoneReviewAction(milestoneId);
+        const result = await requestMilestoneReviewAction(milestoneId, note, url);
         setPendingMilestoneId(null);
 
         if (!result.success) {

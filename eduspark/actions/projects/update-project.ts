@@ -53,7 +53,7 @@ const CLIENT_VALID_FROM: Partial<Record<MilestoneStatus, MilestoneStatus[]>> = {
   ],
 };
 
-// ─── 1. Start Milestone — Creator only ───────────────────────────────────────
+// ─── 1. Start Milestone — Creator only ────────────────────────────────────────
 
 export async function startMilestoneAction(
   milestoneId: string
@@ -150,7 +150,9 @@ export async function startMilestoneAction(
 // ─── 2. Request Milestone Review — Creator only ───────────────────────────────
 
 export async function requestMilestoneReviewAction(
-  milestoneId: string
+  milestoneId: string,
+  submissionNote?: string,
+  submissionUrl?: string
 ): Promise<ProjectActionResult> {
   try {
     const session = await getServerSession(authOptions);
@@ -197,10 +199,14 @@ export async function requestMilestoneReviewAction(
 
       projectId = milestone.projectId;
 
-      // ① Update this milestone
+      // ① Update this milestone with submission details
       const moved = await tx.milestone.updateMany({
         where: { id: milestoneId, status: milestone.status },
-        data: { status: MilestoneStatus.REVIEW_REQUESTED },
+        data: {
+          status: MilestoneStatus.REVIEW_REQUESTED,
+          submissionNote: submissionNote?.trim() || null,
+          submissionUrl: submissionUrl?.trim() || null,
+        },
       });
       if (moved.count !== 1) {
         throw new ActionError(
@@ -210,8 +216,6 @@ export async function requestMilestoneReviewAction(
       }
 
       // ② Re-fetch all sibling milestones to determine project-level escalation.
-      //    Simulate the updated state: treat the current milestone as already
-      //    REVIEW_REQUESTED when evaluating the aggregate condition.
       const siblings = await tx.milestone.findMany({
         where: { projectId: milestone.projectId },
         select: { id: true, status: true },
@@ -247,12 +251,14 @@ export async function requestMilestoneReviewAction(
 
       // ④ System message
       if (milestone.project.chatRoom?.id) {
+        let msg = `Milestone "${milestone.title}" has been submitted for client review.`;
+        if (submissionUrl) msg += ` Link: ${submissionUrl}`;
         await tx.chatMessage.create({
           data: {
             chatRoomId: milestone.project.chatRoom.id,
             senderId: userId,
             isSystem: true,
-            content: `Milestone "${milestone.title}" has been submitted for client review.`,
+            content: msg,
           },
         });
       }
@@ -322,9 +328,6 @@ export async function requestMilestoneRevisionAction(
 
       if (!milestone) throw new ActionError("NOT_FOUND");
 
-      // ── Authorization guard: ONLY the client may request revisions.
-      //    This prevents the creator from requesting revision on their
-      //    own submitted work (an incoherent and potentially exploitable action).
       if (milestone.project.clientId !== userId) {
         throw new ActionError(
           "FORBIDDEN",
@@ -342,11 +345,12 @@ export async function requestMilestoneRevisionAction(
 
       projectId = milestone.projectId;
 
-      // ① Mark milestone as needing revision, store the note
       const moved = await tx.milestone.updateMany({
         where: { id: milestoneId, status: MilestoneStatus.REVIEW_REQUESTED },
-        data: { status: MilestoneStatus.REVISION_NEEDED,
-          revisionNote: note },
+        data: {
+          status: MilestoneStatus.REVISION_NEEDED,
+          revisionNote: note,
+        },
       });
       if (moved.count !== 1) {
         throw new ActionError(
@@ -355,7 +359,6 @@ export async function requestMilestoneRevisionAction(
         );
       }
 
-      // ② Revert project back to IN_PROGRESS (work is not done)
       if (milestone.project.status === ProjectStatus.REVIEW_REQUESTED) {
         await tx.project.update({
           where: { id: milestone.projectId },
@@ -363,7 +366,6 @@ export async function requestMilestoneRevisionAction(
         });
       }
 
-      // ③ Notify creator
       await tx.notification.create({
         data: {
           userId: milestone.project.creatorId!,
@@ -373,7 +375,6 @@ export async function requestMilestoneRevisionAction(
         },
       });
 
-      // ④ System message
       if (milestone.project.chatRoom?.id) {
         await tx.chatMessage.create({
           data: {
@@ -423,9 +424,6 @@ export async function approveProjectCompletionAction(
 
       if (!project) throw new ActionError("NOT_FOUND");
 
-      // ── Critical authorization guard ──────────────────────────────────────
-      // ONLY the client can approve completion. The creator MUST NOT be able
-      // to self-approve — this would undermine the escrow model entirely.
       if (project.clientId !== userId) {
         throw new ActionError(
           "FORBIDDEN",
@@ -433,7 +431,6 @@ export async function approveProjectCompletionAction(
         );
       }
 
-      // Project must be in REVIEW_REQUESTED state before approval
       if (project.status !== ProjectStatus.REVIEW_REQUESTED) {
         throw new ActionError(
           "INVALID_TRANSITION",
@@ -441,7 +438,6 @@ export async function approveProjectCompletionAction(
         );
       }
 
-      // All milestones must be either REVIEW_REQUESTED or already APPROVED
       const allApprovable = project.milestones.every(
         (m) =>
           m.status === MilestoneStatus.REVIEW_REQUESTED ||
@@ -456,7 +452,6 @@ export async function approveProjectCompletionAction(
 
       const now = new Date();
 
-      // ① Approve all pending-review milestones in bulk
       await tx.milestone.updateMany({
         where: {
           projectId,
@@ -468,7 +463,6 @@ export async function approveProjectCompletionAction(
         },
       });
 
-      // ② Mark project as COMPLETED
       const completed = await tx.project.updateMany({
         where: { id: projectId, status: ProjectStatus.REVIEW_REQUESTED },
         data: {
@@ -483,9 +477,6 @@ export async function approveProjectCompletionAction(
         );
       }
 
-      // ③ Notify creator.
-      //    NOTE: no payment/escrow integration exists yet — this is a status
-      //    change only. Do not promise payouts in user-facing copy.
       if (project.creatorId) {
         await tx.notification.create({
           data: {
@@ -497,7 +488,6 @@ export async function approveProjectCompletionAction(
         });
       }
 
-      // ④ Closing system message
       if (project.chatRoom?.id) {
         await tx.chatMessage.create({
           data: {

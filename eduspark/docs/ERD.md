@@ -307,6 +307,8 @@ REJECTED REJECTED
     Decimal amount "❓"
     DateTime completedAt "❓"
     String revisionNote "❓"
+    String submissionNote "❓"
+    String submissionUrl "❓"
     DateTime createdAt 
     DateTime updatedAt 
     }

@@ -61,6 +61,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           amount: true,
           completedAt: true,
           revisionNote: true,
+          submissionNote: true, // NEW
+          submissionUrl: true,  // NEW
           createdAt: true,
           updatedAt: true,
         },
@@ -114,6 +116,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       amount: m.amount ? Number(m.amount) : null,
       completedAt: m.completedAt?.toISOString() ?? null,
       revisionNote: m.revisionNote,
+      submissionNote: m.submissionNote, // NEW
+      submissionUrl: m.submissionUrl,   // NEW
       createdAt: m.createdAt.toISOString(),
       updatedAt: m.updatedAt.toISOString(),
     })),
