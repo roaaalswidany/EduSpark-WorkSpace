@@ -13,7 +13,7 @@ export default async function MyCoursesPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/auth/login");
 
-  // ── Fetch enrolled courses ─────────────────────────────
+  // ── Fetch enrolled courses ──────────────────────────
   const enrollments = await db.enrollment.findMany({
     where: { userId: session.user.id },
     orderBy: { updatedAt: "desc" },
@@ -33,7 +33,8 @@ export default async function MyCoursesPage() {
           thumbnail: true,
           level: true,
           creator: {
-            select: { id: true, name: true, image: true, headline: true },
+            // 👇 تم حذف image: true من هنا
+            select: { id: true, name: true, headline: true },
           },
           category: { select: { id: true, name: true, slug: true } },
           sections: {
@@ -46,7 +47,7 @@ export default async function MyCoursesPage() {
     },
   });
 
-  // ── Shape data ─────────────────────────────────────────
+  // ── Shape data ──────────────────────────────────────
   const courses: EnrolledCourse[] = enrollments.map((e) => {
     const totalLessons = e.course.sections.reduce(
       (sum, s) => sum + s.lessons.length,
@@ -84,7 +85,7 @@ export default async function MyCoursesPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-      {/* ── Header ────────────────────────────────────────── */}
+      {/* ── Header ──────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-2 text-xs font-bold text-indigo-400 mb-2">
           <BookOpen className="w-3.5 h-3.5" />
@@ -113,7 +114,7 @@ export default async function MyCoursesPage() {
         )}
       </div>
 
-      {/* ── Empty state ───────────────────────────────────── */}
+      {/* ── Empty state ───────────────────────────────── */}
       {totalCount === 0 ? (
         <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 sm:p-16 text-center">
           <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-5">
@@ -135,7 +136,7 @@ export default async function MyCoursesPage() {
           </Link>
         </div>
       ) : (
-        /* ── Courses grid ──────────────────────────────────── */
+        /* ── Courses grid ────────────────────────────── */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {courses.map((course) => (
             <EnrolledCourseCard key={course.enrollmentId} course={course} />

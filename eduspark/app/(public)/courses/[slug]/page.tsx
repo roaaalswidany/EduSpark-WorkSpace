@@ -68,7 +68,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
         select: {
           id: true,
           name: true,
-          image: true,
           headline: true,
           bio: true,
         },
@@ -159,6 +158,15 @@ export default async function CourseDetailPage({ params }: PageProps) {
   const price = Number(course.price);
   const isEnrolled = !!enrollment;
   const isLoggedIn = !!userId;
+
+  // ── Creator Initials & Color ──
+  const creatorInitials = course.creator.name
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+  const creatorHue = course.creator.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
 
   // ── Learning outcomes (extracted from tags/description) ──
   const outcomes = [
@@ -254,24 +262,12 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
               {/* Instructor row */}
               <div className="flex items-center gap-3 pt-2">
-                {course.creator.image ? (
-                  <Image
-                    src={course.creator.image}
-                    alt={course.creator.name}
-                    width={36}
-                    height={36}
-                    className="rounded-full object-cover ring-2 ring-slate-800"
-                  />
-                ) : (
-                  <div className="w-9 h-9 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center ring-2 ring-slate-800">
-                    {course.creator.name
-                      .split(" ")
-                      .map((p) => p[0])
-                      .slice(0, 2)
-                      .join("")
-                      .toUpperCase()}
-                  </div>
-                )}
+                <div 
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold ring-2 ring-slate-800 shrink-0"
+                  style={{ background: `hsl(${creatorHue}, 50%, 38%)` }}
+                >
+                  {creatorInitials}
+                </div>
                 <div>
                   <p className="text-xs text-slate-500">Created by</p>
                   <Link
@@ -408,24 +404,12 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 About the instructor
               </h2>
               <div className="flex items-start gap-4">
-                {course.creator.image ? (
-                  <Image
-                    src={course.creator.image}
-                    alt={course.creator.name}
-                    width={64}
-                    height={64}
-                    className="rounded-2xl object-cover ring-2 ring-slate-800 shrink-0"
-                  />
-                ) : (
-                  <div className="w-16 h-16 rounded-2xl bg-indigo-600 text-white text-lg font-bold flex items-center justify-center ring-2 ring-slate-800 shrink-0">
-                    {course.creator.name
-                      .split(" ")
-                      .map((p) => p[0])
-                      .slice(0, 2)
-                      .join("")
-                      .toUpperCase()}
-                  </div>
-                )}
+                <div 
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-lg font-bold ring-2 ring-slate-800 shrink-0"
+                  style={{ background: `hsl(${creatorHue}, 50%, 38%)` }}
+                >
+                  {creatorInitials}
+                </div>
                 <div className="min-w-0">
                   <Link
                     href={`/profile/${course.creator.id}`}

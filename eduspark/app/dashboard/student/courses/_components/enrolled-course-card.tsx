@@ -27,8 +27,8 @@ export interface EnrolledCourse {
   creator: {
     id: string;
     name: string;
-    image: string | null;
     headline: string | null;
+    // 👇 تم حذف image من هنا
   };
   totalLessons: number;
   totalDuration: number;
@@ -73,6 +73,16 @@ function formatRelative(date: Date): string {
 export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
   const isCompleted = course.isPassed;
   const progress = Math.min(100, Math.round(course.progress));
+
+  // 👇 حساب الأحرف الأولى واللون للمدرب
+  const creatorInitials = course.creator.name
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+  const creatorHue =
+    course.creator.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
 
   return (
     <Link
@@ -139,24 +149,13 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
 
         {/* Instructor */}
         <div className="flex items-center gap-2">
-          {course.creator.image ? (
-            <Image
-              src={course.creator.image}
-              alt={course.creator.name}
-              width={20}
-              height={20}
-              className="rounded-full object-cover ring-1 ring-slate-700"
-            />
-          ) : (
-            <div className="w-5 h-5 rounded-full bg-indigo-600 text-white text-[9px] font-bold flex items-center justify-center ring-1 ring-slate-700">
-              {course.creator.name
-                .split(" ")
-                .map((p) => p[0])
-                .slice(0, 2)
-                .join("")
-                .toUpperCase()}
-            </div>
-          )}
+          {/* 👇 استبدال الصورة بالأحرف الأولى */}
+          <div 
+            className="w-5 h-5 rounded-full text-white text-[9px] font-bold flex items-center justify-center ring-1 ring-slate-700 shrink-0"
+            style={{ background: `hsl(${creatorHue}, 55%, 42%)` }}
+          >
+            {creatorInitials}
+          </div>
           <span className="text-xs text-slate-500 truncate">
             {course.creator.name}
           </span>

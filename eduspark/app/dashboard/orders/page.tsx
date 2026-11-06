@@ -29,7 +29,8 @@ export default async function MyOrdersPage() {
       createdAt: true,
       updatedAt: true,
       creator: {
-        select: { id: true, name: true, image: true, headline: true },
+        // 👇 تم حذف image: true من هنا
+        select: { id: true, name: true, headline: true },
       },
       service: {
         select: { title: true, thumbnail: true },
@@ -54,7 +55,7 @@ export default async function MyOrdersPage() {
     counterpart: p.creator ?? {
       id: "",
       name: "Unassigned",
-      image: null,
+      // 👇 تم حذف image: null من هنا
       headline: null,
     },
     service: p.service,

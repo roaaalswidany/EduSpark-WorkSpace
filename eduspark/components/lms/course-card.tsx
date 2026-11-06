@@ -20,8 +20,8 @@ export interface CourseCardData {
   creator: {
     id: string;
     name: string;
-    image: string | null;
     headline: string | null;
+    // 👇 تم حذف image من هنا
   };
   category: { id: string; name: string; slug: string } | null;
   totalLessons: number;
@@ -54,6 +54,16 @@ export function CourseCard({ course }: { course: CourseCardData }) {
   const showEnrolled = course.isEnrolled;
   const progress = course.enrollmentProgress ?? 0;
 
+  // 👇 حساب الأحرف الأولى واللون للمدرب
+  const creatorInitials = course.creator.name
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+  const creatorHue =
+    course.creator.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+
   return (
     <Link
       href={showEnrolled ? `/dashboard/student/courses/${course.id}` : `/courses/${course.slug}`}
@@ -63,7 +73,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
         "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/5"
       )}
     >
-      {/* ── Thumbnail ─────────────────────────────────────────── */}
+      {/* ── Thumbnail ─────────────────────────────────────── */}
       <div className="relative aspect-video bg-slate-950 overflow-hidden">
         {course.thumbnail ? (
           <Image
@@ -133,7 +143,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
         )}
       </div>
 
-      {/* ── Body ──────────────────────────────────────────────── */}
+      {/* ── Body ──────────────────────────────────────────── */}
       <div className="flex flex-col flex-1 p-4 sm:p-5 gap-3">
         {/* Category */}
         {course.category && (
@@ -154,24 +164,13 @@ export function CourseCard({ course }: { course: CourseCardData }) {
 
         {/* Creator */}
         <div className="flex items-center gap-2 mt-auto pt-2">
-          {course.creator.image ? (
-            <Image
-              src={course.creator.image}
-              alt={course.creator.name}
-              width={24}
-              height={24}
-              className="rounded-full object-cover ring-1 ring-slate-700"
-            />
-          ) : (
-            <div className="w-6 h-6 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center ring-1 ring-slate-700">
-              {course.creator.name
-                .split(" ")
-                .map((p) => p[0])
-                .slice(0, 2)
-                .join("")
-                .toUpperCase()}
-            </div>
-          )}
+          {/* 👇 استبدال الصورة بالأحرف الأولى */}
+          <div 
+            className="w-6 h-6 rounded-full text-white text-[10px] font-bold flex items-center justify-center ring-1 ring-slate-700 shrink-0"
+            style={{ background: `hsl(${creatorHue}, 55%, 42%)` }}
+          >
+            {creatorInitials}
+          </div>
           <span className="text-xs text-slate-400 truncate">
             {course.creator.name}
           </span>

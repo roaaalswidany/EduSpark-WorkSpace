@@ -24,7 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types ──────────────────────────────────────────────────────────
 
 export interface ServiceCardData {
   id: string;
@@ -41,8 +41,8 @@ export interface ServiceCardData {
   creator: {
     id: string;
     name: string;
-    image: string | null;
     headline: string | null;
+    // 👇 تم حذف image من هنا
     /** Category IDs the creator is certified in */
     certifiedCategories: string[];
   };
@@ -69,7 +69,7 @@ interface CatalogClientProps {
   categories: CategoryFilterOption[];
 }
 
-// ─── Thumbnail Gradient Map ───────────────────────────────────────────────────
+// ─── Thumbnail Gradient Map ────────────────────────────────────────
 
 const GRADIENTS = [
   "from-violet-600 to-indigo-700",
@@ -87,15 +87,14 @@ function getGradient(id: string): string {
   return GRADIENTS[code % GRADIENTS.length];
 }
 
-// ─── Creator Avatar ───────────────────────────────────────────────────────────
+// ─── Creator Avatar ────────────────────────────────────────────────
 
+// 👇 تم تنظيف المكون ليتجاهل الصور
 function CreatorAvatar({
   name,
-  image,
   size = 28,
 }: {
   name: string;
-  image: string | null;
   size?: number;
 }) {
   const initials = name
@@ -108,19 +107,6 @@ function CreatorAvatar({
   const hue = name
     .split("")
     .reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
-
-  if (image) {
-    return (
-      <Image
-        src={image}
-        alt={name}
-        width={size}
-        height={size}
-        className="rounded-full object-cover ring-2 ring-slate-700"
-        style={{ width: size, height: size }}
-      />
-    );
-  }
 
   return (
     <div
@@ -137,7 +123,7 @@ function CreatorAvatar({
   );
 }
 
-// ─── Service Card ─────────────────────────────────────────────────────────────
+// ─── Service Card ──────────────────────────────────────────────────
 
 function ServiceCard({ service }: { service: ServiceCardData }) {
   const router = useRouter();
@@ -208,9 +194,9 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
 
           {/* Creator row */}
           <div className="flex items-center gap-2">
+            {/* 👇 تم إزالة تمرير الصورة هنا */}
             <CreatorAvatar
               name={service.creator.name}
-              image={service.creator.image}
               size={26}
             />
               <div className="flex-1 min-w-0">
@@ -277,7 +263,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
   );
 }
 
-// ─── Sort Dropdown ────────────────────────────────────────────────────────────
+// ─── Sort Dropdown ─────────────────────────────────────────────────
 
 const SORT_LABELS: Record<SortOrder, string> = {
   newest: "Newest First",
@@ -353,7 +339,7 @@ function SortDropdown({
   );
 }
 
-// ─── Empty State ──────────────────────────────────────────────────────────────
+// ─── Empty State ───────────────────────────────────────────────────
 
 function EmptyState({
   query,
@@ -389,7 +375,7 @@ function EmptyState({
   );
 }
 
-// ─── Main Catalog Component ───────────────────────────────────────────────────
+// ─── Main Catalog Component ────────────────────────────────────────
 
 export function CatalogClient({
   initialServices,
@@ -470,7 +456,7 @@ export function CatalogClient({
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
 
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      {/* ─── Hero ─────────────────────────────────────────────────── */}
       <section className="relative pt-16 pb-12 px-4 overflow-hidden">
         {/* Background radial glow */}
         <div
@@ -508,7 +494,7 @@ export function CatalogClient({
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search services, skills, or creators…"
+              placeholder="Search services, skills, or creators..."
               className={cn(
                 "w-full pl-12 pr-12 py-4 rounded-2xl text-sm",
                 "bg-slate-900 border border-slate-700 text-slate-200",
@@ -557,7 +543,7 @@ export function CatalogClient({
         </div>
       </section>
 
-      {/* ── Filters ──────────────────────────────────────────────────────── */}
+      {/* ─── Filters ──────────────────────────────────────────────── */}
       <div className="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Category pills */}
@@ -596,7 +582,7 @@ export function CatalogClient({
         </div>
       </div>
 
-      {/* ── Catalog content ───────────────────────────────────────────────── */}
+      {/* ─── Catalog content ──────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
         {/* Results bar */}

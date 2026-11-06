@@ -25,7 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import { orderServiceAction } from "@/actions/projects/order-service";
 
-// ─── Types ──────────────────────────────────────────────────
+// ─── Types ──────────────────────────────────────────────────────────────
 
 interface ServiceDetail {
   id: string;
@@ -43,7 +43,6 @@ interface ServiceDetail {
   creator: {
     id: string;
     name: string;
-    image: string | null;
     headline: string | null;
     bio: string | null;
   };
@@ -57,7 +56,7 @@ interface RelatedService {
   thumbnail: string | null;
   price: number;
   deliveryDays: number;
-  creator: { name: string; image: string | null };
+  creator: { name: string };
 }
 
 interface ServiceDetailViewProps {
@@ -68,7 +67,7 @@ interface ServiceDetailViewProps {
   isAdmin: boolean;
 }
 
-// ─── Helpers ────────────────────────────────────────────────
+// ─── Helpers ────────────────────────────────────────────────────────────
 
 const GRADIENTS = [
   "from-violet-600 to-indigo-700",
@@ -88,11 +87,9 @@ function getGradient(id: string): string {
 
 function CreatorAvatar({
   name,
-  image, 
   size = 40,
 }: {
   name: string;
-  image: string | null;
   size?: number;
 }) {
   const initials = name
@@ -118,7 +115,7 @@ function CreatorAvatar({
   );
 }
 
-// ─── Order Dialog ───────────────────────────────────────────
+// ─── Order Dialog ─────────────────────────────────────────────────────────
 
 function OrderDialog({
   service,
@@ -147,7 +144,7 @@ function OrderDialog({
       });
 
       if (result.success) {
-        toast.success("Order created! 🎯", {
+        toast.success("Order created! 🎉", {
           id: toastId,
           description: "Opening your project workspace…",
         });
@@ -293,7 +290,7 @@ function OrderDialog({
   );
 }
 
-// ─── Main Component ─────────────────────────────────────────
+// ─── Main Component ───────────────────────────────────────────────────────
 
 export function ServiceDetailView({
   service,
@@ -310,7 +307,7 @@ export function ServiceDetailView({
       {/* Main content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
-          {/* ── Left column ──────────────────────────────────── */}
+          {/* ── Left column ──────────────────────────────────────── */}
           <div className="space-y-6 min-w-0">
             {/* Title + tags */}
             <div>
@@ -460,7 +457,6 @@ export function ServiceDetailView({
               <div className="flex items-start gap-4">
                 <CreatorAvatar
                   name={service.creator.name}
-                  image={service.creator.image}
                   size={56}
                 />
                 <div className="min-w-0">
@@ -485,7 +481,7 @@ export function ServiceDetailView({
             </div>
           </div>
 
-          {/* ── Right column (sticky sidebar) ──────────────────── */}
+          {/* ── Right column (sticky sidebar) ───────────────── */}
           <aside className="lg:sticky lg:top-20 space-y-4">
             {/* Pricing card */}
             <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
@@ -595,7 +591,7 @@ export function ServiceDetailView({
           </aside>
         </div>
 
-        {/* ── Related services ─────────────────────────── */}
+        {/* ── Related services ────────────────────────── */}
         {relatedServices.length > 0 && (
           <div className="mt-16 pt-8 border-t border-slate-800">
             <h2 className="text-lg font-bold text-white mb-5">
@@ -650,7 +646,7 @@ export function ServiceDetailView({
         )}
       </div>
 
-      {/* ── Order dialog ───────────────────────────────────── */}
+      {/* ── Order dialog ──────────────────────────────── */}
       {orderOpen && (
         <OrderDialog
           service={service}

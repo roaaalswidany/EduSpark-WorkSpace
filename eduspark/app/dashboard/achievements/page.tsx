@@ -36,7 +36,8 @@ export default async function AchievementsPage() {
         userId: true,
         xp: true,
         level: true,
-        user: { select: { id: true, name: true, image: true } },
+        // 👇 تم حذف image: true من هنا
+        user: { select: { id: true, name: true } }, 
       },
     }),
   ]);
@@ -96,7 +97,7 @@ export default async function AchievementsPage() {
           rank: i + 1,
           userId: u.user.id,
           name: u.user.name,
-          image: null,
+          // 👇 تم حذف image: null من هنا
           xp: u.xp,
           level: u.level,
           isCurrentUser: u.userId === userId,

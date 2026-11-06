@@ -33,7 +33,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
 
-  // ── Build where clause ─────────────────────────────────
+  // ── Build where clause ──────────────────────────────────────────
   const where: Prisma.CourseWhereInput = {
     status: CourseStatus.PUBLISHED,
   };
@@ -56,7 +56,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     where.level = sp.level as CourseLevel;
   }
 
-  // ── Sort mapping ───────────────────────────────────────
+  // ── Sort mapping ────────────────────────────────────────────────
   let orderBy: Prisma.CourseOrderByWithRelationInput = { createdAt: "desc" };
   switch (sp.sort) {
     case "popular":
@@ -73,7 +73,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       break;
   }
 
-  // ── Cache key (unique per filter/page combo) ───────────
+  // ── Cache key (unique per filter/page combo) ────────────────────
   const listCacheKey = CacheKeys.coursesList({
     q: sp.q,
     category: sp.category,
@@ -82,7 +82,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     page,
   });
 
-  // ── Fetch data in parallel — with caching ─────────────
+  // ── Fetch data in parallel — with caching ───────────────────────
   const [{ coursesRaw, total }, categoriesRaw] = await Promise.all([
     // Cache: courses list + count (60s TTL)
     cached(listCacheKey, CacheTTL.medium, async () => {
@@ -105,7 +105,8 @@ export default async function CoursesPage({ searchParams }: PageProps) {
             totalRating: true,
             ratingCount: true,
             creator: {
-              select: { id: true, name: true, image: true, headline: true },
+              // 👇 تم حذف image: true من هنا
+              select: { id: true, name: true, headline: true },
             },
             category: { select: { id: true, name: true, slug: true } },
             sections: {
@@ -141,7 +142,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     ),
   ]);
 
-  // ── Enrollments for current user (NOT cached — user-specific) ─
+  // ── Enrollments for current user (NOT cached — user-specific) ───
   let enrollmentMap = new Map<
     string,
     { progress: number; isPassed: boolean }
@@ -163,7 +164,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     );
   }
 
-  // ── Shape courses ──────────────────────────────────────
+  // ── Shape courses ───────────────────────────────────────────────
   const courses: CourseCardData[] = coursesRaw.map((c) => {
     const totalLessons = c.sections.reduce(
       (sum, s) => sum + s.lessons.length,
@@ -212,7 +213,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     !!sp.level ||
     (sp.sort && sp.sort !== "newest");
 
-  // ── Build pagination URL helper ────────────────────────
+  // ── Build pagination URL helper ─────────────────────────────────
   function buildPageUrl(targetPage: number): string {
     const params = new URLSearchParams();
     if (sp.q) params.set("q", sp.q);
@@ -226,7 +227,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
-      {/* ── Hero ───────────────────────────────────────── */}
+      {/* ── Hero ──────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-6">
         <div className="text-center max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold mb-4">
@@ -246,12 +247,12 @@ export default async function CoursesPage({ searchParams }: PageProps) {
         </div>
       </section>
 
-      {/* ── Filters ────────────────────────────────────── */}
+      {/* ── Filters ───────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
         <CoursesFilterBar categories={categories} totalCourses={total} />
       </section>
 
-      {/* ── Results ────────────────────────────────────── */}
+      {/* ── Results ───────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="flex items-center justify-between mb-5">
           <p className="text-sm text-slate-500">

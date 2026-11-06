@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { SidebarXpBadge } from "./sidebar-xp-badge";
@@ -122,13 +121,12 @@ interface DashboardSidebarProps {
   onNavigate?: () => void;
 }
 
+// 👇 تم تنظيف المكون ليتجاهل الصور
 function Avatar({
   name,
-  image,
   size = 40,
 }: {
   name: string;
-  image: string | null;
   size?: number;
 }) {
   const initials = name
@@ -138,19 +136,6 @@ function Avatar({
     .join("")
     .toUpperCase();
   const hue = name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
-
-  if (image) {
-    return (
-      <Image
-        src={image}
-        alt={name}
-        width={size}
-        height={size}
-        className="rounded-xl object-cover ring-2 ring-slate-800"
-        style={{ width: size, height: size }}
-      />
-    );
-  }
 
   return (
     <div
@@ -279,7 +264,8 @@ export function DashboardSidebar({
               : "border-transparent hover:bg-slate-800"
           )}
         >
-          <Avatar name={user.name} image={user.image} size={36} />
+          {/* 👇 تم إزالة تمرير الصورة هنا */}
+          <Avatar name={user.name} size={36} />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-slate-200 truncate">
               {user.name}

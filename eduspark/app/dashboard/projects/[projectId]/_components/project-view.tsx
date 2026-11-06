@@ -8,7 +8,6 @@ import {
   useMemo,
 } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   CheckCircle2,
   Clock,
@@ -53,8 +52,8 @@ export interface SerializedMilestone {
   amount: number | null;
   completedAt: string | null;
   revisionNote: string | null;
-  submissionNote: string | null; // NEW
-  submissionUrl: string | null;  // NEW
+  submissionNote: string | null;
+  submissionUrl: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -216,13 +215,12 @@ function dueDateMeta(iso: string | null): {
   };
 }
 
+// 👇 تم تعديل هذا المكون ليعرض الأحرف الأولى فقط بدون صور
 function ParticipantAvatar({
   name,
-  image,
   size = 36,
 }: {
   name: string;
-  image: string | null;
   size?: number;
 }) {
   const initials = name
@@ -232,19 +230,6 @@ function ParticipantAvatar({
     .join("")
     .toUpperCase();
   const hue = name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
-
-  if (image) {
-    return (
-      <Image
-        src={image}
-        alt={name}
-        width={size}
-        height={size}
-        className="rounded-full object-cover ring-2 ring-slate-700"
-        style={{ width: size, height: size }}
-      />
-    );
-  }
 
   return (
     <div
@@ -1125,7 +1110,6 @@ export function ProjectView({
                   <div className="flex items-center gap-3">
                     <ParticipantAvatar
                       name={project.client.name}
-                      image={project.client.image}
                       size={36}
                     />
                         <div className="flex-1 min-w-0">
@@ -1155,7 +1139,6 @@ export function ProjectView({
                     <div className="flex items-center gap-3">
                       <ParticipantAvatar
                         name={project.creator.name}
-                        image={project.creator.image}
                         size={36}
                       />
                       <div className="flex-1 min-w-0">

@@ -23,8 +23,8 @@ export interface OrderCardData {
   counterpart: {
     id: string;
     name: string;
-    image: string | null;
     headline: string | null;
+    // 👇 تم حذف image من هنا
   };
   service: {
     title: string;
@@ -84,13 +84,12 @@ function getGradient(id: string): string {
   return GRADIENTS[code % GRADIENTS.length];
 }
 
+// 👇 تم تنظيف المكون ليتجاهل الصور
 function CounterpartAvatar({
   name,
-  image,
   size = 40,
 }: {
   name: string;
-  image: string | null;
   size?: number;
 }) {
   const initials = name
@@ -100,19 +99,6 @@ function CounterpartAvatar({
     .join("")
     .toUpperCase();
   const hue = name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
-
-  if (image) {
-    return (
-      <Image
-        src={image}
-        alt={name}
-        width={size}
-        height={size}
-        className="rounded-xl object-cover ring-2 ring-slate-800 shrink-0"
-        style={{ width: size, height: size }}
-      />
-    );
-  }
 
   return (
     <div
@@ -212,9 +198,9 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
 
           {/* Counterpart */}
           <div className="flex items-center gap-2 mb-3">
+            {/* 👇 تم إزالة تمرير الصورة هنا */}
             <CounterpartAvatar
               name={order.counterpart.name}
-              image={order.counterpart.image}
               size={28}
             />
             <div className="min-w-0">

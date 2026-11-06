@@ -28,7 +28,8 @@ export default async function ChatPage() {
       participants: {
         select: {
           user: {
-            select: { id: true, name: true, image: true, role: true },
+            // 👇 تم حذف image: true من هنا
+            select: { id: true, name: true, role: true },
           },
         },
       },

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   MessageSquare,
@@ -12,7 +11,6 @@ import type { ChatRoomType, ProjectStatus, Role } from "@prisma/client";
 interface ParticipantUser {
   id: string;
   name: string;
-  image: string | null;
   role: Role;
 }
 
@@ -59,12 +57,10 @@ function formatRelative(iso: string): string {
 
 function Avatar({
   name,
-  image,
   size = 44,
   badge,
 }: {
   name: string;
-  image: string | null;
   size?: number;
   badge?: boolean;
 }) {
@@ -78,27 +74,17 @@ function Avatar({
 
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
-      {image ? (
-        <Image
-          src={image}
-          alt={name}
-          width={size}
-          height={size}
-          className="rounded-full object-cover ring-2 ring-slate-800"
-        />
-      ) : (
-        <div
-          className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-slate-800"
-          style={{
-            width: size,
-            height: size,
-            fontSize: size * 0.36,
-            background: `hsl(${hue}, 55%, 42%)`,
-          }}
-        >
-          {initials}
-        </div>
-      )}
+      <div
+        className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-slate-800"
+        style={{
+          width: size,
+          height: size,
+          fontSize: size * 0.36,
+          background: `hsl(${hue}, 55%, 42%)`,
+        }}
+      >
+        {initials}
+      </div>
       {badge && (
         <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-slate-900" />
       )}
@@ -181,7 +167,6 @@ function RoomRow({
         {room.participants.length >= 1 ? (
           <Avatar
             name={room.participants[0]!.name}
-            image={room.participants[0]!.image}
             size={44}
             badge
           />
@@ -195,7 +180,6 @@ function RoomRow({
           <div className="absolute -bottom-1 -right-1 ring-2 ring-slate-900 rounded-full">
             <Avatar
               name={room.participants[1]!.name}
-              image={room.participants[1]!.image}
               size={22}
             />
           </div>

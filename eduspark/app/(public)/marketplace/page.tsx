@@ -19,7 +19,7 @@ export const metadata = {
 };
 
 export default async function MarketplacePage() {
-  // ── Fetch with caching ─────────────────────────────────
+  // ── Fetch with caching ────────────────────────────────────────
   const [rawServices, categories] = await Promise.all([
     // Cache: all active services (60s TTL)
     cached(CacheKeys.servicesList({}), CacheTTL.medium, () =>
@@ -41,7 +41,7 @@ export default async function MarketplacePage() {
             select: {
               id: true,
               name: true,
-              image: true,
+              // 👇 تم حذف image: true من هنا
               headline: true,
               certificates: {
                 select: {
@@ -90,7 +90,7 @@ export default async function MarketplacePage() {
     creator: {
       id: s.creator.id,
       name: s.creator.name,
-      image: null,
+      // 👇 تم حذف image: null من هنا
       headline: s.creator.headline,
       certifiedCategories: (s.creator.certificates ?? [])
         .map((c) => c.course.categoryId)

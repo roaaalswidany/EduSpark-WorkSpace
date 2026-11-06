@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Crown, Trophy, Medal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getLevelForXP } from "@/lib/gamification/levels";
@@ -8,7 +7,6 @@ interface LeaderboardEntry {
   rank: number;
   userId: string;
   name: string;
-  image: string | null;
   xp: number;
   level: string;
   isCurrentUser: boolean;
@@ -84,6 +82,14 @@ function PodiumCard({
   }[position];
 
   const Icon = config.icon;
+  
+  const initials = entry.name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+  const hue = entry.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
 
   return (
     <Link
@@ -99,23 +105,12 @@ function PodiumCard({
 
       <div
         className={cn(
-          "rounded-full ring-2 ring-slate-700 shrink-0 overflow-hidden",
+          "rounded-full ring-2 ring-slate-700 shrink-0 flex items-center justify-center text-white font-bold",
           config.size
         )}
+        style={{ background: `hsl(${hue}, 55%, 42%)` }}
       >
-        {entry.image ? (
-          <Image
-            src={entry.image}
-            alt={entry.name}
-            width={56}
-            height={56}
-            className="object-cover w-full h-full"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-slate-800 text-white text-sm font-bold">
-            {entry.name.charAt(0).toUpperCase()}
-          </div>
-        )}
+        {initials}
       </div>
 
       <div className="text-center min-w-0 w-full">
@@ -133,6 +128,14 @@ function PodiumCard({
 function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
   const level = getLevelForXP(entry.xp);
   const xpFormatted = entry.xp.toLocaleString("en-US");
+  
+  const initials = entry.name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+  const hue = entry.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
 
   return (
     <Link
@@ -150,20 +153,11 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
         </span>
       </div>
 
-      <div className="w-9 h-9 rounded-full ring-2 ring-slate-800 overflow-hidden shrink-0">
-        {entry.image ? (
-          <Image
-            src={entry.image}
-            alt={entry.name}
-            width={36}
-            height={36}
-            className="object-cover w-full h-full"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-slate-800 text-white text-xs font-bold">
-            {entry.name.charAt(0).toUpperCase()}
-          </div>
-        )}
+      <div 
+        className="w-9 h-9 rounded-full ring-2 ring-slate-800 flex items-center justify-center text-white text-xs font-bold shrink-0"
+        style={{ background: `hsl(${hue}, 55%, 42%)` }}
+      >
+        {initials}
       </div>
 
       <div className="flex-1 min-w-0">

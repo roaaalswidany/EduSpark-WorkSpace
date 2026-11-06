@@ -43,7 +43,7 @@ export default async function ChatRoomPage({ params }: PageProps) {
       participants: {
         select: {
           user: {
-            select: { id: true, name: true, image: true, role: true },
+            select: { id: true, name: true, role: true },
           },
         },
       },
@@ -120,24 +120,26 @@ function ParticipantChip({
   user,
   isCurrentUser,
 }: {
-  user: { id: string; name: string; image: string | null };
+  user: { id: string; name: string };
   isCurrentUser: boolean;
 }) {
+  const initials = user.name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+  const hue = user.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+
   return (
     <div className="flex items-center gap-2">
       <div className="relative shrink-0 w-6 h-6">
-        {user.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={user.image}
-            alt={user.name}
-            className="w-6 h-6 rounded-full object-cover"
-          />
-        ) : (
-          <div className="w-6 h-6 rounded-full flex items-center justify-center bg-slate-700 text-white text-[9px] font-bold">
-            {user.name.slice(0, 2).toUpperCase()}
-          </div>
-        )}
+        <div
+          className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
+          style={{ background: `hsl(${hue}, 55%, 42%)` }}
+        >
+          {initials}
+        </div>
       </div>
       <p className="text-xs font-medium text-slate-300 leading-none">
         {user.name}
