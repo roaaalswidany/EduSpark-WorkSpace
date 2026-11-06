@@ -38,6 +38,7 @@ import {
   deleteLessonAction,
 } from "@/actions/creator/manage-curriculum";
 import { updateCourseStatusAction } from "@/actions/creator/publish-course";
+import { ThumbnailUploader } from "./thumbnail-uploader";
 
 // ─── Types ──────────────────────────────────────────────────────
 
@@ -66,6 +67,7 @@ interface Course {
   status: "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "ARCHIVED";
   reviewNote?: string | null;
   enrollmentCount: number;
+  thumbnail: string | null;
 }
 
 interface Props {
@@ -211,6 +213,11 @@ export function CurriculumEditor({ course, sections }: Props) {
           )}
         </div>
       </div>
+
+      <ThumbnailUploader
+        courseId={course.id}
+        currentThumbnail={course.thumbnail}
+      />
 
       {course.status === "PENDING_REVIEW" && (
         <div className="flex items-start gap-3 p-4 rounded-xl bg-sky-500/10 border border-sky-500/20">

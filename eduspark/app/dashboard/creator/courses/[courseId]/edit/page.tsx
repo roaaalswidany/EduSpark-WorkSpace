@@ -22,6 +22,7 @@ export default async function EditCoursePage({ params }: PageProps) {
       id: true,
       title: true,
       slug: true,
+      thumbnail: true, 
       status: true,
       reviewNote: true,
       creatorId: true,
@@ -75,6 +76,7 @@ export default async function EditCoursePage({ params }: PageProps) {
         status: course.status,
         reviewNote: course.reviewNote,
         enrollmentCount: course._count.enrollments,
+        thumbnail: course.thumbnail, 
       }}
       sections={course.sections}
     />
