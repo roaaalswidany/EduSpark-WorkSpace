@@ -43,6 +43,7 @@ enum EnrollmentStatus {
 }
 
 enum ServiceStatus {
+  PENDING_REVIEW
   ACTIVE
   PAUSED
   ARCHIVED

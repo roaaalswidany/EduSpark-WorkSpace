@@ -18,6 +18,12 @@ import {
   ShoppingCart,
   Briefcase,
   Clock,
+  Eye,
+  FileText,
+  LinkIcon,
+  Tag,
+  RotateCcw,
+  CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ServiceStatus } from "@prisma/client";
@@ -27,10 +33,14 @@ interface ServiceRow {
   id: string;
   title: string;
   slug: string;
+  description: string;
   thumbnail: string | null;
   status: ServiceStatus;
   price: number;
   deliveryDays: number;
+  revisions: number;
+  tags: string[];
+  portfolioLinks: string[];
   createdAt: string;
   creator: { id: string; name: string; image: string | null };
   category: { id: string; name: string } | null;
@@ -40,6 +50,7 @@ interface ServiceRow {
 interface ServicesTableProps {
   services: ServiceRow[];
   statusCounts: {
+    PENDING_REVIEW: number;
     ACTIVE: number;
     PAUSED: number;
     ARCHIVED: number;
@@ -52,6 +63,7 @@ interface ServicesTableProps {
 }
 
 const STATUS_BADGE: Record<ServiceStatus, string> = {
+  PENDING_REVIEW: "bg-sky-500/10 text-sky-400 border-sky-500/20",
   ACTIVE: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
   PAUSED: "bg-amber-500/10 text-amber-400 border-amber-500/20",
   ARCHIVED: "bg-slate-700/50 text-slate-400 border-slate-700",
@@ -61,6 +73,10 @@ const STATUS_TOAST: Record<
   ServiceStatus,
   { title: string; description: string }
 > = {
+  PENDING_REVIEW: {
+    title: "Service submitted for review",
+    description: "The service is waiting for an administrator decision.",
+  },
   ACTIVE: {
     title: "Service activated ▶️",
     description: "The service is now visible in the marketplace.",
@@ -126,6 +142,170 @@ function ServiceThumb({
   );
 }
 
+// ─── Service Details Modal ────────────────────────────────────────
+
+function ServiceDetailsModal({
+  service,
+  onClose,
+  onApprove,
+  onArchive,
+}: {
+  service: ServiceRow;
+  onClose: () => void;
+  onApprove: () => void;
+  onArchive: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
+        onClick={onClose}
+      />
+      <div className="relative w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden animate-scale-in">
+        {/* Header */}
+        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-800">
+          <div>
+            <h2 className="text-lg font-bold text-white">Review Service</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Review all details before making a decision.</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {/* Thumbnail + Main Info */}
+          <div className="flex flex-col sm:flex-row gap-6">
+            <div className="w-full sm:w-64 shrink-0">
+              <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-950 border border-slate-800">
+                <ServiceThumb id={service.id} title={service.title} thumbnail={service.thumbnail} size={256} />
+              </div>
+            </div>
+            <div className="flex-1 space-y-3">
+              <div>
+                <span
+                  className={cn(
+                    "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border mb-2",
+                    STATUS_BADGE[service.status]
+                  )}
+                >
+                  {service.status}
+                </span>
+                <h1 className="text-xl font-bold text-white">{service.title}</h1>
+                <p className="text-sm text-slate-400 mt-1">
+                  By <Link href={`/profile/${service.creator.id}`} className="text-indigo-400 hover:underline">{service.creator.name}</Link>
+                  {service.category && <> · {service.category.name}</>}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-4 text-sm text-slate-500">
+                <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {service.deliveryDays} days delivery</span>
+                <span className="flex items-center gap-1.5"><RotateCcw className="w-4 h-4" /> {service.revisions} revisions</span>
+                <span className="flex items-center gap-1.5"><ShoppingCart className="w-4 h-4" /> {service._count.orders} orders</span>
+              </div>
+              <div className="pt-2">
+                <p className="text-2xl font-black text-emerald-400">${service.price.toFixed(2)}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><FileText className="w-4 h-4 text-indigo-400" /> Description</h3>
+            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+              {service.description}
+            </div>
+          </div>
+
+          {/* Tags */}
+          {service.tags.length > 0 && (
+            <div>
+              <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><Tag className="w-4 h-4 text-indigo-400" /> Tags</h3>
+              <div className="flex flex-wrap gap-2">
+                {service.tags.map((tag) => (
+                  <span key={tag} className="px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs text-slate-300">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Portfolio Links */}
+          {service.portfolioLinks.length > 0 && (
+            <div>
+              <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><LinkIcon className="w-4 h-4 text-indigo-400" /> Portfolio</h3>
+              <div className="space-y-2">
+                {service.portfolioLinks.map((link, i) => (
+                  <a
+                    key={i}
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-indigo-500/40 text-sm text-slate-400 hover:text-indigo-300 transition-all"
+                  >
+                    <ExternalLink className="w-4 h-4 shrink-0" />
+                    <span className="truncate">{link}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="shrink-0 px-6 py-4 border-t border-slate-800 bg-slate-950/40 flex items-center justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+          >
+            Close
+          </button>
+
+          {service.status === "PENDING_REVIEW" && (
+            <>
+              <button
+                onClick={onArchive}
+                className="px-4 py-2 rounded-lg text-sm font-bold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 transition-all"
+              >
+                Request changes
+              </button>
+              <button
+                onClick={onApprove}
+                className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 transition-all inline-flex items-center gap-2"
+              >
+                <CheckCircle2 className="w-4 h-4" /> Approve & Activate
+              </button>
+            </>
+          )}
+
+          {service.status !== "ARCHIVED" && service.status !== "PENDING_REVIEW" && (
+            <button
+              onClick={onArchive}
+              className="px-4 py-2 rounded-lg text-sm font-bold text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition-all"
+            >
+              Archive
+            </button>
+          )}
+          {service.status === "PAUSED" && (
+            <button
+              onClick={onApprove}
+              className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 transition-all inline-flex items-center gap-2"
+            >
+              <CheckCircle2 className="w-4 h-4" /> Approve & Activate
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Table Component ─────────────────────────────────────────
+
 export function ServicesTable({
   services,
   statusCounts,
@@ -149,6 +329,9 @@ export function ServicesTable({
   } | null>(null);
   const [reasonInput, setReasonInput] = useState("");
   const [reasonError, setReasonError] = useState<string | null>(null);
+  
+  // 👇 حالة المودال الجديد
+  const [selectedService, setSelectedService] = useState<ServiceRow | null>(null);
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const activeStatus = searchParams.get("status") ?? "";
@@ -193,7 +376,6 @@ export function ServicesTable({
 
   const handleStatusFilter = (status: string) => updateURL({ status });
 
-  // Low-level executor — runs the actual status change and shows toasts.
   const executeChangeStatus = (
     service: ServiceRow,
     status: ServiceStatus,
@@ -234,11 +416,11 @@ export function ServicesTable({
         id: toastId,
         description: toastConfig.description,
       });
+      setSelectedService(null); 
       router.refresh();
     });
   };
 
-  // User-facing handler — opens the reason dialog when archiving.
   const handleChangeStatus = (
     service: ServiceRow,
     status: ServiceStatus
@@ -246,7 +428,6 @@ export function ServicesTable({
     setOpenMenuId(null);
     setActionError(null);
 
-    // Archiving a non-archived service requires a reason first.
     if (status === "ARCHIVED" && service.status !== "ARCHIVED") {
       setArchiveDialog({
         serviceId: service.id,
@@ -260,7 +441,6 @@ export function ServicesTable({
     executeChangeStatus(service, status);
   };
 
-  // Dialog submit — validates the reason, then executes.
   const handleConfirmArchive = () => {
     if (!archiveDialog) return;
 
@@ -288,6 +468,7 @@ export function ServicesTable({
       count:
         statusCounts.ACTIVE + statusCounts.PAUSED + statusCounts.ARCHIVED,
     },
+    { value: "PENDING_REVIEW", label: "Pending review", count: statusCounts.PENDING_REVIEW }, 
     { value: "ACTIVE", label: "Active", count: statusCounts.ACTIVE },
     { value: "PAUSED", label: "Paused", count: statusCounts.PAUSED },
     { value: "ARCHIVED", label: "Archived", count: statusCounts.ARCHIVED },
@@ -497,13 +678,55 @@ export function ServicesTable({
                         />
                         <div
                           className={cn(
-                            "absolute right-0 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl shadow-black/60 overflow-hidden z-20",
+                            "absolute right-0 w-56 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl shadow-black/60 overflow-hidden z-20",
                             "animate-slide-down",
                             isLastRow
                               ? "bottom-full mb-1 origin-bottom-right"
                               : "top-full mt-1 origin-top-right"
                           )}
                         >
+
+                    {s.status === "PENDING_REVIEW" && (
+                            <>
+                              <div className="px-3 py-2 border-b border-slate-800">
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Review</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedService(s);
+                                  setOpenMenuId(null);
+                                }}
+                                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300 transition-colors"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                                Review Details
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  handleChangeStatus(s, "ACTIVE");
+                                  setOpenMenuId(null);
+                                }}
+                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors inline-flex items-center gap-2"
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                Approve & Activate
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  handleChangeStatus(s, "ARCHIVED");
+                                  setOpenMenuId(null);
+                                }}
+                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors"
+                              >
+                                Request changes…
+                              </button>
+                              <div className="h-px bg-slate-800" />
+                            </>
+                          )}
+                          
                           <a
                             href={`/marketplace/services/${s.slug}`}
                             target="_blank"
@@ -608,7 +831,8 @@ export function ServicesTable({
           )}
         </div>
       )}
-            {/* Archive reason dialog */}
+
+      {/* Archive reason dialog */}
       {archiveDialog && (
         <>
           <div
@@ -700,6 +924,23 @@ export function ServicesTable({
             </div>
           </div>
         </>
+      )}
+
+      {selectedService && (
+        <ServiceDetailsModal
+          service={selectedService}
+          onClose={() => setSelectedService(null)}
+          onApprove={() => executeChangeStatus(selectedService, "ACTIVE")}
+          onArchive={() => {
+            setSelectedService(null);
+            setArchiveDialog({
+              serviceId: selectedService.id,
+              serviceTitle: selectedService.title,
+            });
+            setReasonInput("");
+            setReasonError(null);
+          }}
+        />
       )}
     </div>
   );

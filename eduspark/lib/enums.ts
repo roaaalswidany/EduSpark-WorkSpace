@@ -23,6 +23,7 @@ export const CourseLevel = {
 
 // ============ ServiceStatus ============
 export const ServiceStatus = {
+  PENDING_REVIEW: "PENDING_REVIEW",
   ACTIVE: "ACTIVE",
   PAUSED: "PAUSED",
   ARCHIVED: "ARCHIVED",

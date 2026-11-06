@@ -16,7 +16,7 @@ import { auditLog, AuditActions } from "@/lib/security/audit";
 const UpdateServiceSchema = z.object({
   serviceId: z.string().cuid(),
   action: z.enum(["CHANGE_STATUS"]),
-  status: z.enum(["ACTIVE", "PAUSED", "ARCHIVED"]).optional(),
+  status: z.enum(["PENDING_REVIEW", "ACTIVE", "PAUSED", "ARCHIVED"]).optional(), 
   // Optional rationale recorded in the audit log; required for archiving.
   reason: z.string().trim().max(500).optional(),
 });
