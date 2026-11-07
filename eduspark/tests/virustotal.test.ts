@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Unit tests for lib/virustotal.ts
  * Mocks global.fetch — no real API calls, no rate limits, runs in <1s.
  */
