@@ -1,8 +1,8 @@
-﻿name: Test
+name: CI
 
 on:
   push:
-    branches: [main, final-fixes]
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -48,15 +48,39 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
 
+      # Exact versions from package-lock.json (reproducible, unlike `npm install`).
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Generate Prisma client
         run: cd eduspark && npx prisma generate
+
+      - name: Lint
+        run: cd eduspark && npm run lint
+
+      # Type errors are reported but do not block yet (first run on real Prisma types).
+      # Remove `continue-on-error` once this step is green.
+      - name: Type check
+        run: cd eduspark && npx tsc --noEmit
+        continue-on-error: true
 
       - name: Run migrations on test DB
         run: cd eduspark && npx prisma migrate deploy
 
       - name: Run test suite
         run: cd eduspark && npx vitest run --reporter=verbose
+
+  # Proves the Dockerfile actually builds. Informational until it has gone green once.
+  docker-build:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build web image (not pushed)
+        run: >
+          docker build -f eduspark/Dockerfile
+          --build-arg NEXT_PUBLIC_CHAT_SERVER_URL=http://localhost:3001
+          -t eduspark-web:ci .
