@@ -1,4 +1,4 @@
-﻿# Automated Testing Strategy & Results
+# Automated Testing Strategy & Results
 
 ## Overview
 EduSpark implements a comprehensive automated testing suite using **Vitest v3.2.7**. The test suite covers critical business logic, security boundaries, and concurrency edge cases across the platform.
