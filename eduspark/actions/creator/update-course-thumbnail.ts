@@ -1,21 +1,27 @@
 "use server";
 
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { z } from "zod";
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { getFreshUser } from "@/lib/security/fresh-user";
-import { s3Client, UPLOAD_BUCKET } from "@/lib/s3-client";
+import { limitByUser } from "@/lib/security/action-guard";
+import { RateLimits } from "@/lib/security/rate-limit";
+import { s3Client } from "@/lib/s3-client";
+import {
+  publicBucket,
+  publicObjectUrl,
+  keyFromPublicUrl,
+  thumbnailKey,
+  sniffImage,
+} from "@/lib/storage/public-objects";
 import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 const MAX_THUMBNAIL_SIZE = 2 * 1024 * 1024; // 2 MB
-const ALLOWED_THUMBNAIL_TYPES = new Set([
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-]);
+const CourseIdSchema = z.string().cuid();
 
 export type ThumbnailUploadResult =
   | { success: true; url: string }
@@ -28,6 +34,8 @@ export type ThumbnailUploadResult =
         | "NO_FILE"
         | "INVALID_TYPE"
         | "FILE_TOO_LARGE"
+        | "COURSE_LOCKED"
+        | "RATE_LIMITED"
         | "SERVER_ERROR";
     };
 
@@ -41,23 +49,22 @@ export async function updateCourseThumbnailAction(
     const actor = await getFreshUser(session.user.id);
     if (!actor?.isActive) return { success: false, error: "FORBIDDEN" };
 
+    const retryAfter = await limitByUser(RateLimits.THUMBNAIL_UPLOAD, session.user.id);
+    if (retryAfter !== null) return { success: false, error: "RATE_LIMITED" };
+
     const file = formData.get("file");
-    const courseId = formData.get("courseId");
+    const rawCourseId = formData.get("courseId");
 
     if (!(file instanceof File)) return { success: false, error: "NO_FILE" };
-    if (typeof courseId !== "string" || !courseId) {
-      return { success: false, error: "NOT_FOUND" };
-    }
-    if (!ALLOWED_THUMBNAIL_TYPES.has(file.type)) {
-      return { success: false, error: "INVALID_TYPE" };
-    }
-    if (file.size > MAX_THUMBNAIL_SIZE) {
-      return { success: false, error: "FILE_TOO_LARGE" };
-    }
+    const courseIdParsed = CourseIdSchema.safeParse(rawCourseId);
+    if (!courseIdParsed.success) return { success: false, error: "NOT_FOUND" };
+    const courseId = courseIdParsed.data;
+
+    if (file.size > MAX_THUMBNAIL_SIZE) return { success: false, error: "FILE_TOO_LARGE" };
 
     const course = await db.course.findUnique({
       where: { id: courseId },
-      select: { creatorId: true },
+      select: { creatorId: true, status: true, thumbnail: true },
     });
     if (!course) return { success: false, error: "NOT_FOUND" };
 
@@ -65,33 +72,42 @@ export async function updateCourseThumbnailAction(
     const isAdmin = actor.role === Role.ADMIN;
     if (!isOwner && !isAdmin) return { success: false, error: "FORBIDDEN" };
 
-    const rawExt = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-    const ext = ["png", "jpg", "jpeg", "webp"].includes(rawExt) ? rawExt : "jpg";
-    const storageKey = `courses/${courseId}/thumbnail-${randomUUID()}.${ext}`;
+    // What the reviewer is looking at must not change under their feet.
+    if (course.status === "PENDING_REVIEW" && !isAdmin) {
+      return { success: false, error: "COURSE_LOCKED" };
+    }
 
+    // Trust the bytes, not the browser: identify the image by its magic numbers.
     const buffer = Buffer.from(await file.arrayBuffer());
+    if (buffer.length > MAX_THUMBNAIL_SIZE) return { success: false, error: "FILE_TOO_LARGE" };
+    const kind = sniffImage(buffer);
+    if (!kind) return { success: false, error: "INVALID_TYPE" };
 
+    // `public/` prefix: the only part of the bucket that is anonymously readable.
+    const storageKey = thumbnailKey(courseId, randomUUID(), kind.ext);
     await s3Client.send(
       new PutObjectCommand({
-        Bucket: UPLOAD_BUCKET,
+        Bucket: publicBucket(),
         Key: storageKey,
         Body: buffer,
-        ContentType: file.type,
+        ContentType: kind.mime, // detected, never the client-declared type
         ContentLength: buffer.length,
+        CacheControl: "public, max-age=31536000, immutable",
       })
     );
 
-    // تنظيف الرابط: إزالة أي / مزدوجة في نهاية الـ Endpoint
-    const baseUrl = (process.env.S3_ENDPOINT || "").replace(/\/+$/, "");
-    const publicUrl = `${baseUrl}/${UPLOAD_BUCKET}/${storageKey}`;
-    
-    // 👇 هذه الطباعة ستظهر في الترمنال لنعرف الرابط بالضبط
-    console.log("✅ [THUMBNAIL UPLOADED]:", publicUrl);
+    const publicUrl = publicObjectUrl(storageKey);
+    await db.course.update({ where: { id: courseId }, data: { thumbnail: publicUrl } });
 
-    await db.course.update({
-      where: { id: courseId },
-      data: { thumbnail: publicUrl },
-    });
+    // Best-effort cleanup of the previous image (never fails the upload).
+    const oldKey = keyFromPublicUrl(course.thumbnail);
+    if (oldKey && oldKey !== storageKey) {
+      try {
+        await s3Client.send(new DeleteObjectCommand({ Bucket: publicBucket(), Key: oldKey }));
+      } catch (err) {
+        console.error("[THUMBNAIL_CLEANUP]", err);
+      }
+    }
 
     revalidatePath(`/dashboard/creator/courses/${courseId}/edit`);
     revalidatePath("/dashboard/creator/courses");

@@ -1,4 +1,4 @@
-﻿import { db } from "@/lib/db";
+import { db } from "@/lib/db";
 import type { Role } from "@prisma/client";
 
 let seq = 0;

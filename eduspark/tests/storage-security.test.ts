@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Security tests for storage actions.
  */
 import { describe, it, expect, beforeEach, vi } from "vitest";

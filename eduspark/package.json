@@ -11,7 +11,9 @@
     "postinstall": "prisma generate",
     "test": "vitest run",
     "test:watch": "vitest",
-    "bootstrap": "tsx prisma/bootstrap.ts"
+    "bootstrap": "tsx prisma/bootstrap.ts",
+    "storage:policy": "tsx scripts/apply-storage-policy.ts",
+    "storage:migrate-thumbnails": "tsx scripts/migrate-thumbnails.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

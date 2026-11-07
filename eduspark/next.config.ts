@@ -11,6 +11,31 @@ const securityHeaders = [
   { key: "X-XSS-Protection", value: "1; mode=block" },
 ];
 
+// Where course thumbnails are served from: S3_PUBLIC_URL (production) or local MinIO (development only).
+type RemotePatterns = NonNullable<NonNullable<NextConfig["images"]>["remotePatterns"]>;
+
+function storageImagePatterns(): RemotePatterns {
+  const patterns: RemotePatterns = [];
+  const raw = process.env.S3_PUBLIC_URL || process.env.S3_ENDPOINT;
+  if (raw) {
+    try {
+      const u = new URL(raw);
+      patterns.push({
+        protocol: u.protocol === "https:" ? "https" : "http",
+        hostname: u.hostname,
+        ...(u.port ? { port: u.port } : {}),
+      });
+    } catch {
+      /* ignore a malformed URL: the image host simply is not whitelisted */
+    }
+  }
+  if (process.env.NODE_ENV !== "production") {
+    patterns.push({ protocol: "http", hostname: "localhost", port: "9000" });
+    patterns.push({ protocol: "http", hostname: "127.0.0.1", port: "9000" });
+  }
+  return patterns;
+}
+
 const nextConfig: NextConfig = {
   turbopack: {
     root: resolve(__dirname, ".."),
@@ -36,17 +61,15 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "api.dicebear.com" },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
-      // إضافة MinIO للسماح بالصور المحلية
-      { protocol: "http", hostname: "localhost", port: "9000" },
-      { protocol: "http", hostname: "127.0.0.1", port: "9000" },
+      ...storageImagePatterns(),
     ],
   },
   staticPageGenerationTimeout: 120,
   
-  // رفع الحد الأقصى لحجم الملفات في Server Actions
+  // Server Actions body limit (global). Thumbnails are capped at 2MB, so 3MB leaves room for the form overhead.
   experimental: {
     serverActions: {
-      bodySizeLimit: "5mb",
+      bodySizeLimit: "3mb",
     },
   },
 };
