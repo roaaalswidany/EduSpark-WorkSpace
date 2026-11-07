@@ -66,3 +66,19 @@ This is achieved using PostgreSQL transactions ($transaction), row-level locking
 2. Run the test suite:
    cd eduspark
    npm run test
+
+---
+
+## Load Test Results (Production Build)
+
+**Test Date:** 2026-11-07  
+**Environment:** Local Docker (PostgreSQL 16, MinIO/SILO, Redis 7) + `npm run build && npm start`  
+**Tool:** k6 v2.3.0  
+**Script:** `load-test.js`
+
+### Command
+
+```bash
+k6 run -e BASE_URL=http://localhost:3000 \
+  --summary-export=load-results.json \
+  load-test.js

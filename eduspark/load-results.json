@@ -1,0 +1,150 @@
+{
+    "metrics": {
+        "http_req_blocked": {
+            "max": 8.2736,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.018923649122807015,
+            "min": 0,
+            "med": 0
+        },
+        "vus": {
+            "value": 2,
+            "min": 2,
+            "max": 50
+        },
+        "iteration_duration": {
+            "p(95)": 2656.77055,
+            "avg": 1492.604406631581,
+            "min": 1017.6169,
+            "med": 1192.8318,
+            "max": 2876.0118,
+            "p(90)": 2320.51097
+        },
+        "vus_max": {
+            "value": 50,
+            "min": 50,
+            "max": 50
+        },
+        "checks": {
+            "passes": 2850,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.99": false
+            },
+            "value": 1
+        },
+        "http_req_sending": {
+            "avg": 0.01361407017543859,
+            "min": 0,
+            "med": 0,
+            "max": 3.5264,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "http_req_duration": {
+            "p(90)": 444.1379,
+            "p(95)": 649.9254999999998,
+            "avg": 163.61402761403514,
+            "min": 5.0759,
+            "med": 56.32640000000001,
+            "max": 1188.4514,
+            "thresholds": {
+                "p(95)<1500": false
+            }
+        },
+        "http_req_waiting": {
+            "min": 1.5138,
+            "med": 41.61045,
+            "max": 1114.0084,
+            "p(90)": 375.06424999999973,
+            "p(95)": 596.1103099999999,
+            "avg": 135.62519161403503
+        },
+        "http_reqs": {
+            "count": 2850,
+            "rate": 56.16123786556894
+        },
+        "http_req_connecting": {
+            "med": 0,
+            "max": 2.2951,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.010053157894736844,
+            "min": 0
+        },
+        "http_req_receiving": {
+            "avg": 27.97522192982455,
+            "min": 0,
+            "med": 12.642900000000001,
+            "max": 183.8007,
+            "p(90)": 76.5448,
+            "p(95)": 96.53071999999989
+        },
+        "iterations": {
+            "count": 950,
+            "rate": 18.720412621856315
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 2850,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 163.61402761403514,
+            "min": 5.0759,
+            "med": 56.32640000000001,
+            "max": 1188.4514,
+            "p(90)": 444.1379,
+            "p(95)": 649.9254999999998
+        },
+        "http_req_tls_handshaking": {
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0
+        },
+        "data_sent": {
+            "count": 216600,
+            "rate": 4268.254077783239
+        },
+        "data_received": {
+            "count": 446660127,
+            "rate": 8801749.34649552
+        }
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "homepage 200": {
+                    "name": "homepage 200",
+                    "path": "::homepage 200",
+                    "id": "5c54cf861a9dc169ae61e914f320d2b9",
+                    "passes": 950,
+                    "fails": 0
+                },
+                "marketplace 200": {
+                    "fails": 0,
+                    "name": "marketplace 200",
+                    "path": "::marketplace 200",
+                    "id": "40ea85f2d0944593375f90e7f3d6b1ca",
+                    "passes": 950
+                },
+                "courses 200": {
+                    "fails": 0,
+                    "name": "courses 200",
+                    "path": "::courses 200",
+                    "id": "4a359ab2e9509543d0022165a05e17c4",
+                    "passes": 950
+                }
+            }
+    }
+}

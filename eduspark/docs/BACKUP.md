@@ -74,3 +74,36 @@ docker cp eduspark-postgres:/tmp/eduspark.dump .\backups\eduspark.dump
 | Date | Dump file | Restore check | Time to restore | Done by |
 |---|---|---|---|---|
 | _fill in_ | | PASSED / FAILED | | |
+
+
+---
+
+## Restore Verification Log
+
+**Test Environment:** Local Docker (PostgreSQL 16, MinIO/SILO, Redis 7)  
+**Test Date:** 2026-11-07 05:17:49 (local)  
+**Tester:** Roaa Al-Swidany  
+
+### Backup
+- **Command:** `bash scripts/backup.sh`
+- **Output:** `./backups/db-20261107_051749.dump` (244 KB)
+- **Scope:** PostgreSQL database only (not MinIO objects)
+
+### Restore Check
+- **Command:** `bash scripts/restore-check.sh`
+- **Method:** pg_restore into scratch database `eduspark_restore_check`
+- **Duration:** ~2 seconds
+
+### Row Count Verification
+
+| Table | At Backup | After Restore | Match |
+|-------|-----------|---------------|-------|
+| users | 85 | 85 | ✅ |
+| courses | 30 | 30 | ✅ |
+| certificates | 36 | 36 | ✅ |
+| enrollments | 264 | 264 | ✅ |
+
+**Verdict:** ✅ **PASS** — the backup is restorable and row counts match exactly.
+
+### Known Limitations
+- Backup script currently covers the **PostgreSQL database only**. MinIO object files (thumbnails, attachments) are **not** included in this backup. For production, extend `scripts/backup.sh` to also snapshot the MinIO volume (see `docs/BACKUP.md` → MinIO section).

@@ -2,3 +2,9 @@
 # Backup and temporary scripts
 backup.sql
 fix-verify.ts
+
+# Database & MinIO backups (contain real user data — never commit)
+backups/
+*.dump
+*.sql.gz
+restore-check.log
