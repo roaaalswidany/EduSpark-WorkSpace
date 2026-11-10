@@ -354,6 +354,8 @@ function getErrorMessage(code: string | undefined): string {
       return "One or more portfolio links were flagged as malicious. Please remove them before saving.";
     case "RATE_LIMITED":
       return "Too many changes in a short time. Please wait a few minutes and try again.";
+    case "CONFLICT":
+      return "The service status changed while you were editing (an administrator may have reviewed it). Reload the page and try again.";
     case "SERVER_ERROR":
       return "Something went wrong on our end. Please try again.";
     default:
@@ -417,11 +419,20 @@ export function ServiceCreationForm({
 
       if (result.success) {
         setSubmitSuccess(true);
+        const sentToReview = "sentToReview" in result && result.sentToReview;
         toast.success(
-          isEdit ? "Service updated successfully! ✨" : "Service published! 🚀",
+          !isEdit
+            ? "Service submitted for review 📬"
+            : sentToReview
+            ? "Changes sent for review 📬"
+            : "Service updated successfully! ✨",
           {
             id: toastId,
-            description: "Redirecting to your services…",
+            description: !isEdit
+              ? "It will appear in the marketplace once an administrator approves it."
+              : sentToReview
+              ? "The service is hidden until an administrator approves your changes."
+              : "Redirecting to your services…",
           }
         );
         setTimeout(() => router.push("/dashboard/creator/services"), 1200);

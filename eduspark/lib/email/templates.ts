@@ -201,6 +201,55 @@ export function courseRejectedEmail(
   };
 }
 
+export function serviceApprovedEmail(
+  to: string,
+  name: string,
+  serviceTitle: string,
+  note?: string
+): MailMessage {
+  return {
+    to,
+    subject: `Your service "${serviceTitle}" is now live`,
+    text: `Hi ${name},\n\nGood news — your service "${serviceTitle}" was approved by an administrator and is now visible in the marketplace.${
+      note ? `\n\nReviewer note: ${note}` : ""
+    }`,
+    html: layout(
+      "Service approved",
+      `<p>Hi ${esc(name)},</p>
+       <p>Good news — your service <strong>"${esc(serviceTitle)}"</strong> was approved by an administrator and is now visible in the marketplace.</p>
+       ${
+         note
+           ? `<p style="background:#1e293b;padding:12px;border-radius:8px;border-left:3px solid #10b981"><strong>Reviewer note:</strong> ${esc(note)}</p>`
+           : ""
+       }`,
+      `${appUrl()}/dashboard/creator/services`,
+      "View my services"
+    ),
+  };
+}
+
+export function serviceRejectedEmail(
+  to: string,
+  name: string,
+  serviceTitle: string,
+  note: string
+): MailMessage {
+  return {
+    to,
+    subject: `Changes requested for "${serviceTitle}"`,
+    text: `Hi ${name},\n\nYour service "${serviceTitle}" was reviewed and needs changes before it can go live.\n\nReviewer note: ${note}\n\nThe service is paused. Update it and submit it for review again.`,
+    html: layout(
+      "Changes requested",
+      `<p>Hi ${esc(name)},</p>
+       <p>Your service <strong>"${esc(serviceTitle)}"</strong> was reviewed and needs changes before it can go live.</p>
+       <p style="background:#1e293b;padding:12px;border-radius:8px;border-left:3px solid #f59e0b"><strong>Reviewer note:</strong> ${esc(note)}</p>
+       <p>The service is paused. Update it and submit it for review again.</p>`,
+      `${appUrl()}/dashboard/creator/services`,
+      "Edit my service"
+    ),
+  };
+}
+
 export function serviceArchivedEmail(
   to: string,
   name: string,

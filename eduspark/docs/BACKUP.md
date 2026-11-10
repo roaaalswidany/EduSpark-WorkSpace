@@ -106,4 +106,5 @@ docker cp eduspark-postgres:/tmp/eduspark.dump .\backups\eduspark.dump
 **Verdict:** ✅ **PASS** — the backup is restorable and row counts match exactly.
 
 ### Known Limitations
-- Backup script currently covers the **PostgreSQL database only**. MinIO object files (thumbnails, attachments) are **not** included in this backup. For production, extend `scripts/backup.sh` to also snapshot the MinIO volume (see `docs/BACKUP.md` → MinIO section).
+- The drill above covered the **PostgreSQL database only**. `scripts/backup.sh` can also mirror the MinIO bucket (`MINIO_BACKUP=1 MINIO_ROOT_USER=… MINIO_ROOT_PASSWORD=… ./scripts/backup.sh`), but **that path has not been drilled yet** — run it once and add a row for it here before relying on it for uploaded files (attachments, thumbnails).
+- Row counts matching proves the data came back; it does not prove the application works against the restored database. For a full drill, point a copy of the app at `eduspark_restore_check` and log in.

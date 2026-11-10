@@ -294,6 +294,10 @@ REJECTED REJECTED
     String tags 
     DateTime createdAt 
     DateTime updatedAt 
+    DateTime submittedAt "❓"
+    DateTime reviewedAt "❓"
+    String reviewedById "❓"
+    String reviewNote "❓"
     String portfolioLinks 
     }
   

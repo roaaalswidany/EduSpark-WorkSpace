@@ -33,6 +33,7 @@ export default async function CreatorServicesPage() {
       deliveryDays: true,
       revisions: true,
       status: true,
+      reviewNote: true,
       tags: true,
       createdAt: true,
       category: { select: { id: true, name: true, slug: true } },

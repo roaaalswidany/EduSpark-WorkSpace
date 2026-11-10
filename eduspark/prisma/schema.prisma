@@ -471,6 +471,12 @@ model Service {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
+  // Admin review trail (history lives in audit_logs).
+  submittedAt  DateTime?
+  reviewedAt   DateTime?
+  reviewedById String?
+  reviewNote   String?       @db.Text
+
   creator  User      @relation("CreatorServices", fields: [creatorId], references: [id], onDelete: Cascade)
   category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   orders   Order[]

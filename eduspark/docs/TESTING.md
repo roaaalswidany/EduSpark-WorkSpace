@@ -82,3 +82,24 @@ This is achieved using PostgreSQL transactions ($transaction), row-level locking
 k6 run -e BASE_URL=http://localhost:3000 \
   --summary-export=load-results.json \
   load-test.js
+```
+
+### Results (`load-results.json`)
+
+| Metric | Result | Threshold |
+|---|---|---|
+| Requests | 2,850 over ~50 s (≈ 56 req/s) | — |
+| Concurrent virtual users | 50 (peak) | — |
+| Failed requests (`http_req_failed`) | **0 %** | < 1 % ✅ |
+| Checks passed (status 200 on `/`, `/marketplace`, `/courses`) | **100 %** (2,850 / 2,850) | > 99 % ✅ |
+| Response time — average | 163.6 ms | — |
+| Response time — median | 56.3 ms | — |
+| Response time — p90 | 444.1 ms | — |
+| Response time — **p95** | **649.9 ms** | < 1,500 ms ✅ |
+| Response time — max | 1,188.5 ms | — |
+
+### What this does and does not show
+
+- It shows that the three **public, read-only pages** stay fast and error-free at 50 concurrent users on a production build.
+- It does **not** exercise logged-in flows or writes (quiz submission transaction, enrolment, chat, uploads) — those are covered for *correctness under concurrency* by the test suite, not for *throughput*.
+- It ran on a developer machine with PostgreSQL, Redis and MinIO in Docker on the same host, so absolute numbers are indicative only; a real deployment will differ.

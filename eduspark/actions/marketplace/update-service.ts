@@ -16,6 +16,8 @@ import {
 import { scanUrls } from "@/lib/virustotal";
 import { limitByUser } from "@/lib/security/action-guard";
 import { RateLimits } from "@/lib/security/rate-limit";
+import { notifyAdmins } from "@/lib/notifications/notify-admins";
+import { auditLog, AuditActions } from "@/lib/security/audit";
 
 // ─── Schema ───────────────────────────────────────────────────────
 
@@ -26,7 +28,7 @@ const UpdateServiceSchema = CreateServiceSchema.extend({
 // ─── Result Types ─────────────────────────────────────────────────
 
 export type UpdateServiceResult =
-  | { success: true; serviceId: string; slug: string }
+  | { success: true; serviceId: string; slug: string; sentToReview: boolean }
   | {
       success: false;
       error:
@@ -36,6 +38,7 @@ export type UpdateServiceResult =
         | "NO_CERTIFICATE"
         | "INVALID_INPUT"
         | "MALICIOUS_URL_BLOCKED"
+        | "CONFLICT"
         | "SERVER_ERROR"
         | "RATE_LIMITED";
       fieldErrors?: Partial<Record<keyof CreateServiceInput, string[]>>;
@@ -93,7 +96,15 @@ export async function updateServiceAction(
     // 3. Verify service exists and belongs to user
     const existing = await db.service.findUnique({
       where: { id: serviceId },
-      select: { id: true, creatorId: true, slug: true, portfolioLinks: true },
+      select: {
+        id: true,
+        creatorId: true,
+        slug: true,
+        title: true,
+        description: true,
+        status: true,
+        portfolioLinks: true,
+      },
     });
 
     if (!existing) return { success: false, error: "NOT_FOUND" };
@@ -154,8 +165,25 @@ export async function updateServiceAction(
       );
 
     // 5. Update service
-    const updated = await db.service.update({
-      where: { id: serviceId },
+    //
+    // An approved service is what the admin looked at. If the creator changes the parts a reviewer
+    // judges (title, description, portfolio links), the service goes back to review instead of
+    // silently showing unreviewed content. Price, delivery time, revisions and tags are not content
+    // moderation and do not trigger a review. Admins are trusted and never re-queue their own edits.
+    const sameLinks =
+      JSON.stringify([...existing.portfolioLinks].sort()) ===
+      JSON.stringify([...portfolioLinks].sort());
+    const materialChange =
+      existing.title.trim() !== title.trim() ||
+      existing.description.trim() !== description.trim() ||
+      !sameLinks;
+    const sendToReview =
+      existing.status === "ACTIVE" && materialChange && role !== Role.ADMIN;
+
+    // Compare-and-set on the status we just read: if an admin approved/paused the service in the
+    // meantime, we must not overwrite their decision with a stale one.
+    const res = await db.service.updateMany({
+      where: { id: serviceId, status: existing.status },
       data: {
         title,
         description,
@@ -165,9 +193,29 @@ export async function updateServiceAction(
         tags,
         portfolioLinks,
         categoryId: effectiveCategoryId,
+        ...(sendToReview
+          ? { status: "PENDING_REVIEW" as const, submittedAt: new Date(), reviewNote: null }
+          : {}),
       },
-      select: { id: true, slug: true },
     });
+    if (res.count !== 1) return { success: false, error: "CONFLICT" };
+    const updated = { id: serviceId, slug: existing.slug };
+
+    if (sendToReview) {
+      await notifyAdmins({
+        title: "Service awaiting review",
+        body: `"${title}" was edited and needs another review.`,
+        link: "/dashboard/admin/services?status=PENDING_REVIEW",
+        exceptUserId: userId,
+      });
+      void auditLog({
+        action: AuditActions.SERVICE_SUBMITTED_FOR_REVIEW,
+        userId,
+        targetType: "Service",
+        targetId: serviceId,
+        metadata: { title, reason: "content edited after approval" },
+      });
+    }
 
     // 6. Revalidate
     revalidatePath("/dashboard/creator/services");
@@ -176,7 +224,7 @@ export async function updateServiceAction(
 
     await cacheInvalidatePattern(CacheKeys.patterns.allServices);
 
-    return { success: true, serviceId: updated.id, slug: updated.slug };
+    return { success: true, serviceId: updated.id, slug: updated.slug, sentToReview: sendToReview };
   } catch (error) {
     console.error("[UPDATE_SERVICE_ACTION]", error);
     return { success: false, error: "SERVER_ERROR" };

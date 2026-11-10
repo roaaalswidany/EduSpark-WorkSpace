@@ -30,6 +30,10 @@ export function thumbnailKey(courseId: string, uuid: string, ext: string): strin
   return `${PUBLIC_PREFIX}courses/${courseId}/thumbnail-${uuid}.${ext}`;
 }
 
+export function serviceThumbnailKey(serviceId: string, uuid: string, ext: string): string {
+  return `${PUBLIC_PREFIX}services/${serviceId}/thumbnail-${uuid}.${ext}`;
+}
+
 /** Path-style URL (what MinIO and most S3-compatible servers expect). */
 export function publicObjectUrl(key: string): string {
   return `${publicBaseUrl()}/${publicBucket()}/${key}`;

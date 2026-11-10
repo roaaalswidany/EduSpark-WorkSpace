@@ -46,7 +46,7 @@ export default async function AdminDashboardPage() {
       },
     }),
     db.service.findMany({
-      where: { status: ServiceStatus.PAUSED },
+      where: { status: ServiceStatus.PENDING_REVIEW },
       orderBy: { createdAt: "desc" },
       take: 3,
       select: {
@@ -136,8 +136,8 @@ export default async function AdminDashboardPage() {
             <p className="text-xs text-amber-400/80 mt-1">
               {pendingCourses.length} course
               {pendingCourses.length !== 1 ? "s" : ""} awaiting review ·{" "}
-              {pendingServices.length} paused service
-              {pendingServices.length !== 1 ? "s" : ""}
+              {pendingServices.length} service
+              {pendingServices.length !== 1 ? "s" : ""} awaiting review
             </p>
           </div>
         </div>

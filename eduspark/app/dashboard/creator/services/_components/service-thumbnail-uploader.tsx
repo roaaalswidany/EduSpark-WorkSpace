@@ -45,7 +45,14 @@ export function ServiceThumbnailUploader({
         setPreview(res.url);
         URL.revokeObjectURL(objectUrl);
       } else {
-        toast.error(`Upload failed: ${res.error}`, { id: toastId });
+        const messages: Record<string, string> = {
+          INVALID_TYPE: "The file is not a valid PNG, JPG or WebP image.",
+          FILE_TOO_LARGE: "Maximum file size is 2MB.",
+          SERVICE_LOCKED: "The service is under review. Withdraw it to change the image.",
+          RATE_LIMITED: "Too many uploads. Please try again later.",
+          FORBIDDEN: "You don't have permission to change this image.",
+        };
+        toast.error("Upload failed", { id: toastId, description: messages[res.error] ?? res.error });
         setPreview(currentThumbnail);
         URL.revokeObjectURL(objectUrl);
       }

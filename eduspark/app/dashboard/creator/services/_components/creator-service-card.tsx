@@ -40,6 +40,7 @@ interface ServiceCardData {
   deliveryDays: number;
   revisions: number;
   status: ServiceStatus;
+  reviewNote?: string | null;
   tags: string[];
   createdAt: string;
   category: { id: string; name: string; slug: string } | null;
@@ -215,8 +216,10 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
       if (!result.success) {
         setStatus(previous);
         const errorMessage =
-          result.error === "FORBIDDEN" || result.error === "INVALID_TRANSITION"
-            ? "You don't have permission to activate this service yet."
+          result.error === "INVALID_TRANSITION"
+            ? "That status change is not allowed. Only an administrator can activate a service."
+            : result.error === "FORBIDDEN"
+            ? "You don't have permission to change this service."
             : "Failed to update status.";
 
         setStatusError(errorMessage);
@@ -432,6 +435,15 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
               </p>
             </div>
           </div>
+
+          {status === "PAUSED" && service.reviewNote && (
+            <div className="flex items-start gap-1.5 text-[11px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2">
+              <AlertCircle className="w-3 h-3 shrink-0 mt-0.5" />
+              <span>
+                <strong>Changes requested:</strong> {service.reviewNote}
+              </span>
+            </div>
+          )}
 
           {statusError && (
             <div className="flex items-center gap-1.5 text-[10px] text-red-400">
