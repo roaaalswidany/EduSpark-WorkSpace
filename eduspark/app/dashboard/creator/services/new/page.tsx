@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 import { ServiceCreationForm } from "./_components/service-creation-form";
 import { GraduationCap, Award, AlertCircle } from "lucide-react";
+import { QUIZ_PASSING_SCORE } from "@/lib/lms/quiz-policy";
 import Link from "next/link";
 
 // ─── Types passed to client ────────────────────────────────────────
@@ -34,7 +35,7 @@ function NoCertificatesGate() {
           <p className="text-slate-400 text-sm leading-relaxed">
             To offer services on EduSpark, you must first complete a course and
             pass the certification quiz with a score of{" "}
-            <span className="text-white font-semibold">80% or higher</span>.
+            <span className="text-white font-semibold">{QUIZ_PASSING_SCORE}% or higher</span>.
             Your certificate proves your expertise to potential clients.
           </p>
         </div>

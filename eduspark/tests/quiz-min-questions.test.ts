@@ -21,8 +21,7 @@ describe("certification requires a minimum quiz size", () => {
   it("a quiz with fewer than MIN questions can never certify or promote", async () => {
     const creator = await createUser("CREATOR");
     const course = await createCourseWithQuiz({ creatorId: creator.id, categoryId: (await createCategory()).id, questions: MIN - 1 });
-    const student = await createUser("STUDENT"); await enroll(student.id, course.id);
-    const res = await attempt(course.id, student.id, "A");
+    const student = await createUser("STUDENT"); await enroll(student.id, course.id, { isPassed: true });    const res = await attempt(course.id, student.id, "A");
     expect(res.success).toBe(false);
     expect(await db.certificate.count({ where: { userId: student.id } })).toBe(0);
     expect((await db.user.findUniqueOrThrow({ where: { id: student.id } })).role).toBe("STUDENT");
@@ -47,8 +46,7 @@ describe("certification requires a minimum quiz size", () => {
   it("a quiz with exactly MIN questions still certifies", async () => {
     const creator = await createUser("CREATOR");
     const course = await createCourseWithQuiz({ creatorId: creator.id, categoryId: (await createCategory()).id, questions: MIN });
-    const student = await createUser("STUDENT"); await enroll(student.id, course.id);
-    const res = await attempt(course.id, student.id, "A");
+    const student = await createUser("STUDENT"); await enroll(student.id, course.id, { isPassed: true });    const res = await attempt(course.id, student.id, "A");
     expect(res.success && res.data.passed).toBe(true);
   });
 });

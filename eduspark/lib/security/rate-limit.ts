@@ -1,7 +1,7 @@
 // eduspark/lib/security/rate-limit.ts
 import { Redis } from "ioredis";
 
-// ─── Redis Client (singleton) ─────────────────────────────────────
+// ─── Redis Client (singleton) ─────────────────────────────────────────────────
 // Uses its own connection to keep rate limiting independent from cache.
 
 const globalForRateLimit = globalThis as unknown as {
@@ -49,7 +49,7 @@ function getRedis(): Redis | null {
   return globalForRateLimit.rateLimitRedis;
 }
 
-// ─── Types ────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface RateLimitConfig {
   key: string;
@@ -65,76 +65,75 @@ export interface RateLimitResult {
   retryAfterSec: number;
 }
 
-// ─── Presets ─────────────────────────────────────────────────────
-// OWASP ASVS v4.0 recommends 5 failed login attempts per 15 minutes.
-// In development, the IP limit is relaxed to allow testing multiple
-// accounts from the same machine without manual Redis resets.
+// ─── Presets ──────────────────────────────────────────────────────────────────
+// (unchanged — see original file for all presets)
 
 const IS_PROD = process.env.NODE_ENV === "production";
 
 export const RateLimits = {
-  /** AI chat: 20 messages / 5 minutes */
   AI_CHAT: { key: "ai-chat", limit: 20, windowSec: 300 },
-
-  /** Login attempts per email: 5 per 15 minutes (OWASP standard) */
   AUTH_LOGIN: { key: "auth-login", limit: 5, windowSec: 900 },
-
-  /** Login attempts per IP: strict in production, relaxed in dev */
   AUTH_LOGIN_IP: {
     key: "auth-login-ip",
     limit: IS_PROD ? 5 : 100,
     windowSec: 900,
   },
-
-  /** Register: 3 per hour */
   AUTH_REGISTER: { key: "auth-register", limit: 3, windowSec: 3600 },
-
-  /** General API writes: 60 per minute */
   API_WRITE: { key: "api-write", limit: 60, windowSec: 60 },
-
-  /** Server actions (sensitive): 30 per minute */
   ACTION_SENSITIVE: { key: "action-sensitive", limit: 30, windowSec: 60 },
-
-  /** Quiz submissions: 10 per 10 minutes per user (DB-protection layer) */
   QUIZ_SUBMIT: { key: "quiz-submit", limit: 10, windowSec: 600 },
-
-  /** Creator quiz authoring (manual questions): 60 per hour per user */
   QUESTION_CREATE: { key: "question-create", limit: 60, windowSec: 3600 },
-
-  /** AI quiz generation (costs money): 10 per hour per user */
   AI_QUIZ_GENERATE: { key: "ai-quiz-generate", limit: 10, windowSec: 3600 },
-
-  /** Ordering a service: 10 per hour per user */
   ORDER_CREATE: { key: "order-create", limit: 10, windowSec: 3600 },
-
-  /** Presigned upload requests: 30 per 10 minutes per user */
   UPLOAD_REQUEST: { key: "upload-request", limit: 30, windowSec: 600 },
-
-  /** Presigned download URLs: 120 per 10 minutes per user */
   DOWNLOAD_URL: { key: "download-url", limit: 120, windowSec: 600 },
-
   SERVICE_WRITE: { key: "service-write", limit: 20, windowSec: 3600 },
-
-  /** Course ratings: 10 per hour per user */
   COURSE_REVIEW: { key: "course-review", limit: 10, windowSec: 3600 },
-
-  /** Course thumbnails: 20 uploads per hour per user */
   THUMBNAIL_UPLOAD: { key: "thumbnail-upload", limit: 20, windowSec: 3600 },
-
-  /** Password-reset requests/attempts: 5 per hour per IP and per target email */
   PASSWORD_RESET: { key: "password-reset", limit: 5, windowSec: 3600 },
-
-  /** Verification emails: 3 per hour per user */
   EMAIL_VERIFY_SEND: { key: "email-verify-send", limit: 3, windowSec: 3600 },
-
-  /** Public certificate verification (page + JSON API): 60 per minute per IP */
   PUBLIC_VERIFY: { key: "public-verify", limit: 60, windowSec: 60 },
-
-  /** Writing project reviews: 10 per hour per user */
   REVIEW_CREATE: { key: "review-create", limit: 10, windowSec: 3600 },
 } as const;
 
-// ─── Core: Sliding Window ────────────────────────────────────────
+// ─── Core: Sliding Window (Lua, atomic) ──────────────────────────────────────
+//
+// The Lua script enforces check-BEFORE-add:
+//   1. Remove entries outside the window
+//   2. Count remaining entries
+//   3. If count >= limit → REJECT without touching the sorted set
+//   4. Else → ZADD the new entry, refresh TTL, ALLOW
+//
+// This is the fix: rejected requests no longer inflate the counter. Under
+// concurrency, Redis executes the script atomically (single-threaded), so 100
+// parallel calls against limit=3 yield exactly 3 allowed and 3 stored entries.
+//
+// Return value: { allowedFlag: 0|1, currentCount: number }.
+
+const SLIDING_WINDOW_LUA = `
+local key         = KEYS[1]
+local now         = tonumber(ARGV[1])
+local windowStart = tonumber(ARGV[2])
+local limit       = tonumber(ARGV[3])
+local ttlSec      = tonumber(ARGV[4])
+local member      = ARGV[5]
+
+-- 1. Drop entries older than the window
+redis.call('ZREMRANGEBYSCORE', key, 0, windowStart)
+
+-- 2. Count entries still inside the window
+local count = redis.call('ZCARD', key)
+
+-- 3. Reject BEFORE adding (this is the fix)
+if count >= limit then
+  return {0, count}
+end
+
+-- 4. Allow and persist
+redis.call('ZADD', key, now, member)
+redis.call('EXPIRE', key, ttlSec)
+return {1, count + 1}
+`;
 
 export async function checkRateLimit(
   config: RateLimitConfig,
@@ -142,7 +141,7 @@ export async function checkRateLimit(
 ): Promise<RateLimitResult> {
   const redis = getRedis();
 
-    if (!redis) {
+  if (!redis) {
     return failClosedResult(config);
   }
 
@@ -150,23 +149,24 @@ export async function checkRateLimit(
   const windowMs = config.windowSec * 1000;
   const windowStart = now - windowMs;
   const redisKey = `ratelimit:${config.key}:${identifier}`;
+  const member = `${now}-${Math.random().toString(36).slice(2, 9)}`;
 
   try {
-    const pipeline = redis.multi();
-    pipeline.zremrangebyscore(redisKey, 0, windowStart);
-    const member = `${now}-${Math.random().toString(36).slice(2, 9)}`;
-    pipeline.zadd(redisKey, now, member);
-    pipeline.zcard(redisKey);
-    pipeline.expire(redisKey, config.windowSec);
+    const result = (await redis.eval(
+      SLIDING_WINDOW_LUA,
+      1,
+      redisKey,
+      now,
+      windowStart,
+      config.limit,
+      config.windowSec,
+      member
+    )) as [number, number];
 
-    const results = await pipeline.exec();
-    if (!results) {
-      throw new Error("Pipeline returned null");
-    }
+    const allowedFlag = Number(result[0]) === 1;
+    const count = Number(result[1]);
 
-    const count = (results[2]?.[1] as number) ?? 0;
-
-    const allowed = count <= config.limit;
+    const allowed = allowedFlag;
     const remaining = Math.max(0, config.limit - count);
     const resetAt = now + windowMs;
     const retryAfterSec = allowed ? 0 : Math.ceil(windowMs / 1000);
@@ -184,7 +184,7 @@ export async function checkRateLimit(
   }
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 export function getClientIdentifier(
   headers: Headers,

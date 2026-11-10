@@ -68,8 +68,24 @@ export async function createCourseWithQuiz(opts: {
   return course;
 }
 
-export async function enroll(userId: string, courseId: string) {
-  return db.enrollment.create({ data: { userId, courseId, paidAmount: 0 } });
+export async function enroll(
+  userId: string,
+  courseId: string,
+  opts: { isPassed?: boolean; progress?: number } = {}
+) {
+  const isPassed = opts.isPassed ?? false;
+  const progress = opts.progress ?? (isPassed ? 100 : 0);
+  return db.enrollment.create({
+    data: {
+      userId,
+      courseId,
+      paidAmount: 0,
+      isPassed,
+      progress,
+      status: isPassed ? "COMPLETED" : "ACTIVE",
+      completedAt: isPassed ? new Date() : null,
+    },
+  });
 }
 
 

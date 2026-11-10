@@ -22,7 +22,7 @@ beforeEach(async () => {
   const cat = await createCategory();
   course = await createCourseWithQuiz({ creatorId: creator.id, categoryId: cat.id });
   student = await createUser("STUDENT");
-  await enroll(student.id, course.id);
+  await enroll(student.id, course.id, { isPassed: true });
   actAs({ id: student.id, role: "STUDENT" });
 });
 

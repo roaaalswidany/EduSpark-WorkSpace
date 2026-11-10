@@ -41,7 +41,7 @@ describe("manual quiz authoring (createQuestionAction)", () => {
     const admin = await createUser("ADMIN"); actAs({ id: admin.id, role: "ADMIN" });
     expect((await reviewCourseAction({ courseId: course.id, decision: "APPROVE" })).success).toBe(true);
 
-    const student = await createUser("STUDENT"); await enroll(student.id, course.id);
+    const student = await createUser("STUDENT"); await enroll(student.id, course.id, { isPassed: true });
     actAs({ id: student.id, role: "STUDENT" });
     const res = await submitQuizAction({ quizId: quiz.id, answers: quiz.questions.map((x) => ({ questionId: x.id, selectedOption: "right" })) });
     expect(res.success && res.data.passed && res.data.roleUpgraded).toBe(true);

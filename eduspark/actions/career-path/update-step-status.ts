@@ -12,8 +12,18 @@ const UpdateStepSchema = z.object({
   status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]),
 });
 
+/**
+ * Allowed state transitions (forward-only + allow pause).
+ * COMPLETED is terminal — no going back.
+ */
+const VALID_TRANSITIONS: Record<string, readonly string[]> = {
+  PENDING: ["IN_PROGRESS"],
+  IN_PROGRESS: ["COMPLETED", "PENDING"],
+  COMPLETED: [],
+} as const;
+
 export type UpdateStepResult =
-  | { success: true }
+  | { success: true; statusChanged: boolean }
   | {
       success: false;
       error:
@@ -21,6 +31,8 @@ export type UpdateStepResult =
         | "NOT_FOUND"
         | "FORBIDDEN"
         | "INVALID_INPUT"
+        | "INVALID_TRANSITION"
+        | "CONCURRENT_UPDATE"
         | "SERVER_ERROR";
     };
 
@@ -35,134 +47,101 @@ export async function updateStepStatusAction(
     if (!parsed.success) return { success: false, error: "INVALID_INPUT" };
 
     const { stepId, status } = parsed.data;
+    const userId = session.user.id;
 
-    const step = await db.careerPathStep.findUnique({
-      where: { id: stepId },
-      select: {
-        id: true,
-        path: { select: { userId: true, id: true } },
-      },
+    // ── Transaction with compare-and-set to prevent double XP ─────
+    const result = await db.$transaction(async (tx) => {
+      const step = await tx.careerPathStep.findUnique({
+        where: { id: stepId },
+        select: {
+          id: true,
+          status: true,
+          path: { select: { userId: true, id: true } },
+        },
+      });
+
+      if (!step) throw new Error("NOT_FOUND");
+      if (step.path.userId !== userId) throw new Error("FORBIDDEN");
+
+      // Idempotent: no change → no XP, no DB write
+      if (step.status === status) {
+        return {
+          statusChanged: false,
+          newStatus: status,
+          pathCompleted: false,
+        };
+      }
+
+      // Validate transition
+      const allowed = VALID_TRANSITIONS[step.status] ?? [];
+      if (!allowed.includes(status)) {
+        throw new Error("INVALID_TRANSITION");
+      }
+
+      // Compare-and-set: only ONE concurrent request wins
+      const updated = await tx.careerPathStep.updateMany({
+        where: { id: stepId, status: step.status },
+        data: {
+          status,
+          completedAt: status === "COMPLETED" ? new Date() : null,
+        },
+      });
+      if (updated.count !== 1) {
+        throw new Error("CONCURRENT_UPDATE");
+      }
+
+      // Check if all steps are now completed
+      const allSteps = await tx.careerPathStep.findMany({
+        where: { pathId: step.path.id },
+        select: { status: true },
+      });
+      const pathCompleted = allSteps.every((s) => s.status === "COMPLETED");
+
+      if (pathCompleted) {
+        await tx.careerPath.update({
+          where: { id: step.path.id },
+          data: { status: "COMPLETED" },
+        });
+      }
+
+      return {
+        statusChanged: true,
+        newStatus: status,
+        pathCompleted,
+      };
     });
 
-    if (!step) return { success: false, error: "NOT_FOUND" };
-    if (step.path.userId !== session.user.id) {
-      return { success: false, error: "FORBIDDEN" };
-    }
-
-    await db.careerPathStep.update({
-      where: { id: stepId },
-      data: {
-        status,
-        completedAt: status === "COMPLETED" ? new Date() : null,
-      },
-    });
-
-    // If all steps completed → mark path as COMPLETED
-    const allSteps = await db.careerPathStep.findMany({
-      where: { pathId: step.path.id },
-      select: { status: true },
-    });
-
-    const allDone = allSteps.every((s) => s.status === "COMPLETED");
-    if (allDone) {
-      await db.careerPath.update({
-        where: { id: step.path.id },
-        data: { status: "COMPLETED" },
-      });
-    }
-
-    // ── Award XP based on new status (fire-and-forget) ──────────────
-    if (status === "IN_PROGRESS") {
-      void awardXP(session.user.id, "CAREER_PATH_STEP_STARTED").catch((err) =>
-        console.error("[GAMIFICATION] step started XP:", err)
-      );
-    } else if (status === "COMPLETED") {
-      void awardXP(session.user.id, "CAREER_PATH_STEP_COMPLETED").catch(
-        (err) => console.error("[GAMIFICATION] step completed XP:", err)
-      );
-
-      // If this completed the whole path, award the completion bonus
-      const allSteps = await db.careerPathStep.findMany({
-        where: { pathId: step.path.id },
-        select: { status: true },
-      });
-      if (allSteps.every((s) => s.status === "COMPLETED")) {
-        void awardXP(session.user.id, "CAREER_PATH_COMPLETED").catch((err) =>
-          console.error("[GAMIFICATION] path completed XP:", err)
+    // ── Award XP exactly once, only when status actually changed ──
+    if (result.statusChanged) {
+      if (result.newStatus === "IN_PROGRESS") {
+        await awardXP(userId, "CAREER_PATH_STEP_STARTED").catch((err) =>
+          console.error("[GAMIFICATION] step started XP:", err)
         );
-      }
-    }
-
-    // ── Award XP based on new status (fire-and-forget) ──────────────
-    if (status === "IN_PROGRESS") {
-      void awardXP(session.user.id, "CAREER_PATH_STEP_STARTED").catch((err) =>
-        console.error("[GAMIFICATION] step started XP:", err)
-      );
-    } else if (status === "COMPLETED") {
-      void awardXP(session.user.id, "CAREER_PATH_STEP_COMPLETED").catch(
-        (err) => console.error("[GAMIFICATION] step completed XP:", err)
-      );
-
-      // If this completed the whole path, award the completion bonus
-      const allSteps = await db.careerPathStep.findMany({
-        where: { pathId: step.path.id },
-        select: { status: true },
-      });
-      if (allSteps.every((s) => s.status === "COMPLETED")) {
-        void awardXP(session.user.id, "CAREER_PATH_COMPLETED").catch((err) =>
-          console.error("[GAMIFICATION] path completed XP:", err)
+      } else if (result.newStatus === "COMPLETED") {
+        await awardXP(userId, "CAREER_PATH_STEP_COMPLETED").catch((err) =>
+          console.error("[GAMIFICATION] step completed XP:", err)
         );
-      }
-    }
-
-     // ── Award XP based on new status (fire-and-forget) ──────────────
-    if (status === "IN_PROGRESS") {
-      void awardXP(session.user.id, "CAREER_PATH_STEP_STARTED").catch((err) =>
-        console.error("[GAMIFICATION] step started XP:", err)
-      );
-    } else if (status === "COMPLETED") {
-      void awardXP(session.user.id, "CAREER_PATH_STEP_COMPLETED").catch(
-        (err) => console.error("[GAMIFICATION] step completed XP:", err)
-      );
-
-      // If this completed the whole path, award the completion bonus
-      const allSteps = await db.careerPathStep.findMany({
-        where: { pathId: step.path.id },
-        select: { status: true },
-      });
-      if (allSteps.every((s) => s.status === "COMPLETED")) {
-        void awardXP(session.user.id, "CAREER_PATH_COMPLETED").catch((err) =>
-          console.error("[GAMIFICATION] path completed XP:", err)
-        );
-      }
-    }
-
-    // ── Award XP based on new status (fire-and-forget) ──────────────
-    if (status === "IN_PROGRESS") {
-      void awardXP(session.user.id, "CAREER_PATH_STEP_STARTED").catch((err) =>
-        console.error("[GAMIFICATION] step started XP:", err)
-      );
-    } else if (status === "COMPLETED") {
-      void awardXP(session.user.id, "CAREER_PATH_STEP_COMPLETED").catch(
-        (err) => console.error("[GAMIFICATION] step completed XP:", err)
-      );
-
-      // If this completed the whole path, award the completion bonus
-      const allSteps = await db.careerPathStep.findMany({
-        where: { pathId: step.path.id },
-        select: { status: true },
-      });
-      if (allSteps.every((s) => s.status === "COMPLETED")) {
-        void awardXP(session.user.id, "CAREER_PATH_COMPLETED").catch((err) =>
-          console.error("[GAMIFICATION] path completed XP:", err)
-        );
+        if (result.pathCompleted) {
+          await awardXP(userId, "CAREER_PATH_COMPLETED").catch((err) =>
+            console.error("[GAMIFICATION] path completed XP:", err)
+          );
+        }
       }
     }
 
     revalidatePath("/dashboard/career-path");
-
-    return { success: true };
+    return { success: true, statusChanged: result.statusChanged };
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === "NOT_FOUND")
+        return { success: false, error: "NOT_FOUND" };
+      if (error.message === "FORBIDDEN")
+        return { success: false, error: "FORBIDDEN" };
+      if (error.message === "INVALID_TRANSITION")
+        return { success: false, error: "INVALID_TRANSITION" };
+      if (error.message === "CONCURRENT_UPDATE")
+        return { success: false, error: "CONCURRENT_UPDATE" };
+    }
     console.error("[UPDATE_STEP_STATUS_ACTION]", error);
     return { success: false, error: "SERVER_ERROR" };
   }

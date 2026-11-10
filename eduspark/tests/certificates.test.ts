@@ -17,7 +17,7 @@ beforeAll(async () => {
   const course = await createCourseWithQuiz({ creatorId: creator.id, categoryId: cat.id });
   const student = await createUser("STUDENT", { name: "Layla Haddad" });
   holderEmail = student.email;
-  await enroll(student.id, course.id);
+  await enroll(student.id, course.id, { isPassed: true });
   actAs({ id: student.id, role: "STUDENT" });
   const res = await submitQuizAction({
     quizId: course.quiz!.id,

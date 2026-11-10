@@ -83,6 +83,7 @@ export type SubmitQuizResult =
         | "INVALID_INPUT"
         | "QUIZ_NOT_FOUND"
         | "NOT_ENROLLED"
+        | "COURSE_NOT_COMPLETED"
         | "QUESTION_COUNT_MISMATCH"
         | "INVALID_QUESTION_IDS"
         | "ATTEMPT_LIMIT_REACHED"
@@ -127,39 +128,45 @@ export async function submitQuizAction(
     // ── 3. Fetch quiz + questions (server-side only — correctOption never
     //       reaches the client in any form until after grading) ───────────────
     const quiz = await db.quiz.findUnique({
-  where: { id: quizId },
-  select: {
-    id: true,
-    passingScore: true,
-    courseId: true,
-    course: { select: { status: true } },
-    questions: {
-      where: { status: "PUBLISHED" }, // ← الإضافة الحاسمة: تستثني AI_DRAFTED و REJECTED
-      orderBy: { order: "asc" },
-      select: { id: true, correctOption: true, explanation: true },
-    },
-  },
-});
+      where: { id: quizId },
+      select: {
+        id: true,
+        passingScore: true,
+        courseId: true,
+        course: { select: { status: true } },
+        questions: {
+          where: { status: "PUBLISHED" }, // ← الإضافة الحاسمة: تستثني AI_DRAFTED و REJECTED
+          orderBy: { order: "asc" },
+          select: { id: true, correctOption: true, explanation: true },
+        },
+      },
+    });
 
     if (!quiz) return { success: false, error: "QUIZ_NOT_FOUND" };
 
     const { courseId, passingScore, questions } = quiz;
     if (questions.length < QUIZ_MIN_QUESTIONS_FOR_CERTIFICATION) {
-  return { success: false, error: "QUIZ_NOT_FOUND" };
-}
+      return { success: false, error: "QUIZ_NOT_FOUND" };
+    }
 
     // Certificates are issued only by courses an administrator approved (only admins can publish).
     if (quiz.course.status !== "PUBLISHED") {
       return { success: false, error: "QUIZ_NOT_FOUND" };
     }
 
-    // ── 4. Verify enrollment ─────────────────────────────────────────────────
+    // ── 4. Verify enrollment + course completion ─────────────────────────────
+    // 🛡️ Server-side gate: a certificate asserts that the student finished the
+    // course, not merely enrolled. The frontend hides the button; the server
+    // must enforce the rule even if the action is called directly.
     const enrollment = await db.enrollment.findUnique({
       where: { userId_courseId: { userId, courseId } },
-      select: { id: true },
+      select: { id: true, isPassed: true },
     });
 
     if (!enrollment) return { success: false, error: "NOT_ENROLLED" };
+    if (!enrollment.isPassed) {
+      return { success: false, error: "COURSE_NOT_COMPLETED" };
+    }
 
     // ── 5. Structural validation: all questions answered, no alien IDs ───────
     const canonicalIds = new Set(questions.map((q) => q.id));
@@ -179,14 +186,14 @@ export async function submitQuizAction(
     const answerMap = new Map(answers.map((a) => [a.questionId, a.selectedOption]));
 
     const gradedAnswers = questions.map((q) => ({
-  questionId: q.id,
-  selectedOption: answerMap.get(q.id)!,
-  correctOption: q.correctOption ?? "",
-  isCorrect:
-    answerMap.get(q.id) !== "" && answerMap.get(q.id) === q.correctOption,
-}));
+      questionId: q.id,
+      selectedOption: answerMap.get(q.id)!,
+      correctOption: q.correctOption ?? "",
+      isCorrect:
+        answerMap.get(q.id) !== "" && answerMap.get(q.id) === q.correctOption,
+    }));
 
-const correctCount = gradedAnswers.filter((a) => a.isCorrect).length;
+    const correctCount = gradedAnswers.filter((a) => a.isCorrect).length;
     const totalQ = questions.length;
     const rawScore = totalQ > 0 ? (correctCount / totalQ) * 100 : 0;
     const score = Math.round(rawScore * 100) / 100; // 2 decimal places

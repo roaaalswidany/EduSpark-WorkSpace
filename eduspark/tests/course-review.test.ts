@@ -214,7 +214,7 @@ describe("course review gate — what is frozen, and why it matters", () => {
   it("COLLUSION: a course nobody approved can never issue a certificate or a CREATOR role", async () => {
     const creator = await createUser("CREATOR"); const admin = await createUser("ADMIN");
     const course = await draftCourse(creator.id, { categoryId: (await createCategory()).id });
-    const accomplice = await createUser("STUDENT"); await enroll(accomplice.id, course.id);
+    const accomplice = await createUser("STUDENT"); await enroll(accomplice.id, course.id, { isPassed: true });
     const quiz = await db.quiz.findUniqueOrThrow({ where: { courseId: course.id }, include: { questions: true } });
     const attempt = () => {
       actAs({ id: accomplice.id, role: "STUDENT" });
