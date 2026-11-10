@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getServerSession } from "next-auth";
+import { QUIZ_PASSING_SCORE } from "@/lib/lms/quiz-policy";
 import {
   Sparkles,
   GraduationCap,
@@ -193,7 +194,7 @@ export default async function HomePage() {
           <FeatureCard
             icon={Award}
             title="Get certified"
-            description="Pass an 80%+ certification quiz to unlock a unique credential ID. Your certificate upgrades you to a certified creator on the platform."
+            description={`Pass an ${QUIZ_PASSING_SCORE}%+ certification quiz to unlock a unique credential ID. Your certificate upgrades you to a certified creator on the platform.`}
             gradient="from-amber-500 to-orange-600"
             ctaLabel="How it works"
             href="/courses"
@@ -329,7 +330,7 @@ export default async function HomePage() {
             number={2}
             icon={Award}
             title="Pass & get certified"
-            description="Complete all lessons, pass the 80% quiz, and receive a verifiable certificate with a unique credential ID."
+            description={`Complete all lessons, pass the ${QUIZ_PASSING_SCORE}% quiz, and receive a verifiable certificate with a unique credential ID.`}
             color="text-amber-400"
             bg="bg-amber-500/10"
             border="border-amber-500/20"
