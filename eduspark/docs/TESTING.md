@@ -103,3 +103,23 @@ k6 run -e BASE_URL=http://localhost:3000 \
 - It shows that the three **public, read-only pages** stay fast and error-free at 50 concurrent users on a production build.
 - It does **not** exercise logged-in flows or writes (quiz submission transaction, enrolment, chat, uploads) — those are covered for *correctness under concurrency* by the test suite, not for *throughput*.
 - It ran on a developer machine with PostgreSQL, Redis and MinIO in Docker on the same host, so absolute numbers are indicative only; a real deployment will differ.
+
+
+---
+
+## Test Suite Summary
+
+**Last Run:** 2026-11-10  
+**Duration:** 163.50s  
+**Result:** 185 passed | 7 skipped (192 total)  
+
+### Storage Security Tests (`tests/storage-security.test.ts`)
+
+| # | Test | Risk Mitigated |
+|---|------|----------------|
+| 1 | blocks the creator from deleting an attachment on a COMPLETED project | Data preservation & audit integrity |
+| 2 | blocks an outsider from deleting any attachment | Unauthorized access control |
+| 3 | allows the admin to delete an attachment on a COMPLETED project | Admin override authorization |
+| 4 | allows the creator (project participant) to get a download URL | Authorized read access |
+| 5 | allows the client (project participant) to get a download URL | Authorized read access |
+| 6 | blocks a suspended user even if they are a participant | Session invalidation on suspension |
