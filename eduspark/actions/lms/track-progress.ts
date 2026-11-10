@@ -8,8 +8,6 @@ import { revalidatePath } from "next/cache";
 import { EnrollmentStatus } from "@prisma/client";
 import { awardXP } from "@/lib/gamification/award";
 
-// ─── Schema & Types ───────────────────────────────────────────────────────────
-
 const TrackProgressSchema = z.object({
   courseId: z.string().cuid("Invalid course ID."),
   lessonId: z.string().cuid("Invalid lesson ID."),
@@ -35,8 +33,6 @@ export type TrackProgressResult =
         | "SERVER_ERROR";
     };
 
-// ─── Action ───────────────────────────────────────────────────────────────────
-
 export async function trackProgressAction(
   rawInput: TrackProgressInput
 ): Promise<TrackProgressResult> {
@@ -50,111 +46,130 @@ export async function trackProgressAction(
     const { courseId, lessonId } = parsed.data;
     const userId = session.user.id;
 
-    // Validate enrollment + lesson in one parallel trip
-    const [enrollment, lesson] = await Promise.all([
+    // Fast structural checks (outside transaction — read-only).
+    const [enrollmentMeta, lessonMeta] = await Promise.all([
       db.enrollment.findUnique({
         where: { userId_courseId: { userId, courseId } },
-        select: { id: true, isPassed: true },
+        select: { id: true },
       }),
       db.lesson.findFirst({
-        where: {
-          id: lessonId,
-          section: { courseId },
-        },
+        where: { id: lessonId, section: { courseId } },
         select: { id: true },
       }),
     ]);
 
-    if (!enrollment) return { success: false, error: "NOT_ENROLLED" };
-    if (!lesson) return { success: false, error: "LESSON_NOT_FOUND" };
+    if (!enrollmentMeta) return { success: false, error: "NOT_ENROLLED" };
+    if (!lessonMeta) return { success: false, error: "LESSON_NOT_FOUND" };
 
-    // Short-circuit: course already completed — idempotent guard
-    if (enrollment.isPassed) {
+    const enrollmentId = enrollmentMeta.id;
+
+    // ── Atomic transition ────────────────────────────────────────────────
+    // All reads and writes happen inside a transaction that holds a row
+    // lock on the enrollment. Concurrent calls for the same enrollment
+    // queue at FOR UPDATE, so:
+    //   1. "alreadyDone" cannot be stale → LESSON_COMPLETED XP is awarded
+    //      exactly once, even under 8-way concurrency.
+    //   2. progress recount + write cannot regress (no stale last-writer).
+    const txResult = await db.$transaction(async (tx) => {
+      // Serialize per-enrollment writes.
+      await tx.$queryRaw`SELECT id FROM enrollments WHERE id = ${enrollmentId} FOR UPDATE`;
+
+      const enrollment = await tx.enrollment.findUnique({
+        where: { id: enrollmentId },
+        select: { isPassed: true },
+      });
+      if (!enrollment) throw new Error("NOT_ENROLLED");
+
+      // Idempotent short-circuit (re-checked inside the lock).
+      if (enrollment.isPassed) {
+        const [completedLessons, totalLessons] = await Promise.all([
+          tx.lessonProgress.count({
+            where: { enrollmentId, completed: true },
+          }),
+          tx.lesson.count({ where: { section: { courseId } } }),
+        ]);
+        return {
+          lessonWasNewlyCompleted: false,
+          courseWasJustCompleted: false,
+          progress: 100,
+          isPassed: true,
+          completedLessons,
+          totalLessons,
+        };
+      }
+
+      // Read inside the lock: no stale read.
+      const existingProgress = await tx.lessonProgress.findUnique({
+        where: { enrollmentId_lessonId: { enrollmentId, lessonId } },
+        select: { completed: true },
+      });
+      const alreadyCompleted = existingProgress?.completed === true;
+
+      // Upsert lesson progress (idempotent at the row level).
+      await tx.lessonProgress.upsert({
+        where: { enrollmentId_lessonId: { enrollmentId, lessonId } },
+        create: {
+          enrollmentId,
+          lessonId,
+          completed: true,
+          watchedAt: new Date(),
+        },
+        update: { completed: true, watchedAt: new Date() },
+      });
+
+      // Recount inside the lock: no stale count.
       const [completedLessons, totalLessons] = await Promise.all([
-        db.lessonProgress.count({
-          where: { enrollmentId: enrollment.id, completed: true },
-        }),
-        db.lesson.count({ where: { section: { courseId } } }),
+        tx.lessonProgress.count({ where: { enrollmentId, completed: true } }),
+        tx.lesson.count({ where: { section: { courseId } } }),
       ]);
 
+      const rawRatio = totalLessons > 0 ? completedLessons / totalLessons : 0;
+      const progress = Math.min(100, Math.round(rawRatio * 100));
+      const isPassed = progress >= 100;
+
+      let courseWasJustCompleted = false;
+      if (isPassed) {
+        // Compare-and-set: only ONE concurrent caller flips isPassed.
+        const flipped = await tx.enrollment.updateMany({
+          where: { id: enrollmentId, isPassed: false },
+          data: {
+            progress,
+            status: EnrollmentStatus.COMPLETED,
+            isPassed: true,
+            completedAt: new Date(),
+          },
+        });
+        courseWasJustCompleted = flipped.count === 1;
+      } else {
+        // Safe to overwrite: we're inside the lock, so no concurrent write
+        // can regress progress between our count and our write.
+        await tx.enrollment.update({
+          where: { id: enrollmentId },
+          data: { progress },
+        });
+      }
+
       return {
-        success: true,
-        progress: 100,
-        isPassed: true,
+        lessonWasNewlyCompleted: !alreadyCompleted,
+        courseWasJustCompleted,
+        progress,
+        isPassed,
         completedLessons,
         totalLessons,
       };
-    }
-
-    const alreadyDone = await db.lessonProgress.findUnique({
-      where: {
-        enrollmentId_lessonId: { enrollmentId: enrollment.id, lessonId },
-      },
-      select: { completed: true },
     });
 
-    // Upsert lesson progress — fully idempotent
-    await db.lessonProgress.upsert({
-      where: {
-        enrollmentId_lessonId: {
-          enrollmentId: enrollment.id,
-          lessonId,
-        },
-      },
-      create: {
-        enrollmentId: enrollment.id,
-        lessonId,
-        completed: true,
-        watchedAt: new Date(),
-      },
-      update: {
-        completed: true,
-        watchedAt: new Date(),
-      },
-    });
-
-    // XP only the FIRST time a lesson is completed (prevents XP farming).
-    if (!alreadyDone?.completed) {
+    // ── XP awards — exactly-once, fire-and-forget ───────────────────────
+    // The flags below are set inside the transaction, so at most one
+    // concurrent caller sees `true` for each flag. We keep `void` (not
+    // `await`) to preserve the original design: XP is secondary, and a
+    // failed award must not fail the progress mutation.
+    if (txResult.lessonWasNewlyCompleted) {
       void awardXP(userId, "LESSON_COMPLETED").catch((err) =>
         console.error("[GAMIFICATION] track-progress lesson XP:", err)
       );
     }
-
-    // Recalculate progress with fresh counts
-    const [completedLessons, totalLessons] = await Promise.all([
-      db.lessonProgress.count({
-        where: { enrollmentId: enrollment.id, completed: true },
-      }),
-      db.lesson.count({ where: { section: { courseId } } }),
-    ]);
-
-    const rawRatio = totalLessons > 0 ? completedLessons / totalLessons : 0;
-    const progress = Math.min(100, Math.round(rawRatio * 100));
-    const isPassed = progress >= 100;
-
-    // Persist progress — promote to COMPLETED if finished.
-    // Compare-and-set: only ONE concurrent request can flip isPassed.
-    let justCompleted = false;
-    if (isPassed) {
-      const flipped = await db.enrollment.updateMany({
-        where: { id: enrollment.id, isPassed: false },
-        data: {
-          progress,
-          status: EnrollmentStatus.COMPLETED,
-          isPassed: true,
-          completedAt: new Date(),
-        },
-      });
-      justCompleted = flipped.count === 1;
-    } else {
-      await db.enrollment.update({
-        where: { id: enrollment.id },
-        data: { progress },
-      });
-    }
-
-    // ── Award course completion XP (only on the transition) ────────
-    if (justCompleted) {
+    if (txResult.courseWasJustCompleted) {
       void awardXP(userId, "COURSE_COMPLETED").catch((err) =>
         console.error("[GAMIFICATION] course completion XP:", err)
       );
@@ -162,7 +177,13 @@ export async function trackProgressAction(
 
     revalidatePath(`/dashboard/student/courses/${courseId}`);
 
-    return { success: true, progress, isPassed, completedLessons, totalLessons };
+    return {
+      success: true,
+      progress: txResult.progress,
+      isPassed: txResult.isPassed,
+      completedLessons: txResult.completedLessons,
+      totalLessons: txResult.totalLessons,
+    };
   } catch (error) {
     console.error("[TRACK_PROGRESS_ACTION]", error);
     return { success: false, error: "SERVER_ERROR" };
