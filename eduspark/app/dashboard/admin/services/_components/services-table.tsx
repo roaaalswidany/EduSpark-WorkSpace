@@ -28,6 +28,8 @@ import {
 import { cn } from "@/lib/utils";
 import type { ServiceStatus } from "@prisma/client";
 import { updateServiceAction } from "@/actions/admin/update-service";
+import { reviewServiceAction } from "@/actions/admin/review-service";
+import { isHttpsUrl } from "@/lib/security/safe-url";
 
 interface ServiceRow {
   id: string;
@@ -239,7 +241,7 @@ function ServiceDetailsModal({
             <div>
               <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><LinkIcon className="w-4 h-4 text-indigo-400" /> Portfolio</h3>
               <div className="space-y-2">
-                {service.portfolioLinks.map((link, i) => (
+                {service.portfolioLinks.map((link, i) => isHttpsUrl(link) ? (
                   <a
                     key={i}
                     href={link}
@@ -250,6 +252,13 @@ function ServiceDetailsModal({
                     <ExternalLink className="w-4 h-4 shrink-0" />
                     <span className="truncate">{link}</span>
                   </a>
+                ) : (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 p-3 rounded-lg bg-slate-950 border border-red-500/30 text-sm text-red-300"
+                  >
+                    <span className="truncate">Unsafe link not shown: {link}</span>
+                  </div>
                 ))}
               </div>
             </div>
@@ -326,6 +335,7 @@ export function ServicesTable({
   const [archiveDialog, setArchiveDialog] = useState<{
     serviceId: string;
     serviceTitle: string;
+    mode: "ARCHIVE" | "REJECT";
   } | null>(null);
   const [reasonInput, setReasonInput] = useState("");
   const [reasonError, setReasonError] = useState<string | null>(null);
@@ -432,6 +442,7 @@ export function ServicesTable({
       setArchiveDialog({
         serviceId: service.id,
         serviceTitle: service.title,
+        mode: "ARCHIVE",
       });
       setReasonInput("");
       setReasonError(null);
@@ -441,21 +452,77 @@ export function ServicesTable({
     executeChangeStatus(service, status);
   };
 
+  // Review decision (admin gate): approve → ACTIVE; reject → PAUSED with a note the creator sees.
+  const runReview = (
+    service: ServiceRow,
+    decision: "APPROVE" | "REJECT",
+    note?: string
+  ) => {
+    setPendingServiceId(service.id);
+    const toastId = toast.loading(decision === "APPROVE" ? "Approving…" : "Sending feedback…");
+
+    startTransition(async () => {
+      const result = await reviewServiceAction({ serviceId: service.id, decision, note });
+      setPendingServiceId(null);
+
+      if (!result.success) {
+        const messages: Record<string, string> = {
+          FORBIDDEN: "Only admins can review services.",
+          INVALID_STATE: "This service is no longer waiting for review.",
+          INVALID_INPUT: "A note of at least 10 characters is required to request changes.",
+          NOT_FOUND: "Service not found.",
+        };
+        const errorMessage = messages[result.error] ?? "Action failed.";
+        setActionError(errorMessage);
+        toast.error("Review failed", { id: toastId, description: errorMessage });
+        setTimeout(() => setActionError(null), 4000);
+        router.refresh();
+        return;
+      }
+
+      toast.success(decision === "APPROVE" ? "Service approved 🚀" : "Feedback sent 📝", {
+        id: toastId,
+        description:
+          decision === "APPROVE"
+            ? "The service is now live in the marketplace."
+            : "The service is paused with your note. The creator can fix it and resubmit.",
+      });
+      setSelectedService(null);
+      router.refresh();
+    });
+  };
+
+  const handleApprove = (service: ServiceRow) => {
+    setOpenMenuId(null);
+    setActionError(null);
+    runReview(service, "APPROVE");
+  };
+
+  const handleRequestChanges = (service: ServiceRow) => {
+    setOpenMenuId(null);
+    setActionError(null);
+    setArchiveDialog({ serviceId: service.id, serviceTitle: service.title, mode: "REJECT" });
+    setReasonInput("");
+    setReasonError(null);
+  };
+
   const handleConfirmArchive = () => {
     if (!archiveDialog) return;
 
     const trimmed = reasonInput.trim();
     if (trimmed.length < 10) {
-      setReasonError(
-        "Please provide at least 10 characters explaining the reason."
-      );
+      setReasonError("Please provide at least 10 characters explaining the reason.");
       return;
     }
 
     const target = services.find((s) => s.id === archiveDialog.serviceId);
     if (!target) return;
 
-    executeChangeStatus(target, "ARCHIVED", trimmed);
+    if (archiveDialog.mode === "REJECT") {
+      runReview(target, "REJECT", trimmed);
+    } else {
+      executeChangeStatus(target, "ARCHIVED", trimmed);
+    }
     setArchiveDialog(null);
     setReasonInput("");
     setReasonError(null);
@@ -704,10 +771,7 @@ export function ServicesTable({
                               </button>
                               <button
                                 type="button"
-                                onClick={() => {
-                                  handleChangeStatus(s, "ACTIVE");
-                                  setOpenMenuId(null);
-                                }}
+                                onClick={() => handleApprove(s)}
                                 className="w-full text-left px-3.5 py-2 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors inline-flex items-center gap-2"
                               >
                                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -715,10 +779,7 @@ export function ServicesTable({
                               </button>
                               <button
                                 type="button"
-                                onClick={() => {
-                                  handleChangeStatus(s, "ARCHIVED");
-                                  setOpenMenuId(null);
-                                }}
+                                onClick={() => handleRequestChanges(s)}
                                 className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors"
                               >
                                 Request changes…
@@ -745,7 +806,7 @@ export function ServicesTable({
                           <button
                             type="button"
                             onClick={() => handleChangeStatus(s, "ACTIVE")}
-                            disabled={s.status === "ACTIVE"}
+                            disabled={s.status === "ACTIVE" || s.status === "PENDING_REVIEW"}
                             className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Activate
@@ -849,15 +910,19 @@ export function ServicesTable({
                 <div className="flex items-center gap-2 mb-1">
                   <XCircle className="w-5 h-5 text-red-400" />
                   <h3 className="text-lg font-bold text-white">
-                    Archive service
+                    {archiveDialog.mode === "REJECT" ? "Request changes" : "Archive service"}
                   </h3>
                 </div>
                 <p className="text-sm text-slate-400">
-                  Please provide a reason for archiving{" "}
+                  {archiveDialog.mode === "REJECT"
+                    ? "Tell the creator what must change before"
+                    : "Please provide a reason for archiving"}{" "}
                   <strong className="text-slate-200">
                     &quot;{archiveDialog.serviceTitle}&quot;
                   </strong>
-                  . This reason will be sent to the service creator by email.
+                  {archiveDialog.mode === "REJECT"
+                    ? " can go live. The service is paused and this note is shown to the creator."
+                    : ". This reason will be sent to the service creator by email."}
                 </p>
               </div>
 
@@ -918,7 +983,7 @@ export function ServicesTable({
                   ) : (
                     <XCircle className="w-4 h-4" />
                   )}
-                  Archive service
+                  {archiveDialog.mode === "REJECT" ? "Send feedback" : "Archive service"}
                 </button>
               </div>
             </div>
@@ -930,12 +995,17 @@ export function ServicesTable({
         <ServiceDetailsModal
           service={selectedService}
           onClose={() => setSelectedService(null)}
-          onApprove={() => executeChangeStatus(selectedService, "ACTIVE")}
+          onApprove={() =>
+            selectedService.status === "PENDING_REVIEW"
+              ? runReview(selectedService, "APPROVE")
+              : executeChangeStatus(selectedService, "ACTIVE")
+          }
           onArchive={() => {
             setSelectedService(null);
             setArchiveDialog({
               serviceId: selectedService.id,
               serviceTitle: selectedService.title,
+              mode: selectedService.status === "PENDING_REVIEW" ? "REJECT" : "ARCHIVE",
             });
             setReasonInput("");
             setReasonError(null);

@@ -1,7 +1,7 @@
 // eduspark/scripts/migrate-thumbnails.ts
 //
-// One-off: move existing course thumbnails (courses/<id>/thumbnail-*) under public/ so they keep
-// working once the bucket policy only exposes public/*.
+// One-off: move existing course AND service thumbnails (courses/<id>/…, services/<id>/…) under public/
+// so they keep working once the bucket policy only exposes public/*.
 //
 //   npx tsx scripts/migrate-thumbnails.ts           # dry run: lists what would move
 //   npx tsx scripts/migrate-thumbnails.ts --apply   # copy, update the DB, delete the old object
@@ -34,25 +34,31 @@ async function main() {
     forcePathStyle: true,
   });
 
-  const courses = await db.course.findMany({
-    where: { thumbnail: { not: null } },
-    select: { id: true, thumbnail: true },
-  });
+  const targets = [
+    ...(await db.course.findMany({ where: { thumbnail: { not: null } }, select: { id: true, thumbnail: true } })).map(
+      (c) => ({ kind: "course" as const, id: c.id, thumbnail: c.thumbnail })
+    ),
+    ...(await db.service.findMany({ where: { thumbnail: { not: null } }, select: { id: true, thumbnail: true } })).map(
+      (c) => ({ kind: "service" as const, id: c.id, thumbnail: c.thumbnail })
+    ),
+  ];
 
   let moved = 0;
-  for (const c of courses) {
+  for (const c of targets) {
     const oldKey = keyFromPublicUrl(c.thumbnail);
     if (!oldKey || oldKey.startsWith(PUBLIC_PREFIX)) continue; // external URL, or already migrated
     const newKey = `${PUBLIC_PREFIX}${oldKey}`;
-    console.log(`${apply ? "MOVE" : "would move"}: ${oldKey}  →  ${newKey}`);
+    console.log(`${apply ? "MOVE" : "would move"} (${c.kind}): ${oldKey}  →  ${newKey}`);
     if (!apply) continue;
 
     await s3.send(new CopyObjectCommand({ Bucket: bucket, Key: newKey, CopySource: `${bucket}/${oldKey}` }));
-    await db.course.update({ where: { id: c.id }, data: { thumbnail: publicObjectUrl(newKey) } });
+    const url = publicObjectUrl(newKey);
+    if (c.kind === "course") await db.course.update({ where: { id: c.id }, data: { thumbnail: url } });
+    else await db.service.update({ where: { id: c.id }, data: { thumbnail: url } });
     await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: oldKey }));
     moved++;
   }
-  console.log(apply ? `\n✔ Moved ${moved} thumbnail(s).` : "\nDry run. Re-run with --apply to move them.");
+  console.log(apply ? `\n✔ Moved ${moved} thumbnail(s) (courses + services).` : "\nDry run. Re-run with --apply to move them.");
   await db.$disconnect();
 }
 

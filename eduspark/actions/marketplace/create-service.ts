@@ -17,6 +17,7 @@ import {
 import { scanUrls } from "@/lib/virustotal";
 import { limitByUser } from "@/lib/security/action-guard";
 import { RateLimits } from "@/lib/security/rate-limit";
+import { notifyAdmins } from "@/lib/notifications/notify-admins";
 
 // ─── Slug Utilities ───────────────────────────────────────────────
 
@@ -175,6 +176,14 @@ export async function createServiceAction(
         categoryId: effectiveCategoryId,
       },
       select: { id: true, slug: true },
+    });
+
+    // New services start in PENDING_REVIEW: tell the admins there is something to review.
+    await notifyAdmins({
+      title: "Service awaiting review",
+      body: `"${title}" was submitted for review.`,
+      link: "/dashboard/admin/services?status=PENDING_REVIEW",
+      exceptUserId: userId,
     });
 
     revalidatePath("/marketplace");

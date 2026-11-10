@@ -3,7 +3,7 @@
 backup.sql
 fix-verify.ts
 
-# Database & MinIO backups (contain real user data — never commit)
+# Database & MinIO backups (contain real user data â€” never commit)
 backups/
 *.dump
 *.sql.gz

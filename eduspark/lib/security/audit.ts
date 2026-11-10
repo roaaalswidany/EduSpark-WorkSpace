@@ -35,11 +35,15 @@ export const AuditActions = {
   ADMIN_COURSE_APPROVED: "admin.course.approved",
   ADMIN_COURSE_REJECTED: "admin.course.rejected",
   ADMIN_SERVICE_STATUS_CHANGED: "admin.service.status_changed",
+  ADMIN_SERVICE_APPROVED: "admin.service.approved",
+  ADMIN_SERVICE_REJECTED: "admin.service.rejected",
 
   // Creator
   COURSE_SUBMITTED_FOR_REVIEW: "creator.course.submitted_for_review",
   COURSE_WITHDRAWN: "creator.course.withdrawn",
   SERVICE_CREATED: "creator.service.created",
+  SERVICE_SUBMITTED_FOR_REVIEW: "creator.service.submitted_for_review",
+  SERVICE_STATUS_CHANGED: "creator.service.status_changed",
   SERVICE_UPDATED: "creator.service.updated",
   SERVICE_DELETED: "creator.service.deleted",
 
