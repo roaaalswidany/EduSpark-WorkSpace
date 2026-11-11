@@ -65,34 +65,72 @@ export interface RateLimitResult {
   retryAfterSec: number;
 }
 
-// ─── Presets ──────────────────────────────────────────────────────────────────
-// (unchanged — see original file for all presets)
+// ─── Presets ─────────────────────────────────────────────────────
+// OWASP ASVS v4.0 recommends 5 failed login attempts per 15 minutes.
+// In development, the IP limit is relaxed to allow testing multiple
+// accounts from the same machine without manual Redis resets.
 
 const IS_PROD = process.env.NODE_ENV === "production";
 
 export const RateLimits = {
+  /** AI chat: 20 messages / 5 minutes */
   AI_CHAT: { key: "ai-chat", limit: 20, windowSec: 300 },
+
+  /** Login attempts per email: 5 per 15 minutes (OWASP standard) */
   AUTH_LOGIN: { key: "auth-login", limit: 5, windowSec: 900 },
+
+  /** Login attempts per IP: strict in production, relaxed in dev */
   AUTH_LOGIN_IP: {
     key: "auth-login-ip",
     limit: IS_PROD ? 5 : 100,
     windowSec: 900,
   },
+
+  /** Register: 3 per hour */
   AUTH_REGISTER: { key: "auth-register", limit: 3, windowSec: 3600 },
+
+  /** General API writes: 60 per minute */
   API_WRITE: { key: "api-write", limit: 60, windowSec: 60 },
+
+  /** Server actions (sensitive): 30 per minute */
   ACTION_SENSITIVE: { key: "action-sensitive", limit: 30, windowSec: 60 },
+
+  /** Quiz submissions: 10 per 10 minutes per user (DB-protection layer) */
   QUIZ_SUBMIT: { key: "quiz-submit", limit: 10, windowSec: 600 },
+
+  /** Creator quiz authoring (manual questions): 60 per hour per user */
   QUESTION_CREATE: { key: "question-create", limit: 60, windowSec: 3600 },
+
+  /** AI quiz generation (costs money): 10 per hour per user */
   AI_QUIZ_GENERATE: { key: "ai-quiz-generate", limit: 10, windowSec: 3600 },
+
+  /** Ordering a service: 10 per hour per user */
   ORDER_CREATE: { key: "order-create", limit: 10, windowSec: 3600 },
+
+  /** Presigned upload requests: 30 per 10 minutes per user */
   UPLOAD_REQUEST: { key: "upload-request", limit: 30, windowSec: 600 },
+
+  /** Presigned download URLs: 120 per 10 minutes per user */
   DOWNLOAD_URL: { key: "download-url", limit: 120, windowSec: 600 },
+
   SERVICE_WRITE: { key: "service-write", limit: 20, windowSec: 3600 },
+
+  /** Course ratings: 10 per hour per user */
   COURSE_REVIEW: { key: "course-review", limit: 10, windowSec: 3600 },
+
+  /** Course thumbnails: 20 uploads per hour per user */
   THUMBNAIL_UPLOAD: { key: "thumbnail-upload", limit: 20, windowSec: 3600 },
+
+  /** Password-reset requests/attempts: 5 per hour per IP and per target email */
   PASSWORD_RESET: { key: "password-reset", limit: 5, windowSec: 3600 },
+
+  /** Verification emails: 3 per hour per user */
   EMAIL_VERIFY_SEND: { key: "email-verify-send", limit: 3, windowSec: 3600 },
+
+  /** Public certificate verification (page + JSON API): 60 per minute per IP */
   PUBLIC_VERIFY: { key: "public-verify", limit: 60, windowSec: 60 },
+
+  /** Writing project reviews: 10 per hour per user */
   REVIEW_CREATE: { key: "review-create", limit: 10, windowSec: 3600 },
 } as const;
 

@@ -157,6 +157,8 @@ export function QuizView({
           const errorMessage =
             res.error === "NOT_ENROLLED"
               ? "You are not enrolled in this course."
+              : res.error === "COURSE_NOT_COMPLETED"
+              ? "Finish all the lessons of this course before taking the certification quiz."
               : res.error === "QUIZ_NOT_FOUND"
               ? "Quiz not found."
               : res.error === "QUESTION_COUNT_MISMATCH"

@@ -12,10 +12,11 @@ This document records **what was broken**, **how it was fixed**, and **how it is
 
 | Metric | Before | After |
 |---|---|---|
-| Test files | 25 | 28 |
-| Tests passing | 185 | **196** |
-| Critical bugs | 4 known | 0 |
+| Test files | 25 | **30** |
+| Tests passing | 185 | **207** |
+| Critical bugs | 4 known | 0 (a fifth, Bug #4b, was found in an external review and fixed — see below) |
 | Medium bugs | 2 remaining | 2 remaining (deferred) |
+
 
 ---
 
@@ -30,8 +31,8 @@ The `awardXP` block was **duplicated 4 times in a row** (copy-paste error during
 
 | Action | Expected XP | Actual XP |
 |---|---|---|
-| `STEP_STARTED` | 10 | **40** (4×) |
-| `STEP_COMPLETED` | 25 | **100** (4×) |
+| `STEP_STARTED` | 15 | **60** (4×) |
+| `STEP_COMPLETED` | 40 | **160** (4×) |
 | `PATH_COMPLETED` | 100 | **400** (4×) |
 
 Additionally:
@@ -48,9 +49,19 @@ Additionally:
 - Changed `void awardXP` → `await awardXP` (errors surface)
 - Idempotent: same status → no DB write, no XP
 
-**Tests:** `tests/career-path-status.test.ts` (6 tests)
+**Tests:** `tests/career-path-status.test.ts` (8 tests)
 
 **Commit:** `c55d266`
+
+### Bug #4b — Start/pause cycling farmed `STEP_STARTED` XP (found in review, fixed)
+
+**Severity:** 🟠 High (gamification integrity)
+
+**Problem:** the first version of the fix allowed `IN_PROGRESS → PENDING` ("pause"). Every `PENDING → IN_PROGRESS` move awards `CAREER_PATH_STEP_STARTED` XP (15), so calling the server action in a loop (`PENDING → IN_PROGRESS → PENDING → …`) produced unlimited XP. The UI has no pause button, but a Server Action can be called directly. It also contradicted this document's own claim that transitions are forward-only.
+
+**Fix:** `VALID_TRANSITIONS` is now strictly forward-only: `PENDING → IN_PROGRESS → COMPLETED`.
+
+**Tests:** `career-path-status.test.ts` — *rejects IN_PROGRESS → PENDING, so start/pause cycling cannot farm STEP_STARTED XP* and *awards each step's XP exactly once over its whole life*.
 
 ---
 
@@ -171,13 +182,13 @@ Each fix followed the same loop:
 
 1. **Reproduce** — write a failing test that exposes the bug
 2. **Fix** — change the minimum amount of code
-3. **Verify** — run the new test + the full suite (`196 passed`)
+3. **Verify** — run the new test + the full suite (`207 passed`)
 4. **Commit** — one commit per bug, descriptive message
 5. **Push** — to `audit-fixe` branch
 
 No commits were made without:
 - `npx tsc --noEmit` returning 0 errors
-- `npx vitest run` returning ≥ 196 passed
+- `npx vitest run` returning ≥ 207 passed
 - `git status` clean after commit
 
 ---
@@ -188,7 +199,8 @@ The following tests now guard the specific bugs above:
 
 | Test File | Guards Against |
 |---|---|
-| `tests/career-path-status.test.ts` | Bug #4 (4× XP, backward transitions, cross-user) |
+| `tests/career-path-status.test.ts` | Bug #4 / #4b (4× XP, backward transitions, start–pause XP farming, cross-user) |
+| `tests/track-progress-concurrency.test.ts` | Lesson-completion XP awarded exactly once under 8 concurrent calls; one COURSE_COMPLETED |
 | `tests/quiz-completion-gate.test.ts` | Bug #1 (quiz without completion) |
 | `tests/rate-limit-atomicity.test.ts` | Bug #6 (counter inflation, identifier isolation) |
 | `tests/quiz.test.ts` (updated) | Bug #1 (all 7 quiz scenarios now stage `isPassed: true`) |

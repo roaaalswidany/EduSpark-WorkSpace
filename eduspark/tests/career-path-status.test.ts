@@ -96,6 +96,38 @@ describe("career path step status — integrity", () => {
     if (!r.success) expect(r.error).toBe("INVALID_TRANSITION");
   });
 
+  it("rejects IN_PROGRESS → PENDING, so start/pause cycling cannot farm STEP_STARTED XP", async () => {
+    expect((await updateStepStatusAction({ stepId, status: "IN_PROGRESS" })).success).toBe(true);
+    const xpAfterStart = (await db.userStats.findUnique({ where: { userId } }))?.xp ?? 0;
+    expect(xpAfterStart).toBeGreaterThan(0);
+
+    for (let i = 0; i < 3; i++) {
+      const back = await updateStepStatusAction({ stepId, status: "PENDING" });
+      expect(back.success).toBe(false);
+      if (!back.success) expect(back.error).toBe("INVALID_TRANSITION");
+      const again = await updateStepStatusAction({ stepId, status: "IN_PROGRESS" });
+      expect(again.success).toBe(true);
+      if (again.success) expect(again.statusChanged).toBe(false); // already IN_PROGRESS
+    }
+
+    expect((await db.userStats.findUnique({ where: { userId } }))?.xp).toBe(xpAfterStart);
+    expect((await db.careerPathStep.findUnique({ where: { id: stepId } }))?.status).toBe("IN_PROGRESS");
+  });
+
+  it("awards each step's XP exactly once over its whole life (start, then completion)", async () => {
+    await updateStepStatusAction({ stepId, status: "IN_PROGRESS" });
+    const started = (await db.userStats.findUnique({ where: { userId } }))?.xp ?? 0;
+    await updateStepStatusAction({ stepId, status: "COMPLETED" });
+    const completed = (await db.userStats.findUnique({ where: { userId } }))?.xp ?? 0;
+    expect(completed).toBeGreaterThan(started);
+
+    // Nothing can be repeated or undone afterwards: no more XP.
+    for (const status of ["IN_PROGRESS", "COMPLETED", "PENDING"] as const) {
+      await updateStepStatusAction({ stepId, status });
+    }
+    expect((await db.userStats.findUnique({ where: { userId } }))?.xp).toBe(completed);
+  });
+
   it("rejects PENDING → COMPLETED (must go through IN_PROGRESS)", async () => {
     const r = await updateStepStatusAction({ stepId, status: "COMPLETED" });
     expect(r.success).toBe(false);
