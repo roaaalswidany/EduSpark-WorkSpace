@@ -13,12 +13,17 @@ const UpdateStepSchema = z.object({
 });
 
 /**
- * Allowed state transitions (forward-only + allow pause).
- * COMPLETED is terminal — no going back.
+ * Allowed state transitions: strictly FORWARD-ONLY.
+ *   PENDING → IN_PROGRESS → COMPLETED (terminal)
+ *
+ * Why no IN_PROGRESS → PENDING: every PENDING → IN_PROGRESS move awards
+ * CAREER_PATH_STEP_STARTED XP, so allowing a way back would let a user farm
+ * unlimited XP by cycling start/pause (the UI has no such button, but the
+ * server action can be called directly).
  */
 const VALID_TRANSITIONS: Record<string, readonly string[]> = {
   PENDING: ["IN_PROGRESS"],
-  IN_PROGRESS: ["COMPLETED", "PENDING"],
+  IN_PROGRESS: ["COMPLETED"],
   COMPLETED: [],
 } as const;
 
