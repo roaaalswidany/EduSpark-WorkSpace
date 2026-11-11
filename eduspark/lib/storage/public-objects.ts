@@ -5,7 +5,8 @@
 // so private attachments (milestones, chat, lessons) in the same bucket are never exposed.
 //
 // Env (all optional, sensible fallbacks):
-//   S3_PUBLIC_URL     public base URL browsers use to read objects (e.g. https://cdn.example.com).
+//   S3_PUBLIC_URL     public base URL browsers use to read objects (e.g. https://cdn.example.com),
+//                     WITHOUT the bucket name (a trailing /<bucket> is tolerated, not required).
 //                     Defaults to S3_ENDPOINT — fine locally, WRONG in production when S3_ENDPOINT is
 //                     an internal hostname such as http://minio:9000.
 //   S3_PUBLIC_BUCKET  bucket that holds public objects. Defaults to S3_BUCKET_NAME.
@@ -34,15 +35,27 @@ export function serviceThumbnailKey(serviceId: string, uuid: string, ext: string
   return `${PUBLIC_PREFIX}services/${serviceId}/thumbnail-${uuid}.${ext}`;
 }
 
+/**
+ * Base URL of the bucket's root. Normally `<S3_PUBLIC_URL>/<bucket>` (path-style, MinIO).
+ * If S3_PUBLIC_URL ALREADY ends with `/<bucket>` (a CDN or reverse proxy mapped to the bucket
+ * root — or a configuration slip), we must not append the bucket a second time: that produces
+ * `…/bucket/bucket/public/…`, which 404s.
+ */
+function bucketRootUrl(): string {
+  const base = publicBaseUrl();
+  const bucket = publicBucket();
+  return bucket && base.endsWith(`/${bucket}`) ? base : `${base}/${bucket}`;
+}
+
 /** Path-style URL (what MinIO and most S3-compatible servers expect). */
 export function publicObjectUrl(key: string): string {
-  return `${publicBaseUrl()}/${publicBucket()}/${key}`;
+  return `${bucketRootUrl()}/${key}`;
 }
 
 /** Inverse of publicObjectUrl; null when the URL does not point into our storage. */
 export function keyFromPublicUrl(url: string | null | undefined): string | null {
   if (!url) return null;
-  const prefix = `${publicBaseUrl()}/${publicBucket()}/`;
+  const prefix = `${bucketRootUrl()}/`;
   if (!prefix.startsWith("http") || !url.startsWith(prefix)) return null;
   const key = url.slice(prefix.length);
   return key.length > 0 && !key.includes("..") ? key : null;
