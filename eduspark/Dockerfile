@@ -22,6 +22,18 @@ RUN npm ci --ignore-scripts
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
+# Copy nested workspace dependencies if present.
+# npm workspaces usually hoist everything to /app/node_modules, BUT when
+# `overrides` conflict with a peer dep's declared range (e.g. nodemailer@10
+# vs next-auth's peer ^7), npm nests the package under the workspace that
+# directly depends on it. Without this copy, `next build` fails with
+# "Cannot find module 'nodemailer'" from lib/email/mailer.ts.
+RUN --mount=type=bind,from=deps,source=/app,target=/tmp/deps-src \
+    for ws in eduspark eduspark-chat-server; do \
+      if [ -d "/tmp/deps-src/$ws/node_modules" ]; then \
+        mkdir -p "./$ws" && cp -r "/tmp/deps-src/$ws/node_modules" "./$ws/"; \
+      fi; \
+    done
 COPY . .
 
 # prisma.config.ts requires DATABASE_URL to exist at generate/build time. This dummy value is
