@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { NotificationsClient } from "./_components/notifications-client";
 
 export const metadata = {
-  title: "Notifications â€” EduSpark",
+  title: "Notifications — EduSpark",
 };
 
 const PAGE_SIZE = 20;
@@ -60,7 +60,7 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
           <Bell className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Inbox</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight">
           Notifications
         </h1>
         {total > 0 && (
@@ -85,7 +85,7 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
           <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
             <Bell className="w-7 h-7 text-primary" />
           </div>
-          <h2 className="text-lg font-bold text-white mb-1.5">All caught up!</h2>
+          <h2 className="text-lg font-bold text-foreground mb-1.5">All caught up!</h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto">
             You don&apos;t have any notifications yet. We&apos;ll let you know
             when something important happens.
@@ -109,7 +109,7 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
                   href={buildPageUrl(page - 1)}
                   className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
                 >
-                  â†گ Previous
+                  ← Previous
                 </Link>
               )}
 
@@ -137,7 +137,7 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
                 if (p === page - 2 || p === page + 2) {
                   return (
                     <span key={p} className="text-muted-foreground/70 text-xs">
-                      â€¦
+                      ...
                     </span>
                   );
                 }
@@ -149,7 +149,7 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
                   href={buildPageUrl(page + 1)}
                   className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
                 >
-                  Next â†’
+                  Next →
                 </Link>
               )}
             </div>

@@ -119,7 +119,7 @@ export default async function AdminDashboardPage() {
     <div className="p-4 sm:p-6 space-y-6 max-w-6xl mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Platform overview, pending reviews, and administrative controls.
         </p>
@@ -165,7 +165,7 @@ export default async function AdminDashboardPage() {
                 )}
               </div>
               <p className="text-xs font-medium text-muted-foreground">{s.label}</p>
-              <p className="text-2xl font-bold text-white mt-1">{s.value}</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{s.value}</p>
             </div>
           );
         })}
@@ -178,13 +178,13 @@ export default async function AdminDashboardPage() {
           <div className="px-5 py-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-amber-400" />
-              <h2 className="text-sm font-bold text-white">Pending Reviews</h2>
+              <h2 className="text-sm font-bold text-foreground">Pending Reviews</h2>
             </div>
             <Link
               href="/dashboard/admin/courses?status=DRAFT"
               className="text-xs text-primary hover:text-primary transition-colors"
             >
-              View all â†’
+              View all →
             </Link>
           </div>
           <div className="divide-y divide-border">
@@ -203,7 +203,7 @@ export default async function AdminDashboardPage() {
                       <BookOpen className="w-4 h-4 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white truncate">{c.title}</p>
+                      <p className="text-sm text-foreground truncate">{c.title}</p>
                       <p className="text-xs text-muted-foreground">
                         by {c.creator.name} آ· Draft course
                       </p>
@@ -225,7 +225,7 @@ export default async function AdminDashboardPage() {
                       <ShoppingBag className="w-4 h-4 text-emerald-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white truncate">{s.title}</p>
+                      <p className="text-sm text-foreground truncate">{s.title}</p>
                       <p className="text-xs text-muted-foreground">
                         by {s.creator.name} آ· Paused service
                       </p>
@@ -247,7 +247,7 @@ export default async function AdminDashboardPage() {
         <div className="rounded-2xl bg-card border border-border overflow-hidden">
           <div className="px-5 py-4 border-b border-border flex items-center gap-2">
             <Activity className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-bold text-white">Recent Activity</h2>
+            <h2 className="text-sm font-bold text-foreground">Recent Activity</h2>
           </div>
           <div className="divide-y divide-border">
             {recentLogs.length === 0 ? (
@@ -268,7 +268,7 @@ export default async function AdminDashboardPage() {
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-foreground">
-                      <span className="font-semibold text-white">
+                      <span className="font-semibold text-foreground">
                         {log.user?.name ?? "System"}
                       </span>{" "}
                       {log.action.replace(/\./g, " ")}
@@ -298,7 +298,7 @@ export default async function AdminDashboardPage() {
               <Bell className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white">
+              <h2 className="text-lg font-bold text-foreground">
                 Broadcast Notification
               </h2>
               <p className="text-xs text-muted-foreground">
@@ -316,7 +316,7 @@ export default async function AdminDashboardPage() {
               <ShieldAlert className="w-5 h-5 text-info" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white">Quick Actions</h2>
+              <h2 className="text-lg font-bold text-foreground">Quick Actions</h2>
               <p className="text-xs text-muted-foreground">
                 Jump to management sections.
               </p>

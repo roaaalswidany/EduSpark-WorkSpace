@@ -46,7 +46,7 @@ export function PathTimeline({ steps }: PathTimelineProps) {
   const handleStatusChange = (step: Step, newStatus: string) => {
     setPendingStepId(step.id);
 
-    const toastId = toast.loading("Updating progressâ€¦");
+    const toastId = toast.loading("Updating progress...");
 
     startTransition(async () => {
       const result = await updateStepStatusAction({

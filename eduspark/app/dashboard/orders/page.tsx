@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { OrderCard, type OrderCardData } from "./_components/order-card";
 
 export const metadata = {
-  title: "My Orders â€” EduSpark",
+  title: "My Orders — EduSpark",
 };
 
 export default async function MyOrdersPage() {

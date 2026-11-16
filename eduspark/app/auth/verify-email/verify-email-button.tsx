@@ -33,7 +33,7 @@ export function VerifyEmailButton({ email, token }: { email: string; token: stri
           })
         }
       >
-        {isPending ? "Confirmingâ€¦" : "Confirm email"}
+        {isPending ? "Confirming..." : "Confirm email"}
       </button>
     </div>
   );

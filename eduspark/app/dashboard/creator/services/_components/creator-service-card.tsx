@@ -79,7 +79,7 @@ const GRADIENTS = [
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",
   "from-sky-500 to-blue-700",
-  "from-fuchsia-600 to-purple-700",
+  "from-emerald-600 to-purple-700",
 ] as const;
 
 function getGradient(id: string): string {
@@ -154,7 +154,7 @@ function DeleteDialog({
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Deletingâ€¦
+                Deleting...
               </>
             ) : (
               <>
@@ -200,10 +200,10 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
     const previous = status;
     setStatus(newStatus);
 
-    let loadingMessage = "Updating statusâ€¦";
-    if (newStatus === "PAUSED") loadingMessage = "Pausing serviceâ€¦";
-    if (newStatus === "ACTIVE") loadingMessage = "Activating serviceâ€¦";
-    if (newStatus === "PENDING_REVIEW") loadingMessage = "Submitting for reviewâ€¦";
+    let loadingMessage = "Updating status...";
+    if (newStatus === "PAUSED") loadingMessage = "Pausing service...";
+    if (newStatus === "ACTIVE") loadingMessage = "Activating service...";
+    if (newStatus === "PENDING_REVIEW") loadingMessage = "Submitting for review...";
 
     const toastId = toast.loading(loadingMessage);
 
@@ -240,7 +240,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
 
   const handleDelete = useCallback(() => {
     setDeleteError(null);
-    const toastId = toast.loading("Deleting serviceâ€¦");
+    const toastId = toast.loading("Deleting service...");
 
     startDeleteTransition(async () => {
       const result = await deleteServiceAction({ serviceId: service.id });

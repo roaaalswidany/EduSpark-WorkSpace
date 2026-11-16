@@ -11,7 +11,7 @@ import { BadgesGrid } from "./_components/badges-grid";
 import { Leaderboard } from "./_components/leaderboard";
 
 export const metadata = {
-  title: "Achievements â€” EduSpark",
+  title: "Achievements — EduSpark",
 };
 
 export default async function AchievementsPage() {
@@ -58,7 +58,7 @@ export default async function AchievementsPage() {
           <Award className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Achievements</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
           Your Journey
         </h1>
         <p className="text-sm text-muted-foreground mt-2">

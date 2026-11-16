@@ -95,7 +95,7 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
           : "border-border hover:border-primary/40 hover:shadow-primary/5"
       )}
     >
-      {/* â”€â”€ Thumbnail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Thumbnail ─────────────────────────────────────── */}
       <div className="relative aspect-video bg-background overflow-hidden">
         {course.thumbnail ? (
           <Image
@@ -140,7 +140,7 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
         </div>
       </div>
 
-      {/* â”€â”€ Body â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Body ──────────────────────────────────────────── */}
       <div className="flex flex-col flex-1 p-4 sm:p-5 gap-3">
         {/* Title */}
         <h3 className="text-sm sm:text-base font-bold text-white leading-snug line-clamp-2 group-hover:text-primary transition-colors">

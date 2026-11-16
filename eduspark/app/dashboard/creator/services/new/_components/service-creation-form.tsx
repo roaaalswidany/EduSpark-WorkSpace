@@ -154,7 +154,7 @@ function TagInput({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             onBlur={() => input && addTag(input)}
-            placeholder={value.length === 0 ? "Type a tag, press Enterâ€¦" : ""}
+            placeholder={value.length === 0 ? "Type a tag, press Enter..." : ""}
             className="flex-1 min-w-30 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/70 outline-none"
           />
         )}
@@ -408,7 +408,7 @@ export function ServiceCreationForm({
     setServerError(null);
 
     const toastId = toast.loading(
-      isEdit ? "Saving changesâ€¦" : "Publishing serviceâ€¦"
+      isEdit ? "Saving changes..." : "Publishing service..."
     );
 
     startTransition(async () => {
@@ -432,7 +432,7 @@ export function ServiceCreationForm({
               ? "It will appear in the marketplace once an administrator approves it."
               : sentToReview
               ? "The service is hidden until an administrator approves your changes."
-              : "Redirecting to your servicesâ€¦",
+              : "Redirecting to your services...",
           }
         );
         setTimeout(() => router.push("/dashboard/creator/services"), 1200);
@@ -470,7 +470,7 @@ export function ServiceCreationForm({
           {isEdit ? "Service Updated!" : "Service Created!"}
         </h2>
         <p className="text-muted-foreground text-sm">
-          Redirecting to your servicesâ€¦
+          Redirecting to your services...
         </p>
       </div>
     );
@@ -503,8 +503,8 @@ export function ServiceCreationForm({
                     }))}
                     value={field.value}
                     onChange={(v) => field.onChange(v)}
-                    placeholder="Select a certified courseâ€¦"
-                    searchPlaceholder="Search coursesâ€¦"
+                    placeholder="••••••••"
+                    searchplaceholder="••••••••"
                     emptyMessage="No matching courses."
                   />
                 </FormControl>
@@ -565,7 +565,7 @@ export function ServiceCreationForm({
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="e.g. I will build a full-stack Next.js web applicationâ€¦"
+                    placeholder="••••••••"
                     className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-emerald-500 h-10"
                   />
                 </FormControl>
@@ -591,7 +591,7 @@ export function ServiceCreationForm({
                   <Textarea
                     {...field}
                     rows={6}
-                    placeholder="Describe exactly what you'll deliver, what's included, your process, and any requirements from the buyerâ€¦"
+                    placeholder="••••••••"
                     className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-emerald-500 resize-none"
                   />
                 </FormControl>
@@ -663,7 +663,7 @@ export function ServiceCreationForm({
                     />
                   </FormControl>
                   <FormDescription className="text-muted-foreground/70 text-xs">
-                    1â€“90 calendar days
+                    1–90 calendar days
                   </FormDescription>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -781,7 +781,7 @@ export function ServiceCreationForm({
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                {isEdit ? "Savingâ€¦" : "Publishingâ€¦"}
+                {isEdit ? "Saving..." : "Publishing..."}
               </>
             ) : isEdit ? (
               "Save Changes"

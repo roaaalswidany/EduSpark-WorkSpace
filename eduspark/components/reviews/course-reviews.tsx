@@ -53,7 +53,7 @@ function ReviewForm({ courseId, onDone }: { courseId: string; onDone: () => void
   const submit = () => {
     if (rating === 0) { setError("Please choose a rating."); return; }
     setError(null);
-    const toastId = toast.loading("Submitting reviewâ€¦");
+    const toastId = toast.loading("Submitting review...");
     startTransition(async () => {
       const res = await createCourseReviewAction({
         courseId,

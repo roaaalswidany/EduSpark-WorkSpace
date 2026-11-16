@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Home, Search, ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "Page Not Found â€” EduSpark",
+  title: "Page Not Found — EduSpark",
 };
 
 export default function NotFound() {

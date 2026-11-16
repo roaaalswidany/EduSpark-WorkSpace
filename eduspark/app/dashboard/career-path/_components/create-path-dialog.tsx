@@ -41,7 +41,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
     if (!isValid || isPending) return;
     setError(null);
 
-    const toastId = toast.loading("Generating your career pathâ€¦", {
+    const toastId = toast.loading("Generating your career path...", {
       description: "This may take 10-20 seconds.",
     });
 
@@ -188,7 +188,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Generatingâ€¦
+                Generating...
               </>
             ) : (
               <>

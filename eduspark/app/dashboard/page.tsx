@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
 
 export const metadata = {
-  title: "Dashboard â€” EduSpark",
+  title: "Dashboard — EduSpark",
 };
 
 export default async function DashboardPage() {
@@ -71,7 +71,7 @@ export default async function DashboardPage() {
             {isAdmin ? "Administrator" : isCreator ? "Creator" : "Student"}
           </span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
           Welcome back, {session.user.name?.split(" ")[0] ?? "there"} ًں‘‹
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
@@ -129,7 +129,7 @@ export default async function DashboardPage() {
                 <ShieldCheck className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white">Admin Panel</p>
+                <p className="text-sm font-bold text-foreground">Admin Panel</p>
                 <p className="text-xs text-muted-foreground">
                   Manage users, courses, and services
                 </p>
@@ -145,7 +145,7 @@ export default async function DashboardPage() {
                 <TrendingUp className="w-5 h-5 text-info" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white">Conversations</p>
+                <p className="text-sm font-bold text-foreground">Conversations</p>
                 <p className="text-xs text-muted-foreground">
                   Monitor platform-wide chats
                 </p>
@@ -227,7 +227,7 @@ export default async function DashboardPage() {
                 <Package className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white">My Services</p>
+                <p className="text-sm font-bold text-foreground">My Services</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {servicesCount} {servicesCount === 1 ? "service" : "services"} published
                 </p>
@@ -243,7 +243,7 @@ export default async function DashboardPage() {
                 <Store className="w-5 h-5 text-emerald-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white">Marketplace</p>
+                <p className="text-sm font-bold text-foreground">Marketplace</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Browse what other creators offer
                 </p>
@@ -268,7 +268,7 @@ export default async function DashboardPage() {
               <GraduationCap className="w-5 h-5 text-amber-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-white">Browse Courses</p>
+              <p className="text-sm font-bold text-foreground">Browse Courses</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Discover new skills to master
               </p>
@@ -284,7 +284,7 @@ export default async function DashboardPage() {
               <Store className="w-5 h-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-white">Browse Services</p>
+              <p className="text-sm font-bold text-foreground">Browse Services</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Hire certified experts
               </p>
@@ -297,7 +297,7 @@ export default async function DashboardPage() {
   );
 }
 
-// â”€â”€â”€ Stat Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Stat Card ────────────────────────────────────────────
 
 function StatCard({
   label,
@@ -324,7 +324,7 @@ function StatCard({
       >
         <Icon className={cn("w-4 h-4", color)} />
       </div>
-      <p className="text-2xl font-black text-white tabular-nums leading-none">
+      <p className="text-2xl font-black text-foreground tabular-nums leading-none">
         {value}
       </p>
       <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">

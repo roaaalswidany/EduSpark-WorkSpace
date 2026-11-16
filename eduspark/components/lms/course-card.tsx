@@ -73,7 +73,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
         "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5"
       )}
     >
-      {/* â”€â”€ Thumbnail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Thumbnail ─────────────────────────────────────── */}
       <div className="relative aspect-video bg-background overflow-hidden">
         {course.thumbnail ? (
           <Image
@@ -143,7 +143,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
         )}
       </div>
 
-      {/* â”€â”€ Body â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Body ──────────────────────────────────────────── */}
       <div className="flex flex-col flex-1 p-4 sm:p-5 gap-3">
         {/* Category */}
         {course.category && (

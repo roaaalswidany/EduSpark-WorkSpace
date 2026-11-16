@@ -137,7 +137,7 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Password â€” with show/hide toggle */}
+            {/* Password — with show/hide toggle */}
             <div>
               <label
                 htmlFor="password"
@@ -154,7 +154,7 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isPending}
-                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  placeholder="••••••••"
                   className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
                 />
                 <button
@@ -203,7 +203,7 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Confirm Password â€” with show/hide toggle */}
+            {/* Confirm Password — with show/hide toggle */}
             <div>
               <label
                 htmlFor="confirmPassword"
@@ -220,7 +220,7 @@ export default function RegisterPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   disabled={isPending}
-                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  placeholder="••••••••"
                   className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
                 />
                 <button
@@ -280,7 +280,7 @@ export default function RegisterPage() {
               {isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Creating accountâ€¦
+                  Creating account...
                 </>
               ) : (
                 "Create account"

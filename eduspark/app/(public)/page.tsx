@@ -28,7 +28,7 @@ export default async function HomePage() {
   const session = await getServerSession(authOptions);
   const isLoggedIn = !!session?.user;
 
-  // â”€â”€ Live platform stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Live platform stats ────────────────────────────────────────
   const [coursesCount, usersCount, certificatesCount, servicesCount] =
     await Promise.all([
       db.course.count({ where: { status: CourseStatus.PUBLISHED } }),
@@ -37,7 +37,7 @@ export default async function HomePage() {
       db.service.count({ where: { status: ServiceStatus.ACTIVE } }),
     ]);
 
-  // â”€â”€ Top 3 featured courses â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Top 3 featured courses ─────────────────────────────────────
   const featuredCourses = await db.course.findMany({
     where: { status: CourseStatus.PUBLISHED },
     orderBy: [{ totalRating: "desc" }, { ratingCount: "desc" }],
@@ -82,7 +82,7 @@ export default async function HomePage() {
             <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white tracking-tight leading-[1.05] mb-6">
               Learn .. Certify
               <br />
-              <span className="bg-linear-to-r from-emerald-400 via-emerald-400 to-fuchsia-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-emerald-400 via-emerald-400 to-emerald-400 bg-clip-text text-transparent">
                 Build your career
               </span>
             </h1>
@@ -393,7 +393,7 @@ export default async function HomePage() {
       <section className="relative">
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-emerald-100/30 to-background dark:via-emerald-950/20 dark:to-zinc-950" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="rounded-3xl bg-linear-to-br from-emerald-600/20 via-emerald-600/10 to-fuchsia-600/20 border border-primary/20 p-10 sm:p-14 text-center">
+          <div className="rounded-3xl bg-linear-to-br from-emerald-600/20 via-emerald-600/10 to-transparent border border-primary/20 p-10 sm:p-14 text-center">
             <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-emerald-500/30">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
@@ -418,7 +418,7 @@ export default async function HomePage() {
   );
 }
 
-// â”€â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Sub-components ──────────────────────────────────────────────
 
 function StatCard({
   icon: Icon,

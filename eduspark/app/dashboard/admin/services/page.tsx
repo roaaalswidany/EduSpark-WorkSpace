@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { ServicesTable } from "./_components/services-table";
 
 export const metadata = {
-  title: "Services â€” Admin â€” EduSpark",
+  title: "Services — Admin — EduSpark",
 };
 
 const PAGE_SIZE = 20;

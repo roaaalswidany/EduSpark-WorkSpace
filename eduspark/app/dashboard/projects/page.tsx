@@ -7,7 +7,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 
 export const metadata = {
-  title: "My Projects â€” EduSpark",
+  title: "My Projects — EduSpark",
 };
 
 export default async function ProjectsPage() {

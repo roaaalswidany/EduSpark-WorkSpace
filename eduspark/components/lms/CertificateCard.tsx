@@ -19,7 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { CourseLevel } from "@prisma/client";
 
-// â”€â”€â”€ Public Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Public Types ─────────────────────────────────────────────────────────────
 
 export interface CertificateDisplayData {
   id: string;
@@ -42,7 +42,7 @@ export interface CertificateCardProps {
   verifyBaseUrl?: string;
 }
 
-// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function scoreToGrade(score: number): {
   label: string;
@@ -65,7 +65,7 @@ function formatLevel(level: CourseLevel): string {
   return level.charAt(0) + level.slice(1).toLowerCase();
 }
 
-// â”€â”€â”€ Download Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Download Utilities ───────────────────────────────────────────────────────
 
 function downloadJsonMetadata(
   cert: CertificateDisplayData,
@@ -106,7 +106,7 @@ function downloadJsonMetadata(
   URL.revokeObjectURL(url);
 }
 
-// â”€â”€â”€ Decorative SVG Seal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Decorative SVG Seal ─────────────────────────────────────────────────────
 
 function CertificateSeal({ score }: { score: number }) {
   return (
@@ -145,7 +145,7 @@ function CertificateSeal({ score }: { score: number }) {
   );
 }
 
-// â”€â”€â”€ Score Badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Score Badge ──────────────────────────────────────────────────────────────
 
 function ScoreBadge({ score }: { score: number }) {
   const grade = scoreToGrade(score);
@@ -164,7 +164,7 @@ function ScoreBadge({ score }: { score: number }) {
   );
 }
 
-// â”€â”€â”€ Full Variant â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Full Variant ─────────────────────────────────────────────────────────────
 
 function FullCard({
   certificate,
@@ -216,7 +216,7 @@ function FullCard({
         <div className="h-1 bg-linear-to-r from-amber-700 via-yellow-400 to-amber-700" />
 
         <div className="relative px-6 sm:px-10 py-8 sm:py-10 space-y-7">
-          {/* â”€â”€ Header row: logo left / score right â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          {/* ── Header row: logo left / score right ────────────────────── */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 border border-primary/20">
@@ -234,7 +234,7 @@ function FullCard({
             <ScoreBadge score={certificate.score} />
           </div>
 
-          {/* â”€â”€ Central seal + recipient â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          {/* ── Central seal + recipient ─────────────────────────────── */}
           <div className="flex flex-col items-center gap-4 text-center">
             <CertificateSeal score={certificate.score} />
 
@@ -274,14 +274,14 @@ function FullCard({
             </div>
           </div>
 
-          {/* â”€â”€ Horizontal rule â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          {/* ── Horizontal rule ──────────────────────────────────────── */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-linear-to-r from-transparent via-zinc-800 to-transparent" />
             <Sparkles className="w-3.5 h-3.5 text-amber-500/40" />
             <div className="flex-1 h-px bg-linear-to-r from-transparent via-zinc-800 to-transparent" />
           </div>
 
-          {/* â”€â”€ Meta grid: date + instructor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          {/* ── Meta grid: date + instructor ─────────────────────────── */}
           <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-accent/50 border border-border">
               <Calendar className="w-4 h-4 text-muted-foreground/70 shrink-0" />
@@ -308,7 +308,7 @@ function FullCard({
             </div>
           </div>
 
-          {/* â”€â”€ Credential ID row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          {/* ── Credential ID row ─────────────────────────────────────── */}
           <div className="flex items-center gap-3 p-3.5 rounded-xl bg-accent/40 border border-border/40">
             <Hash className="w-4 h-4 text-muted-foreground/70 shrink-0" />
             <div className="flex-1 min-w-0">
@@ -332,7 +332,7 @@ function FullCard({
             </button>
           </div>
 
-          {/* â”€â”€ Action buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          {/* ── Action buttons ────────────────────────────────────────── */}
           <div className="grid grid-cols-3 gap-2">
             {/* Download JSON */}
             <button
@@ -400,7 +400,7 @@ function FullCard({
   );
 }
 
-// â”€â”€â”€ Compact Variant (for lists / dashboards) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Compact Variant (for lists / dashboards) ─────────────────────────────────
 
 function CompactCard({
   certificate,
@@ -483,7 +483,7 @@ function CompactCard({
   );
 }
 
-// â”€â”€â”€ Public Export â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Public Export ────────────────────────────────────────────────────────────
 
 export function CertificateCard({
   certificate,

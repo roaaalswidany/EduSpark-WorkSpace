@@ -37,7 +37,7 @@ export function ServiceThumbnailUploader({
     formData.append("file", file);
     formData.append("serviceId", serviceId);
 
-    const toastId = toast.loading("Uploading thumbnailâ€¦");
+    const toastId = toast.loading("Uploading thumbnail...");
     startTransition(async () => {
       const res = await updateServiceThumbnailAction(formData);
       if (res.success) {

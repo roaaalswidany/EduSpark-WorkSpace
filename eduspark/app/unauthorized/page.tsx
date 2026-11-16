@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ShieldAlert, ArrowLeft, Home } from "lucide-react";
 
 export const metadata = {
-  title: "Access Denied â€” EduSpark",
+  title: "Access Denied — EduSpark",
 };
 
 interface PageProps {

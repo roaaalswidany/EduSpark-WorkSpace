@@ -169,13 +169,13 @@ export function UsersTable({
     updateURL({ role });
   };
 
-  // Low-level executor â€” runs the actual action and shows toasts.
+  // Low-level executor — runs the actual action and shows toasts.
   const executeToggle = (user: UserRow, reason?: string) => {
     setPendingUserId(user.id);
 
     const isSuspending = user.isActive;
     const toastId = toast.loading(
-      isSuspending ? "Suspending accountâ€¦" : "Activating accountâ€¦"
+      isSuspending ? "Suspending account..." : "Activating account..."
     );
 
     startTransition(async () => {
@@ -217,24 +217,24 @@ export function UsersTable({
     });
   };
 
-  // User-facing handler â€” opens the reason dialog when suspending.
+  // User-facing handler — opens the reason dialog when suspending.
   const handleToggleActive = (user: UserRow) => {
     setOpenMenuId(null);
     setActionError(null);
 
-    // Reactivation â€” no reason needed, execute immediately.
+    // Reactivation — no reason needed, execute immediately.
     if (!user.isActive) {
       executeToggle(user, undefined);
       return;
     }
 
-    // Suspension â€” require a reason first.
+    // Suspension — require a reason first.
     setSuspendDialog({ userId: user.id, userName: user.name });
     setReasonInput("");
     setReasonError(null);
   };
 
-  // Dialog submit â€” validates the reason, then executes.
+  // Dialog submit — validates the reason, then executes.
   const handleConfirmSuspend = () => {
     if (!suspendDialog) return;
 
@@ -260,7 +260,7 @@ export function UsersTable({
     setActionError(null);
     setPendingUserId(user.id);
 
-    const toastId = toast.loading(`Updating role to ${role}â€¦`);
+    const toastId = toast.loading(`Updating role to ${role}...`);
 
     startTransition(async () => {
       const result = await updateUserAction({
@@ -317,7 +317,7 @@ export function UsersTable({
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Search by name or emailâ€¦"
+            placeholder="••••••••"
             className={cn(
               "w-full h-11 pl-10 pr-10 rounded-xl",
               "bg-card border border-border text-foreground",
@@ -364,7 +364,7 @@ export function UsersTable({
       {/* Results count */}
       {total > 0 && (
         <p className="text-xs text-muted-foreground">
-          Showing {users.length > 0 ? (currentPage - 1) * 20 + 1 : 0}â€“
+          Showing {users.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–
           {Math.min(currentPage * 20, total)} of {total}
           {totalPages > 1 && (
             <span className="text-muted-foreground/70 ml-2">
@@ -581,7 +581,7 @@ export function UsersTable({
               href={buildPageUrl(currentPage - 1)}
               className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
             >
-              â†گ Previous
+              ← Previous
             </Link>
           )}
 
@@ -610,7 +610,7 @@ export function UsersTable({
             if (p === currentPage - 2 || p === currentPage + 2) {
               return (
                 <span key={p} className="text-muted-foreground/70 text-xs">
-                  â€¦
+                  ...
                 </span>
               );
             }
@@ -622,7 +622,7 @@ export function UsersTable({
               href={buildPageUrl(currentPage + 1)}
               className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
             >
-              Next â†’
+              Next →
             </Link>
           )}
         </div>

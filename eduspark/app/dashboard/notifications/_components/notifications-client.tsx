@@ -128,7 +128,7 @@ export function NotificationsClient({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start gap-2 justify-between">
-                    <p className="text-sm font-semibold text-white truncate">
+                    <p className="text-sm font-semibold text-foreground truncate">
                       {n.title}
                     </p>
                     <div className="flex items-center gap-2 shrink-0">
@@ -183,7 +183,7 @@ export function NotificationsClient({
                 <Bell className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="text-base font-bold text-white leading-snug">
+                <h2 className="text-base font-bold text-foreground leading-snug">
                   {selected.title}
                 </h2>
                 <p className="text-[11px] text-muted-foreground mt-1">

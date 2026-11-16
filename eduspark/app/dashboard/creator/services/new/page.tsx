@@ -9,7 +9,7 @@ import { GraduationCap, Award, AlertCircle } from "lucide-react";
 import { QUIZ_PASSING_SCORE } from "@/lib/lms/quiz-policy";
 import Link from "next/link";
 
-// â”€â”€â”€ Types passed to client â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Types passed to client ────────────────────────────────────────
 
 export interface CertifiedCourseOption {
   courseId: string;
@@ -19,7 +19,7 @@ export interface CertifiedCourseOption {
   credentialId: string;
 }
 
-// â”€â”€â”€ Empty state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Empty state ──────────────────────────────────────────────────
 
 function NoCertificatesGate() {
   return (
@@ -59,7 +59,7 @@ function NoCertificatesGate() {
   );
 }
 
-// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Page ─────────────────────────────────────────────────────────
 
 export default async function NewServicePage() {
   const session = await getServerSession(authOptions);

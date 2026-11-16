@@ -199,7 +199,7 @@ function groupMessages(
   return result;
 }
 
-// â”€â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
 function UserAvatar({
   name,
@@ -298,7 +298,7 @@ function LinkCard({ url }: { url: string }) {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs text-white/80 truncate group-hover:text-white transition-colors">
-          {url.length > 45 ? url.slice(0, 42) + "â€¦" : url}
+          {url.length > 45 ? url.slice(0, 42) + "..." : url}
         </p>
         <p className="text-[10px] text-white/40 mt-0.5">{hostname}</p>
       </div>
@@ -453,7 +453,7 @@ function TypingIndicator({ users }: { users: TypingUser[] }) {
           />
         ))}
       </div>
-      <span className="text-[11px] text-muted-foreground italic">{label}â€¦</span>
+      <span className="text-[11px] text-muted-foreground italic">{label}...</span>
     </div>
   );
 }
@@ -493,10 +493,10 @@ function ConnectionBanner({
         )}
         <span>
           {isReconnecting
-            ? `Reconnectingâ€¦ (attempt ${reconnectAttempt})`
+            ? `Reconnecting... (attempt ${reconnectAttempt})`
             : isError
             ? "Connection lost."
-            : "Connecting to chat serverâ€¦"}
+            : "Connecting to chat server..."}
         </span>
       </div>
 
@@ -513,7 +513,7 @@ function ConnectionBanner({
   );
 }
 
-// â”€â”€â”€ Props â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Props ────────────────────────────────────────────────────────────────────
 
 export interface ChatBoxProps {
   roomId: string;
@@ -528,7 +528,7 @@ export interface ChatBoxProps {
   showLegalDisclaimer?: boolean;
 }
 
-// â”€â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function ChatBox({
   roomId,
@@ -559,7 +559,7 @@ export default function ChatBox({
   const [isSendingTyping, setIsSendingTyping] = useState(false);
   const [showOnlineList, setShowOnlineList] = useState(false);
 
-  // â”€â”€ DEBUG: Log all socket events temporarily â”€â”€
+  // ── DEBUG: Log all socket events temporarily ──
 useEffect(() => {
   if (!socket) return;
   const onAny = (event: string, ...args: unknown[]) => {
@@ -1156,7 +1156,7 @@ useEffect(() => {
           <div className="flex justify-center py-12">
             <div className="flex flex-col items-center gap-3">
               <Loader2 className="w-6 h-6 text-muted-foreground/70 animate-spin" />
-              <p className="text-sm text-muted-foreground/70">Loading conversationâ€¦</p>
+              <p className="text-sm text-muted-foreground/70">Loading conversation...</p>
             </div>
           </div>
         )}
@@ -1302,10 +1302,10 @@ useEffect(() => {
               onKeyDown={handleKeyDown}
               placeholder={
                 !isConnected
-                  ? "Connectingâ€¦"
+                  ? "Connecting..."
                   : !isJoined
-                  ? "Joining roomâ€¦"
-                  : `Message ${roomName}â€¦`
+                  ? "Joining room..."
+                  : `Message ${roomName}...`
               }
               disabled={!isConnected || !isJoined}
               rows={1}

@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { UsersTable } from "./_components/users-table";
 
 export const metadata = {
-  title: "Users â€” Admin â€” EduSpark",
+  title: "Users — Admin — EduSpark",
 };
 
 const PAGE_SIZE = 20;
@@ -37,7 +37,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
     }),
   };
 
-  // â”€â”€ Fetch paginated users + total + role counts in parallel â”€â”€â”€â”€
+  // ── Fetch paginated users + total + role counts in parallel ────
   const [users, total, totals] = await Promise.all([
     db.user.findMany({
       where,

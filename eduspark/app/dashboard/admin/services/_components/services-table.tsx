@@ -144,7 +144,7 @@ function ServiceThumb({
   );
 }
 
-// â”€â”€â”€ Service Details Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Service Details Modal ────────────────────────────────────────
 
 function ServiceDetailsModal({
   service,
@@ -313,7 +313,7 @@ function ServiceDetailsModal({
   );
 }
 
-// â”€â”€â”€ Main Table Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Main Table Component ─────────────────────────────────────────
 
 export function ServicesTable({
   services,
@@ -393,7 +393,7 @@ export function ServicesTable({
   ) => {
     setPendingServiceId(service.id);
 
-    const toastId = toast.loading(`Updating to ${status.toLowerCase()}â€¦`);
+    const toastId = toast.loading(`Updating to ${status.toLowerCase()}...`);
 
     startTransition(async () => {
       const result = await updateServiceAction({
@@ -452,14 +452,14 @@ export function ServicesTable({
     executeChangeStatus(service, status);
   };
 
-  // Review decision (admin gate): approve â†’ ACTIVE; reject â†’ PAUSED with a note the creator sees.
+  // Review decision (admin gate): approve → ACTIVE; reject → PAUSED with a note the creator sees.
   const runReview = (
     service: ServiceRow,
     decision: "APPROVE" | "REJECT",
     note?: string
   ) => {
     setPendingServiceId(service.id);
-    const toastId = toast.loading(decision === "APPROVE" ? "Approvingâ€¦" : "Sending feedbackâ€¦");
+    const toastId = toast.loading(decision === "APPROVE" ? "Approving..." : "Sending feedback...");
 
     startTransition(async () => {
       const result = await reviewServiceAction({ serviceId: service.id, decision, note });
@@ -551,7 +551,7 @@ export function ServicesTable({
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Search by title or descriptionâ€¦"
+            placeholder="••••••••"
             className={cn(
               "w-full h-11 pl-10 pr-10 rounded-xl",
               "bg-card border border-border text-foreground",
@@ -598,7 +598,7 @@ export function ServicesTable({
       {/* Results count */}
       {total > 0 && (
         <p className="text-xs text-muted-foreground">
-          Showing {services.length > 0 ? (currentPage - 1) * 20 + 1 : 0}â€“
+          Showing {services.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–
           {Math.min(currentPage * 20, total)} of {total}
           {totalPages > 1 && (
             <span className="text-muted-foreground/70 ml-2">
@@ -782,7 +782,7 @@ export function ServicesTable({
                                 onClick={() => handleRequestChanges(s)}
                                 className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors"
                               >
-                                Request changesâ€¦
+                                Request changes...
                               </button>
                               <div className="h-px bg-accent" />
                             </>
@@ -846,7 +846,7 @@ export function ServicesTable({
               href={buildPageUrl(currentPage - 1)}
               className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
             >
-              â†گ Previous
+              ← Previous
             </Link>
           )}
 
@@ -875,7 +875,7 @@ export function ServicesTable({
             if (p === currentPage - 2 || p === currentPage + 2) {
               return (
                 <span key={p} className="text-muted-foreground/70 text-xs">
-                  â€¦
+                  ...
                 </span>
               );
             }
@@ -887,7 +887,7 @@ export function ServicesTable({
               href={buildPageUrl(currentPage + 1)}
               className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
             >
-              Next â†’
+              Next →
             </Link>
           )}
         </div>

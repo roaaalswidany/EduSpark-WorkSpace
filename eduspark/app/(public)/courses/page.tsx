@@ -33,7 +33,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
 
-  // â”€â”€ Build where clause â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Build where clause ──────────────────────────────────────────
   const where: Prisma.CourseWhereInput = {
     status: CourseStatus.PUBLISHED,
   };
@@ -56,7 +56,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     where.level = sp.level as CourseLevel;
   }
 
-  // â”€â”€ Sort mapping â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Sort mapping ────────────────────────────────────────────────
   let orderBy: Prisma.CourseOrderByWithRelationInput = { createdAt: "desc" };
   switch (sp.sort) {
     case "popular":
@@ -73,7 +73,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       break;
   }
 
-  // â”€â”€ Cache key (unique per filter/page combo) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Cache key (unique per filter/page combo) ────────────────────
   const listCacheKey = CacheKeys.coursesList({
     q: sp.q,
     category: sp.category,
@@ -82,7 +82,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     page,
   });
 
-  // â”€â”€ Fetch data in parallel â€” with caching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Fetch data in parallel — with caching ───────────────────────
   const [{ coursesRaw, total }, categoriesRaw] = await Promise.all([
     // Cache: courses list + count (60s TTL)
     cached(listCacheKey, CacheTTL.medium, async () => {
@@ -121,7 +121,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       return { coursesRaw: courses, total: count };
     }),
 
-    // Cache: categories (5 min TTL â€” changes rarely)
+    // Cache: categories (5 min TTL — changes rarely)
     cached(CacheKeys.coursesCategories(), CacheTTL.long, () =>
       db.category.findMany({
         where: {
@@ -142,7 +142,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     ),
   ]);
 
-  // â”€â”€ Enrollments for current user (NOT cached â€” user-specific) â”€â”€â”€
+  // ── Enrollments for current user (NOT cached — user-specific) ───
   let enrollmentMap = new Map<
     string,
     { progress: number; isPassed: boolean }
@@ -164,7 +164,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     );
   }
 
-  // â”€â”€ Shape courses â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Shape courses ───────────────────────────────────────────────
   const courses: CourseCardData[] = coursesRaw.map((c) => {
     const totalLessons = c.sections.reduce(
       (sum, s) => sum + s.lessons.length,
@@ -213,7 +213,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     !!sp.level ||
     (sp.sort && sp.sort !== "newest");
 
-  // â”€â”€ Build pagination URL helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Build pagination URL helper ─────────────────────────────────
   function buildPageUrl(targetPage: number): string {
     const params = new URLSearchParams();
     if (sp.q) params.set("q", sp.q);
@@ -227,7 +227,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Hero ──────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-6">
         <div className="text-center max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-4">
@@ -247,18 +247,18 @@ export default async function CoursesPage({ searchParams }: PageProps) {
         </div>
       </section>
 
-      {/* â”€â”€ Filters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Filters ───────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
         <CoursesFilterBar categories={categories} totalCourses={total} />
       </section>
 
-      {/* â”€â”€ Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Results ───────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="flex items-center justify-between mb-5">
           <p className="text-sm text-muted-foreground">
             {total === 0
               ? "No courses found"
-              : `Showing ${skip + 1}â€“${Math.min(skip + PAGE_SIZE, total)} of ${total}`}
+              : `Showing ${skip + 1}–${Math.min(skip + PAGE_SIZE, total)} of ${total}`}
           </p>
           {totalPages > 1 && (
             <p className="text-xs text-muted-foreground/70">
@@ -304,7 +304,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
                 href={buildPageUrl(page - 1)}
                 className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
               >
-                â†گ Previous
+                ← Previous
               </Link>
             )}
 
@@ -332,7 +332,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
               if (p === page - 2 || p === page + 2) {
                 return (
                   <span key={p} className="text-muted-foreground/70 text-xs">
-                    â€¦
+                    ...
                   </span>
                 );
               }
@@ -344,7 +344,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
                 href={buildPageUrl(page + 1)}
                 className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
               >
-                Next â†’
+                Next →
               </Link>
             )}
           </div>

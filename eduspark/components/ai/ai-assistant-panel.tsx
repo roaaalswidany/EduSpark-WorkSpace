@@ -89,7 +89,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     });
   }, [showHistory]);
 
-  // â”€â”€ Send message â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Send message ─────────────────────────────────────────────
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -163,7 +163,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     }
   };
 
-  // â”€â”€ New conversation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── New conversation ─────────────────────────────────────────
 
   const startNewChat = () => {
     setConversationId(null);
@@ -173,7 +173,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     setShowHistory(false);
   };
 
-  // â”€â”€ Load conversation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Load conversation ────────────────────────────────────────
 
   const loadConversation = async (id: string) => {
     setShowHistory(false);
@@ -197,7 +197,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     setIsLoading(false);
   };
 
-  // â”€â”€ Delete conversation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Delete conversation ──────────────────────────────────────
 
   const deleteConversation = async (
     e: React.MouseEvent,
@@ -211,7 +211,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     }
   };
 
-  // â”€â”€ Handle suggestion click â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Handle suggestion click ──────────────────────────────────
 
   const handleSuggestion = (s: Suggestion) => {
     if (s.href.startsWith("#")) {
@@ -225,7 +225,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     onClose();
   };
 
-  // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Render ───────────────────────────────────────────────────
 
   return (
     <div
@@ -431,7 +431,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="ط§ظƒطھط¨ ط³ط¤ط§ظ„ظƒâ€¦"
+                placeholder="••••••••"
                 rows={1}
                 maxLength={2000}
                 disabled={isLoading}

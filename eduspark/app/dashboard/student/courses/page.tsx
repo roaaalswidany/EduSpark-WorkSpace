@@ -13,7 +13,7 @@ export default async function MyCoursesPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/auth/login");
 
-  // â”€â”€ Fetch enrolled courses â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Fetch enrolled courses ──────────────────────────
   const enrollments = await db.enrollment.findMany({
     where: { userId: session.user.id },
     orderBy: { updatedAt: "desc" },
@@ -47,7 +47,7 @@ export default async function MyCoursesPage() {
     },
   });
 
-  // â”€â”€ Shape data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Shape data ──────────────────────────────────────
   const courses: EnrolledCourse[] = enrollments.map((e) => {
     const totalLessons = e.course.sections.reduce(
       (sum, s) => sum + s.lessons.length,
@@ -85,7 +85,7 @@ export default async function MyCoursesPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-      {/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Header ──────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <BookOpen className="w-3.5 h-3.5" />
@@ -114,7 +114,7 @@ export default async function MyCoursesPage() {
         )}
       </div>
 
-      {/* â”€â”€ Empty state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Empty state ───────────────────────────────── */}
       {totalCount === 0 ? (
         <div className="rounded-2xl bg-card border border-border p-12 sm:p-16 text-center">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
@@ -136,7 +136,7 @@ export default async function MyCoursesPage() {
           </Link>
         </div>
       ) : (
-        /* â”€â”€ Courses grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        /* ── Courses grid ────────────────────────────── */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {courses.map((course) => (
             <EnrolledCourseCard key={course.enrollmentId} course={course} />

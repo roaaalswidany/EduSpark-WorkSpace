@@ -73,7 +73,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
   const handleSave = () => {
     setServerError(null);
 
-    const toastId = toast.loading("Saving profileâ€¦");
+    const toastId = toast.loading("Saving profile...");
 
     startTransition(async () => {
       const result = await updateProfileAction({
@@ -154,7 +154,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               {isPending ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  Savingâ€¦
+                  Saving...
                 </>
               ) : (
                 <>
@@ -247,7 +247,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               disabled={isPending}
               maxLength={500}
               rows={5}
-              placeholder="Tell others about yourself, your expertise, and what you doâ€¦"
+              placeholder="••••••••"
               className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 resize-none disabled:opacity-50 transition-all"
             />
           </Field>
@@ -275,7 +275,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
   );
 }
 
-// â”€â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Sub-components ─────────────────────────────────────────────────
 
 function Section({
   title,

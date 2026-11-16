@@ -39,7 +39,7 @@ export function ResetPasswordForm({ email, token }: { email: string; token: stri
         <input id="password" type="password" required autoComplete="new-password" value={password}
           onChange={(e) => setPassword(e.target.value)} disabled={isPending} className={inputClass} />
         <p className="text-xs text-muted-foreground mt-1.5">
-          8â€“72 characters with an uppercase letter, a lowercase letter, a number and a symbol.
+          8–72 characters with an uppercase letter, a lowercase letter, a number and a symbol.
         </p>
       </div>
       <div>
@@ -49,7 +49,7 @@ export function ResetPasswordForm({ email, token }: { email: string; token: stri
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <button type="submit" disabled={isPending || !password} className={buttonClass}>
-        {isPending ? "Savingâ€¦" : "Change password"}
+        {isPending ? "Saving..." : "Change password"}
       </button>
     </form>
   );

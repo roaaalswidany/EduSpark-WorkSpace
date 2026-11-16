@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <button type="submit" disabled={isPending || !email} className={buttonClass}>
-            {isPending ? "Sendingâ€¦" : "Send reset link"}
+            {isPending ? "Sending..." : "Send reset link"}
           </button>
           <Link href="/auth/login" className="block text-center text-sm text-muted-foreground hover:text-foreground">
             Back to sign in

@@ -39,7 +39,7 @@ interface CareerPathViewProps {
 export function CareerPathView({ activePath }: CareerPathViewProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  // â”€â”€â”€ Empty State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ─── Empty State ────────────────────────────────────────
   if (!activePath) {
     return (
       <>
@@ -103,7 +103,7 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
     );
   }
 
-  // â”€â”€â”€ Active Path â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ─── Active Path ────────────────────────────────────────
   const completedSteps = activePath.steps.filter(
     (s) => s.status === "COMPLETED"
   ).length;

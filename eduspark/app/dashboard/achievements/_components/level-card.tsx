@@ -69,8 +69,8 @@ export function LevelCard({
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Rank
             </p>
-            <p className="text-2xl font-black text-white tabular-nums">
-              #{userRank || "â€”"}
+            <p className="text-2xl font-black text-foreground tabular-nums">
+              #{userRank || "—"}
             </p>
           </div>
         </div>
@@ -79,7 +79,7 @@ export function LevelCard({
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-400" />
-              <span className="text-sm font-bold text-white tabular-nums">
+              <span className="text-sm font-bold text-foreground tabular-nums">
                 {xpFormatted} XP
               </span>
             </div>
@@ -144,7 +144,7 @@ function StatBox({
   return (
     <div className="rounded-xl bg-background/60 border border-border p-3">
       <Icon className={cn("w-4 h-4 mb-1.5", color)} />
-      <p className="text-lg font-black text-white tabular-nums leading-none">
+      <p className="text-lg font-black text-foreground tabular-nums leading-none">
         {value}
       </p>
       <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-1">

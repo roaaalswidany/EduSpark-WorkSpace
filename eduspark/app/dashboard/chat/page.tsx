@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { ChatRoomList } from "./_components/chat-room-list-item";
 
 export const metadata = {
-  title: "Messages â€” EduSpark",
+  title: "Messages — EduSpark",
 };
 
 export default async function ChatPage() {

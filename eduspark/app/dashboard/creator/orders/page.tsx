@@ -12,7 +12,7 @@ import {
 } from "../../orders/_components/order-card";
 
 export const metadata = {
-  title: "Incoming Orders â€” EduSpark",
+  title: "Incoming Orders — EduSpark",
 };
 
 export default async function CreatorOrdersPage() {

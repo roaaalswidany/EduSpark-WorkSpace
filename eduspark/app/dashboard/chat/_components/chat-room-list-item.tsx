@@ -148,7 +148,7 @@ function RoomRow({
     : "No messages yet";
 
   const truncated =
-    preview.length > 60 ? `${preview.slice(0, 60)}â€¦` : preview;
+    preview.length > 60 ? `${preview.slice(0, 60)}...` : preview;
 
   const badgeConfig = TYPE_BADGE[room.type];
   const BadgeIcon = badgeConfig.icon;

@@ -24,7 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Types ──────────────────────────────────────────────────────────
 
 export interface ServiceCardData {
   id: string;
@@ -69,7 +69,7 @@ interface CatalogClientProps {
   categories: CategoryFilterOption[];
 }
 
-// â”€â”€â”€ Thumbnail Gradient Map â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Thumbnail Gradient Map ────────────────────────────────────────
 
 const GRADIENTS = [
   "from-emerald-600 to-emerald-700",
@@ -77,7 +77,7 @@ const GRADIENTS = [
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",
   "from-sky-500 to-blue-700",
-  "from-fuchsia-600 to-purple-700",
+  "from-emerald-600 to-purple-700",
   "from-red-500 to-rose-700",
   "from-lime-500 to-green-700",
 ] as const;
@@ -87,7 +87,7 @@ function getGradient(id: string): string {
   return GRADIENTS[code % GRADIENTS.length];
 }
 
-// â”€â”€â”€ Creator Avatar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Creator Avatar ────────────────────────────────────────────────
 
 // ًں‘‡ طھظ… طھظ†ط¸ظٹظپ ط§ظ„ظ…ظƒظˆظ† ظ„ظٹطھط¬ط§ظ‡ظ„ ط§ظ„طµظˆط±
 function CreatorAvatar({
@@ -123,7 +123,7 @@ function CreatorAvatar({
   );
 }
 
-// â”€â”€â”€ Service Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Service Card ──────────────────────────────────────────────────
 
 function ServiceCard({ service }: { service: ServiceCardData }) {
   const router = useRouter();
@@ -263,12 +263,12 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
   );
 }
 
-// â”€â”€â”€ Sort Dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Sort Dropdown ─────────────────────────────────────────────────
 
 const SORT_LABELS: Record<SortOrder, string> = {
   newest: "Newest First",
-  price_asc: "Price: Low â†’ High",
-  price_desc: "Price: High â†’ Low",
+  price_asc: "Price: Low → High",
+  price_desc: "Price: High → Low",
   popular: "Most Popular",
 };
 
@@ -339,7 +339,7 @@ function SortDropdown({
   );
 }
 
-// â”€â”€â”€ Empty State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Empty State ───────────────────────────────────────────────────
 
 function EmptyState({
   query,
@@ -361,7 +361,7 @@ function EmptyState({
       <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
         {query
           ? "Try a different search term or browse by category."
-          : "Check back soon â€” creators are completing certifications daily."}
+          : "Check back soon — creators are completing certifications daily."}
       </p>
       {hasFilters && (
         <button
@@ -375,7 +375,7 @@ function EmptyState({
   );
 }
 
-// â”€â”€â”€ Main Catalog Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Main Catalog Component ────────────────────────────────────────
 
 export function CatalogClient({
   initialServices,
@@ -386,7 +386,7 @@ export function CatalogClient({
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
 
-  // Debounce search input â€” 280ms gives snappy feel without thrashing
+  // Debounce search input — 280ms gives snappy feel without thrashing
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQuery(searchInput.trim()), 280);
     return () => clearTimeout(t);
@@ -456,7 +456,7 @@ export function CatalogClient({
   return (
     <div className="min-h-screen bg-background text-foreground">
 
-      {/* â”€â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── Hero ─────────────────────────────────────────────────── */}
       <section className="relative pt-16 pb-12 px-4 overflow-hidden">
         {/* Background radial glow */}
         <div
@@ -476,7 +476,7 @@ export function CatalogClient({
 
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4 leading-[1.1]">
             Hire{" "}
-            <span className="bg-linear-to-r from-emerald-400 via-emerald-400 to-fuchsia-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-emerald-400 via-emerald-400 to-emerald-400 bg-clip-text text-transparent">
               Certified
             </span>{" "}
             Experts
@@ -484,7 +484,7 @@ export function CatalogClient({
 
           <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-xl mx-auto">
             Every creator proved their skills through our rigorous course
-            program â€” your work is in trusted hands.
+            program — your work is in trusted hands.
           </p>
 
           {/* Search bar */}
@@ -543,7 +543,7 @@ export function CatalogClient({
         </div>
       </section>
 
-      {/* â”€â”€â”€ Filters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── Filters ──────────────────────────────────────────────── */}
       <div className="sticky top-0 z-30 bg-background/90 backdrop-blur-md border-b border-border/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Category pills */}
@@ -582,7 +582,7 @@ export function CatalogClient({
         </div>
       </div>
 
-      {/* â”€â”€â”€ Catalog content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── Catalog content ──────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
         {/* Results bar */}

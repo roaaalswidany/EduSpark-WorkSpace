@@ -100,7 +100,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
 
   const executeChangeStatus = (course: CourseRow, status: "DRAFT" | "PUBLISHED" | "ARCHIVED", reason?: string) => {
     setPendingCourseId(course.id);
-    const toastId = toast.loading(`Updating to ${status.toLowerCase()}â€¦`);
+    const toastId = toast.loading(`Updating to ${status.toLowerCase()}...`);
     startTransition(async () => {
       const result = await updateCourseAction({ courseId: course.id, action: "CHANGE_STATUS", status, reason });
       setPendingCourseId(null);
@@ -138,7 +138,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
 
   const runReview = (course: CourseRow, decision: "APPROVE" | "REJECT", note?: string) => {
     setPendingCourseId(course.id);
-    const toastId = toast.loading(decision === "APPROVE" ? "Approvingâ€¦" : "Sending feedbackâ€¦");
+    const toastId = toast.loading(decision === "APPROVE" ? "Approving..." : "Sending feedback...");
     startTransition(async () => {
       const result = await reviewCourseAction({ courseId: course.id, decision, note });
       setPendingCourseId(null);
@@ -197,7 +197,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input type="text" value={searchInput} onChange={(e) => handleSearchChange(e.target.value)} placeholder="Search by title or descriptionâ€¦" className={cn("w-full h-11 pl-10 pr-10 rounded-xl", "bg-card border border-border text-foreground", "placeholder:text-muted-foreground/70", "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500")} />
+          <input type="text" value={searchInput} onChange={(e) => handleSearchChange(e.target.value)} placeholder="••••••••" className={cn("w-full h-11 pl-10 pr-10 rounded-xl", "bg-card border border-border text-foreground", "placeholder:text-muted-foreground/70", "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500")} />
           {isPending && <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary animate-spin" />}
           {!isPending && searchInput && <button type="button" onClick={() => handleSearchChange("")} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"><X className="w-4 h-4" /></button>}
         </div>
@@ -211,7 +211,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
         </div>
       </div>
 
-      {total > 0 && <p className="text-xs text-muted-foreground">Showing {courses.length > 0 ? (currentPage - 1) * 20 + 1 : 0}â€“{Math.min(currentPage * 20, total)} of {total}{totalPages > 1 && <span className="text-muted-foreground/70 ml-2">آ· Page {currentPage} of {totalPages}</span>}</p>}
+      {total > 0 && <p className="text-xs text-muted-foreground">Showing {courses.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–{Math.min(currentPage * 20, total)} of {total}{totalPages > 1 && <span className="text-muted-foreground/70 ml-2">آ· Page {currentPage} of {totalPages}</span>}</p>}
 
       {actionError && <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20"><AlertCircle className="w-4 h-4 text-destructive shrink-0" /><p className="text-sm text-destructive">{actionError}</p></div>}
 
@@ -272,7 +272,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
                           {c.status === "PENDING_REVIEW" && (
                             <>
                               <button type="button" onClick={() => handleApprove(c)} className="w-full text-left px-3.5 py-2 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors inline-flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" />Approve &amp; publish</button>
-                              <button type="button" onClick={() => handleRequestChanges(c)} className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors">Request changesâ€¦</button>
+                              <button type="button" onClick={() => handleRequestChanges(c)} className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors">Request changes...</button>
                               <div className="h-px bg-accent" />
                             </>
                           )}
@@ -292,16 +292,16 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
 
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 pt-2">
-          {currentPage > 1 && <Link href={buildPageUrl(currentPage - 1)} className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors">â†گ Previous</Link>}
+          {currentPage > 1 && <Link href={buildPageUrl(currentPage - 1)} className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors">← Previous</Link>}
           {Array.from({ length: totalPages }).map((_, i) => {
             const p = i + 1;
             if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
               return <Link key={p} href={buildPageUrl(p)} className={cn("w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors", p === currentPage ? "bg-primary text-primary-foreground font-bold" : "bg-card border border-border hover:border-border text-muted-foreground hover:text-foreground")}>{p}</Link>;
             }
-            if (p === currentPage - 2 || p === currentPage + 2) return <span key={p} className="text-muted-foreground/70 text-xs">â€¦</span>;
+            if (p === currentPage - 2 || p === currentPage + 2) return <span key={p} className="text-muted-foreground/70 text-xs">...</span>;
             return null;
           })}
-          {currentPage < totalPages && <Link href={buildPageUrl(currentPage + 1)} className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors">Next â†’</Link>}
+          {currentPage < totalPages && <Link href={buildPageUrl(currentPage + 1)} className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors">Next →</Link>}
         </div>
       )}
 

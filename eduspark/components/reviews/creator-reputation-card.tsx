@@ -10,7 +10,7 @@ export async function CreatorReputationCard({ creatorId }: { creatorId: string }
       <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">Reputation</h2>
       <div className="mt-4 grid gap-6 sm:grid-cols-[auto_1fr]">
         <div>
-          <div className="text-4xl font-bold text-foreground">{rating.average?.toFixed(1) ?? "â€”"}</div>
+          <div className="text-4xl font-bold text-foreground">{rating.average?.toFixed(1) ?? "—"}</div>
           {rating.average !== null && <StarRating value={rating.average} size={18} />}
           <div className="mt-1 text-xs text-muted-foreground">
             {rating.count} review{rating.count === 1 ? "" : "s"} آ· {completed} completed project{completed === 1 ? "" : "s"}
