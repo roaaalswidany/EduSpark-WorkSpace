@@ -55,7 +55,7 @@ export function EnrollButton({
           "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
           "bg-indigo-600 hover:bg-indigo-500 text-white",
           "text-sm font-bold transition-all active:scale-[0.98]",
-          "shadow-lg shadow-indigo-500/20"
+          "shadow-lg shadow-emerald-500/20"
         )}
       >
         <Play className="w-4 h-4 fill-current" />
@@ -73,7 +73,7 @@ export function EnrollButton({
           "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
           "bg-indigo-600 hover:bg-indigo-500 text-white",
           "text-sm font-bold transition-all active:scale-[0.98]",
-          "shadow-lg shadow-indigo-500/20"
+          "shadow-lg shadow-emerald-500/20"
         )}
       >
         Sign in to enroll
@@ -130,7 +130,7 @@ export function EnrollButton({
           "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
           "bg-indigo-600 hover:bg-indigo-500 text-white",
           "text-sm font-bold transition-all active:scale-[0.98]",
-          "shadow-lg shadow-indigo-500/20",
+          "shadow-lg shadow-emerald-500/20",
           "disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
         )}
       >

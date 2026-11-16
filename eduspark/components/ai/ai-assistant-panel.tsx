@@ -240,7 +240,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     >
       {/* Header */}
       <div className="shrink-0 flex items-center gap-3 px-4 h-14 border-b border-border bg-card/80">
-        <div className="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-lg bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
           <Sparkles className="w-4 h-4 text-white" />
         </div>
         <div className="flex-1 min-w-0">
@@ -342,18 +342,18 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
 
             {isLoading && (
               <div className="flex items-start gap-2 animate-fade-in">
-                <div className="w-7 h-7 rounded-full bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0">
+                <div className="w-7 h-7 rounded-full bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shrink-0">
                   <Sparkles className="w-3.5 h-3.5 text-white" />
                 </div>
                 <div className="rounded-2xl rounded-tl-sm bg-accent/60 border border-border/50 px-4 py-3">
                   <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     <span
-                      className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"
+                      className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"
                       style={{ animationDelay: "0.15s" }}
                     />
                     <span
-                      className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"
+                      className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"
                       style={{ animationDelay: "0.3s" }}
                     />
                   </div>
@@ -379,7 +379,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                     className={cn(
                       "px-3 py-1.5 rounded-full text-xs font-medium",
                       "bg-primary/10 text-primary border border-primary/20",
-                      "hover:bg-primary/20 hover:text-indigo-200",
+                      "hover:bg-primary/20 hover:text-emerald-200",
                       "transition-colors",
                       "animate-slide-up",
                       i < 4 && `stagger-${i + 1}`
@@ -439,7 +439,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                   "flex-1 px-3 py-2.5 rounded-xl text-sm",
                   "bg-background border border-border text-foreground",
                   "placeholder:text-muted-foreground/70 resize-none",
-                  "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
+                  "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
                   "disabled:opacity-50",
                   "max-h-32 overflow-y-auto"
                 )}

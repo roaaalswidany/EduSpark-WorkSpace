@@ -82,7 +82,7 @@ export default async function HomePage() {
             <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white tracking-tight leading-[1.05] mb-6">
               Learn .. Certify
               <br />
-              <span className="bg-linear-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-emerald-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
                 Build your career
               </span>
             </h1>
@@ -98,7 +98,7 @@ export default async function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href={primaryCta.href}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-[0.98] shadow-lg shadow-indigo-500/30"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-[0.98] shadow-lg shadow-emerald-500/30"
               >
                 {primaryCta.label}
                 <ArrowRight className="w-4 h-4" />
@@ -187,7 +187,7 @@ export default async function HomePage() {
             icon={GraduationCap}
             title="Learn from the best"
             description="A curated catalog of expert-led courses across web development, data science, design, and more. Complete courses and earn verifiable certificates."
-            gradient="from-indigo-500 to-blue-600"
+            gradient="from-emerald-500 to-blue-600"
             href="/courses"
             ctaLabel="Browse Courses"
           />
@@ -211,7 +211,7 @@ export default async function HomePage() {
             icon={Brain}
             title="AI-powered guidance"
             description="Our AI assistant answers questions, recommends courses, and builds personalized career paths tailored to your goals."
-            gradient="from-violet-500 to-fuchsia-600"
+            gradient="from-emerald-500 to-fuchsia-600"
             ctaLabel="Try AI Assistant"
             href={isLoggedIn ? "/dashboard" : "/auth/register"}
           />
@@ -259,7 +259,7 @@ export default async function HomePage() {
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-indigo-600/30 to-violet-600/30">
+                      <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-emerald-600/30 to-emerald-600/30">
                         <GraduationCap className="w-12 h-12 text-white/30" />
                       </div>
                     )}
@@ -393,8 +393,8 @@ export default async function HomePage() {
       <section className="relative">
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-indigo-950/20 to-slate-950" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="rounded-3xl bg-linear-to-br from-indigo-600/20 via-violet-600/10 to-fuchsia-600/20 border border-primary/20 p-10 sm:p-14 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-indigo-500/30">
+          <div className="rounded-3xl bg-linear-to-br from-emerald-600/20 via-violet-600/10 to-fuchsia-600/20 border border-primary/20 p-10 sm:p-14 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-emerald-500/30">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
@@ -406,7 +406,7 @@ export default async function HomePage() {
             </p>
             <Link
               href={primaryCta.href}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary hover:bg-primary text-white text-base font-bold transition-all active:scale-[0.98] shadow-2xl shadow-indigo-500/30"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary hover:bg-primary text-white text-base font-bold transition-all active:scale-[0.98] shadow-2xl shadow-emerald-500/30"
             >
               {primaryCta.label}
               <ArrowRight className="w-5 h-5" />

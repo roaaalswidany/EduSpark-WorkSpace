@@ -123,7 +123,7 @@ function TagInput({
         className={cn(
           "min-h-11 flex flex-wrap gap-1.5 items-center px-3 py-2 rounded-lg",
           "bg-background border border-border cursor-text",
-          "focus-within:border-primary focus-within:ring-1 focus-within:ring-indigo-500 transition-all"
+          "focus-within:border-primary focus-within:ring-1 focus-within:ring-emerald-500 transition-all"
         )}
       >
         {value.map((tag) => (
@@ -210,7 +210,7 @@ function PortfolioLinksInput({
                 "w-full pl-9 pr-4 py-2.5 rounded-lg text-sm",
                 "bg-background border border-border text-foreground",
                 "placeholder:text-muted-foreground/70",
-                "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
+                "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
                 "transition-all"
               )}
             />
@@ -325,7 +325,7 @@ function NumberInput({
           "w-full py-2.5 rounded-lg text-sm",
           "bg-background border border-border text-foreground",
           "placeholder:text-muted-foreground/70",
-          "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
+          "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
           "transition-all",
           prefix ? "pl-7" : "pl-3",
           suffix ? "pr-12" : "pr-3"
@@ -566,7 +566,7 @@ export function ServiceCreationForm({
                   <Input
                     {...field}
                     placeholder="e.g. I will build a full-stack Next.js web applicationâ€¦"
-                    className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-indigo-500 h-10"
+                    className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-emerald-500 h-10"
                   />
                 </FormControl>
                 <div className="flex justify-between items-center">
@@ -592,7 +592,7 @@ export function ServiceCreationForm({
                     {...field}
                     rows={6}
                     placeholder="Describe exactly what you'll deliver, what's included, your process, and any requirements from the buyerâ€¦"
-                    className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-indigo-500 resize-none"
+                    className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-emerald-500 resize-none"
                   />
                 </FormControl>
                 <div className="flex justify-between items-center">
@@ -776,7 +776,7 @@ export function ServiceCreationForm({
           <Button
             type="submit"
             disabled={isPending}
-            className="bg-primary hover:bg-primary text-white font-semibold px-8 shadow-lg shadow-indigo-500/20 disabled:opacity-50"
+            className="bg-primary hover:bg-primary text-white font-semibold px-8 shadow-lg shadow-emerald-500/20 disabled:opacity-50"
           >
             {isPending ? (
               <>

@@ -1282,7 +1282,7 @@ useEffect(() => {
             className={cn(
               "pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-full",
               "bg-primary hover:bg-primary text-white text-xs font-semibold",
-              "shadow-lg shadow-indigo-500/30 transition-all animate-bounce"
+              "shadow-lg shadow-emerald-500/30 transition-all animate-bounce"
             )}
           >
             <ChevronDown className="w-3.5 h-3.5" />
@@ -1313,7 +1313,7 @@ useEffect(() => {
               className={cn(
                 "w-full bg-accent border border-border rounded-xl",
                 "px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70",
-                "resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
+                "resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
                 "disabled:opacity-40 disabled:cursor-not-allowed",
                 "transition-all duration-150 leading-relaxed",
                 "min-h-12 max-h-40 overflow-y-auto"
@@ -1350,7 +1350,7 @@ useEffect(() => {
               "shrink-0 flex items-center justify-center w-11 h-11 rounded-xl",
               "transition-all duration-150 active:scale-95",
               canSend
-                ? "bg-primary hover:bg-primary text-white shadow-lg shadow-indigo-500/20"
+                ? "bg-primary hover:bg-primary text-white shadow-lg shadow-emerald-500/20"
                 : "bg-accent text-muted-foreground/70 cursor-not-allowed"
             )}
             aria-label="Send message"

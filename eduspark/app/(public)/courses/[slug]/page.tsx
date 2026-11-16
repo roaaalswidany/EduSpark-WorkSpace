@@ -295,7 +295,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                       className="object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-indigo-500/10 via-slate-900 to-violet-500/10">
+                    <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-slate-900 to-emerald-500/10">
                       <BookOpen className="w-12 h-12 text-slate-700" />
                     </div>
                   )}

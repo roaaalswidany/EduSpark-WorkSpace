@@ -126,7 +126,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
   return (
     <div className="rounded-3xl bg-card border border-border overflow-hidden">
       {/* Cover band */}
-      <div className="h-28 sm:h-32 bg-linear-to-br from-indigo-500/20 via-violet-500/10 to-fuchsia-500/10 relative">
+      <div className="h-28 sm:h-32 bg-linear-to-br from-emerald-500/20 via-emerald-500/10 to-fuchsia-500/10 relative">
         <div
           aria-hidden
           className="absolute inset-0 opacity-40"

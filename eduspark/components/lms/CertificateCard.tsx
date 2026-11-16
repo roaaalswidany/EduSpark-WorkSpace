@@ -251,7 +251,7 @@ function FullCard({
             </div>
 
             {/* Course pill */}
-            <div className="inline-flex flex-col items-center gap-1.5 px-5 py-3 rounded-2xl bg-linear-to-br from-indigo-500/10 via-violet-500/8 to-indigo-500/10 border border-primary/20 shadow-inner shadow-indigo-500/5">
+            <div className="inline-flex flex-col items-center gap-1.5 px-5 py-3 rounded-2xl bg-linear-to-br from-emerald-500/10 via-emerald-500/8 to-emerald-500/10 border border-primary/20 shadow-inner shadow-indigo-500/5">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-3.5 h-3.5 text-primary shrink-0" />
                 <h3 className="text-base sm:text-lg font-bold text-white leading-snug">

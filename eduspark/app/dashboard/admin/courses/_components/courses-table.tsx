@@ -50,7 +50,7 @@ function CourseThumb({ title, thumbnail, size = 44 }: { title: string; thumbnail
     return <Image src={thumbnail} alt={title} width={size} height={size} className="rounded-xl object-cover ring-2 ring-slate-800 shrink-0" style={{ width: size, height: size }} />;
   }
   return (
-    <div className="rounded-xl flex items-center justify-center bg-linear-to-br from-indigo-500/20 to-violet-500/20 ring-2 ring-slate-800 shrink-0" style={{ width: size, height: size }}>
+    <div className="rounded-xl flex items-center justify-center bg-linear-to-br from-emerald-500/20 to-emerald-500/20 ring-2 ring-slate-800 shrink-0" style={{ width: size, height: size }}>
       <span className="text-white/60 font-bold" style={{ fontSize: size * 0.4 }}>{title.charAt(0)}</span>
     </div>
   );
@@ -197,7 +197,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input type="text" value={searchInput} onChange={(e) => handleSearchChange(e.target.value)} placeholder="Search by title or descriptionâ€¦" className={cn("w-full h-11 pl-10 pr-10 rounded-xl", "bg-card border border-border text-foreground", "placeholder:text-muted-foreground/70", "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500")} />
+          <input type="text" value={searchInput} onChange={(e) => handleSearchChange(e.target.value)} placeholder="Search by title or descriptionâ€¦" className={cn("w-full h-11 pl-10 pr-10 rounded-xl", "bg-card border border-border text-foreground", "placeholder:text-muted-foreground/70", "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500")} />
           {isPending && <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary animate-spin" />}
           {!isPending && searchInput && <button type="button" onClick={() => handleSearchChange("")} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"><X className="w-4 h-4" /></button>}
         </div>

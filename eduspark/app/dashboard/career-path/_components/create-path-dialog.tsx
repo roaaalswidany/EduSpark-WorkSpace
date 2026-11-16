@@ -88,7 +88,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
       <div className="relative w-full max-w-lg rounded-2xl bg-card border border-border shadow-2xl overflow-hidden animate-scale-in">
         {/* Header */}
         <div className="px-6 py-5 border-b border-border flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shrink-0">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
@@ -125,7 +125,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
               rows={3}
               maxLength={200}
               disabled={isPending}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50"
+              className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
             />
             <p className="text-[10px] text-muted-foreground/70 mt-1.5">
               {goal.length}/200
@@ -181,7 +181,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
             className={cn(
               "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
               isValid && !isPending
-                ? "bg-primary hover:bg-primary text-white active:scale-95 shadow-lg shadow-indigo-500/20"
+                ? "bg-primary hover:bg-primary text-white active:scale-95 shadow-lg shadow-emerald-500/20"
                 : "bg-accent text-muted-foreground/70 cursor-not-allowed"
             )}
           >

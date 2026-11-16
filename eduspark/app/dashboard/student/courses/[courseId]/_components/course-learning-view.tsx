@@ -180,7 +180,7 @@ function CompletionBanner({
   hasQuiz: boolean;
 }) {
   return (
-    <div className="mx-4 sm:mx-6 mb-8 rounded-2xl bg-linear-to-br from-emerald-500/10 via-teal-500/5 to-indigo-500/10 border border-emerald-500/20 p-8 text-center">
+    <div className="mx-4 sm:mx-6 mb-8 rounded-2xl bg-linear-to-br from-emerald-500/10 via-teal-500/5 to-emerald-500/10 border border-emerald-500/20 p-8 text-center">
       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/20 mb-4">
         <Award className="w-8 h-8 text-emerald-400" />
       </div>
@@ -197,7 +197,7 @@ function CompletionBanner({
       {hasQuiz && (
         <Link
           href={`/dashboard/student/courses/${courseId}/quiz`}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
         >
           Take Certification Quiz
           <ArrowRight className="w-4 h-4" />
@@ -232,8 +232,8 @@ function LessonRow({ lesson, isActive, onSelect }: LessonRowProps) {
         {lesson.isCompleted ? (
           <CheckCircle2 className="w-4 h-4 text-emerald-500" />
         ) : isActive ? (
-          <div className="w-4 h-4 rounded-full border-2 border-indigo-400 flex items-center justify-center">
-            <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-pulse" />
+          <div className="w-4 h-4 rounded-full border-2 border-emerald-400 flex items-center justify-center">
+            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
           </div>
         ) : (
           <Circle className="w-4 h-4 text-slate-700" />
@@ -599,7 +599,7 @@ export function CourseLearningView({
                   "h-full rounded-full transition-all duration-700 ease-out",
                   progress >= 100
                     ? "bg-linear-to-r from-emerald-500 to-teal-400"
-                    : "bg-linear-to-r from-indigo-500 to-violet-500"
+                    : "bg-linear-to-r from-emerald-500 to-emerald-500"
                 )}
                 style={{ width: `${progress}%` }}
               />
@@ -839,7 +839,7 @@ export function CourseLearningView({
                   "h-full rounded-full transition-all duration-700 ease-out",
                   progress >= 100
                     ? "bg-linear-to-r from-emerald-500 to-teal-400"
-                    : "bg-linear-to-r from-indigo-600 to-violet-500"
+                    : "bg-linear-to-r from-emerald-600 to-emerald-500"
                 )}
                 style={{ width: `${progress}%` }}
               />

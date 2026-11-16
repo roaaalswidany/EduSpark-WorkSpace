@@ -63,7 +63,7 @@ export function ReviewForm({ projectId, creatorName }: { projectId: string; crea
         maxLength={1000}
         rows={4}
         placeholder="Share details that help other clients (optional)"
-        className="mt-4 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50"
+        className="mt-4 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
       />
       <div className="mt-1 text-right text-xs text-muted-foreground/70">{comment.length}/1000</div>
 

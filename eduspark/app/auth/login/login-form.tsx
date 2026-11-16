@@ -82,7 +82,7 @@ export function LoginForm() {
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <Link href="/" className="flex items-center gap-2.5 mb-7 group">
-            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-black text-white tracking-tight">
@@ -114,7 +114,7 @@ export function LoginForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isPending}
                 placeholder="you@example.com"
-                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
               />
             </div>
 
@@ -144,7 +144,7 @@ export function LoginForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isPending}
                   placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
-                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
                 />
                 <button
                   type="button"

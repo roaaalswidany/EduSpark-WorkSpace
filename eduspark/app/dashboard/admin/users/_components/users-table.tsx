@@ -322,7 +322,7 @@ export function UsersTable({
               "w-full h-11 pl-10 pr-10 rounded-xl",
               "bg-card border border-border text-foreground",
               "placeholder:text-muted-foreground/70",
-              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500"
+              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500"
             )}
           />
           {isPending && (

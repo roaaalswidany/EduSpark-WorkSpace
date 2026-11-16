@@ -106,7 +106,7 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-indigo-500/10 via-slate-900 to-violet-500/10">
+          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-slate-900 to-emerald-500/10">
             <BookOpen className="w-12 h-12 text-muted-foreground/70" />
           </div>
         )}
@@ -182,7 +182,7 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
                 "h-full rounded-full transition-all duration-500",
                 isCompleted
                   ? "bg-linear-to-r from-emerald-500 to-teal-400"
-                  : "bg-linear-to-r from-indigo-500 to-violet-500"
+                  : "bg-linear-to-r from-emerald-500 to-emerald-500"
               )}
               style={{ width: `${progress}%` }}
             />
@@ -213,7 +213,7 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
               "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all",
               isCompleted
                 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 group-hover:bg-emerald-500/15"
-                : "bg-primary hover:bg-primary text-white group-hover:shadow-lg group-hover:shadow-indigo-500/20"
+                : "bg-primary hover:bg-primary text-white group-hover:shadow-lg group-hover:shadow-emerald-500/20"
             )}
           >
             {isCompleted ? (

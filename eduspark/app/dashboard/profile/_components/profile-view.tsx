@@ -148,7 +148,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
                 "bg-primary hover:bg-primary text-white",
                 "text-xs font-bold",
                 "transition-all active:scale-95 disabled:opacity-50",
-                "shadow-lg shadow-indigo-500/20"
+                "shadow-lg shadow-emerald-500/20"
               )}
             >
               {isPending ? (
@@ -216,7 +216,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               disabled={isPending}
               maxLength={60}
-              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
             />
           </Field>
 
@@ -232,7 +232,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               disabled={isPending}
               maxLength={100}
               placeholder="e.g. Senior Full-Stack Developer"
-              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
             />
           </Field>
 
@@ -248,7 +248,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               maxLength={500}
               rows={5}
               placeholder="Tell others about yourself, your expertise, and what you doâ€¦"
-              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 resize-none disabled:opacity-50 transition-all"
+              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 resize-none disabled:opacity-50 transition-all"
             />
           </Field>
 
@@ -259,7 +259,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               onChange={(e) => setForm({ ...form, website: e.target.value })}
               disabled={isPending}
               placeholder="https://your-portfolio.com"
-              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
             />
           </Field>
 

@@ -153,7 +153,7 @@ export function Combobox({
         className={cn(
           "w-full h-10 flex items-center justify-between gap-2 px-3 rounded-lg",
           "bg-background border border-border text-left text-sm",
-          "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
+          "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
           "transition-all",
           disabled && "opacity-50 cursor-not-allowed"
         )}

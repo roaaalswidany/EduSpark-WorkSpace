@@ -236,7 +236,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
             Learn from the best,{" "}
-            <span className="bg-linear-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-emerald-400 to-violet-400 bg-clip-text text-transparent">
               at your own pace.
             </span>
           </h1>

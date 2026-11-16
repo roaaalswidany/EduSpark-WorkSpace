@@ -29,7 +29,7 @@ export function AiMessageBubble({
           "shrink-0 w-7 h-7 rounded-full flex items-center justify-center",
           isUser
             ? "bg-accent text-foreground"
-            : "bg-linear-to-br from-indigo-500 to-violet-600 text-white"
+            : "bg-linear-to-br from-emerald-500 to-emerald-600 text-white"
         )}
       >
         {isUser ? (
@@ -51,7 +51,7 @@ export function AiMessageBubble({
         <div className="whitespace-pre-wrap wrap-break-word">
           {content}
           {isStreaming && (
-            <span className="inline-block w-1.5 h-4 ml-0.5 bg-indigo-400 animate-pulse align-middle" />
+            <span className="inline-block w-1.5 h-4 ml-0.5 bg-emerald-400 animate-pulse align-middle" />
           )}
         </div>
       </div>

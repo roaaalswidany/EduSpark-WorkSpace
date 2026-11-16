@@ -402,7 +402,7 @@ export function QuizView({
               "w-full flex items-center justify-center gap-2 h-14 rounded-2xl",
               "bg-indigo-600 hover:bg-indigo-500 text-white",
               "text-base font-bold transition-all active:scale-[0.98]",
-              "shadow-lg shadow-indigo-500/20"
+              "shadow-lg shadow-emerald-500/20"
             )}
           >
             <Sparkles className="w-5 h-5" />
@@ -455,7 +455,7 @@ export function QuizView({
               style={{ width: `${answeredPct}%` }}
             />
             <div
-              className="absolute top-0 h-full bg-linear-to-r from-indigo-500 to-violet-500 transition-all duration-300"
+              className="absolute top-0 h-full bg-linear-to-r from-emerald-500 to-emerald-500 transition-all duration-300"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -587,7 +587,7 @@ export function QuizView({
                   "flex items-center gap-1.5 px-4 h-11 rounded-xl text-sm font-bold transition-all",
                   !selectedForCurrent
                     ? "bg-slate-800 text-slate-600 cursor-not-allowed"
-                    : "bg-indigo-600 hover:bg-indigo-500 text-white active:scale-95 shadow-lg shadow-indigo-500/20"
+                    : "bg-indigo-600 hover:bg-indigo-500 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
                 )}
               >
                 <span className="hidden sm:inline">Next</span>
@@ -902,7 +902,7 @@ export function QuizView({
                 "flex-1 flex items-center justify-center gap-2 h-12 rounded-xl",
                 passed
                   ? "bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300"
-                  : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20",
+                  : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-emerald-500/20",
                 "text-sm font-bold transition-all active:scale-[0.98]"
               )}
             >

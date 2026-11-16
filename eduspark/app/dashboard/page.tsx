@@ -210,7 +210,7 @@ export default async function DashboardPage() {
                 "inline-flex items-center gap-2 px-3 py-1.5 rounded-lg",
                 "bg-primary hover:bg-primary text-white",
                 "text-xs font-bold transition-all active:scale-95",
-                "shadow-lg shadow-indigo-500/20"
+                "shadow-lg shadow-emerald-500/20"
               )}
             >
               <Plus className="w-3.5 h-3.5" />

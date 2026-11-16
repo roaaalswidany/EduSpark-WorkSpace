@@ -94,7 +94,7 @@ const STATUS_TOAST: Record<
 };
 
 const GRADIENTS = [
-  "from-violet-600 to-indigo-700",
+  "from-emerald-600 to-indigo-700",
   "from-rose-600 to-pink-700",
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",
@@ -556,7 +556,7 @@ export function ServicesTable({
               "w-full h-11 pl-10 pr-10 rounded-xl",
               "bg-card border border-border text-foreground",
               "placeholder:text-muted-foreground/70",
-              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500"
+              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500"
             )}
           />
           {isPending && (

@@ -137,7 +137,7 @@ export default async function CreatorOrdersPage() {
           </p>
           <Link
             href="/dashboard/creator/services"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
           >
             <ShieldAlert className="w-4 h-4" />
             View My Services

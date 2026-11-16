@@ -98,7 +98,7 @@ function PodiumCard({
         "flex flex-col items-center gap-2 p-3 rounded-xl border transition-all hover:scale-105",
         config.bg,
         config.border,
-        entry.isCurrentUser && "ring-2 ring-indigo-500/40"
+        entry.isCurrentUser && "ring-2 ring-emerald-500/40"
       )}
     >
       <Icon className={cn("w-5 h-5", config.color)} />

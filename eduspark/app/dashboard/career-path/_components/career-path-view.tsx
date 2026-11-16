@@ -44,8 +44,8 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
     return (
       <>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-          <div className="rounded-3xl bg-linear-to-br from-indigo-500/5 via-slate-900 to-violet-500/5 border border-border p-8 sm:p-16 text-center">
-            <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-linear-to-br from-indigo-500 to-violet-600 mb-6 shadow-2xl shadow-indigo-500/20">
+          <div className="rounded-3xl bg-linear-to-br from-emerald-500/5 via-slate-900 to-emerald-500/5 border border-border p-8 sm:p-16 text-center">
+            <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-linear-to-br from-emerald-500 to-emerald-600 mb-6 shadow-2xl shadow-emerald-500/20">
               <Target className="w-10 h-10 text-white" />
             </div>
 
@@ -65,7 +65,7 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
                 "inline-flex items-center gap-2 px-6 py-3 rounded-xl",
                 "bg-primary hover:bg-primary text-white",
                 "text-sm font-bold transition-all active:scale-95",
-                "shadow-lg shadow-indigo-500/30"
+                "shadow-lg shadow-emerald-500/30"
               )}
             >
               <Sparkles className="w-4 h-4" />
@@ -168,7 +168,7 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
         </div>
         <div className="h-2 rounded-full bg-accent overflow-hidden">
           <div
-            className="h-full bg-linear-to-r from-indigo-500 to-violet-500 transition-all duration-500"
+            className="h-full bg-linear-to-r from-emerald-500 to-emerald-500 transition-all duration-500"
             style={{ width: `${progressPct}%` }}
           />
         </div>

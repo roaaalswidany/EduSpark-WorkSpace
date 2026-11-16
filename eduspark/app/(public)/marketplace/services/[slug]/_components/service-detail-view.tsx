@@ -70,7 +70,7 @@ interface ServiceDetailViewProps {
 // ─── Helpers ────────────────────────────────────────────────────────────
 
 const GRADIENTS = [
-  "from-violet-600 to-indigo-700",
+  "from-emerald-600 to-indigo-700",
   "from-rose-600 to-pink-700",
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",
@@ -236,7 +236,7 @@ function OrderDialog({
               rows={5}
               maxLength={2000}
               disabled={isPending}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50"
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
             />
             <p className="text-[10px] text-slate-600 mt-1.5">
               {requirements.length}/2000
@@ -268,7 +268,7 @@ function OrderDialog({
             className={cn(
               "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
               isValid && !isPending
-                ? "bg-indigo-600 hover:bg-indigo-500 text-white active:scale-95 shadow-lg shadow-indigo-500/20"
+                ? "bg-indigo-600 hover:bg-indigo-500 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
                 : "bg-slate-800 text-slate-600 cursor-not-allowed"
             )}
           >
@@ -510,7 +510,7 @@ export function ServiceDetailView({
       "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
       "bg-indigo-600 hover:bg-indigo-500 text-white",
       "text-sm font-bold transition-all active:scale-[0.98]",
-      "shadow-lg shadow-indigo-500/20"
+      "shadow-lg shadow-emerald-500/20"
     )}
   >
     <Package className="w-4 h-4" />
@@ -523,7 +523,7 @@ export function ServiceDetailView({
       "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
       "bg-indigo-600 hover:bg-indigo-500 text-white",
       "text-sm font-bold transition-all active:scale-[0.98]",
-      "shadow-lg shadow-indigo-500/20"
+      "shadow-lg shadow-emerald-500/20"
     )}
   >
     Sign in to order

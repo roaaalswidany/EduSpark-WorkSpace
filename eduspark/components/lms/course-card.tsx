@@ -84,7 +84,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-indigo-500/10 via-slate-900 to-violet-500/10">
+          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-slate-900 to-emerald-500/10">
             <BookOpen className="w-12 h-12 text-muted-foreground/70" />
           </div>
         )}
@@ -135,7 +135,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
                 "h-full transition-all duration-500",
                 course.isPassed
                   ? "bg-linear-to-r from-emerald-500 to-teal-400"
-                  : "bg-linear-to-r from-indigo-500 to-violet-500"
+                  : "bg-linear-to-r from-emerald-500 to-emerald-500"
               )}
               style={{ width: `${progress}%` }}
             />

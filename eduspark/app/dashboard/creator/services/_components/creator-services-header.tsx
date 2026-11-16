@@ -64,7 +64,7 @@ export function CreatorServicesHeader({ stats }: CreatorServicesHeaderProps) {
           className={cn(
             "inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl shrink-0",
             "bg-primary hover:bg-primary text-white text-sm font-bold",
-            "transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+            "transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
           )}
         >
           <Plus className="w-4 h-4" />

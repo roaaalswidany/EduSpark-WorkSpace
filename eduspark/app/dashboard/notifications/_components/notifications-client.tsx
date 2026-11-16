@@ -133,7 +133,7 @@ export function NotificationsClient({
                     </p>
                     <div className="flex items-center gap-2 shrink-0">
                       {!read && (
-                        <span className="w-2 h-2 rounded-full bg-indigo-400" />
+                        <span className="w-2 h-2 rounded-full bg-emerald-400" />
                       )}
                       <button
                         onClick={(e) => handleDelete(n.id, e)}

@@ -72,7 +72,7 @@ const STATUS_CONFIG: Record<
 };
 
 const GRADIENTS = [
-  "from-violet-600 to-indigo-700",
+  "from-emerald-600 to-indigo-700",
   "from-rose-600 to-pink-700",
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",
@@ -263,7 +263,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
                 "h-full rounded-full transition-all duration-500",
                 progress === 100
                   ? "bg-linear-to-r from-emerald-500 to-teal-400"
-                  : "bg-linear-to-r from-indigo-500 to-violet-500"
+                  : "bg-linear-to-r from-emerald-500 to-emerald-500"
               )}
               style={{ width: `${progress}%` }}
             />

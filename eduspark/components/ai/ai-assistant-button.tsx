@@ -22,7 +22,7 @@ export function AiAssistantButton({
       className={cn(
         "fixed bottom-6 right-6 z-50",
         "flex items-center justify-center w-14 h-14 rounded-full",
-        "bg-linear-to-br from-indigo-500 to-violet-600",
+        "bg-linear-to-br from-emerald-500 to-emerald-600",
         "text-white shadow-2xl shadow-indigo-500/40",
         "hover:scale-110 active:scale-95",
         "transition-all duration-200",

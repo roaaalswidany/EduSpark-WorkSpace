@@ -274,7 +274,7 @@ function SubmissionForm({
         placeholder="Describe what you've delivered (e.g., 'Final logo files in SVG, PNG, and AI formats. Brand guidelines included.')"
         rows={3}
         maxLength={500}
-        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-emerald-500 transition-all"
       />
       <div>
         <input
@@ -283,7 +283,7 @@ function SubmissionForm({
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Delivery link (optional) — https://…"
           maxLength={500}
-          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-emerald-500 transition-all"
         />
         {!urlOk && (
           <p className="mt-1 text-[10px] text-red-400">Only https:// links are allowed.</p>
@@ -507,7 +507,7 @@ function MilestoneCard({
                 <p className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wide mb-0.5">
                   Delivery Note
                 </p>
-                <p className="text-xs text-indigo-200/80">{milestone.submissionNote}</p>
+                <p className="text-xs text-emerald-200/80">{milestone.submissionNote}</p>
               </div>
             </div>
           )}
@@ -1016,7 +1016,7 @@ export function ProjectView({
             {/* ── Client: Approve All Completion ────────────────────────────── */}
             {isClient &&
               localProjectStatus === ProjectStatus.REVIEW_REQUESTED && (
-                <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/8 via-teal-500/5 to-indigo-500/8 border border-emerald-500/20 text-center">
+                <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/8 via-teal-500/5 to-emerald-500/8 border border-emerald-500/20 text-center">
                   <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-4">
                     <ShieldCheck className="w-7 h-7 text-emerald-400" />
                   </div>
@@ -1053,7 +1053,7 @@ export function ProjectView({
 
             {/* ── Completed state ───────────────────────────────────────────── */}
             {localProjectStatus === ProjectStatus.COMPLETED && (
-              <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/8 via-teal-500/5 to-indigo-500/8 border border-emerald-500/20 text-center">
+              <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/8 via-teal-500/5 to-emerald-500/8 border border-emerald-500/20 text-center">
                 <Award className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
                 <h3 className="text-lg font-bold text-white mb-1.5">
                   Project Complete! 🎉
