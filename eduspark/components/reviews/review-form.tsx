@@ -32,7 +32,7 @@ export function ReviewForm({ projectId, creatorName }: { projectId: string; crea
 
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
-      <h3 className="text-base font-semibold text-slate-100">How was working with {creatorName}?</h3>
+      <h3 className="text-base font-semibold text-foreground">How was working with {creatorName}?</h3>
       <p className="mt-1 text-sm text-muted-foreground">
         Your review is public and cannot be edited afterwards.
       </p>

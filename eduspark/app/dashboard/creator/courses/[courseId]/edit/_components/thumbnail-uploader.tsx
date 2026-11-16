@@ -87,7 +87,7 @@ export function ThumbnailUploader({
             </div>
           </>
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 group-hover:text-indigo-400 transition-colors gap-1">
+          <div className="w-full h-full flex flex-col items-center justify-center text-foreground0 group-hover:text-indigo-400 transition-colors gap-1">
             <ImageIcon className="w-5 h-5" />
             <span className="text-[9px] font-medium uppercase tracking-wider">No Image</span>
           </div>
@@ -95,7 +95,7 @@ export function ThumbnailUploader({
 
         {isPending && (
           <div className="absolute inset-0 bg-slate-950/80 flex items-center justify-center z-10">
-            <Loader2 className="w-5 h-5 text-indigo-500 animate-spin" />
+            <Loader2 className="w-5 h-5 text-primary/800 animate-spin" />
           </div>
         )}
       </div>
@@ -107,7 +107,7 @@ export function ThumbnailUploader({
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
               Course Cover Image
               {preview && (
-                <a href={preview} target="_blank" rel="noreferrer" className="text-slate-500 hover:text-indigo-400 transition-colors" title="Open in new tab">
+                <a href={preview} target="_blank" rel="noreferrer" className="text-foreground0 hover:text-indigo-400 transition-colors" title="Open in new tab">
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               )}
@@ -121,7 +121,7 @@ export function ThumbnailUploader({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={isPending}
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold disabled:opacity-50 transition-all"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 border border-slate-700 text-white text-xs font-semibold disabled:opacity-50 transition-all"
           >
             {isPending ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />

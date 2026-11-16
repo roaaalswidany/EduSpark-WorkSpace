@@ -180,10 +180,10 @@ export default async function CourseDetailPage({ params }: PageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-foreground">
       {/* ── Breadcrumb ─────────────────────────────────── */}
       <div className="border-b border-slate-800 bg-slate-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-1.5 text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-1.5 text-xs text-foreground0">
           <Link href="/courses" className="hover:text-slate-300 transition-colors">
             Courses
           </Link>
@@ -204,7 +204,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
       </div>
 
       {/* ── Hero ───────────────────────────────────────── */}
-      <section className="relative bg-linear-to-b from-slate-900 to-slate-950 border-b border-slate-800">
+      <section className="relative bg-linear-to-b from-zinc-900 to-zinc-950 border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
             {/* Left: Content */}
@@ -237,7 +237,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
               </p>
 
               {/* Meta row */}
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-500">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-foreground0">
                 {course.ratingCount > 0 && (
                   <div className="flex items-center gap-1.5">
                     <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
@@ -270,7 +270,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   {creatorInitials}
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Created by</p>
+                  <p className="text-xs text-foreground0">Created by</p>
                   <Link
                     href={`/profile/${course.creator.id}`}
                     className="text-sm font-semibold text-slate-200 hover:text-indigo-400 transition-colors"
@@ -295,7 +295,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                       className="object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-slate-900 to-emerald-500/10">
+                    <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-zinc-900 to-emerald-500/10">
                       <BookOpen className="w-12 h-12 text-slate-700" />
                     </div>
                   )}
@@ -328,7 +328,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
                   {/* What's included */}
                   <div className="pt-4 border-t border-slate-800 space-y-2.5">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-foreground0">
                       This course includes
                     </p>
                     <ul className="space-y-2">

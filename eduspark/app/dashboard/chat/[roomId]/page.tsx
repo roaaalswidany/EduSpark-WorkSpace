@@ -72,7 +72,7 @@ export default async function ChatRoomPage({ params }: PageProps) {
           <span>All Messages</span>
         </Link>
 
-        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+        <div className="flex items-center gap-1.5 text-xs text-foreground0">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
           <span className="hidden sm:inline">End-to-end encrypted channel</span>
           <span className="sm:hidden">Secure</span>

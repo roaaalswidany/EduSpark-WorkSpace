@@ -68,13 +68,13 @@ const STATUS_CONFIG: Record<
   },
   ARCHIVED: {
     label: "Archived",
-    dot: "bg-slate-500",
+    dot: "bg-muted/500",
     badge: "bg-accent/40 text-muted-foreground border-border",
   },
 };
 
 const GRADIENTS = [
-  "from-emerald-600 to-indigo-700",
+  "from-emerald-600 to-emerald-700",
   "from-rose-600 to-pink-700",
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",

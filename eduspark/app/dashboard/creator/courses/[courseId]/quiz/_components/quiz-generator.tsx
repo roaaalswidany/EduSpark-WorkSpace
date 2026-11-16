@@ -119,7 +119,7 @@ function AIGeneratorForm({ courseId }: { courseId: string }) {
       <button
         onClick={handleGenerate}
         disabled={isPending}
-        className="w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white disabled:opacity-50 transition-all"
+        className="w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-indigo-600 hover:bg-primary/50 text-white disabled:opacity-50 transition-all"
       >
         {isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</> : <><Sparkles className="w-4 h-4" /> Generate with AI</>}
       </button>

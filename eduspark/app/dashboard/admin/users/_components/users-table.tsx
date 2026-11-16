@@ -412,7 +412,7 @@ export function UsersTable({
             <span className="w-8" />
           </div>
 
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-border">
             {users.map((u, idx) => {
               const isSelf = u.id === currentUserId;
               const isPendingUser = pendingUserId === u.id;

@@ -262,7 +262,7 @@ export function QuizView({
   // ═══════════════════════════════════════════════════════════════
   if (view === "intro") {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100">
+      <div className="min-h-screen bg-slate-950 text-foreground">
         {/* Top bar */}
         <div className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
@@ -285,7 +285,7 @@ export function QuizView({
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
           {/* Hero */}
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-5">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/50/10 border border-primary/100/20 mb-5">
               <HelpCircle className="w-8 h-8 text-indigo-400" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white mb-2">
@@ -388,7 +388,7 @@ export function QuizView({
                   key={i}
                   className="flex items-start gap-2.5 text-sm text-slate-400 leading-relaxed"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-primary/800 shrink-0 mt-0.5" />
                   <span>{rule}</span>
                 </li>
               ))}
@@ -400,7 +400,7 @@ export function QuizView({
             onClick={startQuiz}
             className={cn(
               "w-full flex items-center justify-center gap-2 h-14 rounded-2xl",
-              "bg-indigo-600 hover:bg-indigo-500 text-white",
+              "bg-indigo-600 hover:bg-primary/50 text-white",
               "text-base font-bold transition-all active:scale-[0.98]",
               "shadow-lg shadow-emerald-500/20"
             )}
@@ -422,7 +422,7 @@ export function QuizView({
     const timerWarning = timeRemaining !== null && timeRemaining <= 60;
 
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+      <div className="min-h-screen bg-slate-950 text-foreground flex flex-col">
         {/* Top bar */}
         <div className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
@@ -465,7 +465,7 @@ export function QuizView({
         <div className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-10">
           {/* Question text */}
           <div className="mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[10px] font-bold uppercase tracking-widest mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/50/10 border border-primary/100/20 text-indigo-300 text-[10px] font-bold uppercase tracking-widest mb-4">
               <HelpCircle className="w-3 h-3" />
               Question {currentIndex + 1}
             </div>
@@ -486,7 +486,7 @@ export function QuizView({
                     "w-full flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl text-left",
                     "border transition-all duration-150",
                     isSelected
-                      ? "bg-indigo-500/10 border-indigo-500/50 shadow-lg shadow-indigo-500/5"
+                      ? "bg-primary/50/10 border-primary/100/50 shadow-lg shadow-indigo-500/5"
                       : "bg-slate-900 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80"
                   )}
                 >
@@ -495,7 +495,7 @@ export function QuizView({
                     className={cn(
                       "shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center mt-0.5 transition-all",
                       isSelected
-                        ? "border-indigo-500 bg-indigo-500"
+                        ? "border-primary/100 bg-primary/50"
                         : "border-slate-600"
                     )}
                   >
@@ -564,10 +564,10 @@ export function QuizView({
                     className={cn(
                       "rounded-full transition-all",
                       isCurrent
-                        ? "w-6 h-2 bg-indigo-500"
+                        ? "w-6 h-2 bg-primary/50"
                         : answered
                         ? "w-2 h-2 bg-emerald-500"
-                        : "w-2 h-2 bg-slate-700 hover:bg-slate-600"
+                        : "w-2 h-2 bg-muted-foreground/70 hover:bg-muted-foreground/60"
                     )}
                   />
                 );
@@ -587,7 +587,7 @@ export function QuizView({
                   "flex items-center gap-1.5 px-4 h-11 rounded-xl text-sm font-bold transition-all",
                   !selectedForCurrent
                     ? "bg-slate-800 text-slate-600 cursor-not-allowed"
-                    : "bg-indigo-600 hover:bg-indigo-500 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
+                    : "bg-indigo-600 hover:bg-primary/50 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
                 )}
               >
                 <span className="hidden sm:inline">Next</span>
@@ -635,7 +635,7 @@ export function QuizView({
     const passed = result.passed;
 
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100">
+      <div className="min-h-screen bg-slate-950 text-foreground">
         {/* Top bar */}
         <div className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
@@ -744,7 +744,7 @@ export function QuizView({
                   </p>
                   <Link
                     href="/dashboard/student/certificates"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-foreground text-xs font-bold transition-colors"
                   >
                     View Certificate
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -756,7 +756,7 @@ export function QuizView({
 
           {/* Role upgrade notice */}
           {result.roleUpgraded && (
-            <div className="rounded-2xl bg-indigo-500/5 border border-indigo-500/20 p-5 sm:p-6 mb-8">
+            <div className="rounded-2xl bg-primary/50/5 border border-primary/100/20 p-5 sm:p-6 mb-8">
               <div className="flex items-start gap-3">
                 <Sparkles className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
                 <div>
@@ -778,12 +778,12 @@ export function QuizView({
           <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden mb-6">
             <div className="px-5 sm:px-6 py-4 border-b border-slate-800">
               <h2 className="text-sm font-bold text-white">Answer Review</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-foreground0 mt-0.5">
                 See how you answered each question
               </p>
             </div>
 
-            <div className="divide-y divide-slate-800">
+            <div className="divide-y divide-border">
               {result.answerFeedback.map((fb, idx) => {
                 const q = quiz.questions.find((q) => q.id === fb.questionId);
                 if (!q) return null;
@@ -855,7 +855,7 @@ export function QuizView({
                             >
                               {opt}
                               {isSelected && !isCorrect && (
-                                <span className="ml-2 text-[10px] text-slate-500 font-semibold">
+                                <span className="ml-2 text-[10px] text-foreground0 font-semibold">
                                   (Your answer)
                                 </span>
                               )}
@@ -877,7 +877,7 @@ export function QuizView({
           )}
 
           {!passed && (
-            <p className="text-xs text-slate-500 text-center mb-6">
+            <p className="text-xs text-foreground0 text-center mb-6">
               Answer review is unlocked once you pass. Revisit the course
               lessons, then try again.
             </p>
@@ -902,7 +902,7 @@ export function QuizView({
                 "flex-1 flex items-center justify-center gap-2 h-12 rounded-xl",
                 passed
                   ? "bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300"
-                  : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-emerald-500/20",
+                  : "bg-indigo-600 hover:bg-primary/50 text-white shadow-lg shadow-emerald-500/20",
                 "text-sm font-bold transition-all active:scale-[0.98]"
               )}
             >

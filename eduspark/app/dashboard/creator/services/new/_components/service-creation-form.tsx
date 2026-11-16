@@ -140,7 +140,7 @@ function TagInput({
                 e.stopPropagation();
                 removeTag(tag);
               }}
-              className="ml-0.5 hover:text-indigo-100"
+              className="ml-0.5 hover:text-primary"
             >
               <X className="w-3 h-3" />
             </button>

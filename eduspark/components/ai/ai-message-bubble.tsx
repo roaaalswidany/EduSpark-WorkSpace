@@ -44,7 +44,7 @@ export function AiMessageBubble({
         className={cn(
           "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
           isUser
-            ? "bg-accent text-slate-100 rounded-tr-sm"
+            ? "bg-accent text-foreground rounded-tr-sm"
             : "bg-accent text-foreground border border-border rounded-tl-sm"
         )}
       >

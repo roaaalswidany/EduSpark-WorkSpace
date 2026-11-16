@@ -101,16 +101,16 @@ const MILESTONE_STATUS = {
   [MilestoneStatus.PENDING]: {
     label: "Pending",
     icon: Clock,
-    dot: "bg-slate-700 border-slate-600",
+    dot: "bg-muted-foreground/70 border-slate-600",
     text: "text-slate-400",
     badge: "bg-slate-800 text-slate-400 border-slate-700",
   },
   [MilestoneStatus.IN_PROGRESS]: {
     label: "In Progress",
     icon: Zap,
-    dot: "bg-indigo-600 border-indigo-500",
+    dot: "bg-indigo-600 border-primary/100",
     text: "text-indigo-300",
-    badge: "bg-indigo-500/10 text-indigo-300 border-indigo-500/20",
+    badge: "bg-primary/50/10 text-indigo-300 border-primary/100/20",
   },
   [MilestoneStatus.REVIEW_REQUESTED]: {
     label: "Under Review",
@@ -139,22 +139,22 @@ const PROJECT_STATUS = {
   [ProjectStatus.PENDING]: {
     label: "Awaiting Start",
     color: "text-slate-400",
-    bg: "bg-slate-700",
-    bar: "bg-slate-500",
+    bg: "bg-muted-foreground/70",
+    bar: "bg-muted/500",
     progress: 0,
   },
   [ProjectStatus.OPEN]: {
     label: "Open",
     color: "text-slate-400",
-    bg: "bg-slate-700",
-    bar: "bg-slate-500",
+    bg: "bg-muted-foreground/70",
+    bar: "bg-muted/500",
     progress: 0,
   },
   [ProjectStatus.IN_PROGRESS]: {
     label: "In Progress",
     color: "text-indigo-300",
-    bg: "bg-indigo-500/10",
-    bar: "bg-indigo-500",
+    bg: "bg-primary/50/10",
+    bar: "bg-primary/50",
     progress: 50,
   },
   [ProjectStatus.REVIEW_REQUESTED]: {
@@ -173,9 +173,9 @@ const PROJECT_STATUS = {
   },
   [ProjectStatus.CANCELLED]: {
     label: "Cancelled",
-    color: "text-slate-500",
+    color: "text-foreground0",
     bg: "bg-slate-800",
-    bar: "bg-slate-600",
+    bar: "bg-muted-foreground/60",
     progress: 0,
   },
   [ProjectStatus.DISPUTED]: {
@@ -212,7 +212,7 @@ function dueDateMeta(iso: string | null): {
 
   return {
     text: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-    className: "text-slate-500",
+    className: "text-foreground0",
   };
 }
 
@@ -264,7 +264,7 @@ function SubmissionForm({
   const isValid = note.trim().length >= 10 && urlOk;
 
   return (
-    <div className="mt-4 p-4 rounded-xl bg-slate-800/70 border border-indigo-500/20 space-y-3">
+    <div className="mt-4 p-4 rounded-xl bg-slate-800/70 border border-primary/100/20 space-y-3">
       <p className="text-xs font-semibold text-indigo-400">
         Add delivery details:
       </p>
@@ -274,7 +274,7 @@ function SubmissionForm({
         placeholder="Describe what you've delivered (e.g., 'Final logo files in SVG, PNG, and AI formats. Brand guidelines included.')"
         rows={3}
         maxLength={500}
-        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
       />
       <div>
         <input
@@ -283,7 +283,7 @@ function SubmissionForm({
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Delivery link (optional) — https://…"
           maxLength={500}
-          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
         />
         {!urlOk && (
           <p className="mt-1 text-[10px] text-red-400">Only https:// links are allowed.</p>
@@ -295,7 +295,7 @@ function SubmissionForm({
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-1.5 rounded-lg text-xs text-slate-500 hover:text-slate-300 hover:bg-slate-700 transition-all"
+            className="px-3 py-1.5 rounded-lg text-xs text-foreground0 hover:text-slate-300 hover:bg-muted-foreground/70 transition-all"
           >
             Cancel
           </button>
@@ -305,7 +305,7 @@ function SubmissionForm({
             disabled={!isValid || isPending}
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all",
-              "bg-indigo-600 hover:bg-indigo-500 text-white",
+              "bg-indigo-600 hover:bg-primary/50 text-white",
               "disabled:opacity-40 disabled:cursor-not-allowed"
             )}
           >
@@ -353,7 +353,7 @@ function RevisionForm({
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-1.5 rounded-lg text-xs text-slate-500 hover:text-slate-300 hover:bg-slate-700 transition-all"
+            className="px-3 py-1.5 rounded-lg text-xs text-foreground0 hover:text-slate-300 hover:bg-muted-foreground/70 transition-all"
           >
             Cancel
           </button>
@@ -452,7 +452,7 @@ function MilestoneCard({
             : milestone.status === MilestoneStatus.REVISION_NEEDED
             ? "bg-slate-900 border-red-500/20"
             : milestone.status === MilestoneStatus.IN_PROGRESS
-            ? "bg-slate-900 border-indigo-500/20"
+            ? "bg-slate-900 border-primary/100/20"
             : "bg-slate-900 border-slate-800"
         )}
       >
@@ -501,7 +501,7 @@ function MilestoneCard({
 
           {/* Submission Details (NEW) */}
           {milestone.submissionNote && (
-            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-indigo-500/5 border border-indigo-500/15 mb-3">
+            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-primary/50/5 border border-primary/100/15 mb-3">
               <FileText className="w-3.5 h-3.5 text-indigo-400 shrink-0 mt-0.5" />
               <div>
                 <p className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wide mb-0.5">
@@ -573,7 +573,7 @@ function MilestoneCard({
                     disabled={isPending}
                     className={cn(
                       "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
-                      "bg-indigo-600 hover:bg-indigo-500 text-white",
+                      "bg-indigo-600 hover:bg-primary/50 text-white",
                       "disabled:opacity-50 disabled:cursor-not-allowed"
                     )}
                   >
@@ -594,7 +594,7 @@ function MilestoneCard({
                     disabled={isPending}
                     className={cn(
                       "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
-                      "bg-amber-500 hover:bg-amber-400 text-slate-950",
+                      "bg-amber-500 hover:bg-amber-400 text-foreground",
                       "disabled:opacity-50 disabled:cursor-not-allowed"
                     )}
                   >
@@ -633,7 +633,7 @@ function MilestoneCard({
                       onClick={() => setRevisionOpen(true)}
                       className={cn(
                         "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
-                        "bg-slate-700 hover:bg-red-500/20 border border-slate-600 hover:border-red-500/30",
+                        "bg-muted-foreground/70 hover:bg-red-500/20 border border-slate-600 hover:border-red-500/30",
                         "text-slate-400 hover:text-red-400",
                         "disabled:opacity-50 disabled:cursor-not-allowed"
                       )}
@@ -655,7 +655,7 @@ function MilestoneCard({
                 )}
 
                 {milestone.status === MilestoneStatus.PENDING && (
-                  <p className="text-xs text-slate-500 flex items-center gap-1.5">
+                  <p className="text-xs text-foreground0 flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5" />
                     Not started yet
                   </p>
@@ -865,7 +865,7 @@ export function ProjectView({
   }, [isPending, project.id, project.milestones, project.status]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-foreground">
 
       {/* ── Project Header ─────────────────────────────────────────────────── */}
       <div className="border-b border-slate-800 bg-slate-900/60 sticky top-0 z-30 backdrop-blur-md">
@@ -882,7 +882,7 @@ export function ProjectView({
                 <h1 className="text-base font-bold text-white truncate">
                   {project.title}
                 </h1>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-foreground0 mt-0.5">
                   Started{" "}
                   {new Date(project.createdAt).toLocaleDateString("en-US", {
                     month: "long",
@@ -903,7 +903,7 @@ export function ProjectView({
                     : localProjectStatus === ProjectStatus.REVIEW_REQUESTED
                     ? "bg-amber-500/10 text-amber-300 border-amber-500/20"
                     : localProjectStatus === ProjectStatus.IN_PROGRESS
-                    ? "bg-indigo-500/10 text-indigo-300 border-indigo-500/20"
+                    ? "bg-primary/50/10 text-indigo-300 border-primary/100/20"
                     : "bg-slate-800 text-slate-400 border-slate-700"
                 )}
               >
@@ -923,7 +923,7 @@ export function ProjectView({
               {project.chatRoom && (
                 <Link
                   href={`/dashboard/chat/${project.chatRoom.id}`}
-                  className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-slate-200 text-xs font-semibold transition-all"
+                  className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 border border-slate-700 text-slate-400 hover:text-slate-200 text-xs font-semibold transition-all"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />
                   <span>Chat</span>
@@ -1073,20 +1073,20 @@ export function ProjectView({
             {project.service && (
               <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
                 <div className="px-4 py-3 border-b border-slate-800 bg-slate-800/40">
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                  <p className="text-[10px] font-bold text-foreground0 uppercase tracking-widest">
                     Service
                   </p>
                 </div>
                 <div className="p-4 space-y-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-indigo-500/10 flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-primary/50/10 flex items-center justify-center shrink-0">
                       <Package className="w-4 h-4 text-indigo-400" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-white truncate">
                         {project.service.title}
                       </p>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-xs text-foreground0 mt-0.5">
                         {project.service.deliveryDays} day delivery
                       </p>
                     </div>
@@ -1100,7 +1100,7 @@ export function ProjectView({
                   <Link
                     href={`/marketplace/services/${project.service.slug}`}
                     target="_blank"
-                    className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 text-xs font-medium transition-all border border-slate-700"
+                    className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 text-slate-400 hover:text-slate-200 text-xs font-medium transition-all border border-slate-700"
                   >
                     <ExternalLink className="w-3 h-3" />
                     View Service
@@ -1112,7 +1112,7 @@ export function ProjectView({
             {/* Parties */}
             <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
               <div className="px-4 py-3 border-b border-slate-800 bg-slate-800/40">
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                <p className="text-[10px] font-bold text-foreground0 uppercase tracking-widest">
                   Participants
                 </p>
               </div>
@@ -1164,7 +1164,7 @@ export function ProjectView({
   {project.creator.name}
 </Link>
                         {project.creator.headline && (
-                          <p className="text-[10px] text-slate-500 truncate">
+                          <p className="text-[10px] text-foreground0 truncate">
                             {project.creator.headline}
                           </p>
                         )}
@@ -1185,14 +1185,14 @@ export function ProjectView({
             {/* Budget + Deadline */}
             <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
               <div className="px-4 py-3 border-b border-slate-800 bg-slate-800/40">
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                <p className="text-[10px] font-bold text-foreground0 uppercase tracking-widest">
                   Details
                 </p>
               </div>
               <div className="p-4 space-y-3">
                 {project.budget != null && (
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-slate-500 text-xs">
+                    <div className="flex items-center gap-2 text-foreground0 text-xs">
                       <DollarSign className="w-3.5 h-3.5" />
                       <span>Budget</span>
                     </div>
@@ -1204,7 +1204,7 @@ export function ProjectView({
 
                 {project.deadline && (
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-slate-500 text-xs">
+                    <div className="flex items-center gap-2 text-foreground0 text-xs">
                       <CalendarDays className="w-3.5 h-3.5" />
                       <span>Deadline</span>
                     </div>
@@ -1220,7 +1220,7 @@ export function ProjectView({
                 )}
 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-slate-500 text-xs">
+                  <div className="flex items-center gap-2 text-foreground0 text-xs">
                     <Flag className="w-3.5 h-3.5" />
                     <span>Status</span>
                   </div>
@@ -1237,18 +1237,18 @@ export function ProjectView({
                 href={`/dashboard/chat/${project.chatRoom.id}`}
                 className={cn(
                   "flex items-center gap-3 p-4 rounded-2xl",
-                  "bg-indigo-500/8 hover:bg-indigo-500/12 border border-indigo-500/15 hover:border-indigo-500/25",
+                  "bg-primary/50/8 hover:bg-primary/50/12 border border-primary/100/15 hover:border-primary/100/25",
                   "transition-all group"
                 )}
               >
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-primary/50/10 flex items-center justify-center shrink-0">
                   <MessageSquare className="w-5 h-5 text-indigo-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
                     Project Chat
                   </p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-foreground0">
                     {project.chatRoom.messageCount}{" "}
                     {project.chatRoom.messageCount === 1 ? "message" : "messages"}
                   </p>

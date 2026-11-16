@@ -70,7 +70,7 @@ interface ServiceDetailViewProps {
 // ─── Helpers ────────────────────────────────────────────────────────────
 
 const GRADIENTS = [
-  "from-emerald-600 to-indigo-700",
+  "from-emerald-600 to-emerald-700",
   "from-rose-600 to-pink-700",
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",
@@ -197,20 +197,20 @@ function OrderDialog({
         {/* Body */}
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-slate-500">Total</span>
+            <span className="text-foreground0">Total</span>
             <span className="text-xl font-black text-white tabular-nums">
               ${service.price.toFixed(2)}
             </span>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-slate-500">
+          <div className="flex items-center justify-between text-xs text-foreground0">
             <span>Delivery</span>
             <span className="text-slate-300">
               {service.deliveryDays} days
             </span>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-slate-500">
+          <div className="flex items-center justify-between text-xs text-foreground0">
             <span>Revisions</span>
             <span className="text-slate-300">
               {service.revisions === 0
@@ -236,7 +236,7 @@ function OrderDialog({
               rows={5}
               maxLength={2000}
               disabled={isPending}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
             />
             <p className="text-[10px] text-slate-600 mt-1.5">
               {requirements.length}/2000
@@ -268,7 +268,7 @@ function OrderDialog({
             className={cn(
               "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
               isValid && !isPending
-                ? "bg-indigo-600 hover:bg-indigo-500 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
+                ? "bg-indigo-600 hover:bg-primary/50 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
                 : "bg-slate-800 text-slate-600 cursor-not-allowed"
             )}
           >
@@ -303,7 +303,7 @@ export function ServiceDetailView({
   const gradient = getGradient(service.id);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-foreground">
       {/* Main content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
@@ -360,7 +360,7 @@ export function ServiceDetailView({
             </div>
 
             {/* Stats row */}
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-500">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-foreground0">
               {service.orderCount > 0 && (
                 <div className="flex items-center gap-1.5">
                   <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
@@ -432,9 +432,9 @@ export function ServiceDetailView({
                       href={link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-indigo-500/40 hover:bg-slate-900 transition-all group"
+                      className="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-primary/100/40 hover:bg-slate-900 transition-all group"
                     >
-                      <div className="shrink-0 w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                      <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center">
                         <ExternalLink className="w-3.5 h-3.5 text-indigo-400" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -508,7 +508,7 @@ export function ServiceDetailView({
     onClick={() => setOrderOpen(true)}
     className={cn(
       "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-      "bg-indigo-600 hover:bg-indigo-500 text-white",
+      "bg-indigo-600 hover:bg-primary/50 text-white",
       "text-sm font-bold transition-all active:scale-[0.98]",
       "shadow-lg shadow-emerald-500/20"
     )}
@@ -521,7 +521,7 @@ export function ServiceDetailView({
     href={`/auth/login?callbackUrl=/marketplace/services/${service.slug}`}
     className={cn(
       "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-      "bg-indigo-600 hover:bg-indigo-500 text-white",
+      "bg-indigo-600 hover:bg-primary/50 text-white",
       "text-sm font-bold transition-all active:scale-[0.98]",
       "shadow-lg shadow-emerald-500/20"
     )}
@@ -532,7 +532,7 @@ export function ServiceDetailView({
 
                 {/* Features */}
                 <div className="pt-4 border-t border-slate-800 space-y-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-foreground0">
                     What&apos;s included
                   </p>
                   <ul className="space-y-2.5">
@@ -562,7 +562,7 @@ export function ServiceDetailView({
                 {/* Meta */}
                 <div className="pt-4 border-t border-slate-800 space-y-2">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-slate-500">Created</span>
+                    <span className="text-foreground0">Created</span>
                     <span className="text-slate-400">
                       {new Date(service.createdAt).toLocaleDateString("en-US", {
                         month: "short",
@@ -576,13 +576,13 @@ export function ServiceDetailView({
             </div>
 
             {/* Trust badge */}
-            <div className="rounded-2xl bg-indigo-500/5 border border-indigo-500/20 p-4 flex items-start gap-3">
+            <div className="rounded-2xl bg-primary/50/5 border border-primary/100/20 p-4 flex items-start gap-3">
               <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
               <div>
                 <p className="text-xs font-bold text-indigo-300">
                   EduSpark Certified
                 </p>
-                <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                <p className="text-[11px] text-foreground0 mt-0.5 leading-relaxed">
                   This creator has proven their skills through our rigorous
                   certification program.
                 </p>
@@ -602,7 +602,7 @@ export function ServiceDetailView({
                 <Link
                   key={rs.id}
                   href={`/marketplace/services/${rs.slug}`}
-                  className="group rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden hover:border-indigo-500/40 transition-all hover:-translate-y-0.5"
+                  className="group rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden hover:border-primary/100/40 transition-all hover:-translate-y-0.5"
                 >
                   <div
                     className={cn(
@@ -631,7 +631,7 @@ export function ServiceDetailView({
                       {rs.title}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs text-foreground0">
                         {rs.creator.name.split(" ")[0]}
                       </span>
                       <span className="text-sm font-bold text-white tabular-nums">

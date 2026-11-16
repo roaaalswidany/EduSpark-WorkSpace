@@ -69,7 +69,7 @@ export function CurriculumAccordion({
           <BookOpen className="w-4 h-4 text-indigo-400" />
           <h2 className="text-sm font-bold text-white">Course Curriculum</h2>
         </div>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-foreground0">
           {sections.length} sections · {totalLessons} lessons ·{" "}
           {formatDuration(totalDuration)} total
         </p>
@@ -95,7 +95,7 @@ export function CurriculumAccordion({
                 className="w-full flex items-center gap-3 px-5 sm:px-6 py-4 hover:bg-slate-800/30 transition-colors text-left group"
               >
                 {/* Section number */}
-                <div className="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 text-xs font-bold flex items-center justify-center shrink-0 group-hover:bg-slate-700 transition-colors">
+                <div className="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 text-xs font-bold flex items-center justify-center shrink-0 group-hover:bg-muted-foreground/70 transition-colors">
                   {idx + 1}
                 </div>
 
@@ -143,7 +143,7 @@ export function CurriculumAccordion({
                         <span
                           className={cn(
                             "flex-1 text-xs truncate",
-                            locked ? "text-slate-500" : "text-slate-300"
+                            locked ? "text-foreground0" : "text-slate-300"
                           )}
                         >
                           {lesson.title}

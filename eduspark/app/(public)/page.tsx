@@ -67,7 +67,7 @@ export default async function HomePage() {
       â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */}
       <section className="relative">
         {/* Gradient background */}
-        <div className="absolute inset-0 bg-linear-to-b from-indigo-950/40 via-slate-950 to-slate-950" />
+        <div className="absolute inset-0 bg-linear-to-b from-emerald-950/40 via-zinc-950 to-zinc-950" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-200 h-100 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 lg:pt-28 lg:pb-32">
@@ -82,7 +82,7 @@ export default async function HomePage() {
             <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white tracking-tight leading-[1.05] mb-6">
               Learn .. Certify
               <br />
-              <span className="bg-linear-to-r from-emerald-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-emerald-400 via-emerald-400 to-fuchsia-400 bg-clip-text text-transparent">
                 Build your career
               </span>
             </h1>
@@ -391,9 +391,9 @@ export default async function HomePage() {
           FINAL CTA
       â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */}
       <section className="relative">
-        <div className="absolute inset-0 bg-linear-to-b from-transparent via-indigo-950/20 to-slate-950" />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-emerald-950/20 to-zinc-950" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="rounded-3xl bg-linear-to-br from-emerald-600/20 via-violet-600/10 to-fuchsia-600/20 border border-primary/20 p-10 sm:p-14 text-center">
+          <div className="rounded-3xl bg-linear-to-br from-emerald-600/20 via-emerald-600/10 to-fuchsia-600/20 border border-primary/20 p-10 sm:p-14 text-center">
             <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-emerald-500/30">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
@@ -505,7 +505,7 @@ function Step({
   return (
     <div className="relative">
       {/* Connecting line */}
-      <div className="hidden md:block absolute top-8 left-[calc(50%+60px)] right-[calc(-50%+60px)] h-px bg-linear-to-r from-slate-800 to-transparent" />
+      <div className="hidden md:block absolute top-8 left-[calc(50%+60px)] right-[calc(-50%+60px)] h-px bg-linear-to-r from-zinc-800 to-transparent" />
 
       <div className={`relative rounded-3xl ${bg} ${border} border p-7`}>
         <div className="flex items-center gap-4 mb-5">

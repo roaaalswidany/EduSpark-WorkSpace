@@ -84,13 +84,13 @@ export function CourseCard({ course }: { course: CourseCardData }) {
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-slate-900 to-emerald-500/10">
+          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-zinc-900 to-emerald-500/10">
             <BookOpen className="w-12 h-12 text-muted-foreground/70" />
           </div>
         )}
 
         {/* Dark gradient overlay for text visibility */}
-        <div className="absolute inset-0 bg-linear-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-zinc-950/20 to-transparent" />
 
         {/* Level badge top-left */}
         <div className="absolute top-3 left-3">

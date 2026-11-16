@@ -90,7 +90,7 @@ export default async function ProjectChatPage({
           <span>Back to Project</span>
         </Link>
 
-        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+        <div className="flex items-center gap-1.5 text-xs text-foreground0">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
           <span className="hidden sm:inline">End-to-end encrypted channel</span>
           <span className="sm:hidden">Secure</span>
@@ -126,8 +126,8 @@ export default async function ProjectChatPage({
               project.status === "COMPLETED"
                 ? "bg-emerald-500/10 text-emerald-400"
                 : project.status === "IN_PROGRESS"
-                ? "bg-indigo-500/10 text-indigo-400"
-                : "bg-slate-800 text-slate-500"
+                ? "bg-primary/50/10 text-indigo-400"
+                : "bg-slate-800 text-foreground0"
             )}
           >
             {project.status.replace("_", " ")}
@@ -175,7 +175,7 @@ function ParticipantChip({
             className="w-6 h-6 rounded-full object-cover"
           />
         ) : (
-          <div className="w-6 h-6 rounded-full flex items-center justify-center bg-slate-700 text-white text-[9px] font-bold">
+          <div className="w-6 h-6 rounded-full flex items-center justify-center bg-muted-foreground/70 text-white text-[9px] font-bold">
             {user.name.slice(0, 2).toUpperCase()}
           </div>
         )}

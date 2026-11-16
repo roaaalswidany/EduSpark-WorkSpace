@@ -73,7 +73,7 @@ export default async function QuizPage({
         </h2>
 
         {!course.quiz || course.quiz.questions.length === 0 ? (
-          <div className="text-center p-8 bg-slate-900 border border-slate-800 rounded-xl text-slate-500 text-sm">
+          <div className="text-center p-8 bg-slate-900 border border-slate-800 rounded-xl text-foreground0 text-sm">
             {canEdit
               ? "No questions yet. Use the tools above to add questions."
               : "No questions yet. Unpublish the course to add questions."}

@@ -106,13 +106,13 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-slate-900 to-emerald-500/10">
+          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-zinc-900 to-emerald-500/10">
             <BookOpen className="w-12 h-12 text-muted-foreground/70" />
           </div>
         )}
 
         {/* Dark overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-slate-950/95 via-slate-950/30 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-zinc-950/95 via-zinc-950/30 to-transparent" />
 
         {/* Status badge top-right */}
         <div className="absolute top-3 right-3">

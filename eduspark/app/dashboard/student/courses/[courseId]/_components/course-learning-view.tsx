@@ -197,7 +197,7 @@ function CompletionBanner({
       {hasQuiz && (
         <Link
           href={`/dashboard/student/courses/${courseId}/quiz`}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-primary/50 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
         >
           Take Certification Quiz
           <ArrowRight className="w-4 h-4" />
@@ -223,7 +223,7 @@ function LessonRow({ lesson, isActive, onSelect }: LessonRowProps) {
         "w-full flex items-start gap-3 py-3 pl-5 pr-4 text-left",
         "border-r-[3px] transition-all duration-150",
         isActive
-          ? "bg-indigo-500/10 border-indigo-500"
+          ? "bg-primary/50/10 border-primary/100"
           : "border-transparent hover:bg-slate-800/50"
       )}
     >
@@ -248,7 +248,7 @@ function LessonRow({ lesson, isActive, onSelect }: LessonRowProps) {
             isActive
               ? "text-indigo-300"
               : lesson.isCompleted
-              ? "text-slate-500"
+              ? "text-foreground0"
               : "text-slate-300"
           )}
         >
@@ -314,7 +314,7 @@ function SectionAccordion({
             "w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0",
             isComplete
               ? "bg-emerald-500/20 text-emerald-400"
-              : "bg-slate-800 text-slate-500 group-hover:bg-slate-700"
+              : "bg-slate-800 text-foreground0 group-hover:bg-muted-foreground/70"
           )}
         >
           {isComplete ? "✓" : index + 1}
@@ -541,7 +541,7 @@ export function CourseLearningView({
   if (!activeLesson) return null;
 
   return (
-    <div className="flex flex-col h-screen bg-slate-950 text-slate-100 overflow-hidden">
+    <div className="flex flex-col h-screen bg-slate-950 text-foreground overflow-hidden">
       {/* ──────────────────────────────────────── Top header */}
       <header className="h-14 shrink-0 bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 flex items-center px-4 gap-2 z-50">
         {/* Back to My Courses */}
@@ -587,7 +587,7 @@ export function CourseLearningView({
             </span>
           )}
           <div className="flex items-center gap-2.5">
-            <span className="text-xs text-slate-500 hidden sm:block">
+            <span className="text-xs text-foreground0 hidden sm:block">
               <span className="text-slate-300 font-semibold">
                 {completedLessons}
               </span>
@@ -617,7 +617,7 @@ export function CourseLearningView({
             href={`/courses/${course.slug}`}
             target="_blank"
             title="View public page (reviews & ratings)"
-            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-slate-700 text-slate-400 hover:text-indigo-300 transition-colors shrink-0"
+            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-muted-foreground/70 text-slate-400 hover:text-indigo-300 transition-colors shrink-0"
           >
             <ExternalLink className="w-3.5 h-3.5" />
           </Link>
@@ -651,7 +651,7 @@ export function CourseLearningView({
                   {activeLesson.title}
                 </h2>
                 {activeLesson.duration != null && (
-                  <div className="inline-flex items-center gap-1.5 text-slate-500 text-sm">
+                  <div className="inline-flex items-center gap-1.5 text-foreground0 text-sm">
                     <Clock className="w-3.5 h-3.5" />
                     <span>{formatDuration(activeLesson.duration)}</span>
                   </div>
@@ -672,7 +672,7 @@ export function CourseLearningView({
                     className={cn(
                       "flex items-center gap-2 px-4 py-2.5 rounded-xl",
                       "text-sm font-semibold text-white",
-                      "bg-indigo-600 hover:bg-indigo-500 active:scale-95",
+                      "bg-indigo-600 hover:bg-primary/50 active:scale-95",
                       "shadow-lg shadow-indigo-500/25",
                       "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100",
                       "transition-all duration-150"
@@ -717,7 +717,7 @@ export function CourseLearningView({
                 disabled={!prevLesson}
                 className={cn(
                   "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium",
-                  "border border-slate-800 text-slate-500",
+                  "border border-slate-800 text-foreground0",
                   "hover:border-slate-700 hover:bg-slate-900 hover:text-slate-300",
                   "disabled:opacity-20 disabled:cursor-not-allowed",
                   "transition-all duration-150"
@@ -747,10 +747,10 @@ export function CourseLearningView({
                       className={cn(
                         "rounded-full transition-all duration-300",
                         lesson.id === activeLessonId
-                          ? "w-5 h-2 bg-indigo-500"
+                          ? "w-5 h-2 bg-primary/50"
                           : lesson.isCompleted
                           ? "w-2 h-2 bg-emerald-600 hover:bg-emerald-500"
-                          : "w-2 h-2 bg-slate-700 hover:bg-slate-600"
+                          : "w-2 h-2 bg-muted-foreground/70 hover:bg-muted-foreground/60"
                       )}
                     />
                   ))}
@@ -761,7 +761,7 @@ export function CourseLearningView({
                 disabled={!nextLesson}
                 className={cn(
                   "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium",
-                  "border border-slate-800 text-slate-500",
+                  "border border-slate-800 text-foreground0",
                   "hover:border-slate-700 hover:bg-slate-900 hover:text-slate-300",
                   "disabled:opacity-20 disabled:cursor-not-allowed",
                   "transition-all duration-150"
@@ -826,7 +826,7 @@ export function CourseLearningView({
                 <h2 className="text-sm font-bold text-slate-200 truncate">
                   {course.title}
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-foreground0 mt-0.5">
                   {completedLessons} of {course.totalLessons} lessons done
                 </p>
               </div>
@@ -866,7 +866,7 @@ export function CourseLearningView({
             <Video className="w-3.5 h-3.5 text-slate-600 shrink-0" />
             <p className="text-xs text-slate-600 truncate">
               Instructor:{" "}
-              <span className="text-slate-500">{course.creator.name}</span>
+              <span className="text-foreground0">{course.creator.name}</span>
             </p>
           </div>
         </aside>

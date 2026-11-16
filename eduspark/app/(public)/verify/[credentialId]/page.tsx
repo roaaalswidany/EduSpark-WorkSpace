@@ -43,7 +43,7 @@ export default async function VerifyCertificatePage({
   const issued = cert.issuedAt.toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" });
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100">
+    <div className="min-h-screen bg-slate-950 px-4 py-10 text-foreground">
       {/* Print only the certificate card */}
       <style>{`@media print {
         body * { visibility: hidden !important; }
@@ -66,28 +66,28 @@ export default async function VerifyCertificatePage({
             <span className="text-lg font-bold tracking-wide">EduSpark</span>
           </div>
 
-          <p className="muted mt-8 text-xs uppercase tracking-[0.25em] text-slate-500">Certificate of Competency</p>
-          <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-slate-50">{cert.holderName}</h1>
+          <p className="muted mt-8 text-xs uppercase tracking-[0.25em] text-foreground0">Certificate of Competency</p>
+          <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground">{cert.holderName}</h1>
           <p className="muted mt-4 text-slate-400">has demonstrated competency in</p>
-          <h2 className="mt-1 text-xl sm:text-2xl font-semibold text-slate-100">{cert.courseTitle}</h2>
-          {cert.categoryName && <p className="muted mt-1 text-sm text-slate-500">{cert.categoryName}</p>}
+          <h2 className="mt-1 text-xl sm:text-2xl font-semibold text-foreground">{cert.courseTitle}</h2>
+          {cert.categoryName && <p className="muted mt-1 text-sm text-foreground0">{cert.categoryName}</p>}
 
           <dl className="mt-8 grid grid-cols-2 gap-6 text-sm">
             <div>
-              <dt className="muted flex items-center gap-1.5 text-slate-500"><Trophy className="h-4 w-4" /> Score</dt>
+              <dt className="muted flex items-center gap-1.5 text-foreground0"><Trophy className="h-4 w-4" /> Score</dt>
               <dd className="mt-1 text-lg font-semibold">{cert.score}%</dd>
             </div>
             <div>
-              <dt className="muted flex items-center gap-1.5 text-slate-500"><CalendarDays className="h-4 w-4" /> Issued</dt>
+              <dt className="muted flex items-center gap-1.5 text-foreground0"><CalendarDays className="h-4 w-4" /> Issued</dt>
               <dd className="mt-1 text-lg font-semibold">{issued}</dd>
             </div>
           </dl>
 
           <div className="mt-10 flex items-end justify-between gap-6 border-t border-slate-800 pt-6">
             <div className="min-w-0">
-              <p className="muted text-xs text-slate-500">Credential ID</p>
+              <p className="muted text-xs text-foreground0">Credential ID</p>
               <p className="mt-1 break-all font-mono text-sm">{cert.credentialId}</p>
-              <p className="muted mt-3 break-all text-xs text-slate-500">{verifyUrl}</p>
+              <p className="muted mt-3 break-all text-xs text-foreground0">{verifyUrl}</p>
             </div>
             <div
               className="shrink-0 rounded-lg bg-white p-1.5"
@@ -98,7 +98,7 @@ export default async function VerifyCertificatePage({
         </article>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4 print:hidden">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-foreground0">
             Verification is live: this page reads EduSpark&apos;s records, so a forged document cannot
             produce it.
           </p>

@@ -230,7 +230,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Status</span>
             <span className="w-8" />
           </div>
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-border">
             {courses.map((c, idx) => {
               const isPendingCourse = pendingCourseId === c.id;
               const isLastRow = idx === courses.length - 1;

@@ -80,23 +80,23 @@ export function LessonAttachmentsViewer({ attachments }: Props) {
               key={att.id}
               onClick={() => handleDownload(att.id)}
               disabled={isPending}
-              className="w-full flex items-center gap-3 p-3 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-indigo-500/40 hover:bg-slate-950 transition-colors group"
+              className="w-full flex items-center gap-3 p-3 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-primary/100/40 hover:bg-slate-950 transition-colors group"
             >
-              <div className="w-9 h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center shrink-0">
                 <Icon className="w-4 h-4 text-indigo-400" />
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-sm text-slate-200 truncate group-hover:text-indigo-300 transition-colors">
                   {att.fileName}
                 </p>
-                <p className="text-[10px] text-slate-500">
+                <p className="text-[10px] text-foreground0">
                   {formatSize(att.fileSizeBytes)}
                 </p>
               </div>
               {isDownloading ? (
                 <Loader2 className="w-4 h-4 text-indigo-400 animate-spin shrink-0" />
               ) : (
-                <Download className="w-4 h-4 text-slate-500 group-hover:text-indigo-400 transition-colors shrink-0" />
+                <Download className="w-4 h-4 text-foreground0 group-hover:text-indigo-400 transition-colors shrink-0" />
               )}
             </button>
           );

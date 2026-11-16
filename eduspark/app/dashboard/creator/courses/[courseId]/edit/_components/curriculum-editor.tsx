@@ -134,7 +134,7 @@ export function CurriculumEditor({ course, sections }: Props) {
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+      <div className="flex items-center gap-1.5 text-xs text-foreground0">
         <Link
           href="/dashboard/creator/courses"
           className="hover:text-slate-300 transition-colors"
@@ -160,12 +160,12 @@ export function CurriculumEditor({ course, sections }: Props) {
                   ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
                   : course.status === "PENDING_REVIEW"
                   ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
-                  : "bg-slate-700/50 text-slate-400 border-slate-700"
+                  : "bg-muted-foreground/70/50 text-slate-400 border-slate-700"
               )}
             >
               {course.status.replace("_", " ")}
             </span>
-            <span className="text-xs text-slate-500 flex items-center gap-1">
+            <span className="text-xs text-foreground0 flex items-center gap-1">
               <Users className="w-3 h-3" /> {course.enrollmentCount} enrolled
             </span>
           </div>
@@ -237,7 +237,7 @@ export function CurriculumEditor({ course, sections }: Props) {
         </div>
       )}
       {course.status === "PUBLISHED" && (
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-foreground0">
           This course was approved. To change its quiz, unpublish it first — it will need a new review.
         </p>
       )}
@@ -245,7 +245,7 @@ export function CurriculumEditor({ course, sections }: Props) {
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-xl bg-slate-900 border border-slate-800 p-4">
-          <div className="flex items-center gap-2 text-slate-500 text-xs mb-1">
+          <div className="flex items-center gap-2 text-foreground0 text-xs mb-1">
             <BookOpen className="w-3.5 h-3.5" /> Sections
           </div>
           <p className="text-xl font-bold text-white tabular-nums">
@@ -253,7 +253,7 @@ export function CurriculumEditor({ course, sections }: Props) {
           </p>
         </div>
         <div className="rounded-xl bg-slate-900 border border-slate-800 p-4">
-          <div className="flex items-center gap-2 text-slate-500 text-xs mb-1">
+          <div className="flex items-center gap-2 text-foreground0 text-xs mb-1">
             <Video className="w-3.5 h-3.5" /> Lessons
           </div>
           <p className="text-xl font-bold text-white tabular-nums">
@@ -276,7 +276,7 @@ export function CurriculumEditor({ course, sections }: Props) {
         <button
           type="button"
           onClick={() => setShowAddSection(true)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-slate-800 hover:border-indigo-500/50 text-slate-500 hover:text-indigo-400 text-sm font-semibold transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-slate-800 hover:border-primary/100/50 text-foreground0 hover:text-indigo-400 text-sm font-semibold transition-colors"
         >
           <Plus className="w-4 h-4" />
           Add Section
@@ -292,7 +292,7 @@ export function CurriculumEditor({ course, sections }: Props) {
           <h3 className="text-lg font-bold text-white mb-1.5">
             No sections yet
           </h3>
-          <p className="text-sm text-slate-500 max-w-sm mx-auto">
+          <p className="text-sm text-foreground0 max-w-sm mx-auto">
             Start by adding your first section above, then add lessons inside it.
           </p>
         </div>
@@ -347,7 +347,7 @@ function AddSectionForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-xl bg-slate-900 border border-indigo-500/30 p-4 space-y-3"
+      className="rounded-xl bg-slate-900 border border-primary/100/30 p-4 space-y-3"
     >
       <input
         autoFocus
@@ -356,7 +356,7 @@ function AddSectionForm({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Section title (e.g., Introduction)"
         disabled={isPending}
-        className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:border-indigo-500 outline-none"
+        className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
       />
       {error && (
         <div className="flex items-center gap-2 text-xs text-red-400">
@@ -375,7 +375,7 @@ function AddSectionForm({
         <button
           type="submit"
           disabled={isPending || title.trim().length < 2}
-          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-primary/50 text-white disabled:opacity-50"
         >
           {isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
           Save Section
@@ -444,7 +444,7 @@ function SectionCard({
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-slate-800 text-slate-500 transition-colors shrink-0"
+          className="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-slate-800 text-foreground0 transition-colors shrink-0"
         >
           <ChevronDown
             className={cn(
@@ -454,7 +454,7 @@ function SectionCard({
           />
         </button>
 
-        <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-xs font-bold text-indigo-400 shrink-0">
+        <div className="w-7 h-7 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center text-xs font-bold text-indigo-400 shrink-0">
           {index + 1}
         </div>
 
@@ -472,7 +472,7 @@ function SectionCard({
                   setEditTitle(section.title);
                 }
               }}
-              className="flex-1 bg-slate-950 border border-indigo-500 rounded px-2 py-1 text-sm text-white outline-none"
+              className="flex-1 bg-slate-950 border border-primary/100 rounded px-2 py-1 text-sm text-white outline-none"
             />
             <button
               onClick={handleRename}
@@ -486,7 +486,7 @@ function SectionCard({
                 setEditing(false);
                 setEditTitle(section.title);
               }}
-              className="text-slate-500 hover:text-slate-300"
+              className="text-foreground0 hover:text-slate-300"
             >
               <X className="w-4 h-4" />
             </button>
@@ -496,13 +496,13 @@ function SectionCard({
             <h3 className="flex-1 text-sm font-bold text-white truncate">
               {section.title}
             </h3>
-            <span className="text-[10px] text-slate-500 shrink-0">
+            <span className="text-[10px] text-foreground0 shrink-0">
               {section.lessons.length} lesson{section.lessons.length !== 1 ? "s" : ""}
             </span>
             <button
               type="button"
               onClick={() => setEditing(true)}
-              className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-800 text-slate-500 hover:text-indigo-400 transition-colors shrink-0"
+              className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-800 text-foreground0 hover:text-indigo-400 transition-colors shrink-0"
             >
               <Pencil className="w-3.5 h-3.5" />
             </button>
@@ -510,7 +510,7 @@ function SectionCard({
               type="button"
               onClick={handleDelete}
               disabled={isPending}
-              className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-colors shrink-0 disabled:opacity-50"
+              className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-500/10 text-foreground0 hover:text-red-400 transition-colors shrink-0 disabled:opacity-50"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>
@@ -549,7 +549,7 @@ function SectionCard({
             <button
               type="button"
               onClick={() => setShowAddLesson(true)}
-              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-slate-800 hover:border-indigo-500/40 text-slate-600 hover:text-indigo-400 text-xs font-semibold transition-colors"
+              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-slate-800 hover:border-primary/100/40 text-slate-600 hover:text-indigo-400 text-xs font-semibold transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Lesson
@@ -606,7 +606,7 @@ function LessonRow({
    return (
     <div className="space-y-2">
       <div className="flex items-start gap-2 p-3 rounded-lg bg-slate-950/50 border border-slate-800/60 hover:border-slate-700 transition-colors">
-        <div className="w-6 h-6 rounded bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500 shrink-0 mt-0.5">
+        <div className="w-6 h-6 rounded bg-slate-800 flex items-center justify-center text-[10px] font-bold text-foreground0 shrink-0 mt-0.5">
           {index + 1}
         </div>
         <div className="flex-1 min-w-0">
@@ -620,7 +620,7 @@ function LessonRow({
               </span>
             )}
           </div>
-          <div className="flex items-center gap-3 mt-1 text-[10px] text-slate-500">
+          <div className="flex items-center gap-3 mt-1 text-[10px] text-foreground0">
             {lesson.duration != null && lesson.duration > 0 && (
               <span className="flex items-center gap-0.5">
                 <Clock className="w-3 h-3" />
@@ -640,14 +640,14 @@ function LessonRow({
         <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={() => setEditing(true)}
-            className="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-800 text-slate-500 hover:text-indigo-400 transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-800 text-foreground0 hover:text-indigo-400 transition-colors"
           >
             <Pencil className="w-3 h-3" />
           </button>
           <button
             onClick={handleDelete}
             disabled={isPending}
-            className="w-7 h-7 flex items-center justify-center rounded hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-colors disabled:opacity-50"
+            className="w-7 h-7 flex items-center justify-center rounded hover:bg-red-500/10 text-foreground0 hover:text-red-400 transition-colors disabled:opacity-50"
           >
             {isPending ? (
               <Loader2 className="w-3 h-3 animate-spin" />
@@ -722,7 +722,7 @@ function LessonForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg bg-slate-900 border border-indigo-500/30 p-4 space-y-3"
+      className="rounded-lg bg-slate-900 border border-primary/100/30 p-4 space-y-3"
     >
       <input
         autoFocus
@@ -731,7 +731,7 @@ function LessonForm({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Lesson title"
         disabled={isPending}
-        className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-indigo-500 outline-none"
+        className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
       />
 
       <textarea
@@ -740,7 +740,7 @@ function LessonForm({
         placeholder="Description (optional)"
         rows={2}
         disabled={isPending}
-        className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-indigo-500 outline-none resize-none"
+        className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none resize-none"
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -750,7 +750,7 @@ function LessonForm({
           onChange={(e) => setVideoUrl(e.target.value)}
           placeholder="Video URL (YouTube/Vimeo or direct MP4)"
           disabled={isPending}
-          className="bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-indigo-500 outline-none"
+          className="bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
         />
         <div className="flex items-center gap-2">
           <input
@@ -760,10 +760,10 @@ function LessonForm({
             value={durationMin}
             onChange={(e) => setDurationMin(Number(e.target.value) || 0)}
             disabled={isPending}
-            className="flex-1 bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-indigo-500 outline-none"
+            className="flex-1 bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
             placeholder="Duration"
           />
-          <span className="text-xs text-slate-500 shrink-0">min</span>
+          <span className="text-xs text-foreground0 shrink-0">min</span>
         </div>
       </div>
 
@@ -796,7 +796,7 @@ function LessonForm({
         <button
           type="submit"
           disabled={isPending || title.trim().length < 2}
-          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-primary/50 text-white disabled:opacity-50"
         >
           {isPending ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />

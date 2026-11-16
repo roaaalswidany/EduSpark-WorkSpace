@@ -16,7 +16,7 @@ export function AuthCard({
           EduSpark
         </Link>
         <div className="rounded-2xl bg-card border border-border p-6 sm:p-8">
-          <h1 className="text-xl font-semibold text-slate-100">{title}</h1>
+          <h1 className="text-xl font-semibold text-foreground">{title}</h1>
           {subtitle && <p className="text-sm text-muted-foreground mt-1.5 mb-6">{subtitle}</p>}
           {!subtitle && <div className="mb-6" />}
           {children}

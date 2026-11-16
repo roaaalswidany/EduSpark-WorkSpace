@@ -72,7 +72,7 @@ interface CatalogClientProps {
 // â”€â”€â”€ Thumbnail Gradient Map â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const GRADIENTS = [
-  "from-emerald-600 to-indigo-700",
+  "from-emerald-600 to-emerald-700",
   "from-rose-600 to-pink-700",
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",
@@ -454,7 +454,7 @@ export function CatalogClient({
   );
 
   return (
-    <div className="min-h-screen bg-background text-slate-100">
+    <div className="min-h-screen bg-background text-foreground">
 
       {/* â”€â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="relative pt-16 pb-12 px-4 overflow-hidden">
@@ -476,7 +476,7 @@ export function CatalogClient({
 
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4 leading-[1.1]">
             Hire{" "}
-            <span className="bg-linear-to-r from-emerald-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-emerald-400 via-emerald-400 to-fuchsia-400 bg-clip-text text-transparent">
               Certified
             </span>{" "}
             Experts

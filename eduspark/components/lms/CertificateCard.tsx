@@ -195,7 +195,7 @@ function FullCard({
   return (
     <div className="relative p-px rounded-2xl bg-linear-to-br from-amber-500/40 via-yellow-400/20 to-amber-500/40">
       {/* Card body */}
-      <div className="relative rounded-2xl bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
+      <div className="relative rounded-2xl bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950 overflow-hidden">
         {/* Background dot grid */}
         <div
           aria-hidden
@@ -276,9 +276,9 @@ function FullCard({
 
           {/* â”€â”€ Horizontal rule â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-linear-to-r from-transparent via-slate-800 to-transparent" />
+            <div className="flex-1 h-px bg-linear-to-r from-transparent via-zinc-800 to-transparent" />
             <Sparkles className="w-3.5 h-3.5 text-amber-500/40" />
-            <div className="flex-1 h-px bg-linear-to-r from-transparent via-slate-800 to-transparent" />
+            <div className="flex-1 h-px bg-linear-to-r from-transparent via-zinc-800 to-transparent" />
           </div>
 
           {/* â”€â”€ Meta grid: date + instructor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}

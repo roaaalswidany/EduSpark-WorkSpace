@@ -8,7 +8,7 @@ export function CertificateNotFound() {
         <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-destructive/10 border border-destructive/20">
           <ShieldX className="h-7 w-7 text-destructive" />
         </div>
-        <h1 className="text-xl font-semibold text-slate-100">Certificate not found</h1>
+        <h1 className="text-xl font-semibold text-foreground">Certificate not found</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           No certificate matches this credential ID. Check for typing mistakes, or ask the holder
           to share the link again. Only certificates issued by EduSpark can be verified here.

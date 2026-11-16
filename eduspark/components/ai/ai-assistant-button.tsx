@@ -32,7 +32,7 @@ export function AiAssistantButton({
       <Sparkles className="w-6 h-6" />
 
       {hasUnread && (
-        <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-destructive border-2 border-slate-950 animate-pulse" />
+        <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-destructive border-2 border-border animate-pulse" />
       )}
 
       {/* Pulse ring */}

@@ -62,7 +62,7 @@ const CHAT_TYPE_CONFIG = {
     accent: "text-primary",
     badge: "bg-primary/10 text-primary border-primary/20",
     bubbleOwn: "bg-primary text-primary-foreground",
-    bubbleOther: "bg-accent text-slate-100",
+    bubbleOther: "bg-accent text-foreground",
     legal: true,
   },
   EDUCATIONAL: {
@@ -71,7 +71,7 @@ const CHAT_TYPE_CONFIG = {
     accent: "text-amber-400",
     badge: "bg-amber-500/10 text-amber-300 border-amber-500/20",
     bubbleOwn: "bg-amber-600 text-white",
-    bubbleOther: "bg-accent text-slate-100",
+    bubbleOther: "bg-accent text-foreground",
     legal: false,
   },
   SUPPORT: {
@@ -80,7 +80,7 @@ const CHAT_TYPE_CONFIG = {
     accent: "text-emerald-400",
     badge: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
     bubbleOwn: "bg-emerald-700 text-white",
-    bubbleOther: "bg-accent text-slate-100",
+    bubbleOther: "bg-accent text-foreground",
     legal: false,
   },
 } as const satisfies Record<
@@ -244,7 +244,7 @@ function UserAvatar({
         </div>
       )}
       {isOnline && (
-        <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-slate-950" />
+        <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-border" />
       )}
     </div>
   );
@@ -445,7 +445,7 @@ function TypingIndicator({ users }: { users: TypingUser[] }) {
         {[0, 1, 2].map((i) => (
           <span
             key={i}
-            className="block w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce"
+            className="block w-1.5 h-1.5 rounded-full bg-muted/70 animate-bounce"
             style={{
               animationDelay: `${i * 150}ms`,
               animationDuration: "900ms",
@@ -1036,7 +1036,7 @@ useEffect(() => {
   return (
     <div
       className={cn(
-        "flex flex-col h-full bg-background text-slate-100 overflow-hidden",
+        "flex flex-col h-full bg-background text-foreground overflow-hidden",
         className
       )}
     >

@@ -83,12 +83,12 @@ export default async function PublicProfilePage({ params }: PageProps) {
   const isOwner = currentUserId === user.id;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-foreground">
       {/* Top bar */}
       <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center">
               <GraduationCap className="w-4 h-4 text-indigo-400" />
             </div>
             <span className="text-sm font-bold text-white">EduSpark</span>
@@ -98,7 +98,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
             {isOwner && (
               <Link
                 href="/dashboard/profile"
-                className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-colors"
+                className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 text-slate-300 text-xs font-semibold border border-slate-700 transition-colors"
               >
                 Edit Profile
               </Link>
@@ -118,7 +118,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
         {/* Back link */}
         <Link
           href="/marketplace"
-          className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-300 transition-colors mb-5"
+          className="inline-flex items-center gap-1.5 text-xs text-foreground0 hover:text-slate-300 transition-colors mb-5"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Back to marketplace
@@ -146,7 +146,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
         {/* Bio */}
         {user.bio && (
           <div className="mt-6 rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 flex items-center gap-2">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-foreground0 mb-3 flex items-center gap-2">
               <Award className="w-3.5 h-3.5" />
               About
             </h2>

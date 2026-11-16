@@ -11,7 +11,7 @@ export default function NotFound() {
       <div className="max-w-md w-full text-center">
         {/* Big 404 */}
         <div className="relative mb-8">
-          <h1 className="text-[120px] font-black text-slate-800 leading-none select-none">
+          <h1 className="text-[120px] font-black text-muted-foreground leading-none select-none">
             404
           </h1>
           <div className="absolute inset-0 flex items-center justify-center">

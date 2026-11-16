@@ -7,7 +7,7 @@ export async function ServiceReviews({ serviceId }: { serviceId: string }) {
   return (
     <section id="reviews" className="rounded-2xl border border-border bg-card p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold text-slate-100">Client reviews</h2>
+        <h2 className="text-lg font-semibold text-foreground">Client reviews</h2>
         {summary.average !== null && (
           <div className="flex items-center gap-2">
             <StarRating value={summary.average} />
@@ -20,7 +20,7 @@ export async function ServiceReviews({ serviceId }: { serviceId: string }) {
       {reviews.length === 0 ? (
         <p className="mt-4 text-sm text-muted-foreground">No reviews yet. Reviews appear after a client completes a project.</p>
       ) : (
-        <ul className="mt-5 divide-y divide-slate-800">
+        <ul className="mt-5 divide-y divide-border">
           {reviews.map((r) => (
             <li key={r.id} className="py-4 first:pt-0 last:pb-0">
               <div className="flex items-center gap-3">

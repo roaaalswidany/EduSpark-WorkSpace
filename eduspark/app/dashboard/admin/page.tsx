@@ -187,7 +187,7 @@ export default async function AdminDashboardPage() {
               View all â†’
             </Link>
           </div>
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-border">
             {pendingCourses.length === 0 && pendingServices.length === 0 ? (
               <div className="px-5 py-8 text-center text-sm text-muted-foreground">
                 All caught up! Nothing to review.
@@ -249,7 +249,7 @@ export default async function AdminDashboardPage() {
             <Activity className="w-4 h-4 text-primary" />
             <h2 className="text-sm font-bold text-white">Recent Activity</h2>
           </div>
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-border">
             {recentLogs.length === 0 ? (
               <div className="px-5 py-8 text-center text-sm text-muted-foreground">
                 No activity yet. Actions will appear here.

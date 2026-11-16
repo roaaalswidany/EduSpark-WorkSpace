@@ -35,7 +35,7 @@ export function Leaderboard({ entries }: LeaderboardProps) {
           </div>
         )}
 
-        <div className="divide-y divide-slate-800">
+        <div className="divide-y divide-border">
           {entries.slice(3).map((entry) => (
             <LeaderboardRow key={entry.userId} entry={entry} />
           ))}
@@ -68,8 +68,8 @@ function PodiumCard({
     2: {
       icon: Trophy,
       color: "text-foreground",
-      bg: "bg-slate-300/10",
-      border: "border-slate-300/30",
+      bg: "bg-muted/10",
+      border: "border-border/30",
       size: "w-12 h-12",
     },
     3: {

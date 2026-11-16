@@ -23,7 +23,7 @@ export function NotificationsBell() {
       )}
 
       {isConnected && (
-        <span className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-slate-950" />
+        <span className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-border" />
       )}
     </Link>
   );

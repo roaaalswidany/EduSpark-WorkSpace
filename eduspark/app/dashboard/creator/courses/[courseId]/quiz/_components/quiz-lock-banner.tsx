@@ -61,7 +61,7 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
             type="button"
             onClick={() => setShowDialog(true)}
             disabled={isPending}
-            className="shrink-0 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition-colors disabled:opacity-50"
+            className="shrink-0 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-foreground transition-colors disabled:opacity-50"
           >
             {isPending ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -102,7 +102,7 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
                   type="button"
                   onClick={() => setShowDialog(false)}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -110,7 +110,7 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
                   type="button"
                   onClick={handleConfirm}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold transition-colors disabled:opacity-50 inline-flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-foreground text-sm font-bold transition-colors disabled:opacity-50 inline-flex items-center gap-2"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

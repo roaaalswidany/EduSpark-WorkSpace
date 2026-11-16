@@ -14,7 +14,7 @@ interface PublicService {
 }
 
 const GRADIENTS = [
-  "from-emerald-600 to-indigo-700",
+  "from-emerald-600 to-emerald-700",
   "from-rose-600 to-pink-700",
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",
@@ -34,7 +34,7 @@ export function PublicServicesGrid({ services }: { services: PublicService[] }) 
         <Link
           key={service.id}
           href={`/marketplace/services/${service.slug}`}
-          className="group rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-500/40 hover:shadow-lg hover:shadow-indigo-500/5"
+          className="group rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/100/40 hover:shadow-lg hover:shadow-indigo-500/5"
         >
           <div
             className={cn(
@@ -68,13 +68,13 @@ export function PublicServicesGrid({ services }: { services: PublicService[] }) 
             </h3>
 
             <div className="flex items-end justify-between pt-2.5 border-t border-slate-800">
-              <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+              <div className="flex items-center gap-1.5 text-foreground0 text-xs">
                 <Clock className="w-3 h-3" />
                 <span>{service.deliveryDays}d</span>
                 {service._count.orders > 0 && (
                   <span className="flex items-center gap-0.5 ml-2">
                     <Star className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
-                    <span className="text-slate-500 font-medium">
+                    <span className="text-foreground0 font-medium">
                       {service._count.orders}
                     </span>
                   </span>

@@ -149,7 +149,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
   return (
     <div className="rounded-lg bg-slate-950/40 border border-slate-800 p-3 space-y-2">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-foreground0">
           <Paperclip className="w-3 h-3" />
           Attachments ({attachments.length})
         </div>
@@ -157,7 +157,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold bg-slate-800 hover:bg-muted-foreground/70 text-slate-300 transition-colors disabled:opacity-50"
         >
           {uploading ? (
             <Loader2 className="w-3 h-3 animate-spin" />
@@ -206,7 +206,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
                 <button
                   onClick={() => handleDownload(att.id)}
                   disabled={isPending}
-                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-800 text-slate-500 hover:text-indigo-400 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-800 text-foreground0 hover:text-indigo-400 transition-colors"
                 >
                   <Download className="w-3 h-3" />
                 </button>
@@ -214,7 +214,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
               <button
                 onClick={() => setDeleteDialog({ id: att.id, fileName: att.fileName })}
                 disabled={isPending}
-                className="w-6 h-6 flex items-center justify-center rounded hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-colors disabled:opacity-50"
+                className="w-6 h-6 flex items-center justify-center rounded hover:bg-red-500/10 text-foreground0 hover:text-red-400 transition-colors disabled:opacity-50"
               >
                 <Trash2 className="w-3 h-3" />
               </button>
@@ -250,7 +250,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
                   type="button"
                   onClick={() => setDeleteDialog(null)}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>

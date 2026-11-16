@@ -72,7 +72,7 @@ const STATUS_CONFIG: Record<
 };
 
 const GRADIENTS = [
-  "from-emerald-600 to-indigo-700",
+  "from-emerald-600 to-emerald-700",
   "from-rose-600 to-pink-700",
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",

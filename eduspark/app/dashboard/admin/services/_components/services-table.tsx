@@ -94,7 +94,7 @@ const STATUS_TOAST: Record<
 };
 
 const GRADIENTS = [
-  "from-emerald-600 to-indigo-700",
+  "from-emerald-600 to-emerald-700",
   "from-rose-600 to-pink-700",
   "from-amber-500 to-orange-600",
   "from-emerald-500 to-teal-700",
@@ -645,7 +645,7 @@ export function ServicesTable({
             <span className="w-8" />
           </div>
 
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-border">
             {services.map((s, idx) => {
               const isPendingService = pendingServiceId === s.id;
               const isLastRow = idx === services.length - 1;
