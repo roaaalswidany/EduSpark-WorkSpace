@@ -44,7 +44,7 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
     return (
       <>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-          <div className="rounded-3xl bg-linear-to-br from-emerald-500/5 via-zinc-900 to-emerald-500/5 border border-border p-8 sm:p-16 text-center">
+          <div className="rounded-3xl bg-linear-to-br from-emerald-500/5 via-muted to-emerald-500/5 border border-border p-8 sm:p-16 text-center">
             <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-linear-to-br from-emerald-500 to-emerald-600 mb-6 shadow-2xl shadow-emerald-500/20">
               <Target className="w-10 h-10 text-white" />
             </div>
