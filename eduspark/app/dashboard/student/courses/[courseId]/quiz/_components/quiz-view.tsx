@@ -268,7 +268,7 @@ export function QuizView({
           <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
             <Link
               href={`/dashboard/student/courses/${course.id}`}
-              className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-slate-800 transition-colors"
+              className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent transition-colors"
             >
               <ArrowLeft className="w-4 h-4 text-slate-400" />
             </Link>
@@ -487,7 +487,7 @@ export function QuizView({
                     "border transition-all duration-150",
                     isSelected
                       ? "bg-primary/50/10 border-primary/100/50 shadow-lg shadow-indigo-500/5"
-                      : "bg-slate-900 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80"
+                      : "bg-slate-900 border-slate-800 hover:border-border700 hover:bg-card/80"
                   )}
                 >
                   {/* Radio indicator */}
@@ -544,7 +544,7 @@ export function QuizView({
                 "flex items-center gap-1.5 px-4 h-11 rounded-xl text-sm font-semibold transition-all",
                 isFirst
                   ? "opacity-30 cursor-not-allowed text-slate-600"
-                  : "text-slate-300 hover:bg-slate-800 border border-slate-700"
+                  : "text-slate-300 hover:bg-accent border border-slate-700"
               )}
             >
               <ChevronLeft className="w-4 h-4" />
@@ -641,7 +641,7 @@ export function QuizView({
           <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
             <Link
               href={`/dashboard/student/courses/${course.id}`}
-              className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-slate-800 transition-colors"
+              className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent transition-colors"
             >
               <ArrowLeft className="w-4 h-4 text-slate-400" />
             </Link>
@@ -889,7 +889,7 @@ export function QuizView({
               href={`/dashboard/student/courses/${course.id}`}
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 h-12 rounded-xl",
-                "bg-slate-900 hover:bg-slate-800 border border-slate-800",
+                "bg-slate-900 hover:bg-accent border border-slate-800",
                 "text-slate-300 text-sm font-semibold transition-all"
               )}
             >
@@ -901,7 +901,7 @@ export function QuizView({
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 h-12 rounded-xl",
                 passed
-                  ? "bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300"
+                  ? "bg-slate-900 hover:bg-accent border border-slate-800 text-slate-300"
                   : "bg-indigo-600 hover:bg-primary/50 text-white shadow-lg shadow-emerald-500/20",
                 "text-sm font-bold transition-all active:scale-[0.98]"
               )}

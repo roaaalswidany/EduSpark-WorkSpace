@@ -274,7 +274,7 @@ function SubmissionForm({
         placeholder="Describe what you've delivered (e.g., 'Final logo files in SVG, PNG, and AI formats. Brand guidelines included.')"
         rows={3}
         maxLength={500}
-        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
+        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
       />
       <div>
         <input
@@ -283,7 +283,7 @@ function SubmissionForm({
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Delivery link (optional) — https://…"
           maxLength={500}
-          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
+          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder:text-muted-foreground600 focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
         />
         {!urlOk && (
           <p className="mt-1 text-[10px] text-red-400">Only https:// links are allowed.</p>
@@ -295,7 +295,7 @@ function SubmissionForm({
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-1.5 rounded-lg text-xs text-foreground0 hover:text-slate-300 hover:bg-muted-foreground/70 transition-all"
+            className="px-3 py-1.5 rounded-lg text-xs text-foreground0 hover:text-foreground300 hover:bg-muted-foreground/70 transition-all"
           >
             Cancel
           </button>
@@ -343,7 +343,7 @@ function RevisionForm({
         placeholder="Be specific — e.g. 'Please revise the header section and adjust the color palette to match the brand guidelines provided.'"
         rows={3}
         maxLength={500}
-        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
       />
       <div className="flex items-center justify-between">
         <span className="text-[10px] text-slate-600">
@@ -353,7 +353,7 @@ function RevisionForm({
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-1.5 rounded-lg text-xs text-foreground0 hover:text-slate-300 hover:bg-muted-foreground/70 transition-all"
+            className="px-3 py-1.5 rounded-lg text-xs text-foreground0 hover:text-foreground300 hover:bg-muted-foreground/70 transition-all"
           >
             Cancel
           </button>
@@ -516,7 +516,7 @@ function MilestoneCard({
               href={milestone.submissionUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 mb-3 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-primary300 mb-3 transition-colors"
             >
               <LinkIcon className="w-3.5 h-3.5" />
               View Delivery Link
@@ -874,7 +874,7 @@ export function ProjectView({
             <div className="flex items-center gap-3 min-w-0">
               <Link
                 href="/dashboard/projects"
-                className="text-slate-600 hover:text-slate-400 transition-colors shrink-0"
+                className="text-slate-600 hover:text-foreground400 transition-colors shrink-0"
               >
                 <ChevronRight className="w-4 h-4 rotate-180" />
               </Link>
@@ -923,7 +923,7 @@ export function ProjectView({
               {project.chatRoom && (
                 <Link
                   href={`/dashboard/chat/${project.chatRoom.id}`}
-                  className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 border border-slate-700 text-slate-400 hover:text-slate-200 text-xs font-semibold transition-all"
+                  className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 border border-slate-700 text-slate-400 hover:text-foreground200 text-xs font-semibold transition-all"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />
                   <span>Chat</span>
@@ -1100,7 +1100,7 @@ export function ProjectView({
                   <Link
                     href={`/marketplace/services/${project.service.slug}`}
                     target="_blank"
-                    className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 text-slate-400 hover:text-slate-200 text-xs font-medium transition-all border border-slate-700"
+                    className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 text-slate-400 hover:text-foreground200 text-xs font-medium transition-all border border-slate-700"
                   >
                     <ExternalLink className="w-3 h-3" />
                     View Service
@@ -1130,7 +1130,7 @@ export function ProjectView({
                         <div className="flex-1 min-w-0">
                       <Link
                         href={`/profile/${project.client.id}`}
-                        className="text-sm font-semibold text-slate-200 truncate hover:text-indigo-400 transition-colors block"
+                        className="text-sm font-semibold text-slate-200 truncate hover:text-primary400 transition-colors block"
                       >
                         {project.client.name}
                       </Link>
@@ -1159,7 +1159,7 @@ export function ProjectView({
                       <div className="flex-1 min-w-0">
                   <Link
   href={`/profile/${project.creator.id}`}
-  className="text-sm font-semibold text-slate-200 truncate hover:text-indigo-400 transition-colors block"
+  className="text-sm font-semibold text-slate-200 truncate hover:text-primary400 transition-colors block"
 >
   {project.creator.name}
 </Link>
@@ -1253,7 +1253,7 @@ export function ProjectView({
                     {project.chatRoom.messageCount === 1 ? "message" : "messages"}
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-indigo-400 transition-colors" />
+                <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-primary400 transition-colors" />
               </Link>
             )}
           </aside>

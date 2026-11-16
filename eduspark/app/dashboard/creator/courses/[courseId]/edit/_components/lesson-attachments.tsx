@@ -206,7 +206,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
                 <button
                   onClick={() => handleDownload(att.id)}
                   disabled={isPending}
-                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-800 text-foreground0 hover:text-indigo-400 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-accent text-foreground0 hover:text-primary400 transition-colors"
                 >
                   <Download className="w-3 h-3" />
                 </button>

@@ -77,7 +77,7 @@ export default async function EditServicePage({ params }: PageProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
           <Link
             href="/dashboard/creator/services"
-            className="inline-flex items-center gap-1.5 text-xs text-foreground0 hover:text-slate-300 transition-colors mb-3"
+            className="inline-flex items-center gap-1.5 text-xs text-foreground0 hover:text-foreground300 transition-colors mb-3"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Back to My Services

@@ -224,7 +224,7 @@ function LessonRow({ lesson, isActive, onSelect }: LessonRowProps) {
         "border-r-[3px] transition-all duration-150",
         isActive
           ? "bg-primary/50/10 border-primary/100"
-          : "border-transparent hover:bg-slate-800/50"
+          : "border-transparent hover:bg-accent/50"
       )}
     >
       {/* Completion indicator */}
@@ -307,7 +307,7 @@ function SectionAccordion({
       {/* Section header button */}
       <button
         onClick={() => onToggle(section.id)}
-        className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-slate-800/30 transition-colors text-left group"
+        className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-accent/30 transition-colors text-left group"
       >
         <div
           className={cn(
@@ -548,7 +548,7 @@ export function CourseLearningView({
         <Link
           href="/dashboard/student/courses"
           title="Back to My Courses"
-          className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
+          className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent text-slate-400 hover:text-white transition-colors shrink-0"
         >
           <ChevronLeft className="w-4.5 h-4.5" />
         </Link>
@@ -557,7 +557,7 @@ export function CourseLearningView({
         <button
           onClick={() => setSidebarOpen((v) => !v)}
           aria-label="Toggle course menu"
-          className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg hover:bg-slate-800 transition-colors"
+          className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent transition-colors"
         >
           {sidebarOpen ? (
             <X className="w-4.5 h-4.5 text-slate-400" />
@@ -617,7 +617,7 @@ export function CourseLearningView({
             href={`/courses/${course.slug}`}
             target="_blank"
             title="View public page (reviews & ratings)"
-            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-muted-foreground/70 text-slate-400 hover:text-indigo-300 transition-colors shrink-0"
+            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-muted-foreground/70 text-slate-400 hover:text-primary300 transition-colors shrink-0"
           >
             <ExternalLink className="w-3.5 h-3.5" />
           </Link>
@@ -718,7 +718,7 @@ export function CourseLearningView({
                 className={cn(
                   "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium",
                   "border border-slate-800 text-foreground0",
-                  "hover:border-slate-700 hover:bg-slate-900 hover:text-slate-300",
+                  "hover:border-border700 hover:bg-card hover:text-foreground300",
                   "disabled:opacity-20 disabled:cursor-not-allowed",
                   "transition-all duration-150"
                 )}
@@ -762,7 +762,7 @@ export function CourseLearningView({
                 className={cn(
                   "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium",
                   "border border-slate-800 text-foreground0",
-                  "hover:border-slate-700 hover:bg-slate-900 hover:text-slate-300",
+                  "hover:border-border700 hover:bg-card hover:text-foreground300",
                   "disabled:opacity-20 disabled:cursor-not-allowed",
                   "transition-all duration-150"
                 )}

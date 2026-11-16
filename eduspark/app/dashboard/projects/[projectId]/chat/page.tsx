@@ -84,7 +84,7 @@ export default async function ProjectChatPage({
       <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-slate-900/70 border-b border-slate-800/80">
         <Link
           href={`/dashboard/projects/${project.id}`}
-          className="flex items-center gap-2 text-sm text-slate-400 hover:text-slate-200 transition-colors group"
+          className="flex items-center gap-2 text-sm text-slate-400 hover:text-foreground200 transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
           <span>Back to Project</span>

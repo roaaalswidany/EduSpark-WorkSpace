@@ -50,7 +50,7 @@ export default async function QuizPage({
       <div>
         <Link
           href="/dashboard/creator/courses"
-          className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:text-indigo-300 mb-4 transition-colors"
+          className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:text-primary300 mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to My Courses
         </Link>

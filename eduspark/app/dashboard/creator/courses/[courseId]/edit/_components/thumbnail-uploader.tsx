@@ -66,7 +66,7 @@ export function ThumbnailUploader({
   };
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 flex flex-col sm:flex-row items-center gap-5 transition-all hover:border-slate-700">
+    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 flex flex-col sm:flex-row items-center gap-5 transition-all hover:border-border700">
       {/* Image Preview */}
       <div 
         className="relative w-full sm:w-40 aspect-video rounded-lg overflow-hidden bg-slate-950 border border-slate-800 shrink-0 group cursor-pointer"
@@ -87,7 +87,7 @@ export function ThumbnailUploader({
             </div>
           </>
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-foreground0 group-hover:text-indigo-400 transition-colors gap-1">
+          <div className="w-full h-full flex flex-col items-center justify-center text-foreground0 group-hover:text-primary400 transition-colors gap-1">
             <ImageIcon className="w-5 h-5" />
             <span className="text-[9px] font-medium uppercase tracking-wider">No Image</span>
           </div>
@@ -107,7 +107,7 @@ export function ThumbnailUploader({
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
               Course Cover Image
               {preview && (
-                <a href={preview} target="_blank" rel="noreferrer" className="text-foreground0 hover:text-indigo-400 transition-colors" title="Open in new tab">
+                <a href={preview} target="_blank" rel="noreferrer" className="text-foreground0 hover:text-primary400 transition-colors" title="Open in new tab">
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               )}

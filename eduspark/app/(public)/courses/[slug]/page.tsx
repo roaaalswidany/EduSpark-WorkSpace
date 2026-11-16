@@ -184,7 +184,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
       {/* ── Breadcrumb ─────────────────────────────────── */}
       <div className="border-b border-slate-800 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-1.5 text-xs text-foreground0">
-          <Link href="/courses" className="hover:text-slate-300 transition-colors">
+          <Link href="/courses" className="hover:text-foreground300 transition-colors">
             Courses
           </Link>
           {course.category && (
@@ -192,7 +192,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
               <ChevronRight className="w-3 h-3" />
               <Link
                 href={`/courses?category=${course.category.id}`}
-                className="hover:text-slate-300 transition-colors"
+                className="hover:text-foreground300 transition-colors"
               >
                 {course.category.name}
               </Link>
@@ -273,7 +273,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   <p className="text-xs text-foreground0">Created by</p>
                   <Link
                     href={`/profile/${course.creator.id}`}
-                    className="text-sm font-semibold text-slate-200 hover:text-indigo-400 transition-colors"
+                    className="text-sm font-semibold text-slate-200 hover:text-primary400 transition-colors"
                   >
                     {course.creator.name}
                   </Link>
@@ -415,7 +415,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 <div className="min-w-0">
                   <Link
                     href={`/profile/${course.creator.id}`}
-                    className="text-sm font-bold text-white hover:text-indigo-400 transition-colors"
+                    className="text-sm font-bold text-white hover:text-primary400 transition-colors"
                   >
                     {course.creator.name}
                   </Link>

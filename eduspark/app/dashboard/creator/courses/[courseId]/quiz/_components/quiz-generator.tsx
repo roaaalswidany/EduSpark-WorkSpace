@@ -22,7 +22,7 @@ export function QuizGenerator({ courseId }: Props) {
         <button
           onClick={() => setActiveTab("ai")}
           className={`flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${
-            activeTab === "ai" ? "text-indigo-400 border-b-2 border-emerald-400 bg-slate-800/50" : "text-slate-400 hover:text-slate-200"
+            activeTab === "ai" ? "text-indigo-400 border-b-2 border-emerald-400 bg-slate-800/50" : "text-slate-400 hover:text-foreground200"
           }`}
         >
           <Sparkles className="w-4 h-4" /> AI Generation
@@ -30,7 +30,7 @@ export function QuizGenerator({ courseId }: Props) {
         <button
           onClick={() => setActiveTab("manual")}
           className={`flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${
-            activeTab === "manual" ? "text-indigo-400 border-b-2 border-emerald-400 bg-slate-800/50" : "text-slate-400 hover:text-slate-200"
+            activeTab === "manual" ? "text-indigo-400 border-b-2 border-emerald-400 bg-slate-800/50" : "text-slate-400 hover:text-foreground200"
           }`}
         >
           <PlusCircle className="w-4 h-4" /> Manual Entry

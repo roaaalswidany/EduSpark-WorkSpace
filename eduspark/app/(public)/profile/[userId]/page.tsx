@@ -118,7 +118,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
         {/* Back link */}
         <Link
           href="/marketplace"
-          className="inline-flex items-center gap-1.5 text-xs text-foreground0 hover:text-slate-300 transition-colors mb-5"
+          className="inline-flex items-center gap-1.5 text-xs text-foreground0 hover:text-foreground300 transition-colors mb-5"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Back to marketplace

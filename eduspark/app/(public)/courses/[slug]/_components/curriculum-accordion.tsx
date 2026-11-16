@@ -92,7 +92,7 @@ export function CurriculumAccordion({
               {/* Section header */}
               <button
                 onClick={() => toggle(section.id)}
-                className="w-full flex items-center gap-3 px-5 sm:px-6 py-4 hover:bg-slate-800/30 transition-colors text-left group"
+                className="w-full flex items-center gap-3 px-5 sm:px-6 py-4 hover:bg-accent/30 transition-colors text-left group"
               >
                 {/* Section number */}
                 <div className="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 text-xs font-bold flex items-center justify-center shrink-0 group-hover:bg-muted-foreground/70 transition-colors">
@@ -129,7 +129,7 @@ export function CurriculumAccordion({
                         key={lesson.id}
                         className={cn(
                           "flex items-center gap-3 px-5 sm:px-6 py-2.5 pl-14 sm:pl-16",
-                          "hover:bg-slate-800/30 transition-colors"
+                          "hover:bg-accent/30 transition-colors"
                         )}
                       >
                         {/* Icon */}

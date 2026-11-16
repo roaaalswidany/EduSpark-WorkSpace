@@ -236,7 +236,7 @@ function OrderDialog({
               rows={5}
               maxLength={2000}
               disabled={isPending}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
             />
             <p className="text-[10px] text-slate-600 mt-1.5">
               {requirements.length}/2000
@@ -257,7 +257,7 @@ function OrderDialog({
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all disabled:opacity-50"
+            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-foreground200 hover:bg-accent transition-all disabled:opacity-50"
           >
             Cancel
           </button>
@@ -319,7 +319,7 @@ export function ServiceDetailView({
                 {service.category && (
                   <Link
                     href={`/marketplace?category=${service.category.id}`}
-                    className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition-colors"
+                    className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 hover:text-primary300 transition-colors"
                   >
                     {service.category.name}
                   </Link>
@@ -432,17 +432,17 @@ export function ServiceDetailView({
                       href={link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-primary/100/40 hover:bg-slate-900 transition-all group"
+                      className="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-primary/100/40 hover:bg-card transition-all group"
                     >
                       <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center">
                         <ExternalLink className="w-3.5 h-3.5 text-indigo-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-slate-400 truncate group-hover:text-slate-200 transition-colors">
+                        <p className="text-xs text-slate-400 truncate group-hover:text-foreground200 transition-colors">
                           {link.replace(/^https?:\/\//, "").slice(0, 60)}
                         </p>
                       </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-indigo-400 transition-colors shrink-0" />
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-primary400 transition-colors shrink-0" />
                     </a>
                   ))}
                 </div>
@@ -462,7 +462,7 @@ export function ServiceDetailView({
                 <div className="min-w-0">
                   <Link
                     href={`/profile/${service.creator.id}`}
-                    className="text-sm font-bold text-white hover:text-indigo-400 transition-colors"
+                    className="text-sm font-bold text-white hover:text-primary400 transition-colors"
                   >
                     {service.creator.name}
                   </Link>

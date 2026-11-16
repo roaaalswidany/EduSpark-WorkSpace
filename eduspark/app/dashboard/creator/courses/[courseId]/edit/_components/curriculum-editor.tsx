@@ -137,7 +137,7 @@ export function CurriculumEditor({ course, sections }: Props) {
       <div className="flex items-center gap-1.5 text-xs text-foreground0">
         <Link
           href="/dashboard/creator/courses"
-          className="hover:text-slate-300 transition-colors"
+          className="hover:text-foreground300 transition-colors"
         >
           My Courses
         </Link>
@@ -179,7 +179,7 @@ export function CurriculumEditor({ course, sections }: Props) {
           <Link
             href={`/courses/${course.slug}`}
             target="_blank"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-800 hover:border-border700 text-slate-300 transition-colors"
           >
             <ExternalLink className="w-3.5 h-3.5" />
             Preview
@@ -193,7 +193,7 @@ export function CurriculumEditor({ course, sections }: Props) {
                 "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all",
                 course.status === "DRAFT"
                   ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
-                  : "bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300",
+                  : "bg-slate-900 border border-slate-800 hover:border-border700 text-slate-300",
                 isPending && "opacity-60"
               )}
             >
@@ -276,7 +276,7 @@ export function CurriculumEditor({ course, sections }: Props) {
         <button
           type="button"
           onClick={() => setShowAddSection(true)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-slate-800 hover:border-primary/100/50 text-foreground0 hover:text-indigo-400 text-sm font-semibold transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-slate-800 hover:border-primary/100/50 text-foreground0 hover:text-primary400 text-sm font-semibold transition-colors"
         >
           <Plus className="w-4 h-4" />
           Add Section
@@ -368,7 +368,7 @@ function AddSectionForm({
           type="button"
           onClick={onClose}
           disabled={isPending}
-          className="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors"
+          className="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-foreground200 transition-colors"
         >
           Cancel
         </button>
@@ -444,7 +444,7 @@ function SectionCard({
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-slate-800 text-foreground0 transition-colors shrink-0"
+          className="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-accent text-foreground0 transition-colors shrink-0"
         >
           <ChevronDown
             className={cn(
@@ -486,7 +486,7 @@ function SectionCard({
                 setEditing(false);
                 setEditTitle(section.title);
               }}
-              className="text-foreground0 hover:text-slate-300"
+              className="text-foreground0 hover:text-foreground300"
             >
               <X className="w-4 h-4" />
             </button>
@@ -502,7 +502,7 @@ function SectionCard({
             <button
               type="button"
               onClick={() => setEditing(true)}
-              className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-800 text-foreground0 hover:text-indigo-400 transition-colors shrink-0"
+              className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-accent text-foreground0 hover:text-primary400 transition-colors shrink-0"
             >
               <Pencil className="w-3.5 h-3.5" />
             </button>
@@ -549,7 +549,7 @@ function SectionCard({
             <button
               type="button"
               onClick={() => setShowAddLesson(true)}
-              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-slate-800 hover:border-primary/100/40 text-slate-600 hover:text-indigo-400 text-xs font-semibold transition-colors"
+              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-slate-800 hover:border-primary/100/40 text-slate-600 hover:text-primary400 text-xs font-semibold transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Lesson
@@ -605,7 +605,7 @@ function LessonRow({
 
    return (
     <div className="space-y-2">
-      <div className="flex items-start gap-2 p-3 rounded-lg bg-slate-950/50 border border-slate-800/60 hover:border-slate-700 transition-colors">
+      <div className="flex items-start gap-2 p-3 rounded-lg bg-slate-950/50 border border-slate-800/60 hover:border-border700 transition-colors">
         <div className="w-6 h-6 rounded bg-slate-800 flex items-center justify-center text-[10px] font-bold text-foreground0 shrink-0 mt-0.5">
           {index + 1}
         </div>
@@ -640,7 +640,7 @@ function LessonRow({
         <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={() => setEditing(true)}
-            className="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-800 text-foreground0 hover:text-indigo-400 transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded hover:bg-accent text-foreground0 hover:text-primary400 transition-colors"
           >
             <Pencil className="w-3 h-3" />
           </button>
@@ -789,7 +789,7 @@ function LessonForm({
           type="button"
           onClick={onClose}
           disabled={isPending}
-          className="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors"
+          className="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-foreground200 transition-colors"
         >
           Cancel
         </button>
