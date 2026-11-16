@@ -79,7 +79,7 @@ function Avatar({ name, size = 36 }: { name: string; size?: number }) {
 
   return (
     <div
-      className="rounded-xl flex items-center justify-center text-white text-xs font-bold ring-2 ring-border shrink-0"
+      className="rounded-xl flex items-center justify-center text-foreground text-xs font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -388,7 +388,7 @@ export function UsersTable({
           <div className="w-16 h-16 rounded-2xl bg-accent border border-border flex items-center justify-center mx-auto mb-5">
             <Search className="w-7 h-7 text-muted-foreground/70" />
           </div>
-          <h2 className="text-lg font-bold text-white mb-1.5">No users found</h2>
+          <h2 className="text-lg font-bold text-foreground mb-1.5">No users found</h2>
           <p className="text-sm text-muted-foreground">
             Try adjusting your search or filters.
           </p>
@@ -427,7 +427,7 @@ export function UsersTable({
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
                     <Avatar name={u.name} size={36} />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-white truncate flex items-center gap-2">
+                      <p className="text-sm font-semibold text-foreground truncate flex items-center gap-2">
                         {u.name}
                         {isSelf && (
                           <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
@@ -498,7 +498,7 @@ export function UsersTable({
                           setOpenMenuId(openMenuId === u.id ? null : u.id)
                         }
                         disabled={isSelf}
-                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="User actions"
                       >
                         <MoreVertical className="w-4 h-4" />
@@ -529,7 +529,7 @@ export function UsersTable({
                             type="button"
                             onClick={() => handleChangeRole(u, "STUDENT")}
                             disabled={u.role === "STUDENT"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Make Student
                           </button>
@@ -537,7 +537,7 @@ export function UsersTable({
                             type="button"
                             onClick={() => handleChangeRole(u, "CREATOR")}
                             disabled={u.role === "CREATOR"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Make Creator
                           </button>
@@ -545,7 +545,7 @@ export function UsersTable({
                             type="button"
                             onClick={() => handleChangeRole(u, "ADMIN")}
                             disabled={u.role === "ADMIN"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Make Admin
                           </button>
@@ -643,7 +643,7 @@ export function UsersTable({
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <XCircle className="w-5 h-5 text-destructive" />
-                  <h3 className="text-lg font-bold text-white">
+                  <h3 className="text-lg font-bold text-foreground">
                     Suspend account
                   </h3>
                 </div>

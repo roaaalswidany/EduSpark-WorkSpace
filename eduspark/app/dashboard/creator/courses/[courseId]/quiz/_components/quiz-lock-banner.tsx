@@ -86,7 +86,7 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
                   <AlertTriangle className="w-5 h-5 text-amber-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-base font-bold text-white">
+                  <h3 className="text-base font-bold text-foreground">
                     {isPublished ? "Unpublish this course?" : "Withdraw submission?"}
                   </h3>
                   <p className="text-sm text-muted-foreground mt-1 leading-relaxed">

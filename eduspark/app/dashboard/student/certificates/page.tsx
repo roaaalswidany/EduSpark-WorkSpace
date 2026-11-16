@@ -61,7 +61,7 @@ export default async function MyCertificatesPage() {
           <Award className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Achievements</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
           My Certificates
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
@@ -77,7 +77,7 @@ export default async function MyCertificatesPage() {
           <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-5">
             <Award className="w-7 h-7 text-amber-400" />
           </div>
-          <h2 className="text-lg font-bold text-white mb-1.5">
+          <h2 className="text-lg font-bold text-foreground mb-1.5">
             No certificates yet
           </h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">

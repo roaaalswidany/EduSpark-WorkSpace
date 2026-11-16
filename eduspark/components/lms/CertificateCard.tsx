@@ -226,7 +226,7 @@ function FullCard({
                 <p className="text-[10px] font-black uppercase tracking-[0.25em] text-amber-400">
                   EduSpark
                 </p>
-                <p className="text-[10px] text-muted-foreground/70 tracking-wide mt-0.5">
+                <p className="text-[10px] text-zinc-300/70 tracking-wide mt-0.5">
                   Certificate of Completion
                 </p>
               </div>
@@ -239,13 +239,13 @@ function FullCard({
             <CertificateSeal score={certificate.score} />
 
             <div>
-              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-[0.2em] mb-1.5">
+              <p className="text-[10px] font-medium text-zinc-300 uppercase tracking-[0.2em] mb-1.5">
                 This certifies that
               </p>
               <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
                 {certificate.recipientName}
               </h2>
-              <p className="text-[11px] text-muted-foreground mt-1">
+              <p className="text-[11px] text-zinc-300 mt-1">
                 has successfully completed
               </p>
             </div>
@@ -261,7 +261,7 @@ function FullCard({
               <div className="flex items-center gap-2">
                 {certificate.categoryName && (
                   <>
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-[10px] text-zinc-300">
                       {certificate.categoryName}
                     </span>
                     <span className="w-1 h-1 rounded-full bg-accent" />
@@ -283,25 +283,25 @@ function FullCard({
 
           {/* ── Meta grid: date + instructor ─────────────────────────── */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-accent/50 border border-border">
-              <Calendar className="w-4 h-4 text-muted-foreground/70 shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-accent/50 border border-zinc-800">
+              <Calendar className="w-4 h-4 text-zinc-300/70 shrink-0" />
               <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+                <p className="text-[9px] font-semibold uppercase tracking-widest text-zinc-300/70">
                   Issued
                 </p>
-                <p className="text-xs font-semibold text-foreground truncate mt-0.5">
+                <p className="text-xs font-semibold text-white truncate mt-0.5">
                   {formatIssueDate(certificate.issuedAt)}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-accent/50 border border-border">
-              <Shield className="w-4 h-4 text-muted-foreground/70 shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-accent/50 border border-zinc-800">
+              <Shield className="w-4 h-4 text-zinc-300/70 shrink-0" />
               <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+                <p className="text-[9px] font-semibold uppercase tracking-widest text-zinc-300/70">
                   Instructor
                 </p>
-                <p className="text-xs font-semibold text-foreground truncate mt-0.5">
+                <p className="text-xs font-semibold text-white truncate mt-0.5">
                   {certificate.instructorName}
                 </p>
               </div>
@@ -309,13 +309,13 @@ function FullCard({
           </div>
 
           {/* ── Credential ID row ─────────────────────────────────────── */}
-          <div className="flex items-center gap-3 p-3.5 rounded-xl bg-accent/40 border border-border/40">
-            <Hash className="w-4 h-4 text-muted-foreground/70 shrink-0" />
+          <div className="flex items-center gap-3 p-3.5 rounded-xl bg-accent/40 border border-zinc-800/40">
+            <Hash className="w-4 h-4 text-zinc-300/70 shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-0.5">
+              <p className="text-[9px] font-semibold uppercase tracking-widest text-zinc-300/70 mb-0.5">
                 Credential ID
               </p>
-              <p className="text-xs font-mono text-muted-foreground truncate">
+              <p className="text-xs font-mono text-zinc-300 truncate">
                 {certificate.credentialId}
               </p>
             </div>
@@ -327,7 +327,7 @@ function FullCard({
               {credentialCopied ? (
                 <Check className="w-3.5 h-3.5 text-emerald-400" />
               ) : (
-                <Copy className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
+                <Copy className="w-3.5 h-3.5 text-zinc-300 hover:text-white transition-colors" />
               )}
             </button>
           </div>
@@ -356,8 +356,8 @@ function FullCard({
               onClick={handleCopyVerifyUrl}
               className={cn(
                 "flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl text-center",
-                "bg-accent/60 hover:bg-accent border border-border/60 hover:border-border",
-                "text-muted-foreground hover:text-foreground",
+                "bg-accent/60 hover:bg-accent border border-zinc-800/60 hover:border-zinc-800",
+                "text-zinc-300 hover:text-white",
                 "active:scale-95 transition-all duration-150"
               )}
               title="Copy verification link"
@@ -379,8 +379,8 @@ function FullCard({
               rel="noopener noreferrer"
               className={cn(
                 "flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl text-center",
-                "bg-accent/60 hover:bg-accent border border-border/60 hover:border-border",
-                "text-muted-foreground hover:text-foreground",
+                "bg-accent/60 hover:bg-accent border border-zinc-800/60 hover:border-zinc-800",
+                "text-zinc-300 hover:text-white",
                 "active:scale-95 transition-all duration-150"
               )}
               title="Verify certificate"
@@ -423,7 +423,7 @@ function CompactCard({
 
   return (
     <div className="relative p-px rounded-xl bg-linear-to-r from-amber-500/25 via-yellow-400/15 to-amber-500/25 group">
-      <div className="relative rounded-xl bg-card overflow-hidden px-4 py-4 flex items-center gap-4">
+      <div className="relative rounded-xl bg-zinc-950 overflow-hidden px-4 py-4 flex items-center gap-4">
         {/* Seal */}
         <div className="w-11 h-11 rounded-xl bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center shrink-0 shadow-md shadow-amber-500/20">
           <Award className="w-5 h-5 text-white" />
@@ -435,7 +435,7 @@ function CompactCard({
             {certificate.courseTitle}
           </p>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-[10px] text-zinc-300">
               {formatIssueDate(certificate.issuedAt)}
             </span>
             <span className="w-1 h-1 rounded-full bg-accent" />
@@ -443,7 +443,7 @@ function CompactCard({
               {certificate.score}%
             </span>
           </div>
-          <p className="text-[10px] font-mono text-muted-foreground/70 truncate mt-0.5">
+          <p className="text-[10px] font-mono text-zinc-300/70 truncate mt-0.5">
             {certificate.credentialId}
           </p>
         </div>
@@ -458,7 +458,7 @@ function CompactCard({
             {copied ? (
               <Check className="w-3.5 h-3.5 text-emerald-400" />
             ) : (
-              <Copy className="w-3.5 h-3.5 text-muted-foreground/70 hover:text-muted-foreground transition-colors" />
+              <Copy className="w-3.5 h-3.5 text-zinc-300/70 hover:text-zinc-300 transition-colors" />
             )}
           </button>
           <button
@@ -466,7 +466,7 @@ function CompactCard({
             title="Download metadata"
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent transition-colors"
           >
-            <Download className="w-3.5 h-3.5 text-muted-foreground/70 hover:text-amber-400 transition-colors" />
+            <Download className="w-3.5 h-3.5 text-zinc-300/70 hover:text-amber-400 transition-colors" />
           </button>
           <a
             href={verifyUrl}
@@ -475,7 +475,7 @@ function CompactCard({
             title="Verify certificate"
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent transition-colors"
           >
-            <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/70 hover:text-muted-foreground transition-colors" />
+            <ExternalLink className="w-3.5 h-3.5 text-zinc-300/70 hover:text-zinc-300 transition-colors" />
           </a>
         </div>
       </div>

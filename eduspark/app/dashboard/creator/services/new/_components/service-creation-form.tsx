@@ -466,7 +466,7 @@ export function ServiceCreationForm({
         <div className="w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-5">
           <CheckCircle2 className="w-10 h-10 text-emerald-400" />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">
+        <h2 className="text-xl font-bold text-foreground mb-2">
           {isEdit ? "Service Updated!" : "Service Created!"}
         </h2>
         <p className="text-muted-foreground text-sm">

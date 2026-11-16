@@ -113,7 +113,7 @@ export default async function ProjectChatPage({
               isCurrentUser={project.creatorId === userId}
             />
           ) : (
-            <span className="text-xs text-slate-600 italic">
+            <span className="text-xs text-muted-foreground italic">
               Creator not assigned
             </span>
           )}
@@ -175,7 +175,7 @@ function ParticipantChip({
             className="w-6 h-6 rounded-full object-cover"
           />
         ) : (
-          <div className="w-6 h-6 rounded-full flex items-center justify-center bg-muted-foreground/70 text-white text-[9px] font-bold">
+          <div className="w-6 h-6 rounded-full flex items-center justify-center bg-muted-foreground/70 text-foreground text-[9px] font-bold">
             {user.name.slice(0, 2).toUpperCase()}
           </div>
         )}
@@ -187,7 +187,7 @@ function ParticipantChip({
             <span className="ml-1 text-[10px] text-indigo-400">(you)</span>
           )}
         </p>
-        <p className="text-[10px] text-slate-600 mt-0.5">{label}</p>
+        <p className="text-[10px] text-muted-foreground mt-0.5">{label}</p>
       </div>
     </div>
   );

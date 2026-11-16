@@ -232,7 +232,7 @@ function UserAvatar({
         />
       ) : (
         <div
-          className="rounded-full flex items-center justify-center font-bold text-white"
+          className="rounded-full flex items-center justify-center font-bold text-foreground"
           style={{
             width: size,
             height: size,
@@ -253,11 +253,11 @@ function UserAvatar({
 function ReadReceipt({ status }: { status: ChatMessage["status"] }) {
   switch (status) {
     case "sending":
-      return <Clock className="w-3 h-3 text-white/40 shrink-0" />;
+      return <Clock className="w-3 h-3 text-foreground/40 shrink-0" />;
     case "sent":
-      return <Check className="w-3 h-3 text-white/50 shrink-0" />;
+      return <Check className="w-3 h-3 text-foreground/50 shrink-0" />;
     case "delivered":
-      return <CheckCheck className="w-3 h-3 text-white/60 shrink-0" />;
+      return <CheckCheck className="w-3 h-3 text-foreground/60 shrink-0" />;
     case "seen":
       return <CheckCheck className="w-3 h-3 text-sky-300 shrink-0" />;
     case "failed":
@@ -291,16 +291,16 @@ function LinkCard({ url }: { url: string }) {
     >
       <div className="shrink-0 w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center">
         {isFile ? (
-          <FileText className="w-3.5 h-3.5 text-white/70" />
+          <FileText className="w-3.5 h-3.5 text-foreground/70" />
         ) : (
-          <ExternalLink className="w-3.5 h-3.5 text-white/70" />
+          <ExternalLink className="w-3.5 h-3.5 text-foreground/70" />
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-white/80 truncate group-hover:text-white transition-colors">
+        <p className="text-xs text-foreground/80 truncate group-hover:text-foreground transition-colors">
           {url.length > 45 ? url.slice(0, 42) + "..." : url}
         </p>
-        <p className="text-[10px] text-white/40 mt-0.5">{hostname}</p>
+        <p className="text-[10px] text-foreground/40 mt-0.5">{hostname}</p>
       </div>
     </a>
   );

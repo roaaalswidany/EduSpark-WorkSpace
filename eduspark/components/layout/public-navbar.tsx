@@ -44,7 +44,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
               className="flex items-center gap-2 shrink-0 group"
             >
               <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-                <Sparkles className="w-4 h-4 text-white" />
+                <Sparkles className="w-4 h-4 text-foreground" />
               </div>
               <span className="text-base font-black text-foreground tracking-tight hidden sm:inline">
                 EduSpark

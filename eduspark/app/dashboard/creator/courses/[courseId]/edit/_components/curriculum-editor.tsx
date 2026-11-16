@@ -169,7 +169,7 @@ export function CurriculumEditor({ course, sections }: Props) {
               <Users className="w-3 h-3" /> {course.enrollmentCount} enrolled
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-white">{course.title}</h1>
+          <h1 className="text-2xl font-bold text-foreground">{course.title}</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Manage sections, lessons, and course content.
           </p>
@@ -248,7 +248,7 @@ export function CurriculumEditor({ course, sections }: Props) {
           <div className="flex items-center gap-2 text-foreground0 text-xs mb-1">
             <BookOpen className="w-3.5 h-3.5" /> Sections
           </div>
-          <p className="text-xl font-bold text-white tabular-nums">
+          <p className="text-xl font-bold text-foreground tabular-nums">
             {sections.length}
           </p>
         </div>
@@ -256,7 +256,7 @@ export function CurriculumEditor({ course, sections }: Props) {
           <div className="flex items-center gap-2 text-foreground0 text-xs mb-1">
             <Video className="w-3.5 h-3.5" /> Lessons
           </div>
-          <p className="text-xl font-bold text-white tabular-nums">
+          <p className="text-xl font-bold text-foreground tabular-nums">
             {totalLessons}
           </p>
         </div>
@@ -287,9 +287,9 @@ export function CurriculumEditor({ course, sections }: Props) {
       {sections.length === 0 ? (
         <div className="rounded-2xl bg-card border border-border p-12 text-center">
           <div className="w-16 h-16 rounded-2xl bg-accent border border-border flex items-center justify-center mx-auto mb-5">
-            <BookOpen className="w-7 h-7 text-slate-600" />
+            <BookOpen className="w-7 h-7 text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-bold text-white mb-1.5">
+          <h3 className="text-lg font-bold text-foreground mb-1.5">
             No sections yet
           </h3>
           <p className="text-sm text-foreground0 max-w-sm mx-auto">
@@ -356,7 +356,7 @@ function AddSectionForm({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Section title (e.g., Introduction)"
         disabled={isPending}
-        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
+        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:border-primary/100 outline-none"
       />
       {error && (
         <div className="flex items-center gap-2 text-xs text-red-400">
@@ -472,7 +472,7 @@ function SectionCard({
                   setEditTitle(section.title);
                 }
               }}
-              className="flex-1 bg-background border border-primary/100 rounded px-2 py-1 text-sm text-white outline-none"
+              className="flex-1 bg-background border border-primary/100 rounded px-2 py-1 text-sm text-foreground outline-none"
             />
             <button
               onClick={handleRename}
@@ -493,7 +493,7 @@ function SectionCard({
           </div>
         ) : (
           <>
-            <h3 className="flex-1 text-sm font-bold text-white truncate">
+            <h3 className="flex-1 text-sm font-bold text-foreground truncate">
               {section.title}
             </h3>
             <span className="text-[10px] text-foreground0 shrink-0">
@@ -522,7 +522,7 @@ function SectionCard({
       {expanded && (
         <div className="p-3 space-y-2">
           {section.lessons.length === 0 && !showAddLesson && (
-            <p className="text-xs text-slate-600 text-center py-3">
+            <p className="text-xs text-muted-foreground text-center py-3">
               No lessons yet.
             </p>
           )}
@@ -549,7 +549,7 @@ function SectionCard({
             <button
               type="button"
               onClick={() => setShowAddLesson(true)}
-              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-border hover:border-primary/100/40 text-slate-600 hover:text-primary400 text-xs font-semibold transition-colors"
+              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-border hover:border-primary/100/40 text-muted-foreground hover:text-primary400 text-xs font-semibold transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Lesson
@@ -731,7 +731,7 @@ function LessonForm({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Lesson title"
         disabled={isPending}
-        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
+        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary/100 outline-none"
       />
 
       <textarea
@@ -740,7 +740,7 @@ function LessonForm({
         placeholder="Description (optional)"
         rows={2}
         disabled={isPending}
-        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none resize-none"
+        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary/100 outline-none resize-none"
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -750,7 +750,7 @@ function LessonForm({
           onChange={(e) => setVideoUrl(e.target.value)}
           placeholder="Video URL (YouTube/Vimeo or direct MP4)"
           disabled={isPending}
-          className="bg-background border border-border rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
+          className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary/100 outline-none"
         />
         <div className="flex items-center gap-2">
           <input
@@ -760,7 +760,7 @@ function LessonForm({
             value={durationMin}
             onChange={(e) => setDurationMin(Number(e.target.value) || 0)}
             disabled={isPending}
-            className="flex-1 bg-background border border-border rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
+            className="flex-1 bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary/100 outline-none"
             placeholder="Duration"
           />
           <span className="text-xs text-foreground0 shrink-0">min</span>

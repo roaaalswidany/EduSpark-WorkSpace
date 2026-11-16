@@ -38,7 +38,7 @@ export default async function CreatorCoursesPage() {
     <div className="container mx-auto max-w-5xl p-4 sm:p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <GraduationCap className="w-6 h-6 text-primary" />
             My Courses
           </h1>
@@ -64,7 +64,7 @@ export default async function CreatorCoursesPage() {
             >
               <div>
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="text-lg font-bold text-white line-clamp-1">
+                  <h3 className="text-lg font-bold text-foreground line-clamp-1">
                     {course.title}
                   </h3>
                   <span

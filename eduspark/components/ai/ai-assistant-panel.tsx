@@ -241,10 +241,10 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
       {/* Header */}
       <div className="shrink-0 flex items-center gap-3 px-4 h-14 border-b border-border bg-card/80">
         <div className="w-8 h-8 rounded-lg bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-          <Sparkles className="w-4 h-4 text-white" />
+          <Sparkles className="w-4 h-4 text-foreground" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-white">ظ…ط³ط§ط¹ط¯ EduSpark</p>
+          <p className="text-sm font-bold text-foreground">ظ…ط³ط§ط¹ط¯ EduSpark</p>
           <p className="text-[10px] text-muted-foreground">
             {showHistory ? "ط§ظ„ظ…ط­ط§ط¯ط«ط§طھ ط§ظ„ط³ط§ط¨ظ‚ط©" : "ظ…ط¯ط¹ظˆظ… ط¨ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ"}
           </p>
@@ -343,7 +343,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
             {isLoading && (
               <div className="flex items-start gap-2 animate-fade-in">
                 <div className="w-7 h-7 rounded-full bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shrink-0">
-                  <Sparkles className="w-3.5 h-3.5 text-white" />
+                  <Sparkles className="w-3.5 h-3.5 text-foreground" />
                 </div>
                 <div className="rounded-2xl rounded-tl-sm bg-accent/60 border border-border/50 px-4 py-3">
                   <div className="flex items-center gap-1.5">

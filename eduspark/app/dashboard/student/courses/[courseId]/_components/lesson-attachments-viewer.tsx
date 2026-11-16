@@ -67,7 +67,7 @@ export function LessonAttachmentsViewer({ attachments }: Props) {
     <div className="rounded-xl bg-card/60 border border-border p-5">
       <div className="flex items-center gap-2 mb-3">
         <Paperclip className="w-4 h-4 text-indigo-400" />
-        <h3 className="text-sm font-bold text-white">
+        <h3 className="text-sm font-bold text-foreground">
           Lesson Materials ({attachments.length})
         </h3>
       </div>

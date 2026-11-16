@@ -135,7 +135,7 @@ function ParticipantChip({
     <div className="flex items-center gap-2">
       <div className="relative shrink-0 w-6 h-6">
         <div
-          className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
+          className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-[9px] font-bold"
           style={{ background: `hsl(${hue}, 55%, 42%)` }}
         >
           {initials}

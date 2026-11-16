@@ -79,7 +79,7 @@ export default async function HomePage() {
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white tracking-tight leading-[1.05] mb-6">
+            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-foreground tracking-tight leading-[1.05] mb-6">
               Learn .. Certify
               <br />
               <span className="bg-linear-to-r from-emerald-400 via-emerald-400 to-emerald-400 bg-clip-text text-transparent">
@@ -173,7 +173,7 @@ export default async function HomePage() {
           <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
             What makes us different
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground tracking-tight">
             Everything you need to grow
           </h2>
           <p className="text-muted-foreground mt-4 leading-relaxed">
@@ -229,7 +229,7 @@ export default async function HomePage() {
                 <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
                   Top rated
                 </p>
-                <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                <h2 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight">
                   Featured courses
                 </h2>
               </div>
@@ -260,7 +260,7 @@ export default async function HomePage() {
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-emerald-600/30 to-emerald-600/30">
-                        <GraduationCap className="w-12 h-12 text-white/30" />
+                        <GraduationCap className="w-12 h-12 text-foreground/30" />
                       </div>
                     )}
                     <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-sm text-[10px] font-bold uppercase tracking-wider text-primary border border-primary/30">
@@ -274,7 +274,7 @@ export default async function HomePage() {
                         {course.category.name}
                       </p>
                     )}
-                    <h3 className="text-sm font-bold text-white line-clamp-2 leading-snug mb-3 group-hover:text-primary transition-colors">
+                    <h3 className="text-sm font-bold text-foreground line-clamp-2 leading-snug mb-3 group-hover:text-primary transition-colors">
                       {course.title}
                     </h3>
 
@@ -288,7 +288,7 @@ export default async function HomePage() {
                           ({course.ratingCount})
                         </span>
                       </div>
-                      <span className="text-sm font-black text-white tabular-nums">
+                      <span className="text-sm font-black text-foreground tabular-nums">
                         ${Number(course.price).toFixed(0)}
                       </span>
                     </div>
@@ -308,7 +308,7 @@ export default async function HomePage() {
           <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
             Your journey
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground tracking-tight">
             From learner to creator
           </h2>
           <p className="text-muted-foreground mt-4 leading-relaxed">
@@ -395,9 +395,9 @@ export default async function HomePage() {
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="rounded-3xl bg-linear-to-br from-emerald-600/20 via-emerald-600/10 to-transparent border border-primary/20 p-10 sm:p-14 text-center">
             <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-emerald-500/30">
-              <Sparkles className="w-8 h-8 text-white" />
+              <Sparkles className="w-8 h-8 text-foreground" />
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
+            <h2 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight mb-4">
               Ready to start?
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed">
@@ -434,7 +434,7 @@ function StatCard({
   return (
     <div className="text-center px-2">
       <Icon className={`w-5 h-5 mx-auto mb-3 ${color}`} />
-      <p className="text-3xl sm:text-4xl font-black text-white tabular-nums leading-none">
+      <p className="text-3xl sm:text-4xl font-black text-foreground tabular-nums leading-none">
         {value.toLocaleString("en-US")}
       </p>
       <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-widest text-muted-foreground mt-3 leading-tight">
@@ -464,9 +464,9 @@ function FeatureCard({
       <div
         className={`w-12 h-12 rounded-2xl bg-linear-to-br ${gradient} flex items-center justify-center mb-5 shadow-lg`}
       >
-        <Icon className="w-6 h-6 text-white" />
+        <Icon className="w-6 h-6 text-foreground" />
       </div>
-      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+      <h3 className="text-xl font-bold text-foreground mb-3">{title}</h3>
       <p className="text-sm text-muted-foreground leading-relaxed mb-5">
         {description}
       </p>
@@ -520,7 +520,7 @@ function Step({
             {number.toString().padStart(2, "0")}
           </span>
         </div>
-        <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
+        <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
       </div>
     </div>
@@ -542,7 +542,7 @@ function SmallFeature({
         <Icon className="w-4 h-4 text-primary" />
       </div>
       <div className="min-w-0">
-        <h4 className="text-sm font-bold text-white mb-1">{title}</h4>
+        <h4 className="text-sm font-bold text-foreground mb-1">{title}</h4>
         <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
       </div>
     </div>

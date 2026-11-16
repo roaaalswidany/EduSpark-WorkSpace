@@ -96,11 +96,11 @@ export function PathTimeline({ steps }: PathTimelineProps) {
                   )}
                 >
                   {isPending ? (
-                    <Loader2 className="w-4 h-4 text-white animate-spin" />
+                    <Loader2 className="w-4 h-4 text-foreground animate-spin" />
                   ) : isCompleted ? (
-                    <CheckCircle2 className="w-5 h-5 text-white" />
+                    <CheckCircle2 className="w-5 h-5 text-foreground" />
                   ) : isInProgress ? (
-                    <Play className="w-4 h-4 text-white fill-current" />
+                    <Play className="w-4 h-4 text-foreground fill-current" />
                   ) : (
                     <span className="text-xs font-bold text-muted-foreground">
                       {idx + 1}
@@ -165,7 +165,7 @@ export function PathTimeline({ steps }: PathTimelineProps) {
                     )}
                   >
                     <BookOpen className="w-3.5 h-3.5 text-primary shrink-0" />
-                    <span className="text-xs text-foreground truncate group-hover:text-white transition-colors">
+                    <span className="text-xs text-foreground truncate group-hover:text-foreground transition-colors">
                       {step.course.title}
                     </span>
                     <span className="ml-auto text-[10px] text-muted-foreground/70 shrink-0">

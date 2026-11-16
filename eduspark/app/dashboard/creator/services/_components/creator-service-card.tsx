@@ -113,7 +113,7 @@ function DeleteDialog({
               <Trash2 className="w-4 h-4 text-destructive" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Delete Service</h2>
+              <h2 className="text-base font-bold text-foreground">Delete Service</h2>
               <p className="text-xs text-muted-foreground mt-0.5">
                 This action cannot be undone.
               </p>
@@ -124,7 +124,7 @@ function DeleteDialog({
         <div className="p-6 space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
             Are you sure you want to delete{" "}
-            <span className="font-semibold text-white">{serviceTitle}</span>?
+            <span className="font-semibold text-foreground">{serviceTitle}</span>?
             This will permanently remove it from the marketplace.
           </p>
 
@@ -292,7 +292,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
               <span
-                className="font-black text-white/20 select-none"
+                className="font-black text-foreground/20 select-none"
                 style={{ fontSize: "clamp(3rem, 8vw, 5rem)" }}
               >
                 {service.title.charAt(0)}
@@ -331,7 +331,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
               <div className="absolute right-0 top-full mt-1.5 w-44 rounded-xl bg-card border border-border shadow-2xl shadow-black/60 overflow-hidden z-20 animate-slide-down origin-top-right">
                 <Link
                   href={`/marketplace/services/${service.slug}`}
-                  className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors"
+                  className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   <Eye className="w-3.5 h-3.5" />
@@ -339,7 +339,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
                 </Link>
                 <Link
                   href={`/dashboard/creator/services/${service.id}/edit`}
-                  className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors"
+                  className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   <Pencil className="w-3.5 h-3.5" />
@@ -350,7 +350,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
                   <button
                     type="button"
                     onClick={() => handleStatusChange("PAUSED")}
-                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors text-left"
                   >
                     <Pause className="w-3.5 h-3.5" /> Pause Service
                   </button>
@@ -402,7 +402,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
 
           <Link
             href={`/marketplace/services/${service.slug}`}
-            className="text-sm font-bold text-foreground line-clamp-2 leading-snug hover:text-white transition-colors"
+            className="text-sm font-bold text-foreground line-clamp-2 leading-snug hover:text-foreground transition-colors"
           >
             {service.title}
           </Link>
@@ -427,7 +427,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
               <p className="text-[9px] font-medium text-muted-foreground/70 uppercase tracking-wider">
                 From
               </p>
-              <p className="text-base font-black text-white leading-none tabular-nums">
+              <p className="text-base font-black text-foreground leading-none tabular-nums">
                 $
                 {service.price % 1 === 0
                   ? service.price

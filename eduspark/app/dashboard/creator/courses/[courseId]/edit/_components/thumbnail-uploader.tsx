@@ -104,7 +104,7 @@ export function ThumbnailUploader({
       <div className="flex-1 w-full space-y-2">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
               Course Cover Image
               {preview && (
                 <a href={preview} target="_blank" rel="noreferrer" className="text-foreground0 hover:text-primary400 transition-colors" title="Open in new tab">
@@ -121,7 +121,7 @@ export function ThumbnailUploader({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={isPending}
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent hover:bg-muted-foreground/70 border border-border text-white text-xs font-semibold disabled:opacity-50 transition-all"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent hover:bg-muted-foreground/70 border border-border text-foreground text-xs font-semibold disabled:opacity-50 transition-all"
           >
             {isPending ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />

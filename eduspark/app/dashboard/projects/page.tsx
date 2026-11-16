@@ -42,7 +42,7 @@ export default async function ProjectsPage() {
           <Briefcase className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Workspace</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
           My Projects
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
@@ -57,7 +57,7 @@ export default async function ProjectsPage() {
           <div className="w-16 h-16 rounded-2xl bg-info/10 border border-info/20 flex items-center justify-center mx-auto mb-5">
             <Briefcase className="w-7 h-7 text-info" />
           </div>
-          <h2 className="text-lg font-bold text-white mb-1.5">
+          <h2 className="text-lg font-bold text-foreground mb-1.5">
             No projects yet
           </h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
@@ -87,7 +87,7 @@ export default async function ProjectsPage() {
                   <Briefcase className="w-5 h-5 text-info" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-white truncate">
+                  <p className="text-sm font-bold text-foreground truncate">
                     {p.title}
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">

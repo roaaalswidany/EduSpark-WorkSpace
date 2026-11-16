@@ -102,7 +102,7 @@ function CounterpartAvatar({
 
   return (
     <div
-      className="rounded-xl flex items-center justify-center text-white text-xs font-bold ring-2 ring-border shrink-0"
+      className="rounded-xl flex items-center justify-center text-foreground text-xs font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -167,7 +167,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <span className="text-white/30 font-black text-2xl">
+              <span className="text-foreground/30 font-black text-2xl">
                 {(order.service?.title ?? order.title).charAt(0)}
               </span>
             </div>
@@ -181,7 +181,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mb-1">
                 {isBuyer ? "Order" : "Incoming Order"}
               </p>
-              <h3 className="text-sm font-bold text-white line-clamp-1">
+              <h3 className="text-sm font-bold text-foreground line-clamp-1">
                 {order.service?.title ?? order.title}
               </h3>
             </div>

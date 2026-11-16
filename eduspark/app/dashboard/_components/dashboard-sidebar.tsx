@@ -138,7 +138,7 @@ function Avatar({
 
   return (
     <div
-      className="rounded-xl flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
+      className="rounded-xl flex items-center justify-center text-foreground font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,

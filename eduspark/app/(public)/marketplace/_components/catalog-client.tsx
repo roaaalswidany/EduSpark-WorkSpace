@@ -110,7 +110,7 @@ function CreatorAvatar({
 
   return (
     <div
-      className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
+      className="rounded-full flex items-center justify-center text-foreground font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -153,7 +153,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
               <span
-                className="font-black text-white/20 select-none"
+                className="font-black text-foreground/20 select-none"
                 style={{ fontSize: "clamp(3rem, 8vw, 5rem)" }}
               >
                 {service.title.charAt(0)}
@@ -164,7 +164,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
           {/* Category badge */}
           {service.category && (
             <div className="absolute bottom-2.5 left-2.5">
-              <span className="px-2 py-1 rounded-lg bg-black/55 backdrop-blur-sm text-white text-[10px] font-semibold tracking-wide">
+              <span className="px-2 py-1 rounded-lg bg-black/55 backdrop-blur-sm text-foreground text-[10px] font-semibold tracking-wide">
                 {service.category.name}
               </span>
             </div>
@@ -219,7 +219,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
           </div>
 
           {/* Title */}
-          <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-white transition-colors flex-1">
+          <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-foreground transition-colors flex-1">
             {service.title}
           </h3>
 
@@ -252,7 +252,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
               <p className="text-[9px] font-medium text-muted-foreground/70 uppercase tracking-wider">
                 From
               </p>
-              <p className="text-lg font-black text-white leading-none">
+              <p className="text-lg font-black text-foreground leading-none">
                 ${service.price % 1 === 0 ? service.price : service.price.toFixed(2)}
               </p>
             </div>
@@ -474,7 +474,7 @@ export function CatalogClient({
             All creators are EduSpark certified
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4 leading-[1.1]">
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-foreground mb-4 leading-[1.1]">
             Hire{" "}
             <span className="bg-linear-to-r from-emerald-400 via-emerald-400 to-emerald-400 bg-clip-text text-transparent">
               Certified
@@ -518,7 +518,7 @@ export function CatalogClient({
             <div className="flex items-center gap-2">
               <Package className="w-4 h-4 text-primary" />
               <span>
-                <span className="text-white font-bold">
+                <span className="text-foreground font-bold">
                   {initialServices.length}
                 </span>{" "}
                 services
@@ -528,7 +528,7 @@ export function CatalogClient({
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-info" />
               <span>
-                <span className="text-white font-bold">{totalCreators}</span>{" "}
+                <span className="text-foreground font-bold">{totalCreators}</span>{" "}
                 experts
               </span>
             </div>
@@ -536,7 +536,7 @@ export function CatalogClient({
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-amber-400" />
               <span>
-                <span className="text-white font-bold">100%</span> certified
+                <span className="text-foreground font-bold">100%</span> certified
               </span>
             </div>
           </div>
@@ -589,7 +589,7 @@ export function CatalogClient({
         <div className="flex items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
             <p className="text-sm text-muted-foreground">
-              <span className="text-white font-semibold">{filtered.length}</span>{" "}
+              <span className="text-foreground font-semibold">{filtered.length}</span>{" "}
               {filtered.length === 1 ? "service" : "services"}
               {debouncedQuery && (
                 <span className="text-muted-foreground/70">

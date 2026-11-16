@@ -91,7 +91,7 @@ export default async function MyCoursesPage() {
           <BookOpen className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">My Learning</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
           My Courses
         </h1>
         {totalCount > 0 ? (
@@ -120,7 +120,7 @@ export default async function MyCoursesPage() {
           <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
             <Sparkles className="w-7 h-7 text-primary" />
           </div>
-          <h2 className="text-lg font-bold text-white mb-1.5">
+          <h2 className="text-lg font-bold text-foreground mb-1.5">
             Start your learning journey
           </h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">

@@ -75,7 +75,7 @@ function Avatar({
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <div
-        className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border"
+        className="rounded-full flex items-center justify-center text-foreground font-bold ring-2 ring-border"
         style={{
           width: size,
           height: size,
@@ -188,7 +188,7 @@ function RoomRow({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <p className="text-sm font-bold text-white truncate">{roomTitle}</p>
+          <p className="text-sm font-bold text-foreground truncate">{roomTitle}</p>
           <span
             className={cn(
               "shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border",

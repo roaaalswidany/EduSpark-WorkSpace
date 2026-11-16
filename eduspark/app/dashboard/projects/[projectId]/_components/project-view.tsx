@@ -193,7 +193,7 @@ function dueDateMeta(iso: string | null): {
   text: string;
   className: string;
 } {
-  if (!iso) return { text: "No deadline", className: "text-slate-600" };
+  if (!iso) return { text: "No deadline", className: "text-muted-foreground" };
 
   const date = new Date(iso);
   const days = Math.ceil(
@@ -234,7 +234,7 @@ function ParticipantAvatar({
 
   return (
     <div
-      className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
+      className="rounded-full flex items-center justify-center text-foreground font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -290,7 +290,7 @@ function SubmissionForm({
         )}
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-[10px] text-slate-600">{note.length}/500</span>
+        <span className="text-[10px] text-muted-foreground">{note.length}/500</span>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -346,7 +346,7 @@ function RevisionForm({
         className="w-full bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
       />
       <div className="flex items-center justify-between">
-        <span className="text-[10px] text-slate-600">
+        <span className="text-[10px] text-muted-foreground">
           {note.length}/500
         </span>
         <div className="flex items-center gap-2">
@@ -426,7 +426,7 @@ function MilestoneCard({
             config.dot
           )}
         >
-          <StatusIcon className="w-4 h-4 text-white" />
+          <StatusIcon className="w-4 h-4 text-foreground" />
         </div>
         {!isLast && (
           <div
@@ -461,7 +461,7 @@ function MilestoneCard({
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                   Milestone {index + 1}
                 </span>
                 <span
@@ -474,7 +474,7 @@ function MilestoneCard({
                   {config.label}
                 </span>
               </div>
-              <h3 className="text-base font-bold text-white leading-snug">
+              <h3 className="text-base font-bold text-foreground leading-snug">
                 {milestone.title}
               </h3>
             </div>
@@ -482,10 +482,10 @@ function MilestoneCard({
             {/* Amount */}
             {milestone.amount != null && (
               <div className="shrink-0 text-right">
-                <p className="text-[9px] text-slate-600 uppercase tracking-wider">
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">
                   Value
                 </p>
-                <p className="text-lg font-black text-white leading-none">
+                <p className="text-lg font-black text-foreground leading-none">
                   ${milestone.amount}
                 </p>
               </div>
@@ -556,7 +556,7 @@ function MilestoneCard({
 
           {/* Due date */}
           <div className="flex items-center gap-1.5">
-            <CalendarDays className="w-3.5 h-3.5 text-slate-600" />
+            <CalendarDays className="w-3.5 h-3.5 text-muted-foreground" />
             <span className={cn("text-xs", due.className)}>{due.text}</span>
           </div>
         </div>
@@ -874,12 +874,12 @@ export function ProjectView({
             <div className="flex items-center gap-3 min-w-0">
               <Link
                 href="/dashboard/projects"
-                className="text-slate-600 hover:text-foreground400 transition-colors shrink-0"
+                className="text-muted-foreground hover:text-foreground400 transition-colors shrink-0"
               >
                 <ChevronRight className="w-4 h-4 rotate-180" />
               </Link>
               <div className="min-w-0">
-                <h1 className="text-base font-bold text-white truncate">
+                <h1 className="text-base font-bold text-foreground truncate">
                   {project.title}
                 </h1>
                 <p className="text-xs text-foreground0 mt-0.5">
@@ -941,7 +941,7 @@ export function ProjectView({
 
           {/* Progress bar */}
           <div className="mt-3 space-y-1">
-            <div className="flex justify-between text-[10px] text-slate-600">
+            <div className="flex justify-between text-[10px] text-muted-foreground">
               <span>
                 {completedCount} of {localMilestones.length} milestones
                 approved
@@ -989,7 +989,7 @@ export function ProjectView({
               <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
                 Milestones
               </h2>
-              <span className="text-xs text-slate-600">
+              <span className="text-xs text-muted-foreground">
                 {completedCount}/{localMilestones.length} done
               </span>
             </div>
@@ -1020,7 +1020,7 @@ export function ProjectView({
                   <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-4">
                     <ShieldCheck className="w-7 h-7 text-emerald-400" />
                   </div>
-                  <h3 className="text-base font-bold text-white mb-1.5">
+                  <h3 className="text-base font-bold text-foreground mb-1.5">
                     All Work Submitted
                   </h3>
                   <p className="text-muted-foreground text-sm mb-5 max-w-sm mx-auto">
@@ -1055,7 +1055,7 @@ export function ProjectView({
             {localProjectStatus === ProjectStatus.COMPLETED && (
               <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/8 via-teal-500/5 to-emerald-500/8 border border-emerald-500/20 text-center">
                 <Award className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
-                <h3 className="text-lg font-bold text-white mb-1.5">
+                <h3 className="text-lg font-bold text-foreground mb-1.5">
                   Project Complete! 🎉
                 </h3>
                 <p className="text-muted-foreground text-sm">
@@ -1083,7 +1083,7 @@ export function ProjectView({
                       <Package className="w-4 h-4 text-indigo-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">
+                      <p className="text-sm font-semibold text-foreground truncate">
                         {project.service.title}
                       </p>
                       <p className="text-xs text-foreground0 mt-0.5">
@@ -1092,8 +1092,8 @@ export function ProjectView({
                     </div>
                   </div>
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-xs text-slate-600">Total Budget</span>
-                    <span className="text-base font-black text-white">
+                    <span className="text-xs text-muted-foreground">Total Budget</span>
+                    <span className="text-base font-black text-foreground">
                       ${project.budget ?? project.service.price}
                     </span>
                   </div>
@@ -1119,7 +1119,7 @@ export function ProjectView({
               <div className="p-4 space-y-4">
                 {/* Client */}
                 <div>
-                  <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest mb-2">
+                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">
                     Client
                   </p>
                   <div className="flex items-center gap-3">
@@ -1148,7 +1148,7 @@ export function ProjectView({
                 {/* Creator */}
                 {project.creator ? (
                   <div>
-                    <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest mb-2">
+                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">
                       Creator
                     </p>
                     <div className="flex items-center gap-3">
@@ -1177,7 +1177,7 @@ export function ProjectView({
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-600">No creator assigned</p>
+                  <p className="text-xs text-muted-foreground">No creator assigned</p>
                 )}
               </div>
             </div>
@@ -1196,7 +1196,7 @@ export function ProjectView({
                       <DollarSign className="w-3.5 h-3.5" />
                       <span>Budget</span>
                     </div>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-bold text-foreground">
                       ${project.budget}
                     </span>
                   </div>
@@ -1245,7 +1245,7 @@ export function ProjectView({
                   <MessageSquare className="w-5 h-5 text-indigo-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-foreground group-hover:text-white transition-colors">
+                  <p className="text-sm font-semibold text-foreground group-hover:text-foreground transition-colors">
                     Project Chat
                   </p>
                   <p className="text-xs text-foreground0">
@@ -1253,7 +1253,7 @@ export function ProjectView({
                     {project.chatRoom.messageCount === 1 ? "message" : "messages"}
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-primary400 transition-colors" />
+                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary400 transition-colors" />
               </Link>
             )}
           </aside>

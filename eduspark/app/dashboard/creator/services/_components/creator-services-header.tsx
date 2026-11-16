@@ -51,7 +51,7 @@ export function CreatorServicesHeader({ stats }: CreatorServicesHeaderProps) {
             <Package className="w-3.5 h-3.5" />
             <span className="uppercase tracking-widest">Creator Studio</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
             My Services
           </h1>
           <p className="text-sm text-muted-foreground mt-2">
@@ -88,7 +88,7 @@ export function CreatorServicesHeader({ stats }: CreatorServicesHeaderProps) {
               >
                 <Icon className={cn("w-4 h-4", c.color)} />
               </div>
-              <p className="text-2xl font-black text-white tabular-nums leading-none">
+              <p className="text-2xl font-black text-foreground tabular-nums leading-none">
                 {c.value}
               </p>
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">

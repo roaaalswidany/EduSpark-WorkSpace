@@ -102,7 +102,7 @@ function CreatorAvatar({
     name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
   return (
     <div
-      className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
+      className="rounded-full flex items-center justify-center text-foreground font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -189,7 +189,7 @@ function OrderDialog({
           <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-1">
             Place Order
           </p>
-          <h2 className="text-lg font-bold text-white line-clamp-1">
+          <h2 className="text-lg font-bold text-foreground line-clamp-1">
             {service.title}
           </h2>
         </div>
@@ -198,7 +198,7 @@ function OrderDialog({
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between text-sm">
             <span className="text-foreground0">Total</span>
-            <span className="text-xl font-black text-white tabular-nums">
+            <span className="text-xl font-black text-foreground tabular-nums">
               ${service.price.toFixed(2)}
             </span>
           </div>
@@ -238,7 +238,7 @@ function OrderDialog({
               disabled={isPending}
               className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
             />
-            <p className="text-[10px] text-slate-600 mt-1.5">
+            <p className="text-[10px] text-muted-foreground mt-1.5">
               {requirements.length}/2000
             </p>
           </div>
@@ -268,8 +268,8 @@ function OrderDialog({
             className={cn(
               "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
               isValid && !isPending
-                ? "bg-primary hover:bg-primary/50 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
-                : "bg-accent text-slate-600 cursor-not-allowed"
+                ? "bg-primary hover:bg-primary/50 text-foreground active:scale-95 shadow-lg shadow-emerald-500/20"
+                : "bg-accent text-muted-foreground cursor-not-allowed"
             )}
           >
             {isPending ? (
@@ -326,7 +326,7 @@ export function ServiceDetailView({
                 )}
               </div>
 
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight leading-tight">
                 {service.title}
               </h1>
             </div>
@@ -350,7 +350,7 @@ export function ServiceDetailView({
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span
-                    className="font-black text-white/15 select-none"
+                    className="font-black text-foreground/15 select-none"
                     style={{ fontSize: "clamp(4rem, 15vw, 10rem)" }}
                   >
                     {service.title.charAt(0)}
@@ -390,7 +390,7 @@ export function ServiceDetailView({
 
             {/* Description */}
             <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
-              <h2 className="text-base font-bold text-white mb-3 flex items-center gap-2">
+              <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-indigo-400" />
                 About This Service
               </h2>
@@ -402,7 +402,7 @@ export function ServiceDetailView({
             {/* Tags */}
             {service.tags.length > 0 && (
               <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
-                <h2 className="text-base font-bold text-white mb-3">
+                <h2 className="text-base font-bold text-foreground mb-3">
                   Skills & Tags
                 </h2>
                 <div className="flex flex-wrap gap-2">
@@ -421,7 +421,7 @@ export function ServiceDetailView({
             {/* Portfolio */}
             {service.portfolioLinks.length > 0 && (
               <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
-                <h2 className="text-base font-bold text-white mb-3 flex items-center gap-2">
+                <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-violet-400" />
                   Portfolio
                 </h2>
@@ -442,7 +442,7 @@ export function ServiceDetailView({
                           {link.replace(/^https?:\/\//, "").slice(0, 60)}
                         </p>
                       </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-primary400 transition-colors shrink-0" />
+                      <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary400 transition-colors shrink-0" />
                     </a>
                   ))}
                 </div>
@@ -451,7 +451,7 @@ export function ServiceDetailView({
 
             {/* About the creator */}
             <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
-              <h2 className="text-base font-bold text-white mb-4">
+              <h2 className="text-base font-bold text-foreground mb-4">
                 About the Creator
               </h2>
               <div className="flex items-start gap-4">
@@ -462,7 +462,7 @@ export function ServiceDetailView({
                 <div className="min-w-0">
                   <Link
                     href={`/profile/${service.creator.id}`}
-                    className="text-sm font-bold text-white hover:text-primary400 transition-colors"
+                    className="text-sm font-bold text-foreground hover:text-primary400 transition-colors"
                   >
                     {service.creator.name}
                   </Link>
@@ -487,7 +487,7 @@ export function ServiceDetailView({
             <div className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="p-5 space-y-4">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-black text-white tabular-nums">
+                  <span className="text-3xl font-black text-foreground tabular-nums">
                     ${service.price.toFixed(2)}
                   </span>
                 </div>
@@ -508,7 +508,7 @@ export function ServiceDetailView({
     onClick={() => setOrderOpen(true)}
     className={cn(
       "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-      "bg-primary hover:bg-primary/50 text-white",
+      "bg-primary hover:bg-primary/50 text-foreground",
       "text-sm font-bold transition-all active:scale-[0.98]",
       "shadow-lg shadow-emerald-500/20"
     )}
@@ -521,7 +521,7 @@ export function ServiceDetailView({
     href={`/auth/login?callbackUrl=/marketplace/services/${service.slug}`}
     className={cn(
       "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-      "bg-primary hover:bg-primary/50 text-white",
+      "bg-primary hover:bg-primary/50 text-foreground",
       "text-sm font-bold transition-all active:scale-[0.98]",
       "shadow-lg shadow-emerald-500/20"
     )}
@@ -594,7 +594,7 @@ export function ServiceDetailView({
         {/* ── Related services ────────────────────────── */}
         {relatedServices.length > 0 && (
           <div className="mt-16 pt-8 border-t border-border">
-            <h2 className="text-lg font-bold text-white mb-5">
+            <h2 className="text-lg font-bold text-foreground mb-5">
               More from {service.category?.name}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -620,21 +620,21 @@ export function ServiceDetailView({
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="font-black text-white/20 text-4xl select-none">
+                        <span className="font-black text-foreground/20 text-4xl select-none">
                           {rs.title.charAt(0)}
                         </span>
                       </div>
                     )}
                   </div>
                   <div className="p-4">
-                    <p className="text-xs font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-white transition-colors mb-2">
+                    <p className="text-xs font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-foreground transition-colors mb-2">
                       {rs.title}
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-foreground0">
                         {rs.creator.name.split(" ")[0]}
                       </span>
-                      <span className="text-sm font-bold text-white tabular-nums">
+                      <span className="text-sm font-bold text-foreground tabular-nums">
                         ${rs.price.toFixed(0)}
                       </span>
                     </div>

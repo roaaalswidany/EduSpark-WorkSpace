@@ -84,41 +84,14 @@ export default async function PublicProfilePage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Top bar */}
-      <header className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-30">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center">
-              <GraduationCap className="w-4 h-4 text-indigo-400" />
-            </div>
-            <span className="text-sm font-bold text-white">EduSpark</span>
-          </Link>
-
-          <div className="flex items-center gap-2">
-            {isOwner && (
-              <Link
-                href="/dashboard/profile"
-                className="px-3.5 py-1.5 rounded-lg bg-accent hover:bg-muted-foreground/70 text-foreground text-xs font-semibold border border-border transition-colors"
-              >
-                Edit Profile
-              </Link>
-            )}
-            <Link
-              href="/marketplace"
-              className="px-3.5 py-1.5 rounded-lg text-muted-foreground hover:text-white text-xs font-semibold transition-colors"
-            >
-              Marketplace
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* ملاحظة: تم حذف الهيدر المكرر من هنا عشان يضل بس الهيدر الأساسي للموقع */}
 
       {/* Content */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
         {/* Back link */}
         <Link
           href="/marketplace"
-          className="inline-flex items-center gap-1.5 text-xs text-foreground0 hover:text-foreground300 transition-colors mb-5"
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-5"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Back to marketplace
@@ -146,7 +119,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
         {/* Bio */}
         {user.bio && (
           <div className="mt-6 rounded-2xl bg-card border border-border p-5 sm:p-6">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-foreground0 mb-3 flex items-center gap-2">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
               <Award className="w-3.5 h-3.5" />
               About
             </h2>
@@ -163,10 +136,10 @@ export default async function PublicProfilePage({ params }: PageProps) {
           <div className="mt-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
-                <Package className="w-4 h-4 text-indigo-400" />
+                <Package className="w-4 h-4 text-primary" />
                 Services Offered
               </h2>
-              <span className="text-xs text-slate-600">
+              <span className="text-xs text-muted-foreground">
                 {activeServicesCount}{" "}
                 {activeServicesCount === 1 ? "service" : "services"}
               </span>

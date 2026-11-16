@@ -55,7 +55,7 @@ export function UserMenu({ user }: { user: Session["user"] }) {
         <div className="absolute right-0 mt-2 w-56 rounded-xl bg-card border border-border shadow-xl overflow-hidden z-50">
           {/* User info */}
           <div className="px-4 py-3 border-b border-border">
-            <p className="text-sm font-semibold text-white truncate">
+            <p className="text-sm font-semibold text-foreground truncate">
               {user?.name}
             </p>
             <p className="text-xs text-muted-foreground truncate mt-0.5">
@@ -68,7 +68,7 @@ export function UserMenu({ user }: { user: Session["user"] }) {
             <Link
               href="/dashboard"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-accent hover:text-white transition-colors"
+              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-accent hover:text-foreground transition-colors"
             >
               <LayoutDashboard className="w-4 h-4" />
               Dashboard
@@ -76,7 +76,7 @@ export function UserMenu({ user }: { user: Session["user"] }) {
             <Link
               href="/dashboard/profile"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-accent hover:text-white transition-colors"
+              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-accent hover:text-foreground transition-colors"
             >
               <User className="w-4 h-4" />
               Profile

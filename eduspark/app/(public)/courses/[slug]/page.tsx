@@ -37,9 +37,9 @@ const LEVEL_LABELS = {
 } as const;
 
 const LEVEL_STYLES = {
-  BEGINNER: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  INTERMEDIATE: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  ADVANCED: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+  BEGINNER: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+  INTERMEDIATE: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+  ADVANCED: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
 } as const;
 
 export default async function CourseDetailPage({ params }: PageProps) {
@@ -111,7 +111,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
     enrollment = e;
   }
 
-    // ── Reviews ─────────────────────────────────────────────────────
+  // ── Reviews ─────────────────────────────────────────────────────
   const [reviewsData, userReview] = await Promise.all([
     db.review.findMany({
       where: { courseId: course.id },
@@ -183,8 +183,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
     <div className="min-h-screen bg-background text-foreground">
       {/* ── Breadcrumb ─────────────────────────────────── */}
       <div className="border-b border-border bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-1.5 text-xs text-foreground0">
-          <Link href="/courses" className="hover:text-foreground300 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Link href="/courses" className="hover:text-foreground transition-colors">
             Courses
           </Link>
           {course.category && (
@@ -192,7 +192,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
               <ChevronRight className="w-3 h-3" />
               <Link
                 href={`/courses?category=${course.category.id}`}
-                className="hover:text-foreground300 transition-colors"
+                className="hover:text-foreground transition-colors"
               >
                 {course.category.name}
               </Link>
@@ -204,7 +204,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
       </div>
 
       {/* ── Hero ───────────────────────────────────────── */}
-      <section className="relative bg-linear-to-b from-zinc-900 to-zinc-950 border-b border-border">
+      {/* تم إصلاح الخلفية هنا لتصبح بيضاء في اللايت مود */}
+      <section className="relative bg-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
             {/* Left: Content */}
@@ -220,14 +221,14 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   {LEVEL_LABELS[course.level]}
                 </span>
                 {course.category && (
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-400">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
                     {course.category.name}
                   </span>
                 )}
               </div>
 
               {/* Title */}
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground leading-tight">
                 {course.title}
               </h1>
 
@@ -237,11 +238,11 @@ export default async function CourseDetailPage({ params }: PageProps) {
               </p>
 
               {/* Meta row */}
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-foreground0">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
                 {course.ratingCount > 0 && (
                   <div className="flex items-center gap-1.5">
-                    <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                    <span className="text-amber-300 font-bold">
+                    <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                    <span className="text-amber-600 dark:text-amber-400 font-bold">
                       {course.totalRating.toFixed(1)}
                     </span>
                     <span>({course.ratingCount} ratings)</span>
@@ -270,10 +271,10 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   {creatorInitials}
                 </div>
                 <div>
-                  <p className="text-xs text-foreground0">Created by</p>
+                  <p className="text-xs text-muted-foreground">Created by</p>
                   <Link
                     href={`/profile/${course.creator.id}`}
-                    className="text-sm font-semibold text-foreground hover:text-primary400 transition-colors"
+                    className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
                   >
                     {course.creator.name}
                   </Link>
@@ -295,8 +296,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
                       className="object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-zinc-900 to-emerald-500/10">
-                      <BookOpen className="w-12 h-12 text-slate-700" />
+                    <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-emerald-500/10 via-muted to-emerald-500/10">
+                      <BookOpen className="w-12 h-12 text-muted-foreground" />
                     </div>
                   )}
                 </div>
@@ -306,11 +307,11 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   {/* Price */}
                   <div className="flex items-baseline gap-2">
                     {price === 0 ? (
-                      <span className="text-2xl font-black text-emerald-400">
+                      <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
                         Free
                       </span>
                     ) : (
-                      <span className="text-3xl font-black text-white tabular-nums">
+                      <span className="text-3xl font-black text-foreground tabular-nums">
                         ${price.toFixed(2)}
                       </span>
                     )}
@@ -328,7 +329,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
                   {/* What's included */}
                   <div className="pt-4 border-t border-border space-y-2.5">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-foreground0">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                       This course includes
                     </p>
                     <ul className="space-y-2">
@@ -362,7 +363,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
           <div className="space-y-8 min-w-0">
             {/* What you'll learn */}
             <section className="rounded-2xl bg-card border border-border p-5 sm:p-6">
-              <h2 className="text-base font-bold text-white mb-4">
+              <h2 className="text-base font-bold text-foreground mb-4">
                 What you&apos;ll learn
               </h2>
               <ul className="grid sm:grid-cols-2 gap-3">
@@ -399,10 +400,9 @@ export default async function CourseDetailPage({ params }: PageProps) {
               alreadyReviewed={userReview !== null}
             />
 
-
             {/* Instructor */}
             <section className="rounded-2xl bg-card border border-border p-5 sm:p-6">
-              <h2 className="text-base font-bold text-white mb-4">
+              <h2 className="text-base font-bold text-foreground mb-4">
                 About the instructor
               </h2>
               <div className="flex items-start gap-4">
@@ -415,12 +415,12 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 <div className="min-w-0">
                   <Link
                     href={`/profile/${course.creator.id}`}
-                    className="text-sm font-bold text-white hover:text-primary400 transition-colors"
+                    className="text-sm font-bold text-foreground hover:text-primary transition-colors"
                   >
                     {course.creator.name}
                   </Link>
                   {course.creator.headline && (
-                    <p className="text-xs text-indigo-400 mt-0.5">
+                    <p className="text-xs text-primary mt-0.5">
                       {course.creator.headline}
                     </p>
                   )}
@@ -439,11 +439,11 @@ export default async function CourseDetailPage({ params }: PageProps) {
             <div className="rounded-2xl bg-card border border-border p-5 space-y-4">
               <div className="flex items-baseline gap-2">
                 {price === 0 ? (
-                  <span className="text-2xl font-black text-emerald-400">
+                  <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
                     Free
                   </span>
                 ) : (
-                  <span className="text-3xl font-black text-white tabular-nums">
+                  <span className="text-3xl font-black text-foreground tabular-nums">
                     ${price.toFixed(2)}
                   </span>
                 )}

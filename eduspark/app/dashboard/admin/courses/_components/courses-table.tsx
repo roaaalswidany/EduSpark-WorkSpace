@@ -51,7 +51,7 @@ function CourseThumb({ title, thumbnail, size = 44 }: { title: string; thumbnail
   }
   return (
     <div className="rounded-xl flex items-center justify-center bg-linear-to-br from-emerald-500/20 to-emerald-500/20 ring-2 ring-border shrink-0" style={{ width: size, height: size }}>
-      <span className="text-white/60 font-bold" style={{ fontSize: size * 0.4 }}>{title.charAt(0)}</span>
+      <span className="text-foreground/60 font-bold" style={{ fontSize: size * 0.4 }}>{title.charAt(0)}</span>
     </div>
   );
 }
@@ -218,7 +218,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
       {courses.length === 0 ? (
         <div className="rounded-2xl bg-card border border-border p-12 text-center">
           <div className="w-16 h-16 rounded-2xl bg-accent border border-border flex items-center justify-center mx-auto mb-5"><GraduationCap className="w-7 h-7 text-muted-foreground/70" /></div>
-          <h2 className="text-lg font-bold text-white mb-1.5">No courses found</h2>
+          <h2 className="text-lg font-bold text-foreground mb-1.5">No courses found</h2>
           <p className="text-sm text-muted-foreground">Try adjusting your search or filters.</p>
         </div>
       ) : (
@@ -239,7 +239,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
                     <CourseThumb title={c.title} thumbnail={c.thumbnail} />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">{c.title}</p>
+                      <p className="text-sm font-semibold text-foreground truncate">{c.title}</p>
                       <p className="text-xs text-muted-foreground truncate mt-0.5">{c.category?.name ?? "Uncategorized"} آ· {c.level.toLowerCase()} آ· ${c.price.toFixed(2)}</p>
                     </div>
                   </div>
@@ -248,7 +248,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
                   <div className="flex lg:block"><span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center">Status:</span><span className={cn("inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border", STATUS_BADGE[c.status])}>{c.status.replace("_", " ")}</span></div>
                   <div className="absolute top-4 right-4 lg:static lg:justify-self-end">
                     {isPendingCourse ? <Loader2 className="w-4 h-4 text-primary animate-spin" /> : (
-                      <button type="button" onClick={() => setOpenMenuId(openMenuId === c.id ? null : c.id)} className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-white transition-colors" aria-label="Course actions"><MoreVertical className="w-4 h-4" /></button>
+                      <button type="button" onClick={() => setOpenMenuId(openMenuId === c.id ? null : c.id)} className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors" aria-label="Course actions"><MoreVertical className="w-4 h-4" /></button>
                     )}
                     {openMenuId === c.id && (
                       <>
@@ -257,16 +257,16 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
                           {c.status === "PENDING_REVIEW" && (
                             <>
                               <div className="px-3 py-2 border-b border-border"><p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Review</p></div>
-                              <Link href={`/dashboard/creator/courses/${c.id}/edit`} target="_blank" className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors">
+                              <Link href={`/dashboard/creator/courses/${c.id}/edit`} target="_blank" className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors">
                                 <Eye className="w-3.5 h-3.5" /> Review Content &amp; Lessons
                               </Link>
-                              <Link href={`/dashboard/creator/courses/${c.id}/quiz`} target="_blank" className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors">
+                              <Link href={`/dashboard/creator/courses/${c.id}/quiz`} target="_blank" className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors">
                                 <HelpCircle className="w-3.5 h-3.5" /> Review Quiz ({c._count.sections} sections)
                               </Link>
                               <div className="h-px bg-accent" />
                             </>
                           )}
-                          <a href={`/courses/${c.slug}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors"><ExternalLink className="w-3.5 h-3.5" />View Public</a>
+                          <a href={`/courses/${c.slug}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors"><ExternalLink className="w-3.5 h-3.5" />View Public</a>
                           <div className="h-px bg-accent" />
                           <div className="px-3 py-2 border-b border-border"><p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Actions</p></div>
                           {c.status === "PENDING_REVIEW" && (
@@ -276,8 +276,8 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
                               <div className="h-px bg-accent" />
                             </>
                           )}
-                          <button type="button" onClick={() => handleChangeStatus(c, "PUBLISHED")} disabled={c.status === "PUBLISHED" || c.status === "PENDING_REVIEW"} className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Publish</button>
-                          <button type="button" onClick={() => handleChangeStatus(c, "DRAFT")} disabled={c.status === "DRAFT" || c.status === "PENDING_REVIEW"} className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Set as Draft</button>
+                          <button type="button" onClick={() => handleChangeStatus(c, "PUBLISHED")} disabled={c.status === "PUBLISHED" || c.status === "PENDING_REVIEW"} className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Publish</button>
+                          <button type="button" onClick={() => handleChangeStatus(c, "DRAFT")} disabled={c.status === "DRAFT" || c.status === "PENDING_REVIEW"} className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Set as Draft</button>
                           <button type="button" onClick={() => handleChangeStatus(c, "ARCHIVED")} disabled={c.status === "ARCHIVED"} className="w-full text-left px-3.5 py-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Archive</button>
                         </div>
                       </>
@@ -311,7 +311,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
             <div className="w-full max-w-md rounded-2xl bg-card border border-border shadow-2xl p-5 space-y-4 pointer-events-auto">
               <div>
-                <div className="flex items-center gap-2 mb-1"><XCircle className="w-5 h-5 text-destructive" /><h3 className="text-lg font-bold text-white">{archiveDialog.mode === "REJECT" ? "Request changes" : "Archive course"}</h3></div>
+                <div className="flex items-center gap-2 mb-1"><XCircle className="w-5 h-5 text-destructive" /><h3 className="text-lg font-bold text-foreground">{archiveDialog.mode === "REJECT" ? "Request changes" : "Archive course"}</h3></div>
                 <p className="text-sm text-muted-foreground">{archiveDialog.mode === "REJECT" ? "Tell the creator what must change before" : "Please provide a reason for archiving"} <strong className="text-foreground">&quot;{archiveDialog.courseTitle}&quot;</strong>{archiveDialog.mode === "REJECT" ? " can be published." : ". This reason will be sent to the course creator by email."}</p>
               </div>
               <div>

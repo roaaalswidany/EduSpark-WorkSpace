@@ -153,7 +153,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
         )}
 
         {/* Title */}
-        <h3 className="text-sm sm:text-base font-bold text-white leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+        <h3 className="text-sm sm:text-base font-bold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
           {course.title}
         </h3>
 
@@ -166,7 +166,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
         <div className="flex items-center gap-2 mt-auto pt-2">
           {/* ًں‘‡ ط§ط³طھط¨ط¯ط§ظ„ ط§ظ„طµظˆط±ط© ط¨ط§ظ„ط£ط­ط±ظپ ط§ظ„ط£ظˆظ„ظ‰ */}
           <div 
-            className="w-6 h-6 rounded-full text-white text-[10px] font-bold flex items-center justify-center ring-1 ring-border shrink-0"
+            className="w-6 h-6 rounded-full text-foreground text-[10px] font-bold flex items-center justify-center ring-1 ring-border shrink-0"
             style={{ background: `hsl(${creatorHue}, 55%, 42%)` }}
           >
             {creatorInitials}
@@ -219,7 +219,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
               {course.price === 0 ? (
                 <span className="text-sm font-bold text-emerald-400">Free</span>
               ) : (
-                <span className="text-base font-black text-white tabular-nums">
+                <span className="text-base font-black text-foreground tabular-nums">
                   ${course.price.toFixed(2)}
                 </span>
               )}

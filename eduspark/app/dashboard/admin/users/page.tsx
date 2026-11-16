@@ -84,7 +84,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
           <Users className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Admin</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
           Users
         </h1>
         <p className="text-sm text-muted-foreground mt-2">

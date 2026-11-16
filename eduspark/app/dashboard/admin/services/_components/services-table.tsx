@@ -137,7 +137,7 @@ function ServiceThumb({
       )}
       style={{ width: size, height: size }}
     >
-      <span className="text-white/60 font-bold" style={{ fontSize: size * 0.4 }}>
+      <span className="text-foreground/60 font-bold" style={{ fontSize: size * 0.4 }}>
         {title.charAt(0)}
       </span>
     </div>
@@ -167,12 +167,12 @@ function ServiceDetailsModal({
         {/* Header */}
         <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border">
           <div>
-            <h2 className="text-lg font-bold text-white">Review Service</h2>
+            <h2 className="text-lg font-bold text-foreground">Review Service</h2>
             <p className="text-xs text-muted-foreground mt-0.5">Review all details before making a decision.</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-accent text-muted-foreground hover:text-white transition-colors"
+            className="p-2 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -197,7 +197,7 @@ function ServiceDetailsModal({
                 >
                   {service.status}
                 </span>
-                <h1 className="text-xl font-bold text-white">{service.title}</h1>
+                <h1 className="text-xl font-bold text-foreground">{service.title}</h1>
                 <p className="text-sm text-muted-foreground mt-1">
                   By <Link href={`/profile/${service.creator.id}`} className="text-primary hover:underline">{service.creator.name}</Link>
                   {service.category && <> آ· {service.category.name}</>}
@@ -216,7 +216,7 @@ function ServiceDetailsModal({
 
           {/* Description */}
           <div>
-            <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><FileText className="w-4 h-4 text-primary" /> Description</h3>
+            <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2"><FileText className="w-4 h-4 text-primary" /> Description</h3>
             <div className="p-4 rounded-xl bg-background border border-border text-sm text-foreground leading-relaxed whitespace-pre-wrap">
               {service.description}
             </div>
@@ -225,7 +225,7 @@ function ServiceDetailsModal({
           {/* Tags */}
           {service.tags.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><Tag className="w-4 h-4 text-primary" /> Tags</h3>
+              <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2"><Tag className="w-4 h-4 text-primary" /> Tags</h3>
               <div className="flex flex-wrap gap-2">
                 {service.tags.map((tag) => (
                   <span key={tag} className="px-2.5 py-1 rounded-full bg-accent border border-border text-xs text-foreground">
@@ -239,7 +239,7 @@ function ServiceDetailsModal({
           {/* Portfolio Links */}
           {service.portfolioLinks.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><LinkIcon className="w-4 h-4 text-primary" /> Portfolio</h3>
+              <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2"><LinkIcon className="w-4 h-4 text-primary" /> Portfolio</h3>
               <div className="space-y-2">
                 {service.portfolioLinks.map((link, i) => isHttpsUrl(link) ? (
                   <a
@@ -620,7 +620,7 @@ export function ServicesTable({
           <div className="w-16 h-16 rounded-2xl bg-accent border border-border flex items-center justify-center mx-auto mb-5">
             <Store className="w-7 h-7 text-muted-foreground/70" />
           </div>
-          <h2 className="text-lg font-bold text-white mb-1.5">
+          <h2 className="text-lg font-bold text-foreground mb-1.5">
             No services found
           </h2>
           <p className="text-sm text-muted-foreground">
@@ -663,7 +663,7 @@ export function ServicesTable({
                       thumbnail={s.thumbnail}
                     />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">
+                      <p className="text-sm font-semibold text-foreground truncate">
                         {s.title}
                       </p>
                       <p className="text-xs text-muted-foreground truncate mt-0.5">
@@ -730,7 +730,7 @@ export function ServicesTable({
                         onClick={() =>
                           setOpenMenuId(openMenuId === s.id ? null : s.id)
                         }
-                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-white transition-colors"
+                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
                         aria-label="Service actions"
                       >
                         <MoreVertical className="w-4 h-4" />
@@ -792,7 +792,7 @@ export function ServicesTable({
                             href={`/marketplace/services/${s.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors"
+                            className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
                             View Public
@@ -807,7 +807,7 @@ export function ServicesTable({
                             type="button"
                             onClick={() => handleChangeStatus(s, "ACTIVE")}
                             disabled={s.status === "ACTIVE" || s.status === "PENDING_REVIEW"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Activate
                           </button>
@@ -815,7 +815,7 @@ export function ServicesTable({
                             type="button"
                             onClick={() => handleChangeStatus(s, "PAUSED")}
                             disabled={s.status === "PAUSED"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Pause
                           </button>
@@ -909,7 +909,7 @@ export function ServicesTable({
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <XCircle className="w-5 h-5 text-destructive" />
-                  <h3 className="text-lg font-bold text-white">
+                  <h3 className="text-lg font-bold text-foreground">
                     {archiveDialog.mode === "REJECT" ? "Request changes" : "Archive service"}
                   </h3>
                 </div>

@@ -234,7 +234,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
             <BookOpen className="w-3 h-3" />
             {total} {total === 1 ? "course" : "courses"} available
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight leading-tight">
             Learn from the best,{" "}
             <span className="bg-linear-to-r from-emerald-400 to-emerald-400 bg-clip-text text-transparent">
               at your own pace.

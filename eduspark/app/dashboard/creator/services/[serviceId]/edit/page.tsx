@@ -92,7 +92,7 @@ export default async function EditServicePage({ params }: PageProps) {
             </p>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black text-white">
+          <h1 className="text-2xl sm:text-3xl font-black text-foreground">
             Edit Service
           </h1>
           <p className="text-muted-foreground text-sm mt-1.5 truncate">

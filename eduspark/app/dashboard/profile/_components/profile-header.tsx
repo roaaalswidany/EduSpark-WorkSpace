@@ -75,7 +75,7 @@ function Avatar({
 
   return (
     <div
-      className="rounded-3xl flex items-center justify-center text-white font-black ring-2 ring-border shrink-0"
+      className="rounded-3xl flex items-center justify-center text-foreground font-black ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -143,7 +143,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
           <Avatar name={user.name} image={user.image} size={96} />
 
           <div className="flex-1 min-w-0 pt-2 sm:pt-0 sm:pb-1">
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight">
               {user.name}
             </h1>
             {user.headline && (
@@ -199,7 +199,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
                   <Icon className={cn("w-4 h-4", s.color)} />
                 </div>
                 <div>
-                  <p className="text-lg font-black text-white tabular-nums leading-none">
+                  <p className="text-lg font-black text-foreground tabular-nums leading-none">
                     {s.value}
                   </p>
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-1">

@@ -68,7 +68,7 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
       {/* Header + filters */}
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
-          <h2 className="text-lg font-bold text-white">Badges</h2>
+          <h2 className="text-lg font-bold text-foreground">Badges</h2>
           <p className="text-xs text-muted-foreground mt-0.5">
             {earned} of {badges.length} unlocked
           </p>
@@ -134,7 +134,7 @@ function BadgeCard({ badge }: { badge: BadgeData }) {
         )}
       >
         {badge.earned ? (
-          <Icon className="w-6 h-6 text-white" />
+          <Icon className="w-6 h-6 text-foreground" />
         ) : (
           <Lock className="w-5 h-5 text-muted-foreground/70" />
         )}

@@ -21,9 +21,9 @@ export function ErrorContent() {
       <div className="w-full max-w-md text-center">
  <Link href="/" className="flex items-center justify-center gap-2.5 mb-7 group">
   <div className="w-10 h-10 rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
-    <Sparkles className="w-5 h-5 text-white" />
+    <Sparkles className="w-5 h-5 text-foreground" />
   </div>
-  <span className="text-xl font-black text-white tracking-tight">
+  <span className="text-xl font-black text-foreground tracking-tight">
     EduSpark
   </span>
 </Link>
@@ -31,7 +31,7 @@ export function ErrorContent() {
 <div className="w-14 h-14 rounded-2xl bg-destructive/10 border border-destructive/20 flex items-center justify-center mx-auto mb-4">
   <AlertCircle className="w-7 h-7 text-destructive" />
 </div>
-<h1 className="text-2xl font-bold text-white mb-2">
+<h1 className="text-2xl font-bold text-foreground mb-2">
   Authentication Error
 </h1>
         <p className="text-muted-foreground mb-6">{message}</p>

@@ -85,7 +85,7 @@ function ReviewForm({ courseId, onDone }: { courseId: string; onDone: () => void
 
   return (
     <div className="rounded-2xl bg-card border border-border p-5 space-y-3">
-      <h3 className="text-sm font-bold text-white">Leave a review</h3>
+      <h3 className="text-sm font-bold text-foreground">Leave a review</h3>
       <StarPicker value={rating} onChange={setRating} />
       <textarea
         value={comment}
@@ -136,11 +136,11 @@ export function CourseReviews({
   return (
     <section className="rounded-2xl bg-card border border-border p-5 sm:p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-bold text-white">Reviews ({ratingCount})</h2>
+        <h2 className="text-base font-bold text-foreground">Reviews ({ratingCount})</h2>
         {ratingCount > 0 && (
           <div className="flex items-center gap-2">
             <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-            <span className="text-sm font-bold text-white">{averageRating.toFixed(1)}</span>
+            <span className="text-sm font-bold text-foreground">{averageRating.toFixed(1)}</span>
             <span className="text-xs text-muted-foreground">/ 5</span>
           </div>
         )}

@@ -7,7 +7,7 @@ export function EmptyServicesState() {
       <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
         <Package className="w-7 h-7 text-primary" />
       </div>
-      <h2 className="text-lg font-bold text-white mb-1.5">No services yet</h2>
+      <h2 className="text-lg font-bold text-foreground mb-1.5">No services yet</h2>
       <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
         Create your first service and start earning. Every service must be
         linked to a course you&apos;ve been certified in.

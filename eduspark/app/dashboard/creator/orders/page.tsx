@@ -86,7 +86,7 @@ export default async function CreatorOrdersPage() {
           <Inbox className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Creator Studio</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
           Incoming Orders
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
@@ -98,7 +98,7 @@ export default async function CreatorOrdersPage() {
       {orders.length > 0 && (
         <div className="grid grid-cols-3 gap-3 mb-8">
           <div className="rounded-2xl bg-card border border-border p-4">
-            <p className="text-2xl font-black text-white tabular-nums leading-none">
+            <p className="text-2xl font-black text-foreground tabular-nums leading-none">
               {newCount}
             </p>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">
@@ -106,7 +106,7 @@ export default async function CreatorOrdersPage() {
             </p>
           </div>
           <div className="rounded-2xl bg-card border border-border p-4">
-            <p className="text-2xl font-black text-white tabular-nums leading-none">
+            <p className="text-2xl font-black text-foreground tabular-nums leading-none">
               {activeCount}
             </p>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">
@@ -114,7 +114,7 @@ export default async function CreatorOrdersPage() {
             </p>
           </div>
           <div className="rounded-2xl bg-card border border-border p-4">
-            <p className="text-2xl font-black text-white tabular-nums leading-none">
+            <p className="text-2xl font-black text-foreground tabular-nums leading-none">
               {completedCount}
             </p>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">
@@ -129,7 +129,7 @@ export default async function CreatorOrdersPage() {
           <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-5">
             <Inbox className="w-7 h-7 text-emerald-400" />
           </div>
-          <h2 className="text-lg font-bold text-white mb-1.5">
+          <h2 className="text-lg font-bold text-foreground mb-1.5">
             No incoming orders
           </h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">

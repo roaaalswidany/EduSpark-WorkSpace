@@ -8,7 +8,7 @@ export default function WelcomePage() {
         <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-4">
           <GraduationCap className="w-7 h-7 text-emerald-400" />
         </div>
-        <h1 className="text-2xl font-bold text-white mb-2">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
           Welcome to EduSpark! ًںژ‰
         </h1>
         <p className="text-muted-foreground mb-6">

@@ -53,7 +53,7 @@ export function PublicServicesGrid({ services }: { services: PublicService[] }) 
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
                 <span
-                  className="font-black text-white/20 select-none"
+                  className="font-black text-foreground/20 select-none"
                   style={{ fontSize: "clamp(2rem, 6vw, 4rem)" }}
                 >
                   {service.title.charAt(0)}
@@ -63,7 +63,7 @@ export function PublicServicesGrid({ services }: { services: PublicService[] }) 
           </div>
 
           <div className="flex flex-col flex-1 p-4 gap-3">
-            <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-white transition-colors flex-1">
+            <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-foreground transition-colors flex-1">
               {service.title}
             </h3>
 
@@ -81,10 +81,10 @@ export function PublicServicesGrid({ services }: { services: PublicService[] }) 
                 )}
               </div>
               <div className="text-right">
-                <p className="text-[9px] font-medium text-slate-600 uppercase tracking-wider">
+                <p className="text-[9px] font-medium text-muted-foreground uppercase tracking-wider">
                   From
                 </p>
-                <p className="text-base font-black text-white leading-none tabular-nums">
+                <p className="text-base font-black text-foreground leading-none tabular-nums">
                   $
                   {service.price % 1 === 0
                     ? service.price

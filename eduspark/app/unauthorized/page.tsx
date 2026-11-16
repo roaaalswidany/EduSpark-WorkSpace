@@ -18,7 +18,7 @@ export default async function UnauthorizedPage({ searchParams }: PageProps) {
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-destructive/10 border border-destructive/20 mx-auto mb-5">
           <ShieldAlert className="w-10 h-10 text-destructive" />
         </div>
-        <h1 className="text-2xl font-bold text-white mb-2">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
           Access Denied
         </h1>
         <p className="text-sm text-muted-foreground leading-relaxed mb-6">

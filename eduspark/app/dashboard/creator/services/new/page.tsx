@@ -29,13 +29,13 @@ function NoCertificatesGate() {
           <Award className="w-10 h-10 text-amber-400" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-white mb-3">
+          <h2 className="text-2xl font-bold text-foreground mb-3">
             Certificate Required
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed">
             To offer services on EduSpark, you must first complete a course and
             pass the certification quiz with a score of{" "}
-            <span className="text-white font-semibold">{QUIZ_PASSING_SCORE}% or higher</span>.
+            <span className="text-foreground font-semibold">{QUIZ_PASSING_SCORE}% or higher</span>.
             Your certificate proves your expertise to potential clients.
           </p>
         </div>
@@ -135,7 +135,7 @@ export default async function NewServicePage() {
               Creator Studio
             </p>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white">
+          <h1 className="text-2xl sm:text-3xl font-black text-foreground">
             Create a New Service
           </h1>
           <p className="text-muted-foreground text-sm mt-1.5">

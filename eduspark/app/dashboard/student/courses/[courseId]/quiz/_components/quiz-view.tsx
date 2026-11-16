@@ -273,7 +273,7 @@ export function QuizView({
               <ArrowLeft className="w-4 h-4 text-muted-foreground" />
             </Link>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 Certification Quiz
               </p>
               <p className="text-xs text-muted-foreground truncate">{course.title}</p>
@@ -288,7 +288,7 @@ export function QuizView({
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/50/10 border border-primary/100/20 mb-5">
               <HelpCircle className="w-8 h-8 text-indigo-400" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white mb-2">
+            <h1 className="text-2xl sm:text-3xl font-black text-foreground mb-2">
               {quiz.title}
             </h1>
             {quiz.description && (
@@ -302,28 +302,28 @@ export function QuizView({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
             <div className="rounded-2xl bg-card border border-border p-5 text-center">
               <HelpCircle className="w-5 h-5 text-indigo-400 mx-auto mb-2" />
-              <p className="text-xl font-black text-white tabular-nums">
+              <p className="text-xl font-black text-foreground tabular-nums">
                 {quiz.totalQuestions}
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-1">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mt-1">
                 Questions
               </p>
             </div>
             <div className="rounded-2xl bg-card border border-border p-5 text-center">
               <Trophy className="w-5 h-5 text-amber-400 mx-auto mb-2" />
-              <p className="text-xl font-black text-white tabular-nums">
+              <p className="text-xl font-black text-foreground tabular-nums">
                 {quiz.passingScore}%
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-1">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mt-1">
                 To Pass
               </p>
             </div>
             <div className="rounded-2xl bg-card border border-border p-5 text-center">
               <Clock className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
-              <p className="text-xl font-black text-white tabular-nums">
+              <p className="text-xl font-black text-foreground tabular-nums">
                 {quiz.timeLimit ? formatTime(quiz.timeLimit) : "—"}
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-1">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mt-1">
                 {quiz.timeLimit ? "Time Limit" : "No Limit"}
               </p>
             </div>
@@ -368,7 +368,7 @@ export function QuizView({
 
           {/* Rules */}
           <div className="rounded-2xl bg-card border border-border p-5 sm:p-6 mb-8">
-            <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+            <h2 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-indigo-400" />
               Before you begin
             </h2>
@@ -427,7 +427,7 @@ export function QuizView({
         <div className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 Question {currentIndex + 1} of {quiz.questions.length}
               </p>
               <p className="text-xs text-muted-foreground truncate">{quiz.title}</p>
@@ -469,7 +469,7 @@ export function QuizView({
               <HelpCircle className="w-3 h-3" />
               Question {currentIndex + 1}
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white leading-snug">
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-snug">
               {currentQuestion.text}
             </h2>
           </div>
@@ -510,7 +510,7 @@ export function QuizView({
                       <span
                         className={cn(
                           "text-[10px] font-bold uppercase tracking-wider",
-                          isSelected ? "text-indigo-400" : "text-slate-600"
+                          isSelected ? "text-indigo-400" : "text-muted-foreground"
                         )}
                       >
                         Option {String.fromCharCode(65 + i)}
@@ -543,7 +543,7 @@ export function QuizView({
               className={cn(
                 "flex items-center gap-1.5 px-4 h-11 rounded-xl text-sm font-semibold transition-all",
                 isFirst
-                  ? "opacity-30 cursor-not-allowed text-slate-600"
+                  ? "opacity-30 cursor-not-allowed text-muted-foreground"
                   : "text-foreground hover:bg-accent border border-border"
               )}
             >
@@ -586,7 +586,7 @@ export function QuizView({
                 className={cn(
                   "flex items-center gap-1.5 px-4 h-11 rounded-xl text-sm font-bold transition-all",
                   !selectedForCurrent
-                    ? "bg-accent text-slate-600 cursor-not-allowed"
+                    ? "bg-accent text-muted-foreground cursor-not-allowed"
                     : "bg-primary hover:bg-primary/50 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
                 )}
               >
@@ -600,7 +600,7 @@ export function QuizView({
                 className={cn(
                   "flex items-center gap-1.5 px-5 h-11 rounded-xl text-sm font-bold transition-all",
                   isPending || totalAnswered < quiz.questions.length
-                    ? "bg-accent text-slate-600 cursor-not-allowed"
+                    ? "bg-accent text-muted-foreground cursor-not-allowed"
                     : "bg-emerald-600 hover:bg-emerald-500 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
                 )}
               >
@@ -646,7 +646,7 @@ export function QuizView({
               <ArrowLeft className="w-4 h-4 text-muted-foreground" />
             </Link>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 Quiz Results
               </p>
               <p className="text-xs text-muted-foreground truncate">{quiz.title}</p>
@@ -700,18 +700,18 @@ export function QuizView({
               >
                 {result.score.toFixed(0)}%
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-1">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mt-1">
                 Your Score
               </p>
             </div>
             <div className="rounded-2xl bg-card border border-border p-4 text-center">
-              <p className="text-2xl sm:text-3xl font-black text-white tabular-nums">
+              <p className="text-2xl sm:text-3xl font-black text-foreground tabular-nums">
                 {result.correctAnswers}
-                <span className="text-slate-600 text-lg">
+                <span className="text-muted-foreground text-lg">
                   /{result.totalQuestions}
                 </span>
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-1">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mt-1">
                 Correct
               </p>
             </div>
@@ -719,7 +719,7 @@ export function QuizView({
               <p className="text-2xl sm:text-3xl font-black text-muted-foreground tabular-nums">
                 {result.passingScore}%
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-1">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mt-1">
                 Required
               </p>
             </div>
@@ -765,7 +765,7 @@ export function QuizView({
                   </p>
                   <p className="text-xs text-muted-foreground">
                     You are now a{" "}
-                    <strong className="text-white">Creator</strong>. Head to
+                    <strong className="text-foreground">Creator</strong>. Head to
                     your dashboard to start offering services.
                   </p>
                 </div>
@@ -777,7 +777,7 @@ export function QuizView({
           {passed && result.answerFeedback.length > 0 && (
           <div className="rounded-2xl bg-card border border-border overflow-hidden mb-6">
             <div className="px-5 sm:px-6 py-4 border-b border-border">
-              <h2 className="text-sm font-bold text-white">Answer Review</h2>
+              <h2 className="text-sm font-bold text-foreground">Answer Review</h2>
               <p className="text-xs text-foreground0 mt-0.5">
                 See how you answered each question
               </p>
@@ -807,10 +807,10 @@ export function QuizView({
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-1">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
                           Question {idx + 1}
                         </p>
-                        <p className="text-sm font-semibold text-white leading-snug">
+                        <p className="text-sm font-semibold text-foreground leading-snug">
                           {q.text}
                         </p>
                       </div>

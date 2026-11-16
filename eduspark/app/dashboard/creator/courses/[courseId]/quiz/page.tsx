@@ -54,7 +54,7 @@ export default async function QuizPage({
         >
           <ArrowLeft className="w-4 h-4" /> Back to My Courses
         </Link>
-        <h1 className="text-2xl font-bold text-white">Quiz Management</h1>
+        <h1 className="text-2xl font-bold text-foreground">Quiz Management</h1>
         <p className="text-sm text-muted-foreground mt-1">Course: {course.title}</p>
       </div>
 
@@ -68,7 +68,7 @@ export default async function QuizPage({
       {canEdit && <QuizGenerator courseId={course.id} />}
 
       <div className="mt-8">
-        <h2 className="text-lg font-bold text-white mb-4">
+        <h2 className="text-lg font-bold text-foreground mb-4">
           Current Questions ({course.quiz?.questions.length ?? 0})
         </h2>
 

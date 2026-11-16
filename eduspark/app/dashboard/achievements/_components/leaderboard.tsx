@@ -20,7 +20,7 @@ export function Leaderboard({ entries }: LeaderboardProps) {
   return (
     <div>
       <div className="mb-4">
-        <h2 className="text-lg font-bold text-white">Leaderboard</h2>
+        <h2 className="text-lg font-bold text-foreground">Leaderboard</h2>
         <p className="text-xs text-muted-foreground mt-0.5">
           Top 20 learners this season
         </p>
@@ -114,7 +114,7 @@ function PodiumCard({
       </div>
 
       <div className="text-center min-w-0 w-full">
-        <p className="text-xs font-bold text-white truncate">
+        <p className="text-xs font-bold text-foreground truncate">
           {entry.name.split(" ")[0]}
         </p>
         <p className={cn("text-[10px] font-bold tabular-nums", level.color)}>
@@ -154,14 +154,14 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
       </div>
 
       <div 
-        className="w-9 h-9 rounded-full ring-2 ring-border flex items-center justify-center text-white text-xs font-bold shrink-0"
+        className="w-9 h-9 rounded-full ring-2 ring-border flex items-center justify-center text-foreground text-xs font-bold shrink-0"
         style={{ background: `hsl(${hue}, 55%, 42%)` }}
       >
         {initials}
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-white truncate">
+        <p className="text-sm font-semibold text-foreground truncate">
           {entry.name}
           {entry.isCurrentUser && (
             <span className="ml-2 text-[10px] font-bold text-primary">
@@ -175,7 +175,7 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
       </div>
 
       <div className="text-right shrink-0">
-        <p className="text-sm font-black text-white tabular-nums">
+        <p className="text-sm font-black text-foreground tabular-nums">
           {xpFormatted}
         </p>
         <p className="text-[9px] text-muted-foreground/70 uppercase tracking-widest">

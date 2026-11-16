@@ -76,9 +76,9 @@ function VideoPlayer({ url, lessonId, onEnded }: VideoPlayerProps) {
     return (
       <div className="w-full aspect-video bg-background flex flex-col items-center justify-center gap-3">
         <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center">
-          <BookOpen className="w-7 h-7 text-slate-600" />
+          <BookOpen className="w-7 h-7 text-muted-foreground" />
         </div>
-        <p className="text-slate-600 text-sm">No video for this lesson</p>
+        <p className="text-muted-foreground text-sm">No video for this lesson</p>
       </div>
     );
   }
@@ -184,12 +184,12 @@ function CompletionBanner({
       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/20 mb-4">
         <Award className="w-8 h-8 text-emerald-400" />
       </div>
-      <h3 className="text-xl font-bold text-white mb-1.5">
+      <h3 className="text-xl font-bold text-foreground mb-1.5">
         Course Complete! 🎉
       </h3>
       <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-5">
         You finished{" "}
-        <span className="text-white font-medium">{title}</span>.{" "}
+        <span className="text-foreground font-medium">{title}</span>.{" "}
         {hasQuiz
           ? "Take the certification quiz to earn your certificate."
           : "Certificate is now available in your dashboard."}
@@ -261,7 +261,7 @@ function LessonRow({ lesson, isActive, onSelect }: LessonRowProps) {
             </span>
           )}
           {lesson.duration != null && (
-            <span className="flex items-center gap-0.5 text-[10px] text-slate-600">
+            <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
               <Clock className="w-2.5 h-2.5" />
               {formatDuration(lesson.duration)}
             </span>
@@ -321,7 +321,7 @@ function SectionAccordion({
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-foreground truncate group-hover:text-white transition-colors">
+          <p className="text-xs font-semibold text-foreground truncate group-hover:text-foreground transition-colors">
             {section.title}
           </p>
           <div className="flex items-center gap-2 mt-1.5">
@@ -334,7 +334,7 @@ function SectionAccordion({
                 style={{ width: `${sectionProgress}%` }}
               />
             </div>
-            <span className="text-[10px] text-slate-600 shrink-0">
+            <span className="text-[10px] text-muted-foreground shrink-0">
               {section.completedCount}/{section.totalCount}
             </span>
           </div>
@@ -342,7 +342,7 @@ function SectionAccordion({
 
         <ChevronDown
           className={cn(
-            "w-3.5 h-3.5 text-slate-600 shrink-0 transition-transform duration-200",
+            "w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform duration-200",
             isExpanded && "rotate-180"
           )}
         />
@@ -548,7 +548,7 @@ export function CourseLearningView({
         <Link
           href="/dashboard/student/courses"
           title="Back to My Courses"
-          className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent text-muted-foreground hover:text-white transition-colors shrink-0"
+          className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors shrink-0"
         >
           <ChevronLeft className="w-4.5 h-4.5" />
         </Link>
@@ -644,10 +644,10 @@ export function CourseLearningView({
             {/* Title row */}
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0 space-y-2">
-                <p className="text-xs font-medium text-slate-600 uppercase tracking-widest">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
                   Lesson {activeIndex + 1} of {allLessons.length}
                 </p>
-                <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight">
+                <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-tight">
                   {activeLesson.title}
                 </h2>
                 {activeLesson.duration != null && (
@@ -863,8 +863,8 @@ export function CourseLearningView({
 
           {/* Sidebar footer */}
           <div className="px-4 py-3 border-t border-border/80 shrink-0 flex items-center gap-2">
-            <Video className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-            <p className="text-xs text-slate-600 truncate">
+            <Video className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+            <p className="text-xs text-muted-foreground truncate">
               Instructor:{" "}
               <span className="text-foreground0">{course.creator.name}</span>
             </p>

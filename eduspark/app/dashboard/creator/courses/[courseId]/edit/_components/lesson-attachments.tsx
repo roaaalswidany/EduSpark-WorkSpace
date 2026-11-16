@@ -182,7 +182,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
       )}
 
       {attachments.length === 0 ? (
-        <p className="text-[10px] text-slate-600 py-1">
+        <p className="text-[10px] text-muted-foreground py-1">
           No attachments. Max 25 MB per file.
         </p>
       ) : (
@@ -195,7 +195,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
               <FileText className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-[11px] text-foreground truncate">{att.fileName}</p>
-                <p className="text-[9px] text-slate-600">
+                <p className="text-[9px] text-muted-foreground">
                   {formatSize(att.fileSizeBytes)}
                   {att.status !== "CONFIRMED" && (
                     <span className="ml-1 text-amber-500">· {att.status.toLowerCase()}</span>
@@ -237,7 +237,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
                   <AlertTriangle className="w-5 h-5 text-red-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-base font-bold text-white">Delete attachment?</h3>
+                  <h3 className="text-base font-bold text-foreground">Delete attachment?</h3>
                   <p className="text-sm text-muted-foreground mt-1">
                     <span className="font-mono text-foreground">{deleteDialog.fileName}</span>
                     {" "}will be permanently removed. This cannot be undone.
@@ -258,7 +258,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
                   type="button"
                   onClick={handleDeleteConfirmed}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-colors disabled:opacity-50 inline-flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-foreground text-sm font-bold transition-colors disabled:opacity-50 inline-flex items-center gap-2"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

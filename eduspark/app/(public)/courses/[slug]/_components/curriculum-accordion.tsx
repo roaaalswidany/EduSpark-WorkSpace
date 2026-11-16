@@ -67,7 +67,7 @@ export function CurriculumAccordion({
       <div className="px-5 sm:px-6 py-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BookOpen className="w-4 h-4 text-indigo-400" />
-          <h2 className="text-sm font-bold text-white">Course Curriculum</h2>
+          <h2 className="text-sm font-bold text-foreground">Course Curriculum</h2>
         </div>
         <p className="text-xs text-foreground0">
           {sections.length} sections · {totalLessons} lessons ·{" "}
@@ -101,10 +101,10 @@ export function CurriculumAccordion({
 
                 {/* Title + meta */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-foreground truncate group-hover:text-white transition-colors">
+                  <p className="text-sm font-semibold text-foreground truncate group-hover:text-foreground transition-colors">
                     {section.title}
                   </p>
-                  <p className="text-xs text-slate-600 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {section.lessons.length}{" "}
                     {section.lessons.length === 1 ? "lesson" : "lessons"}
                     {sectionDuration > 0 && ` · ${formatDuration(sectionDuration)}`}
@@ -113,7 +113,7 @@ export function CurriculumAccordion({
 
                 <ChevronDown
                   className={cn(
-                    "w-4 h-4 text-slate-600 shrink-0 transition-transform duration-200",
+                    "w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200",
                     isOpen && "rotate-180"
                   )}
                 />
@@ -134,7 +134,7 @@ export function CurriculumAccordion({
                       >
                         {/* Icon */}
                         {locked ? (
-                          <Lock className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                          <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                         ) : (
                           <Play className="w-3.5 h-3.5 text-indigo-400 shrink-0 fill-current" />
                         )}
@@ -158,7 +158,7 @@ export function CurriculumAccordion({
 
                         {/* Duration */}
                         {lesson.duration != null && (
-                          <span className="flex items-center gap-1 text-[10px] text-slate-600 shrink-0 tabular-nums">
+                          <span className="flex items-center gap-1 text-[10px] text-muted-foreground shrink-0 tabular-nums">
                             <Clock className="w-3 h-3" />
                             {formatDuration(lesson.duration)}
                           </span>

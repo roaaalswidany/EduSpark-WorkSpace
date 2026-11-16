@@ -46,10 +46,10 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
           <div className="rounded-3xl bg-linear-to-br from-emerald-500/5 via-muted to-emerald-500/5 border border-border p-8 sm:p-16 text-center">
             <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-linear-to-br from-emerald-500 to-emerald-600 mb-6 shadow-2xl shadow-emerald-500/20">
-              <Target className="w-10 h-10 text-white" />
+              <Target className="w-10 h-10 text-foreground" />
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-black text-white mb-3">
+            <h1 className="text-2xl sm:text-3xl font-black text-foreground mb-3">
               Build Your Career Path
             </h1>
             <p className="text-sm text-muted-foreground max-w-lg mx-auto mb-8 leading-relaxed">
@@ -127,7 +127,7 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
           <Target className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Career Path</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight leading-tight">
           {activePath.goal}
         </h1>
         {activePath.description && (
@@ -162,7 +162,7 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
             Progress
           </p>
-          <p className="text-sm font-black text-white tabular-nums">
+          <p className="text-sm font-black text-foreground tabular-nums">
             {progressPct}%
           </p>
         </div>
@@ -213,7 +213,7 @@ function Feature({
   return (
     <div className="rounded-xl bg-background/60 border border-border p-4">
       <Icon className={cn("w-4 h-4 mb-2", color)} />
-      <p className="text-xs font-bold text-white mb-1">{title}</p>
+      <p className="text-xs font-bold text-foreground mb-1">{title}</p>
       <p className="text-[11px] text-muted-foreground leading-relaxed">{desc}</p>
     </div>
   );

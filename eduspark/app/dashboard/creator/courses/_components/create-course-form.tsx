@@ -53,13 +53,13 @@ export function CreateCourseForm() {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
       <div className="relative w-full max-w-lg rounded-2xl bg-card border border-border shadow-2xl overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+          <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-primary" />
             Create New Course
           </h2>
           <button
             onClick={() => setIsOpen(false)}
-            className="text-muted-foreground hover:text-white transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
