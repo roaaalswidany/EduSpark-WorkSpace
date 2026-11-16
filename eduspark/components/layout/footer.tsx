@@ -22,28 +22,28 @@ const XIcon = ({ className }: { className?: string }) => (
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-800 bg-slate-950">
+    <footer className="border-t border-border bg-background">
       <div className="container mx-auto max-w-6xl px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-                <GraduationCap className="w-4 h-4 text-indigo-400" />
+              <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                <GraduationCap className="w-4 h-4 text-primary" />
               </div>
-              <span className="text-lg font-bold text-white">EduSpark</span>
+              <span className="text-lg font-bold text-foreground">EduSpark</span>
             </Link>
-            <p className="text-sm text-slate-400 max-w-sm leading-relaxed mb-6">
+            <p className="text-sm text-muted-foreground max-w-sm leading-relaxed mb-6">
               Bridging the gap between education and the job market. Learn verified skills, earn certificates, and sell your services globally.
             </p>
             <div className="flex items-center gap-3">
-              <a href="#" className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500/50 hover:bg-slate-800 transition-all">
+              <a href="#" className="w-8 h-8 rounded-lg bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-accent transition-all">
                 <GitHubIcon className="w-4 h-4" />
               </a>
-              <a href="#" className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500/50 hover:bg-slate-800 transition-all">
+              <a href="#" className="w-8 h-8 rounded-lg bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-accent transition-all">
                 <LinkedInIcon className="w-4 h-4" />
               </a>
-              <a href="#" className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500/50 hover:bg-slate-800 transition-all">
+              <a href="#" className="w-8 h-8 rounded-lg bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-accent transition-all">
                 <XIcon className="w-4 h-4" />
               </a>
             </div>
@@ -51,32 +51,32 @@ export function Footer() {
 
           {/* Platform Links */}
           <div>
-            <h3 className="text-sm font-bold text-white mb-4">Platform</h3>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link href="/courses" className="hover:text-indigo-400 transition-colors">Browse Courses</Link></li>
-              <li><Link href="/marketplace" className="hover:text-indigo-400 transition-colors">Marketplace</Link></li>
-              <li><Link href="/verify" className="hover:text-indigo-400 transition-colors">Verify Certificate</Link></li>
+            <h3 className="text-sm font-bold text-foreground mb-4">Platform</h3>
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
+              <li><Link href="/courses" className="hover:text-primary transition-colors">Browse Courses</Link></li>
+              <li><Link href="/marketplace" className="hover:text-primary transition-colors">Marketplace</Link></li>
+              <li><Link href="/verify" className="hover:text-primary transition-colors">Verify Certificate</Link></li>
             </ul>
           </div>
 
           {/* Company Links */}
           <div>
-            <h3 className="text-sm font-bold text-white mb-4">Company</h3>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link href="/about" className="hover:text-indigo-400 transition-colors">About Us</Link></li>
-              <li><Link href="/contact" className="hover:text-indigo-400 transition-colors">Contact</Link></li>
-              <li><Link href="/privacy" className="hover:text-indigo-400 transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-indigo-400 transition-colors">Terms of Service</Link></li>
+            <h3 className="text-sm font-bold text-foreground mb-4">Company</h3>
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
+              <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+              <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-slate-500">
-            © {new Date().getFullYear()} EduSpark All rights reserved.
+        <div className="border-t border-border mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} EduSpark. All rights reserved.
           </p>
-          <p className="text-xs text-slate-600">
-            Made with hard for Graduation Project
+          <p className="text-xs text-muted-foreground/70">
+            Made for Graduation Project
           </p>
         </div>
       </div>

@@ -41,7 +41,7 @@ export function SidebarXpBadge({
       onClick={onNavigate}
       className={cn(
         "block rounded-xl border p-3 transition-all",
-        "hover:border-indigo-500/40 hover:bg-slate-800/60",
+        "hover:border-primary/40 hover:bg-accent/60",
         "group",
         levelBorder,
         levelBg
@@ -64,7 +64,7 @@ export function SidebarXpBadge({
               {levelLabel}
             </p>
           </div>
-          <p className="text-[10px] text-slate-500 tabular-nums">
+          <p className="text-[10px] text-muted-foreground tabular-nums">
             <Sparkles className="w-2.5 h-2.5 inline mr-0.5" />
             {xpFormatted} XP
           </p>
@@ -72,7 +72,7 @@ export function SidebarXpBadge({
       </div>
 
       <div className="space-y-1">
-        <div className="h-1.5 rounded-full bg-slate-950 overflow-hidden">
+        <div className="h-1.5 rounded-full bg-background overflow-hidden">
           <div
             className={cn(
               "h-full bg-linear-to-r transition-all duration-500",
@@ -82,12 +82,12 @@ export function SidebarXpBadge({
           />
         </div>
         {nextLevelLabel && (
-          <p className="text-[9px] text-slate-600 tabular-nums">
+          <p className="text-[9px] text-muted-foreground tabular-nums">
             {xpToNextFormatted} XP to {nextLevelLabel}
           </p>
         )}
         {!nextLevelLabel && (
-          <p className="text-[9px] text-slate-600">Max level reached 👑</p>
+          <p className="text-[9px] text-muted-foreground">Max level reached 👑</p>
         )}
       </div>
     </Link>

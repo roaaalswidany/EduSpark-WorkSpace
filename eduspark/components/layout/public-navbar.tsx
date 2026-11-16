@@ -33,28 +33,26 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* التعديل هنا: flex justify-between للموبايل + md:grid للديسكتوب */}
+        {/* Layout: mobile flex justify-between + desktop md:grid */}
         <div className="h-16 flex justify-between md:grid md:grid-cols-3 items-center gap-4 w-full">
-          
-          {/* العمود الأيسر: اللوجو */}
+          {/* Left column: Logo */}
           <div className="flex justify-start">
             <Link
               href="/"
               className="flex items-center gap-2 shrink-0 group"
             >
-              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
-              <span className="text-base font-black text-white tracking-tight hidden sm:inline">
+              <span className="text-base font-black text-foreground tracking-tight hidden sm:inline">
                 EduSpark
               </span>
             </Link>
           </div>
 
-          {/* العمود الأوسط: الروابط (للديسكتوب فقط) */}
+          {/* Middle column: Links (desktop only) */}
           <nav className="hidden md:flex justify-center items-center gap-2">
             {NAV_LINKS.map((link) => {
               const Icon = link.icon;
@@ -66,10 +64,10 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all",
+                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all border",
                     isActive
-                      ? "bg-slate-800 text-white"
-                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent border-transparent"
                   )}
                 >
                   <Icon className="w-4 h-4" />
@@ -79,18 +77,18 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
             })}
           </nav>
 
-          {/* العمود الأيمن: الأزرار */}
+          {/* Right column: Buttons */}
           <div className="flex justify-end items-center gap-3">
-            {/* أزرار الديسكتوب */}
+            {/* Desktop buttons */}
             <div className="hidden md:flex items-center gap-3">
               {user ? (
                 <Link
                   href="/dashboard"
                   className={cn(
                     "flex items-center gap-2 px-5 py-2.5 rounded-lg",
-                    "bg-indigo-600 hover:bg-indigo-500 text-white",
+                    "bg-primary hover:bg-primary/90 text-primary-foreground",
                     "text-sm font-bold transition-all active:scale-95",
-                    "shadow-lg shadow-indigo-500/20"
+                    "shadow-lg shadow-emerald-500/20"
                   )}
                 >
                   <LayoutDashboard className="w-4 h-4" />
@@ -102,7 +100,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                     href="/auth/login"
                     className={cn(
                       "flex items-center gap-2 px-4 py-2 rounded-lg",
-                      "text-slate-300 hover:text-white hover:bg-slate-800",
+                      "text-foreground hover:bg-accent",
                       "text-sm font-semibold transition-all"
                     )}
                   >
@@ -113,9 +111,9 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                     href="/auth/register"
                     className={cn(
                       "flex items-center gap-2 px-5 py-2.5 rounded-lg",
-                      "bg-indigo-600 hover:bg-indigo-500 text-white",
+                      "bg-primary hover:bg-primary/90 text-primary-foreground",
                       "text-sm font-bold transition-all active:scale-95",
-                      "shadow-lg shadow-indigo-500/20"
+                      "shadow-lg shadow-emerald-500/20"
                     )}
                   >
                     Get Started
@@ -125,10 +123,10 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
               )}
             </div>
 
-            {/* زر الموبايل — هلق رح يطلع على الطرف اليمين */}
+            {/* Mobile menu toggle — appears on the right edge */}
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="md:hidden flex items-center justify-center w-11 h-11 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+              className="md:hidden flex items-center justify-center w-11 h-11 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
               aria-label="Toggle menu"
             >
               {mobileOpen ? (
@@ -142,7 +140,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <nav className="md:hidden py-4 border-t border-slate-800 space-y-2 animate-slide-down origin-top">
+          <nav className="md:hidden py-4 border-t border-border space-y-2 animate-slide-down origin-top">
             {NAV_LINKS.map((link) => {
               const Icon = link.icon;
               const isActive =
@@ -154,10 +152,10 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-semibold transition-all",
+                    "flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-semibold transition-all border",
                     isActive
-                      ? "bg-slate-800 text-white"
-                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent border-transparent"
                   )}
                 >
                   <Icon className="w-5 h-5" />
@@ -166,12 +164,12 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
               );
             })}
 
-            <div className="pt-4 mt-2 border-t border-slate-800 space-y-3">
+            <div className="pt-4 mt-2 border-t border-border space-y-3">
               {user ? (
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all"
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all"
                 >
                   <LayoutDashboard className="w-5 h-5" />
                   Go to Dashboard
@@ -181,7 +179,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                   <Link
                     href="/auth/login"
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-semibold text-foreground bg-accent hover:bg-accent/80 transition-all"
                   >
                     <LogIn className="w-5 h-5" />
                     Sign In
@@ -189,7 +187,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                   <Link
                     href="/auth/register"
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all"
                   >
                     Get Started
                     <ArrowRight className="w-5 h-5" />

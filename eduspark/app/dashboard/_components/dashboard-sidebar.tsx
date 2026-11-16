@@ -121,7 +121,6 @@ interface DashboardSidebarProps {
   onNavigate?: () => void;
 }
 
-// 👇 تم تنظيف المكون ليتجاهل الصور
 function Avatar({
   name,
   size = 40,
@@ -139,7 +138,7 @@ function Avatar({
 
   return (
     <div
-      className="rounded-xl flex items-center justify-center text-white font-bold ring-2 ring-slate-800 shrink-0"
+      className="rounded-xl flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -170,17 +169,17 @@ export function DashboardSidebar({
   const isAdmin = role === "ADMIN";
 
   return (
-    <aside className="w-64 h-full flex flex-col bg-slate-900 border-r border-slate-800">
+    <aside className="w-64 h-full flex flex-col bg-sidebar border-r border-sidebar-border">
       {/* Logo */}
-      <div className="shrink-0 h-14 flex items-center gap-2 px-4 border-b border-slate-800">
+      <div className="shrink-0 h-14 flex items-center gap-2 px-4 border-b border-sidebar-border">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-            <GraduationCap className="w-4 h-4 text-indigo-400" />
+          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <GraduationCap className="w-4 h-4 text-primary" />
           </div>
-          <span className="text-sm font-bold text-white">EduSpark</span>
+          <span className="text-sm font-bold text-sidebar-foreground">EduSpark</span>
         </Link>
         {isAdmin && (
-          <span className="ml-auto text-[9px] font-bold uppercase tracking-wider text-violet-400 bg-violet-500/10 border border-violet-500/20 px-1.5 py-0.5 rounded">
+          <span className="ml-auto text-[9px] font-bold uppercase tracking-wider text-info bg-info/10 border border-info/20 px-1.5 py-0.5 rounded">
             Admin
           </span>
         )}
@@ -198,7 +197,7 @@ export function DashboardSidebar({
 
           return (
             <div key={section.title}>
-              <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-600">
+              <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 {section.title}
               </p>
               <ul className="space-y-0.5">
@@ -211,16 +210,16 @@ export function DashboardSidebar({
                         href={item.href}
                         onClick={onNavigate}
                         className={cn(
-                          "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all",
+                          "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all border",
                           active
-                            ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/20"
-                            : "text-slate-400 hover:text-slate-200 hover:bg-slate-800 border border-transparent"
+                            ? "bg-primary/10 text-primary border-primary/20"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent border-transparent"
                         )}
                       >
                         <Icon
                           className={cn(
                             "w-4 h-4 shrink-0",
-                            active ? "text-indigo-400" : "text-slate-500"
+                            active ? "text-primary" : "text-muted-foreground"
                           )}
                         />
                         <span className="truncate">{item.label}</span>
@@ -235,7 +234,7 @@ export function DashboardSidebar({
       </nav>
 
       {/* User footer */}
-      <div className="shrink-0 border-t border-slate-800 p-3 space-y-1">
+      <div className="shrink-0 border-t border-sidebar-border p-3 space-y-1">
         {/* XP Badge — only for STUDENT / CREATOR */}
         {!isAdmin && (
           <SidebarXpBadge
@@ -260,22 +259,21 @@ export function DashboardSidebar({
           className={cn(
             "flex items-center gap-3 px-2 py-2 rounded-lg transition-all border",
             isProfileActive
-              ? "bg-indigo-500/10 border-indigo-500/20"
-              : "border-transparent hover:bg-slate-800"
+              ? "bg-primary/10 border-primary/20"
+              : "border-transparent hover:bg-accent"
           )}
         >
-          {/* 👇 تم إزالة تمرير الصورة هنا */}
           <Avatar name={user.name} size={36} />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-slate-200 truncate">
+            <p className="text-xs font-semibold text-sidebar-foreground truncate">
               {user.name}
             </p>
-            <p className="text-[10px] text-slate-600 truncate">{user.email}</p>
+            <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
           </div>
           <User
             className={cn(
               "w-3.5 h-3.5 shrink-0",
-              isProfileActive ? "text-indigo-400" : "text-slate-600"
+              isProfileActive ? "text-primary" : "text-muted-foreground"
             )}
           />
         </Link>
@@ -286,8 +284,8 @@ export function DashboardSidebar({
           onClick={() => signOut({ callbackUrl: "/auth/login" })}
           className={cn(
             "w-full flex items-center gap-3 px-3 py-2 rounded-lg",
-            "text-sm font-medium text-slate-400",
-            "hover:text-red-400 hover:bg-red-500/10",
+            "text-sm font-medium text-muted-foreground",
+            "hover:text-destructive hover:bg-destructive/10",
             "transition-all border border-transparent"
           )}
         >

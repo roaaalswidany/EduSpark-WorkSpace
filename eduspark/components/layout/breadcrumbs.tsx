@@ -25,7 +25,7 @@ export function Breadcrumbs({
     <nav
       aria-label="Breadcrumb"
       className={cn(
-        "flex items-center gap-1.5 text-xs text-slate-500 overflow-hidden",
+        "flex items-center gap-1.5 text-xs text-muted-foreground overflow-hidden",
         className
       )}
     >
@@ -33,12 +33,12 @@ export function Breadcrumbs({
         <>
           <Link
             href="/"
-            className="inline-flex items-center gap-1 hover:text-slate-300 transition-colors shrink-0"
+            className="inline-flex items-center gap-1 hover:text-foreground transition-colors shrink-0"
             aria-label="Home"
           >
             <Home className="w-3 h-3" />
           </Link>
-          <ChevronRight className="w-3 h-3 shrink-0 text-slate-700" />
+          <ChevronRight className="w-3 h-3 shrink-0 text-muted-foreground/50" />
         </>
       )}
 
@@ -50,7 +50,7 @@ export function Breadcrumbs({
             {item.href && !isLast ? (
               <Link
                 href={item.href}
-                className="hover:text-slate-300 transition-colors shrink-0"
+                className="hover:text-foreground transition-colors shrink-0"
               >
                 {item.label}
               </Link>
@@ -58,7 +58,7 @@ export function Breadcrumbs({
               <span
                 className={cn(
                   "shrink-0",
-                  isLast && "text-slate-300 font-medium",
+                  isLast && "text-foreground font-medium",
                   item.truncate && "truncate max-w-50 sm:max-w-none"
                 )}
                 aria-current={isLast ? "page" : undefined}
@@ -68,7 +68,7 @@ export function Breadcrumbs({
             )}
 
             {!isLast && (
-              <ChevronRight className="w-3 h-3 shrink-0 text-slate-700" />
+              <ChevronRight className="w-3 h-3 shrink-0 text-muted-foreground/50" />
             )}
           </div>
         );

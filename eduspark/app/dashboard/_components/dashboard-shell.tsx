@@ -59,9 +59,9 @@ export function DashboardShell({
         userId={user.id}
         initialUnreadCount={unreadNotifications}
       >
-        <div className="min-h-screen bg-slate-950 text-slate-100">
+        <div className="min-h-screen bg-background text-foreground">
           {/* Desktop sidebar */}
-            <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex">
+          <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex">
             <DashboardSidebar role={role} user={user} gamification={gamification} />
           </div>
 
@@ -77,7 +77,7 @@ export function DashboardShell({
                   <button
                     type="button"
                     onClick={() => setSidebarOpen(false)}
-                    className="absolute top-3 -right-10 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white"
+                    className="absolute top-3 -right-10 flex items-center justify-center w-8 h-8 rounded-lg bg-card border border-border text-muted-foreground hover:text-foreground transition-colors"
                     aria-label="Close sidebar"
                   >
                     <X className="w-4 h-4" />
@@ -96,17 +96,17 @@ export function DashboardShell({
           {/* Main content area */}
           <div className="lg:pl-64">
             {/* Top bar */}
-            <header className="sticky top-0 z-30 h-14 flex items-center gap-3 px-4 sm:px-6 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+            <header className="sticky top-0 z-30 h-14 flex items-center gap-3 px-4 sm:px-6 bg-background/80 backdrop-blur-md border-b border-border">
               <button
                 type="button"
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg hover:bg-slate-800 transition-colors"
+                className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent transition-colors"
                 aria-label="Open sidebar"
               >
-                <Menu className="w-4 h-4 text-slate-400" />
+                <Menu className="w-4 h-4 text-muted-foreground" />
               </button>
 
-              <h1 className="flex-1 min-w-0 text-sm font-semibold text-slate-300 truncate">
+              <h1 className="flex-1 min-w-0 text-sm font-semibold text-foreground truncate">
                 {getPageTitle(pathname)}
               </h1>
 
@@ -116,7 +116,7 @@ export function DashboardShell({
                 <button
                   type="button"
                   onClick={() => signOut({ callbackUrl: "/auth/login" })}
-                  className="hidden sm:flex items-center gap-2 px-3 h-9 rounded-lg text-xs font-semibold text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                  className="hidden sm:flex items-center gap-2 px-3 h-9 rounded-lg text-xs font-semibold text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   Sign out

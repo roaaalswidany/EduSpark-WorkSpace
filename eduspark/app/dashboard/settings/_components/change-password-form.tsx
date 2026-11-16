@@ -33,11 +33,11 @@ export function ChangePasswordForm() {
           SAME_PASSWORD: "New password must differ from current one.",
           SERVER_ERROR: "Something went wrong. Try again.",
         };
-        
+
         // Handle the possible undefined error gracefully
-        const errorCode = result.error || "SERVER_ERROR"; 
+        const errorCode = result.error || "SERVER_ERROR";
         const msg = messages[errorCode] ?? "Action failed.";
-        
+
         setError(msg);
         toast.error("Password not changed", { description: msg });
         return;
@@ -54,7 +54,7 @@ export function ChangePasswordForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Current Password */}
       <div>
-        <label className="block text-xs font-semibold text-slate-400 mb-2">
+        <label className="block text-xs font-semibold text-muted-foreground mb-2">
           Current Password
         </label>
         <div className="relative">
@@ -63,13 +63,14 @@ export function ChangePasswordForm() {
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             required
-            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 pr-10 text-sm text-white focus:border-indigo-500 outline-none"
+            className="w-full bg-background border border-border rounded-lg px-3 py-2 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-ring focus:ring-1 focus:ring-ring outline-none transition-colors"
             placeholder="Enter your current password"
           />
           <button
             type="button"
             onClick={() => setShowCurrent(!showCurrent)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            aria-label={showCurrent ? "Hide password" : "Show password"}
           >
             {showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
@@ -79,7 +80,7 @@ export function ChangePasswordForm() {
       {/* New Password */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-2">
+          <label className="block text-xs font-semibold text-muted-foreground mb-2">
             New Password
           </label>
           <div className="relative">
@@ -89,20 +90,21 @@ export function ChangePasswordForm() {
               onChange={(e) => setNewPassword(e.target.value)}
               required
               minLength={8}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 pr-10 text-sm text-white focus:border-indigo-500 outline-none"
+              className="w-full bg-background border border-border rounded-lg px-3 py-2 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-ring focus:ring-1 focus:ring-ring outline-none transition-colors"
               placeholder="Min 8 chars, 1 uppercase, 1 number"
             />
             <button
               type="button"
               onClick={() => setShowNew(!showNew)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={showNew ? "Hide password" : "Show password"}
             >
               {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-2">
+          <label className="block text-xs font-semibold text-muted-foreground mb-2">
             Confirm New Password
           </label>
           <input
@@ -110,23 +112,23 @@ export function ChangePasswordForm() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:border-indigo-500 outline-none"
+            className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-ring focus:ring-1 focus:ring-ring outline-none transition-colors"
             placeholder="Re-enter new password"
           />
         </div>
       </div>
 
       {error && (
-        <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-          <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-          <p className="text-xs text-red-300">{error}</p>
+        <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+          <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+          <p className="text-xs text-destructive">{error}</p>
         </div>
       )}
 
       <button
         type="submit"
         disabled={isPending}
-        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold disabled:opacity-50 transition-colors"
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold disabled:opacity-50 transition-colors"
       >
         {isPending ? (
           <>
