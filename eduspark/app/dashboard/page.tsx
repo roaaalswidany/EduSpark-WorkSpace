@@ -1,4 +1,4 @@
-import { getServerSession } from "next-auth";
+import {getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Sparkles,
   GraduationCap,
+  Hand,
 } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
