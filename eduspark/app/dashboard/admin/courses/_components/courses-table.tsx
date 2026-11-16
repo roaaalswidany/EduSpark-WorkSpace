@@ -296,7 +296,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
           {Array.from({ length: totalPages }).map((_, i) => {
             const p = i + 1;
             if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
-              return <Link key={p} href={buildPageUrl(p)} className={cn("w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors", p === currentPage ? "bg-primary text-white font-bold" : "bg-card border border-border hover:border-border text-muted-foreground hover:text-white")}>{p}</Link>;
+              return <Link key={p} href={buildPageUrl(p)} className={cn("w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors", p === currentPage ? "bg-primary text-primary-foreground font-bold" : "bg-card border border-border hover:border-border text-muted-foreground hover:text-foreground")}>{p}</Link>;
             }
             if (p === currentPage - 2 || p === currentPage + 2) return <span key={p} className="text-muted-foreground/70 text-xs">â€¦</span>;
             return null;
@@ -322,7 +322,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
               </div>
               <div className="flex gap-2 justify-end pt-2">
                 <button type="button" onClick={() => { setArchiveDialog(null); setReasonInput(""); setReasonError(null); }} disabled={isPending} className="px-4 py-2 rounded-lg bg-accent hover:bg-accent text-foreground text-sm font-semibold transition-colors disabled:opacity-50">Cancel</button>
-                <button type="button" onClick={handleConfirmArchive} disabled={isPending || reasonInput.trim().length < 10} className="px-4 py-2 rounded-lg bg-destructive hover:bg-destructive text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2">
+                <button type="button" onClick={handleConfirmArchive} disabled={isPending || reasonInput.trim().length < 10} className="px-4 py-2 rounded-lg bg-destructive hover:bg-destructive text-destructive-foreground text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2">
                   {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
                   {archiveDialog.mode === "REJECT" ? "Send feedback" : "Archive course"}
                 </button>

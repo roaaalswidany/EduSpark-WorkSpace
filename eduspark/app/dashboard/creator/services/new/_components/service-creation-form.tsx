@@ -776,7 +776,7 @@ export function ServiceCreationForm({
           <Button
             type="submit"
             disabled={isPending}
-            className="bg-primary hover:bg-primary text-white font-semibold px-8 shadow-lg shadow-emerald-500/20 disabled:opacity-50"
+            className="bg-primary hover:bg-primary text-primary-foreground font-semibold px-8 shadow-lg shadow-emerald-500/20 disabled:opacity-50"
           >
             {isPending ? (
               <>

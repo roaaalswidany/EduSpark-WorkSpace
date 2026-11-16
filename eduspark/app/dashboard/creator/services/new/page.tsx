@@ -42,7 +42,7 @@ function NoCertificatesGate() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href="/courses"
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary text-white text-sm font-semibold transition-colors"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary text-primary-foreground text-sm font-semibold transition-colors"
           >
             <GraduationCap className="w-4 h-4" />
             Browse Courses

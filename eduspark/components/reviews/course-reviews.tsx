@@ -112,7 +112,7 @@ function ReviewForm({ courseId, onDone }: { courseId: string; onDone: () => void
         <button
           onClick={submit}
           disabled={isPending || rating === 0}
-          className="px-4 py-2 rounded-lg bg-primary hover:bg-primary text-white text-sm font-bold disabled:opacity-50 inline-flex items-center gap-2"
+          className="px-4 py-2 rounded-lg bg-primary hover:bg-primary text-primary-foreground text-sm font-bold disabled:opacity-50 inline-flex items-center gap-2"
         >
           {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Star className="w-4 h-4" />}
           Submit

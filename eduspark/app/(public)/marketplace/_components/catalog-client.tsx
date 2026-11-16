@@ -553,7 +553,7 @@ export function CatalogClient({
               className={cn(
                 "shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-all",
                 activeCategoryId === null
-                  ? "bg-primary text-white shadow-lg shadow-indigo-500/25"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-indigo-500/25"
                   : "bg-accent text-muted-foreground hover:text-foreground hover:bg-accent"
               )}
             >
@@ -571,7 +571,7 @@ export function CatalogClient({
                 className={cn(
                   "shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap",
                   activeCategoryId === cat.id
-                    ? "bg-primary text-white shadow-lg shadow-indigo-500/25"
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-indigo-500/25"
                     : "bg-accent text-muted-foreground hover:text-foreground hover:bg-accent"
                 )}
               >

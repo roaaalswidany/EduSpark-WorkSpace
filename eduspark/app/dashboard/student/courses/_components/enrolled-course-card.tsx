@@ -213,7 +213,7 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
               "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all",
               isCompleted
                 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 group-hover:bg-emerald-500/15"
-                : "bg-primary hover:bg-primary text-white group-hover:shadow-lg group-hover:shadow-emerald-500/20"
+                : "bg-primary hover:bg-primary text-primary-foreground group-hover:shadow-lg group-hover:shadow-emerald-500/20"
             )}
           >
             {isCompleted ? (

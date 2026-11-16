@@ -35,7 +35,7 @@ export function BroadcastForm() {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         disabled={isPending}
-        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-white focus:border-primary outline-none"
+        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:border-primary outline-none"
       />
       <textarea
         placeholder="Message body..."
@@ -43,12 +43,12 @@ export function BroadcastForm() {
         onChange={(e) => setBody(e.target.value)}
         disabled={isPending}
         rows={3}
-        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-white focus:border-primary outline-none resize-none"
+        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:border-primary outline-none resize-none"
       />
       <button
         type="submit"
         disabled={isPending || !title || !body}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary text-white text-sm font-bold disabled:opacity-50 transition-colors"
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary text-primary-foreground text-sm font-bold disabled:opacity-50 transition-colors"
       >
         {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
         {isPending ? "Sending..." : "Send to All Users"}

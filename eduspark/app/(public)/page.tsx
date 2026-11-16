@@ -98,7 +98,7 @@ export default async function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href={primaryCta.href}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-[0.98] shadow-lg shadow-emerald-500/30"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-primary hover:bg-primary text-primary-foreground text-sm font-bold transition-all active:scale-[0.98] shadow-lg shadow-emerald-500/30"
               >
                 {primaryCta.label}
                 <ArrowRight className="w-4 h-4" />
@@ -406,7 +406,7 @@ export default async function HomePage() {
             </p>
             <Link
               href={primaryCta.href}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary hover:bg-primary text-white text-base font-bold transition-all active:scale-[0.98] shadow-2xl shadow-emerald-500/30"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary hover:bg-primary text-primary-foreground text-base font-bold transition-all active:scale-[0.98] shadow-2xl shadow-emerald-500/30"
             >
               {primaryCta.label}
               <ArrowRight className="w-5 h-5" />

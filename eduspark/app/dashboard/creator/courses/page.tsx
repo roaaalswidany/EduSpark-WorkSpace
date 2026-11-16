@@ -100,7 +100,7 @@ export default async function CreatorCoursesPage() {
               <div className="mt-auto pt-4 border-t border-border grid grid-cols-2 gap-2">
                 <Link
                   href={`/dashboard/creator/courses/${course.id}/edit`}
-                  className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold bg-primary hover:bg-primary text-white transition-colors"
+                  className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold bg-primary hover:bg-primary text-primary-foreground transition-colors"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                   Edit Curriculum

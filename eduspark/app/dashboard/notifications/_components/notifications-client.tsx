@@ -224,7 +224,7 @@ export function NotificationsClient({
                 <Link
                   href={selected.link}
                   onClick={() => setSelectedId(null)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-primary hover:bg-primary text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-primary hover:bg-primary text-primary-foreground transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
                   Go to page

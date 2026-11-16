@@ -29,7 +29,7 @@ export default async function UnauthorizedPage({ searchParams }: PageProps) {
         <div className="flex flex-col sm:flex-row gap-2 justify-center">
           <Link
             href="/dashboard"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-95"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary text-primary-foreground text-sm font-bold transition-all active:scale-95"
           >
             <Home className="w-4 h-4" />
             Back to Dashboard

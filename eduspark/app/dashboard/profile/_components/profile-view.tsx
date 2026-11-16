@@ -145,7 +145,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               disabled={isPending}
               className={cn(
                 "inline-flex items-center gap-2 px-4 py-2 rounded-lg",
-                "bg-primary hover:bg-primary text-white",
+                "bg-primary hover:bg-primary text-primary-foreground",
                 "text-xs font-bold",
                 "transition-all active:scale-95 disabled:opacity-50",
                 "shadow-lg shadow-emerald-500/20"

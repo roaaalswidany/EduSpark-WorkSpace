@@ -63,7 +63,7 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
               onClick={() => setDialogOpen(true)}
               className={cn(
                 "inline-flex items-center gap-2 px-6 py-3 rounded-xl",
-                "bg-primary hover:bg-primary text-white",
+                "bg-primary hover:bg-primary text-primary-foreground",
                 "text-sm font-bold transition-all active:scale-95",
                 "shadow-lg shadow-emerald-500/30"
               )}

@@ -126,8 +126,8 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
                       href={buildPageUrl(p)}
                       className={
                         p === page
-                          ? "w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold"
-                          : "w-9 h-9 flex items-center justify-center rounded-lg bg-card border border-border hover:border-border text-muted-foreground hover:text-white text-xs font-semibold transition-colors"
+                          ? "w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-primary-foreground text-xs font-bold"
+                          : "w-9 h-9 flex items-center justify-center rounded-lg bg-card border border-border hover:border-border text-muted-foreground hover:text-foreground text-xs font-semibold transition-colors"
                       }
                     >
                       {p}

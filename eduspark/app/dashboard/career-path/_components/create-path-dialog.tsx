@@ -181,7 +181,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
             className={cn(
               "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
               isValid && !isPending
-                ? "bg-primary hover:bg-primary text-white active:scale-95 shadow-lg shadow-emerald-500/20"
+                ? "bg-primary hover:bg-primary text-primary-foreground active:scale-95 shadow-lg shadow-emerald-500/20"
                 : "bg-accent text-muted-foreground/70 cursor-not-allowed"
             )}
           >

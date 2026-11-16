@@ -61,7 +61,7 @@ const CHAT_TYPE_CONFIG = {
     Icon: Briefcase,
     accent: "text-primary",
     badge: "bg-primary/10 text-primary border-primary/20",
-    bubbleOwn: "bg-primary text-white",
+    bubbleOwn: "bg-primary text-primary-foreground",
     bubbleOther: "bg-accent text-slate-100",
     legal: true,
   },
@@ -1281,7 +1281,7 @@ useEffect(() => {
             onClick={() => scrollToBottom("smooth")}
             className={cn(
               "pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-full",
-              "bg-primary hover:bg-primary text-white text-xs font-semibold",
+              "bg-primary hover:bg-primary text-primary-foreground text-xs font-semibold",
               "shadow-lg shadow-emerald-500/30 transition-all animate-bounce"
             )}
           >
@@ -1350,7 +1350,7 @@ useEffect(() => {
               "shrink-0 flex items-center justify-center w-11 h-11 rounded-xl",
               "transition-all duration-150 active:scale-95",
               canSend
-                ? "bg-primary hover:bg-primary text-white shadow-lg shadow-emerald-500/20"
+                ? "bg-primary hover:bg-primary text-primary-foreground shadow-lg shadow-emerald-500/20"
                 : "bg-accent text-muted-foreground/70 cursor-not-allowed"
             )}
             aria-label="Send message"

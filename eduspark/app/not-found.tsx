@@ -32,14 +32,14 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary text-white text-sm font-semibold transition-colors w-full sm:w-auto justify-center"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary text-primary-foreground text-sm font-semibold transition-colors w-full sm:w-auto justify-center"
           >
             <Home className="w-4 h-4" />
             Go Home
           </Link>
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-card border border-border hover:border-border text-foreground hover:text-white text-sm font-semibold transition-colors w-full sm:w-auto justify-center"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-card border border-border hover:border-border text-foreground hover:text-foreground text-sm font-semibold transition-colors w-full sm:w-auto justify-center"
           >
             <ArrowLeft className="w-4 h-4" />
             Browse Courses

@@ -181,7 +181,7 @@ export function PathTimeline({ steps }: PathTimelineProps) {
                       type="button"
                       onClick={() => handleStatusChange(step, "IN_PROGRESS")}
                       disabled={isPending}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary text-white text-xs font-semibold transition-all active:scale-95 disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary text-primary-foreground text-xs font-semibold transition-all active:scale-95 disabled:opacity-50"
                     >
                       <Play className="w-3 h-3 fill-current" />
                       Start

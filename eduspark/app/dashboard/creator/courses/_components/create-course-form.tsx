@@ -41,7 +41,7 @@ export function CreateCourseForm() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary text-white text-sm font-bold transition-all shadow-lg shadow-emerald-500/20"
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary text-primary-foreground text-sm font-bold transition-all shadow-lg shadow-emerald-500/20"
       >
         <Plus className="w-4 h-4" />
         Create Course
@@ -74,7 +74,7 @@ export function CreateCourseForm() {
               onChange={(e) => setTitle(e.target.value)}
               required
               minLength={3}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-white focus:border-primary outline-none"
+              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:border-primary outline-none"
               placeholder="e.g. Master React in 30 Days"
             />
           </div>
@@ -87,7 +87,7 @@ export function CreateCourseForm() {
               required
               minLength={10}
               rows={3}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-white focus:border-primary outline-none resize-none"
+              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:border-primary outline-none resize-none"
               placeholder="What will students learn?"
             />
           </div>
@@ -102,7 +102,7 @@ export function CreateCourseForm() {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 required
-                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-white focus:border-primary outline-none"
+                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:border-primary outline-none"
               />
             </div>
             <div>
@@ -110,7 +110,7 @@ export function CreateCourseForm() {
               <select
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
-                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-white focus:border-primary outline-none"
+                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:border-primary outline-none"
               >
                 <option value="BEGINNER">Beginner</option>
                 <option value="INTERMEDIATE">Intermediate</option>
@@ -123,7 +123,7 @@ export function CreateCourseForm() {
             <button
               type="submit"
               disabled={isPending}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary hover:bg-primary text-white text-sm font-bold disabled:opacity-50 transition-all active:scale-95"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary hover:bg-primary text-primary-foreground text-sm font-bold disabled:opacity-50 transition-all active:scale-95"
             >
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
               {isPending ? "Creating..." : "Create Course"}

@@ -40,14 +40,14 @@ export default function GlobalError({
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
             onClick={reset}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary text-white text-sm font-semibold transition-colors w-full sm:w-auto justify-center"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary text-primary-foreground text-sm font-semibold transition-colors w-full sm:w-auto justify-center"
           >
             <RefreshCw className="w-4 h-4" />
             Try Again
           </button>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-card border border-border hover:border-border text-foreground hover:text-white text-sm font-semibold transition-colors w-full sm:w-auto justify-center"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-card border border-border hover:border-border text-foreground hover:text-foreground text-sm font-semibold transition-colors w-full sm:w-auto justify-center"
           >
             <Home className="w-4 h-4" />
             Go Home

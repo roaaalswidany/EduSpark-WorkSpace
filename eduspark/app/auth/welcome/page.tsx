@@ -17,7 +17,7 @@ export default function WelcomePage() {
         </p>
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary hover:bg-primary text-white font-semibold transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary hover:bg-primary text-primary-foreground font-semibold transition-colors"
         >
           Go to dashboard
           <ArrowRight className="w-4 h-4" />

@@ -457,7 +457,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                   "shrink-0 flex items-center justify-center w-10 h-10 rounded-xl",
                   "transition-all duration-150 active:scale-95",
                   input.trim() && !isLoading
-                    ? "bg-primary hover:bg-primary text-white"
+                    ? "bg-primary hover:bg-primary text-primary-foreground"
                     : "bg-accent text-muted-foreground/70 cursor-not-allowed"
                 )}
               >

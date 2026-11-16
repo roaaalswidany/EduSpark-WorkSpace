@@ -37,7 +37,7 @@ export function ErrorContent() {
         <p className="text-muted-foreground mb-6">{message}</p>
         <Link
           href="/auth/login"
-          className="inline-block px-6 py-2.5 rounded-lg bg-primary hover:bg-primary text-white font-semibold transition-colors"
+          className="inline-block px-6 py-2.5 rounded-lg bg-primary hover:bg-primary text-primary-foreground font-semibold transition-colors"
         >
           Back to sign in
         </Link>

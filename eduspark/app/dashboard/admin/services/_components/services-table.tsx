@@ -864,8 +864,8 @@ export function ServicesTable({
                   className={cn(
                     "w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors",
                     p === currentPage
-                      ? "bg-primary text-white font-bold"
-                      : "bg-card border border-border hover:border-border text-muted-foreground hover:text-white"
+                      ? "bg-primary text-primary-foreground font-bold"
+                      : "bg-card border border-border hover:border-border text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {p}
@@ -976,7 +976,7 @@ export function ServicesTable({
                   type="button"
                   onClick={handleConfirmArchive}
                   disabled={isPending || reasonInput.trim().length < 10}
-                  className="px-4 py-2 rounded-lg bg-destructive hover:bg-destructive text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-destructive hover:bg-destructive text-destructive-foreground text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
