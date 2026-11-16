@@ -34,7 +34,7 @@ export function PublicServicesGrid({ services }: { services: PublicService[] }) 
         <Link
           key={service.id}
           href={`/marketplace/services/${service.slug}`}
-          className="group rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/100/40 hover:shadow-lg hover:shadow-indigo-500/5"
+          className="group rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/100/40 hover:shadow-lg hover:shadow-primary/5"
         >
           <div
             className={cn(

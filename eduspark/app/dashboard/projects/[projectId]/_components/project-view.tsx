@@ -234,7 +234,7 @@ function ParticipantAvatar({
 
   return (
     <div
-      className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-slate-700 shrink-0"
+      className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,

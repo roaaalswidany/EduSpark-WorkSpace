@@ -486,7 +486,7 @@ export function QuizView({
                     "w-full flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl text-left",
                     "border transition-all duration-150",
                     isSelected
-                      ? "bg-primary/50/10 border-primary/100/50 shadow-lg shadow-indigo-500/5"
+                      ? "bg-primary/50/10 border-primary/100/50 shadow-lg shadow-primary/5"
                       : "bg-slate-900 border-slate-800 hover:border-border700 hover:bg-card/80"
                   )}
                 >

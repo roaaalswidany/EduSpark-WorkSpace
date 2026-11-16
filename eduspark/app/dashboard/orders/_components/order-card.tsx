@@ -102,7 +102,7 @@ function CounterpartAvatar({
 
   return (
     <div
-      className="rounded-xl flex items-center justify-center text-white text-xs font-bold ring-2 ring-slate-800 shrink-0"
+      className="rounded-xl flex items-center justify-center text-white text-xs font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -277,7 +277,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
           href={`/dashboard/projects/${order.id}`}
           className={cn(
             "flex-1 flex items-center justify-center gap-1.5 h-9 rounded-lg text-xs font-bold transition-all",
-            "bg-primary hover:bg-primary text-primary-foreground shadow-lg shadow-indigo-500/10 active:scale-95"
+            "bg-primary hover:bg-primary text-primary-foreground shadow-lg shadow-primary/10 active:scale-95"
           )}
         >
           <ArrowRight className="w-3.5 h-3.5" />

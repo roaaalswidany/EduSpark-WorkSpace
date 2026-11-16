@@ -123,7 +123,7 @@ function ServiceThumb({
         alt={title}
         width={size}
         height={size}
-        className="rounded-xl object-cover ring-2 ring-slate-800 shrink-0"
+        className="rounded-xl object-cover ring-2 ring-border shrink-0"
         style={{ width: size, height: size }}
       />
     );
@@ -132,7 +132,7 @@ function ServiceThumb({
   return (
     <div
       className={cn(
-        "rounded-xl flex items-center justify-center bg-linear-to-br ring-2 ring-slate-800 shrink-0",
+        "rounded-xl flex items-center justify-center bg-linear-to-br ring-2 ring-border shrink-0",
         getGradient(id)
       )}
       style={{ width: size, height: size }}

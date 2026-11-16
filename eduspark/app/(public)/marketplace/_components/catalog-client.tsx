@@ -110,7 +110,7 @@ function CreatorAvatar({
 
   return (
     <div
-      className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-slate-700 shrink-0"
+      className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -134,7 +134,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
       onClick={() => router.push(`/marketplace/services/${service.slug}`)}
       className="group block cursor-pointer"
     >
-      <article className="h-full rounded-2xl bg-card border border-border overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-2xl hover:shadow-indigo-500/8">
+      <article className="h-full rounded-2xl bg-card border border-border overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10">
         {/* Thumbnail */}
         <div
           className={cn(
@@ -553,7 +553,7 @@ export function CatalogClient({
               className={cn(
                 "shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-all",
                 activeCategoryId === null
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-indigo-500/25"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                   : "bg-accent text-muted-foreground hover:text-foreground hover:bg-accent"
               )}
             >
@@ -571,7 +571,7 @@ export function CatalogClient({
                 className={cn(
                   "shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap",
                   activeCategoryId === cat.id
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-indigo-500/25"
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                     : "bg-accent text-muted-foreground hover:text-foreground hover:bg-accent"
                 )}
               >

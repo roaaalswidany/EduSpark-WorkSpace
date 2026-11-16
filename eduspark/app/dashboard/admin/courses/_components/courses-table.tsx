@@ -47,10 +47,10 @@ const STATUS_TOAST: Record<CourseStatus, { title: string; description: string }>
 
 function CourseThumb({ title, thumbnail, size = 44 }: { title: string; thumbnail: string | null; size?: number }) {
   if (thumbnail) {
-    return <Image src={thumbnail} alt={title} width={size} height={size} className="rounded-xl object-cover ring-2 ring-slate-800 shrink-0" style={{ width: size, height: size }} />;
+    return <Image src={thumbnail} alt={title} width={size} height={size} className="rounded-xl object-cover ring-2 ring-border shrink-0" style={{ width: size, height: size }} />;
   }
   return (
-    <div className="rounded-xl flex items-center justify-center bg-linear-to-br from-emerald-500/20 to-emerald-500/20 ring-2 ring-slate-800 shrink-0" style={{ width: size, height: size }}>
+    <div className="rounded-xl flex items-center justify-center bg-linear-to-br from-emerald-500/20 to-emerald-500/20 ring-2 ring-border shrink-0" style={{ width: size, height: size }}>
       <span className="text-white/60 font-bold" style={{ fontSize: size * 0.4 }}>{title.charAt(0)}</span>
     </div>
   );

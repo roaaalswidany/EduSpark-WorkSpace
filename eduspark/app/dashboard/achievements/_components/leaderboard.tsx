@@ -105,7 +105,7 @@ function PodiumCard({
 
       <div
         className={cn(
-          "rounded-full ring-2 ring-slate-700 shrink-0 flex items-center justify-center text-white font-bold",
+          "rounded-full ring-2 ring-border shrink-0 flex items-center justify-center text-white font-bold",
           config.size
         )}
         style={{ background: `hsl(${hue}, 55%, 42%)` }}
@@ -154,7 +154,7 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
       </div>
 
       <div 
-        className="w-9 h-9 rounded-full ring-2 ring-slate-800 flex items-center justify-center text-white text-xs font-bold shrink-0"
+        className="w-9 h-9 rounded-full ring-2 ring-border flex items-center justify-center text-white text-xs font-bold shrink-0"
         style={{ background: `hsl(${hue}, 55%, 42%)` }}
       >
         {initials}

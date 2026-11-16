@@ -67,7 +67,7 @@ function Avatar({
         alt={name}
         width={size}
         height={size}
-        className="rounded-3xl object-cover ring-2 ring-slate-800"
+        className="rounded-3xl object-cover ring-2 ring-border"
         style={{ width: size, height: size }}
       />
     );
@@ -75,7 +75,7 @@ function Avatar({
 
   return (
     <div
-      className="rounded-3xl flex items-center justify-center text-white font-black ring-2 ring-slate-800 shrink-0"
+      className="rounded-3xl flex items-center justify-center text-white font-black ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,

@@ -92,7 +92,7 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
         "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg",
         isCompleted
           ? "border-emerald-500/20 hover:border-emerald-500/40 hover:shadow-emerald-500/5"
-          : "border-border hover:border-primary/40 hover:shadow-indigo-500/5"
+          : "border-border hover:border-primary/40 hover:shadow-primary/5"
       )}
     >
       {/* â”€â”€ Thumbnail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
@@ -151,7 +151,7 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
         <div className="flex items-center gap-2">
           {/* ًں‘‡ ط§ط³طھط¨ط¯ط§ظ„ ط§ظ„طµظˆط±ط© ط¨ط§ظ„ط£ط­ط±ظپ ط§ظ„ط£ظˆظ„ظ‰ */}
           <div 
-            className="w-5 h-5 rounded-full text-white text-[9px] font-bold flex items-center justify-center ring-1 ring-slate-700 shrink-0"
+            className="w-5 h-5 rounded-full text-white text-[9px] font-bold flex items-center justify-center ring-1 ring-border shrink-0"
             style={{ background: `hsl(${creatorHue}, 55%, 42%)` }}
           >
             {creatorInitials}

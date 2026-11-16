@@ -264,7 +264,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
               {/* Instructor row */}
               <div className="flex items-center gap-3 pt-2">
                 <div 
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold ring-2 ring-slate-800 shrink-0"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold ring-2 ring-border shrink-0"
                   style={{ background: `hsl(${creatorHue}, 50%, 38%)` }}
                 >
                   {creatorInitials}
@@ -407,7 +407,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
               </h2>
               <div className="flex items-start gap-4">
                 <div 
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-lg font-bold ring-2 ring-slate-800 shrink-0"
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-lg font-bold ring-2 ring-border shrink-0"
                   style={{ background: `hsl(${creatorHue}, 50%, 38%)` }}
                 >
                   {creatorInitials}

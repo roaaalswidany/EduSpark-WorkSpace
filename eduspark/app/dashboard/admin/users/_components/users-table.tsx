@@ -79,7 +79,7 @@ function Avatar({ name, size = 36 }: { name: string; size?: number }) {
 
   return (
     <div
-      className="rounded-xl flex items-center justify-center text-white text-xs font-bold ring-2 ring-slate-800 shrink-0"
+      className="rounded-xl flex items-center justify-center text-white text-xs font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,

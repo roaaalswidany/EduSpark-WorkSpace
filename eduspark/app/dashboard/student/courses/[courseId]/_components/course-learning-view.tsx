@@ -673,7 +673,7 @@ export function CourseLearningView({
                       "flex items-center gap-2 px-4 py-2.5 rounded-xl",
                       "text-sm font-semibold text-white",
                       "bg-indigo-600 hover:bg-primary/50 active:scale-95",
-                      "shadow-lg shadow-indigo-500/25",
+                      "shadow-lg shadow-primary/25",
                       "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100",
                       "transition-all duration-150"
                     )}

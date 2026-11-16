@@ -20,7 +20,7 @@ export function UserAvatar({ name, size = 36, className }: UserAvatarProps) {
   return (
     <div
       className={cn(
-        "rounded-full flex items-center justify-center text-white font-bold ring-2 ring-slate-700 shrink-0 shadow-sm",
+        "rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0 shadow-sm",
         className
       )}
       style={{

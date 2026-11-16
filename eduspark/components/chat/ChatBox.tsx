@@ -330,7 +330,7 @@ const MessageContent = memo(function MessageContent({
                 "underline underline-offset-2 hover:opacity-80 transition-opacity",
                 isOwn
                   ? "decoration-white/50"
-                  : "decoration-indigo-400 text-primary"
+                  : "decoration-primary text-primary"
               )}
               onClick={(e) => e.stopPropagation()}
             >
