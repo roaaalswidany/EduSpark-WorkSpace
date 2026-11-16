@@ -72,7 +72,7 @@ export default async function DashboardPage() {
           </span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-          Welcome back, {session.user.name?.split(" ")[0] ?? "there"} ًں‘‹
+          Welcome back, {session.user.name?.split(" ")[0] ?? "there"} <Hand className="inline-block w-8 h-8 text-amber-400 ml-2" /> 
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
           {isAdmin
