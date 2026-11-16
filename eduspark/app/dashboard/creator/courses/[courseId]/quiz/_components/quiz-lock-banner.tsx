@@ -80,7 +80,7 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
             onClick={() => setShowDialog(false)}
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-            <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-5 space-y-4 pointer-events-auto">
+            <div className="w-full max-w-md rounded-2xl bg-card border border-border shadow-2xl p-5 space-y-4 pointer-events-auto">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
                   <AlertTriangle className="w-5 h-5 text-amber-400" />
@@ -89,7 +89,7 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
                   <h3 className="text-base font-bold text-white">
                     {isPublished ? "Unpublish this course?" : "Withdraw submission?"}
                   </h3>
-                  <p className="text-sm text-slate-400 mt-1 leading-relaxed">
+                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                     {isPublished
                       ? "Students will lose access until you re-submit for review and an admin approves it again."
                       : "The course will return to draft. You'll need to submit it for review again."}
@@ -102,7 +102,7 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
                   type="button"
                   onClick={() => setShowDialog(false)}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-accent hover:bg-muted-foreground/70 text-foreground text-sm font-semibold transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>

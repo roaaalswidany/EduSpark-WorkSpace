@@ -83,9 +83,9 @@ export default async function PublicProfilePage({ params }: PageProps) {
   const isOwner = currentUserId === user.id;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Top bar */}
-      <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
+      <header className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center">
@@ -98,14 +98,14 @@ export default async function PublicProfilePage({ params }: PageProps) {
             {isOwner && (
               <Link
                 href="/dashboard/profile"
-                className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 text-slate-300 text-xs font-semibold border border-slate-700 transition-colors"
+                className="px-3.5 py-1.5 rounded-lg bg-accent hover:bg-muted-foreground/70 text-foreground text-xs font-semibold border border-border transition-colors"
               >
                 Edit Profile
               </Link>
             )}
             <Link
               href="/marketplace"
-              className="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white text-xs font-semibold transition-colors"
+              className="px-3.5 py-1.5 rounded-lg text-muted-foreground hover:text-white text-xs font-semibold transition-colors"
             >
               Marketplace
             </Link>
@@ -145,12 +145,12 @@ export default async function PublicProfilePage({ params }: PageProps) {
 
         {/* Bio */}
         {user.bio && (
-          <div className="mt-6 rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6">
+          <div className="mt-6 rounded-2xl bg-card border border-border p-5 sm:p-6">
             <h2 className="text-xs font-bold uppercase tracking-widest text-foreground0 mb-3 flex items-center gap-2">
               <Award className="w-3.5 h-3.5" />
               About
             </h2>
-            <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
               {user.bio}
             </p>
           </div>
@@ -162,7 +162,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
         {services.length > 0 && (
           <div className="mt-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
+              <h2 className="text-sm font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
                 <Package className="w-4 h-4 text-indigo-400" />
                 Services Offered
               </h2>

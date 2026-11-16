@@ -79,12 +79,12 @@ export default async function ProjectChatPage({
   const roomId = `chat:${project.chatRoom.id}`;
 
   return (
-    <div className="flex flex-col h-screen bg-slate-950 overflow-hidden">
+    <div className="flex flex-col h-screen bg-background overflow-hidden">
       {/* Back navigation */}
-      <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-slate-900/70 border-b border-slate-800/80">
+      <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-card/70 border-b border-border/80">
         <Link
           href={`/dashboard/projects/${project.id}`}
-          className="flex items-center gap-2 text-sm text-slate-400 hover:text-foreground200 transition-colors group"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground200 transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
           <span>Back to Project</span>
@@ -98,7 +98,7 @@ export default async function ProjectChatPage({
       </div>
 
       {/* Participants header */}
-      <div className="shrink-0 flex items-center gap-4 px-4 py-2.5 bg-slate-900/40 border-b border-slate-800/60">
+      <div className="shrink-0 flex items-center gap-4 px-4 py-2.5 bg-card/40 border-b border-border/60">
         <div className="flex items-center gap-3">
           <ParticipantChip
             user={project.client}
@@ -127,7 +127,7 @@ export default async function ProjectChatPage({
                 ? "bg-emerald-500/10 text-emerald-400"
                 : project.status === "IN_PROGRESS"
                 ? "bg-primary/50/10 text-indigo-400"
-                : "bg-slate-800 text-foreground0"
+                : "bg-accent text-foreground0"
             )}
           >
             {project.status.replace("_", " ")}
@@ -181,7 +181,7 @@ function ParticipantChip({
         )}
       </div>
       <div>
-        <p className="text-xs font-medium text-slate-300 leading-none">
+        <p className="text-xs font-medium text-foreground leading-none">
           {user.name}
           {isCurrentUser && (
             <span className="ml-1 text-[10px] text-indigo-400">(you)</span>

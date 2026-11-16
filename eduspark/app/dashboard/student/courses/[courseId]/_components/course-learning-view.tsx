@@ -74,8 +74,8 @@ function VideoPlayer({ url, lessonId, onEnded }: VideoPlayerProps) {
 
   if (!url) {
     return (
-      <div className="w-full aspect-video bg-slate-950 flex flex-col items-center justify-center gap-3">
-        <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center">
+      <div className="w-full aspect-video bg-background flex flex-col items-center justify-center gap-3">
+        <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center">
           <BookOpen className="w-7 h-7 text-slate-600" />
         </div>
         <p className="text-slate-600 text-sm">No video for this lesson</p>
@@ -187,7 +187,7 @@ function CompletionBanner({
       <h3 className="text-xl font-bold text-white mb-1.5">
         Course Complete! 🎉
       </h3>
-      <p className="text-slate-400 text-sm max-w-sm mx-auto mb-5">
+      <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-5">
         You finished{" "}
         <span className="text-white font-medium">{title}</span>.{" "}
         {hasQuiz
@@ -197,7 +197,7 @@ function CompletionBanner({
       {hasQuiz && (
         <Link
           href={`/dashboard/student/courses/${courseId}/quiz`}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-primary/50 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary/50 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
         >
           Take Certification Quiz
           <ArrowRight className="w-4 h-4" />
@@ -249,7 +249,7 @@ function LessonRow({ lesson, isActive, onSelect }: LessonRowProps) {
               ? "text-indigo-300"
               : lesson.isCompleted
               ? "text-foreground0"
-              : "text-slate-300"
+              : "text-foreground"
           )}
         >
           {lesson.title}
@@ -303,7 +303,7 @@ function SectionAccordion({
       : 0;
 
   return (
-    <div className="border-b border-slate-800/60 last:border-0">
+    <div className="border-b border-border/60 last:border-0">
       {/* Section header button */}
       <button
         onClick={() => onToggle(section.id)}
@@ -314,22 +314,22 @@ function SectionAccordion({
             "w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0",
             isComplete
               ? "bg-emerald-500/20 text-emerald-400"
-              : "bg-slate-800 text-foreground0 group-hover:bg-muted-foreground/70"
+              : "bg-accent text-foreground0 group-hover:bg-muted-foreground/70"
           )}
         >
           {isComplete ? "✓" : index + 1}
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-slate-300 truncate group-hover:text-white transition-colors">
+          <p className="text-xs font-semibold text-foreground truncate group-hover:text-white transition-colors">
             {section.title}
           </p>
           <div className="flex items-center gap-2 mt-1.5">
-            <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
+            <div className="flex-1 h-1 bg-accent rounded-full overflow-hidden">
               <div
                 className={cn(
                   "h-full rounded-full transition-all duration-500",
-                  isComplete ? "bg-emerald-500" : "bg-indigo-600"
+                  isComplete ? "bg-emerald-500" : "bg-primary"
                 )}
                 style={{ width: `${sectionProgress}%` }}
               />
@@ -541,14 +541,14 @@ export function CourseLearningView({
   if (!activeLesson) return null;
 
   return (
-    <div className="flex flex-col h-screen bg-slate-950 text-foreground overflow-hidden">
+    <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden">
       {/* ──────────────────────────────────────── Top header */}
-      <header className="h-14 shrink-0 bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 flex items-center px-4 gap-2 z-50">
+      <header className="h-14 shrink-0 bg-card/95 backdrop-blur-md border-b border-border/80 flex items-center px-4 gap-2 z-50">
         {/* Back to My Courses */}
         <Link
           href="/dashboard/student/courses"
           title="Back to My Courses"
-          className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent text-slate-400 hover:text-white transition-colors shrink-0"
+          className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent text-muted-foreground hover:text-white transition-colors shrink-0"
         >
           <ChevronLeft className="w-4.5 h-4.5" />
         </Link>
@@ -560,9 +560,9 @@ export function CourseLearningView({
           className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent transition-colors"
         >
           {sidebarOpen ? (
-            <X className="w-4.5 h-4.5 text-slate-400" />
+            <X className="w-4.5 h-4.5 text-muted-foreground" />
           ) : (
-            <Menu className="w-4.5 h-4.5 text-slate-400" />
+            <Menu className="w-4.5 h-4.5 text-muted-foreground" />
           )}
         </button>
 
@@ -573,7 +573,7 @@ export function CourseLearningView({
             EduSpark
           </span>
           <ChevronRight className="w-3.5 h-3.5 text-slate-700 hidden sm:block shrink-0" />
-          <h1 className="text-sm font-medium text-slate-400 truncate hidden sm:block">
+          <h1 className="text-sm font-medium text-muted-foreground truncate hidden sm:block">
             {course.title}
           </h1>
         </div>
@@ -588,12 +588,12 @@ export function CourseLearningView({
           )}
           <div className="flex items-center gap-2.5">
             <span className="text-xs text-foreground0 hidden sm:block">
-              <span className="text-slate-300 font-semibold">
+              <span className="text-foreground font-semibold">
                 {completedLessons}
               </span>
               /{course.totalLessons}
             </span>
-            <div className="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div className="w-24 h-1.5 bg-accent rounded-full overflow-hidden">
               <div
                 className={cn(
                   "h-full rounded-full transition-all duration-700 ease-out",
@@ -617,7 +617,7 @@ export function CourseLearningView({
             href={`/courses/${course.slug}`}
             target="_blank"
             title="View public page (reviews & ratings)"
-            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-muted-foreground/70 text-slate-400 hover:text-primary300 transition-colors shrink-0"
+            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg bg-accent/60 hover:bg-muted-foreground/70 text-muted-foreground hover:text-primary300 transition-colors shrink-0"
           >
             <ExternalLink className="w-3.5 h-3.5" />
           </Link>
@@ -672,7 +672,7 @@ export function CourseLearningView({
                     className={cn(
                       "flex items-center gap-2 px-4 py-2.5 rounded-xl",
                       "text-sm font-semibold text-white",
-                      "bg-indigo-600 hover:bg-primary/50 active:scale-95",
+                      "bg-primary hover:bg-primary/50 active:scale-95",
                       "shadow-lg shadow-primary/25",
                       "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100",
                       "transition-all duration-150"
@@ -698,8 +698,8 @@ export function CourseLearningView({
 
             {/* Description */}
             {activeLesson.description && (
-              <div className="rounded-xl bg-slate-900/60 border border-slate-800 p-5">
-                <p className="text-slate-400 text-sm leading-relaxed">
+              <div className="rounded-xl bg-card/60 border border-border p-5">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   {activeLesson.description}
                 </p>
               </div>
@@ -711,13 +711,13 @@ export function CourseLearningView({
             )}
 
             {/* Prev / dot tracker / Next */}
-            <div className="flex items-center justify-between gap-4 pt-2 border-t border-slate-800/70">
+            <div className="flex items-center justify-between gap-4 pt-2 border-t border-border/70">
               <button
                 onClick={() => prevLesson && selectLesson(prevLesson.id)}
                 disabled={!prevLesson}
                 className={cn(
                   "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium",
-                  "border border-slate-800 text-foreground0",
+                  "border border-border text-foreground0",
                   "hover:border-border700 hover:bg-card hover:text-foreground300",
                   "disabled:opacity-20 disabled:cursor-not-allowed",
                   "transition-all duration-150"
@@ -761,7 +761,7 @@ export function CourseLearningView({
                 disabled={!nextLesson}
                 className={cn(
                   "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium",
-                  "border border-slate-800 text-foreground0",
+                  "border border-border text-foreground0",
                   "hover:border-border700 hover:bg-card hover:text-foreground300",
                   "disabled:opacity-20 disabled:cursor-not-allowed",
                   "transition-all duration-150"
@@ -796,7 +796,7 @@ export function CourseLearningView({
         {/* ── Sidebar */}
         <aside
           className={cn(
-            "w-80 xl:w-96 bg-slate-900 border-l border-slate-800/80 flex flex-col shrink-0 overflow-hidden",
+            "w-80 xl:w-96 bg-card border-l border-border/80 flex flex-col shrink-0 overflow-hidden",
             // Mobile: fixed overlay
             "fixed right-0 top-14 bottom-0 z-40",
             // Desktop: inline
@@ -807,7 +807,7 @@ export function CourseLearningView({
           )}
         >
           {/* Sidebar header: ring + stats */}
-          <div className="px-4 py-4 border-b border-slate-800/80 shrink-0">
+          <div className="px-4 py-4 border-b border-border/80 shrink-0">
             <div className="flex items-center gap-3 mb-3">
               {/* Progress ring */}
               <div className="relative shrink-0">
@@ -823,7 +823,7 @@ export function CourseLearningView({
               </div>
 
               <div className="flex-1 min-w-0">
-                <h2 className="text-sm font-bold text-slate-200 truncate">
+                <h2 className="text-sm font-bold text-foreground truncate">
                   {course.title}
                 </h2>
                 <p className="text-xs text-foreground0 mt-0.5">
@@ -833,7 +833,7 @@ export function CourseLearningView({
             </div>
 
             {/* Thin progress bar */}
-            <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div className="h-1.5 bg-accent rounded-full overflow-hidden">
               <div
                 className={cn(
                   "h-full rounded-full transition-all duration-700 ease-out",
@@ -862,7 +862,7 @@ export function CourseLearningView({
           </div>
 
           {/* Sidebar footer */}
-          <div className="px-4 py-3 border-t border-slate-800/80 shrink-0 flex items-center gap-2">
+          <div className="px-4 py-3 border-t border-border/80 shrink-0 flex items-center gap-2">
             <Video className="w-3.5 h-3.5 text-slate-600 shrink-0" />
             <p className="text-xs text-slate-600 truncate">
               Instructor:{" "}

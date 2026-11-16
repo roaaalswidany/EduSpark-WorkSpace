@@ -55,7 +55,7 @@ export default async function QuizPage({
           <ArrowLeft className="w-4 h-4" /> Back to My Courses
         </Link>
         <h1 className="text-2xl font-bold text-white">Quiz Management</h1>
-        <p className="text-sm text-slate-400 mt-1">Course: {course.title}</p>
+        <p className="text-sm text-muted-foreground mt-1">Course: {course.title}</p>
       </div>
 
       {isLocked && (
@@ -73,7 +73,7 @@ export default async function QuizPage({
         </h2>
 
         {!course.quiz || course.quiz.questions.length === 0 ? (
-          <div className="text-center p-8 bg-slate-900 border border-slate-800 rounded-xl text-foreground0 text-sm">
+          <div className="text-center p-8 bg-card border border-border rounded-xl text-foreground0 text-sm">
             {canEdit
               ? "No questions yet. Use the tools above to add questions."
               : "No questions yet. Unpublish the course to add questions."}
@@ -81,13 +81,13 @@ export default async function QuizPage({
         ) : (
           <div className="space-y-3">
             {course.quiz.questions.map((q, i) => (
-              <div key={q.id} className="p-4 rounded-xl bg-slate-900 border border-slate-800">
+              <div key={q.id} className="p-4 rounded-xl bg-card border border-border">
                 <div className="flex items-start gap-3">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-800 text-xs font-bold text-slate-400 shrink-0">
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-accent text-xs font-bold text-muted-foreground shrink-0">
                     {i + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-slate-200 leading-relaxed">{q.text}</p>
+                    <p className="text-sm text-foreground leading-relaxed">{q.text}</p>
                     <span
                       className={`inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                         q.status === "PUBLISHED"

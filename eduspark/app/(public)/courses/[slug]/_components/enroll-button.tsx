@@ -53,7 +53,7 @@ export function EnrollButton({
         href={`/dashboard/student/courses/${courseId}`}
         className={cn(
           "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-          "bg-indigo-600 hover:bg-primary/50 text-white",
+          "bg-primary hover:bg-primary/50 text-white",
           "text-sm font-bold transition-all active:scale-[0.98]",
           "shadow-lg shadow-emerald-500/20"
         )}
@@ -71,7 +71,7 @@ export function EnrollButton({
         href={`/auth/login?callbackUrl=/courses/${courseSlug}`}
         className={cn(
           "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-          "bg-indigo-600 hover:bg-primary/50 text-white",
+          "bg-primary hover:bg-primary/50 text-white",
           "text-sm font-bold transition-all active:scale-[0.98]",
           "shadow-lg shadow-emerald-500/20"
         )}
@@ -128,7 +128,7 @@ export function EnrollButton({
         disabled={isPending}
         className={cn(
           "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-          "bg-indigo-600 hover:bg-primary/50 text-white",
+          "bg-primary hover:bg-primary/50 text-white",
           "text-sm font-bold transition-all active:scale-[0.98]",
           "shadow-lg shadow-emerald-500/20",
           "disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"

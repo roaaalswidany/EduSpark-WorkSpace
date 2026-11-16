@@ -34,7 +34,7 @@ export function PublicServicesGrid({ services }: { services: PublicService[] }) 
         <Link
           key={service.id}
           href={`/marketplace/services/${service.slug}`}
-          className="group rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/100/40 hover:shadow-lg hover:shadow-primary/5"
+          className="group rounded-2xl bg-card border border-border overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/100/40 hover:shadow-lg hover:shadow-primary/5"
         >
           <div
             className={cn(
@@ -63,11 +63,11 @@ export function PublicServicesGrid({ services }: { services: PublicService[] }) 
           </div>
 
           <div className="flex flex-col flex-1 p-4 gap-3">
-            <h3 className="text-sm font-semibold text-slate-200 line-clamp-2 leading-snug group-hover:text-white transition-colors flex-1">
+            <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-white transition-colors flex-1">
               {service.title}
             </h3>
 
-            <div className="flex items-end justify-between pt-2.5 border-t border-slate-800">
+            <div className="flex items-end justify-between pt-2.5 border-t border-border">
               <div className="flex items-center gap-1.5 text-foreground0 text-xs">
                 <Clock className="w-3 h-3" />
                 <span>{service.deliveryDays}d</span>

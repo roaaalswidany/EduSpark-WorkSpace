@@ -142,9 +142,9 @@ export function CurriculumEditor({ course, sections }: Props) {
           My Courses
         </Link>
         <ChevronRight className="w-3 h-3" />
-        <span className="text-slate-400 truncate">{course.title}</span>
+        <span className="text-muted-foreground truncate">{course.title}</span>
         <ChevronRight className="w-3 h-3" />
-        <span className="text-slate-300">Edit Curriculum</span>
+        <span className="text-foreground">Edit Curriculum</span>
       </div>
 
       {/* Header */}
@@ -160,7 +160,7 @@ export function CurriculumEditor({ course, sections }: Props) {
                   ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
                   : course.status === "PENDING_REVIEW"
                   ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
-                  : "bg-muted-foreground/70/50 text-slate-400 border-slate-700"
+                  : "bg-muted-foreground/70/50 text-muted-foreground border-border"
               )}
             >
               {course.status.replace("_", " ")}
@@ -170,7 +170,7 @@ export function CurriculumEditor({ course, sections }: Props) {
             </span>
           </div>
           <h1 className="text-2xl font-bold text-white">{course.title}</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Manage sections, lessons, and course content.
           </p>
         </div>
@@ -179,7 +179,7 @@ export function CurriculumEditor({ course, sections }: Props) {
           <Link
             href={`/courses/${course.slug}`}
             target="_blank"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-800 hover:border-border700 text-slate-300 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-card border border-border hover:border-border700 text-foreground transition-colors"
           >
             <ExternalLink className="w-3.5 h-3.5" />
             Preview
@@ -193,7 +193,7 @@ export function CurriculumEditor({ course, sections }: Props) {
                 "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all",
                 course.status === "DRAFT"
                   ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
-                  : "bg-slate-900 border border-slate-800 hover:border-border700 text-slate-300",
+                  : "bg-card border border-border hover:border-border700 text-foreground",
                 isPending && "opacity-60"
               )}
             >
@@ -244,7 +244,7 @@ export function CurriculumEditor({ course, sections }: Props) {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-xl bg-slate-900 border border-slate-800 p-4">
+        <div className="rounded-xl bg-card border border-border p-4">
           <div className="flex items-center gap-2 text-foreground0 text-xs mb-1">
             <BookOpen className="w-3.5 h-3.5" /> Sections
           </div>
@@ -252,7 +252,7 @@ export function CurriculumEditor({ course, sections }: Props) {
             {sections.length}
           </p>
         </div>
-        <div className="rounded-xl bg-slate-900 border border-slate-800 p-4">
+        <div className="rounded-xl bg-card border border-border p-4">
           <div className="flex items-center gap-2 text-foreground0 text-xs mb-1">
             <Video className="w-3.5 h-3.5" /> Lessons
           </div>
@@ -276,7 +276,7 @@ export function CurriculumEditor({ course, sections }: Props) {
         <button
           type="button"
           onClick={() => setShowAddSection(true)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-slate-800 hover:border-primary/100/50 text-foreground0 hover:text-primary400 text-sm font-semibold transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-border hover:border-primary/100/50 text-foreground0 hover:text-primary400 text-sm font-semibold transition-colors"
         >
           <Plus className="w-4 h-4" />
           Add Section
@@ -285,8 +285,8 @@ export function CurriculumEditor({ course, sections }: Props) {
 
       {/* Sections List */}
       {sections.length === 0 ? (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-5">
+        <div className="rounded-2xl bg-card border border-border p-12 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-accent border border-border flex items-center justify-center mx-auto mb-5">
             <BookOpen className="w-7 h-7 text-slate-600" />
           </div>
           <h3 className="text-lg font-bold text-white mb-1.5">
@@ -347,7 +347,7 @@ function AddSectionForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-xl bg-slate-900 border border-primary/100/30 p-4 space-y-3"
+      className="rounded-xl bg-card border border-primary/100/30 p-4 space-y-3"
     >
       <input
         autoFocus
@@ -356,7 +356,7 @@ function AddSectionForm({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Section title (e.g., Introduction)"
         disabled={isPending}
-        className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
+        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
       />
       {error && (
         <div className="flex items-center gap-2 text-xs text-red-400">
@@ -368,14 +368,14 @@ function AddSectionForm({
           type="button"
           onClick={onClose}
           disabled={isPending}
-          className="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-foreground200 transition-colors"
+          className="px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground200 transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isPending || title.trim().length < 2}
-          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-primary/50 text-white disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold bg-primary hover:bg-primary/50 text-white disabled:opacity-50"
         >
           {isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
           Save Section
@@ -438,9 +438,9 @@ function SectionCard({
   };
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
+    <div className="rounded-2xl bg-card border border-border overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3 bg-slate-900/60 border-b border-slate-800">
+      <div className="flex items-center gap-2 px-4 py-3 bg-card/60 border-b border-border">
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
@@ -472,7 +472,7 @@ function SectionCard({
                   setEditTitle(section.title);
                 }
               }}
-              className="flex-1 bg-slate-950 border border-primary/100 rounded px-2 py-1 text-sm text-white outline-none"
+              className="flex-1 bg-background border border-primary/100 rounded px-2 py-1 text-sm text-white outline-none"
             />
             <button
               onClick={handleRename}
@@ -549,7 +549,7 @@ function SectionCard({
             <button
               type="button"
               onClick={() => setShowAddLesson(true)}
-              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-slate-800 hover:border-primary/100/40 text-slate-600 hover:text-primary400 text-xs font-semibold transition-colors"
+              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-border hover:border-primary/100/40 text-slate-600 hover:text-primary400 text-xs font-semibold transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Lesson
@@ -605,13 +605,13 @@ function LessonRow({
 
    return (
     <div className="space-y-2">
-      <div className="flex items-start gap-2 p-3 rounded-lg bg-slate-950/50 border border-slate-800/60 hover:border-border700 transition-colors">
-        <div className="w-6 h-6 rounded bg-slate-800 flex items-center justify-center text-[10px] font-bold text-foreground0 shrink-0 mt-0.5">
+      <div className="flex items-start gap-2 p-3 rounded-lg bg-background/50 border border-border/60 hover:border-border700 transition-colors">
+        <div className="w-6 h-6 rounded bg-accent flex items-center justify-center text-[10px] font-bold text-foreground0 shrink-0 mt-0.5">
           {index + 1}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="text-sm font-semibold text-slate-200 truncate">
+            <p className="text-sm font-semibold text-foreground truncate">
               {lesson.title}
             </p>
             {lesson.isFree && (
@@ -722,7 +722,7 @@ function LessonForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg bg-slate-900 border border-primary/100/30 p-4 space-y-3"
+      className="rounded-lg bg-card border border-primary/100/30 p-4 space-y-3"
     >
       <input
         autoFocus
@@ -731,7 +731,7 @@ function LessonForm({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Lesson title"
         disabled={isPending}
-        className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
+        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
       />
 
       <textarea
@@ -740,7 +740,7 @@ function LessonForm({
         placeholder="Description (optional)"
         rows={2}
         disabled={isPending}
-        className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none resize-none"
+        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none resize-none"
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -750,7 +750,7 @@ function LessonForm({
           onChange={(e) => setVideoUrl(e.target.value)}
           placeholder="Video URL (YouTube/Vimeo or direct MP4)"
           disabled={isPending}
-          className="bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
+          className="bg-background border border-border rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
         />
         <div className="flex items-center gap-2">
           <input
@@ -760,14 +760,14 @@ function LessonForm({
             value={durationMin}
             onChange={(e) => setDurationMin(Number(e.target.value) || 0)}
             disabled={isPending}
-            className="flex-1 bg-slate-950 border border-slate-700 rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
+            className="flex-1 bg-background border border-border rounded px-3 py-2 text-sm text-white focus:border-primary/100 outline-none"
             placeholder="Duration"
           />
           <span className="text-xs text-foreground0 shrink-0">min</span>
         </div>
       </div>
 
-      <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer select-none">
+      <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none">
         <input
           type="checkbox"
           checked={isFree}
@@ -789,14 +789,14 @@ function LessonForm({
           type="button"
           onClick={onClose}
           disabled={isPending}
-          className="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-foreground200 transition-colors"
+          className="px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground200 transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isPending || title.trim().length < 2}
-          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-primary/50 text-white disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold bg-primary hover:bg-primary/50 text-white disabled:opacity-50"
         >
           {isPending ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />

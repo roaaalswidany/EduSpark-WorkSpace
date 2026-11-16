@@ -72,8 +72,8 @@ export default async function EditServicePage({ params }: PageProps) {
   const defaultCourseId = certifiedCourses[0]?.courseId ?? "";
 
   return (
-    <div className="min-h-screen bg-slate-950">
-      <div className="border-b border-slate-800 bg-slate-900/50">
+    <div className="min-h-screen bg-background">
+      <div className="border-b border-border bg-card/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
           <Link
             href="/dashboard/creator/services"
@@ -95,7 +95,7 @@ export default async function EditServicePage({ params }: PageProps) {
           <h1 className="text-2xl sm:text-3xl font-black text-white">
             Edit Service
           </h1>
-          <p className="text-slate-400 text-sm mt-1.5 truncate">
+          <p className="text-muted-foreground text-sm mt-1.5 truncate">
             {service.title}
           </p>
         </div>

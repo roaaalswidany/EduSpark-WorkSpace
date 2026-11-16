@@ -183,9 +183,9 @@ function OrderDialog({
       />
 
       {/* Dialog */}
-      <div className="relative w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden animate-scale-in">
+      <div className="relative w-full max-w-lg rounded-2xl bg-card border border-border shadow-2xl overflow-hidden animate-scale-in">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-800">
+        <div className="px-6 py-5 border-b border-border">
           <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-1">
             Place Order
           </p>
@@ -205,14 +205,14 @@ function OrderDialog({
 
           <div className="flex items-center justify-between text-xs text-foreground0">
             <span>Delivery</span>
-            <span className="text-slate-300">
+            <span className="text-foreground">
               {service.deliveryDays} days
             </span>
           </div>
 
           <div className="flex items-center justify-between text-xs text-foreground0">
             <span>Revisions</span>
-            <span className="text-slate-300">
+            <span className="text-foreground">
               {service.revisions === 0
                 ? "None"
                 : service.revisions === 1
@@ -221,10 +221,10 @@ function OrderDialog({
             </span>
           </div>
 
-          <div className="pt-3 border-t border-slate-800">
+          <div className="pt-3 border-t border-border">
             <label
               htmlFor="requirements"
-              className="block text-sm font-semibold text-slate-300 mb-2"
+              className="block text-sm font-semibold text-foreground mb-2"
             >
               Your Requirements
             </label>
@@ -236,7 +236,7 @@ function OrderDialog({
               rows={5}
               maxLength={2000}
               disabled={isPending}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
+              className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
             />
             <p className="text-[10px] text-slate-600 mt-1.5">
               {requirements.length}/2000
@@ -252,12 +252,12 @@ function OrderDialog({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-800 flex items-center justify-end gap-2 bg-slate-950/40">
+        <div className="px-6 py-4 border-t border-border flex items-center justify-end gap-2 bg-background/40">
           <button
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-foreground200 hover:bg-accent transition-all disabled:opacity-50"
+            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground200 hover:bg-accent transition-all disabled:opacity-50"
           >
             Cancel
           </button>
@@ -268,8 +268,8 @@ function OrderDialog({
             className={cn(
               "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
               isValid && !isPending
-                ? "bg-indigo-600 hover:bg-primary/50 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
-                : "bg-slate-800 text-slate-600 cursor-not-allowed"
+                ? "bg-primary hover:bg-primary/50 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
+                : "bg-accent text-slate-600 cursor-not-allowed"
             )}
           >
             {isPending ? (
@@ -303,7 +303,7 @@ export function ServiceDetailView({
   const gradient = getGradient(service.id);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Main content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
@@ -364,7 +364,7 @@ export function ServiceDetailView({
               {service.orderCount > 0 && (
                 <div className="flex items-center gap-1.5">
                   <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                  <span className="text-slate-300 font-semibold">
+                  <span className="text-foreground font-semibold">
                     {service.orderCount}
                   </span>
                   <span>
@@ -389,19 +389,19 @@ export function ServiceDetailView({
             </div>
 
             {/* Description */}
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6">
+            <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
               <h2 className="text-base font-bold text-white mb-3 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-indigo-400" />
                 About This Service
               </h2>
-              <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                 {service.description}
               </p>
             </div>
 
             {/* Tags */}
             {service.tags.length > 0 && (
-              <div className="rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6">
+              <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
                 <h2 className="text-base font-bold text-white mb-3">
                   Skills & Tags
                 </h2>
@@ -409,7 +409,7 @@ export function ServiceDetailView({
                   {service.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-medium text-slate-300"
+                      className="px-3 py-1 rounded-full bg-accent border border-border text-xs font-medium text-foreground"
                     >
                       #{tag}
                     </span>
@@ -420,7 +420,7 @@ export function ServiceDetailView({
 
             {/* Portfolio */}
             {service.portfolioLinks.length > 0 && (
-              <div className="rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6">
+              <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
                 <h2 className="text-base font-bold text-white mb-3 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-violet-400" />
                   Portfolio
@@ -432,13 +432,13 @@ export function ServiceDetailView({
                       href={link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-primary/100/40 hover:bg-card transition-all group"
+                      className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border hover:border-primary/100/40 hover:bg-card transition-all group"
                     >
                       <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center">
                         <ExternalLink className="w-3.5 h-3.5 text-indigo-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-slate-400 truncate group-hover:text-foreground200 transition-colors">
+                        <p className="text-xs text-muted-foreground truncate group-hover:text-foreground200 transition-colors">
                           {link.replace(/^https?:\/\//, "").slice(0, 60)}
                         </p>
                       </div>
@@ -450,7 +450,7 @@ export function ServiceDetailView({
             )}
 
             {/* About the creator */}
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6">
+            <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
               <h2 className="text-base font-bold text-white mb-4">
                 About the Creator
               </h2>
@@ -472,7 +472,7 @@ export function ServiceDetailView({
                     </p>
                   )}
                   {service.creator.bio && (
-                    <p className="text-xs text-slate-400 mt-3 leading-relaxed">
+                    <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
                       {service.creator.bio}
                     </p>
                   )}
@@ -484,7 +484,7 @@ export function ServiceDetailView({
           {/* ── Right column (sticky sidebar) ───────────────── */}
           <aside className="lg:sticky lg:top-20 space-y-4">
             {/* Pricing card */}
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
+            <div className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="p-5 space-y-4">
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-black text-white tabular-nums">
@@ -499,7 +499,7 @@ export function ServiceDetailView({
     Admins cannot order services.
   </div>
 ) : isOwnService ? (
-  <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-800 text-slate-400 text-xs font-medium">
+  <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-accent text-muted-foreground text-xs font-medium">
     <User className="w-4 h-4 shrink-0" />
     This is your own service
   </div>
@@ -508,7 +508,7 @@ export function ServiceDetailView({
     onClick={() => setOrderOpen(true)}
     className={cn(
       "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-      "bg-indigo-600 hover:bg-primary/50 text-white",
+      "bg-primary hover:bg-primary/50 text-white",
       "text-sm font-bold transition-all active:scale-[0.98]",
       "shadow-lg shadow-emerald-500/20"
     )}
@@ -521,7 +521,7 @@ export function ServiceDetailView({
     href={`/auth/login?callbackUrl=/marketplace/services/${service.slug}`}
     className={cn(
       "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-      "bg-indigo-600 hover:bg-primary/50 text-white",
+      "bg-primary hover:bg-primary/50 text-white",
       "text-sm font-bold transition-all active:scale-[0.98]",
       "shadow-lg shadow-emerald-500/20"
     )}
@@ -531,16 +531,16 @@ export function ServiceDetailView({
 )}
 
                 {/* Features */}
-                <div className="pt-4 border-t border-slate-800 space-y-3">
+                <div className="pt-4 border-t border-border space-y-3">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-foreground0">
                     What&apos;s included
                   </p>
                   <ul className="space-y-2.5">
-                    <li className="flex items-center gap-2 text-xs text-slate-400">
+                    <li className="flex items-center gap-2 text-xs text-muted-foreground">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                       {service.deliveryDays} days delivery
                     </li>
-                    <li className="flex items-center gap-2 text-xs text-slate-400">
+                    <li className="flex items-center gap-2 text-xs text-muted-foreground">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                       {service.revisions === 0
                         ? "No revisions"
@@ -548,11 +548,11 @@ export function ServiceDetailView({
                         ? "1 revision"
                         : `${service.revisions} revisions`}
                     </li>
-                    <li className="flex items-center gap-2 text-xs text-slate-400">
+                    <li className="flex items-center gap-2 text-xs text-muted-foreground">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                       Direct chat with creator
                     </li>
-                    <li className="flex items-center gap-2 text-xs text-slate-400">
+                    <li className="flex items-center gap-2 text-xs text-muted-foreground">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                       Milestone-based workflow
                     </li>
@@ -560,10 +560,10 @@ export function ServiceDetailView({
                 </div>
 
                 {/* Meta */}
-                <div className="pt-4 border-t border-slate-800 space-y-2">
+                <div className="pt-4 border-t border-border space-y-2">
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="text-foreground0">Created</span>
-                    <span className="text-slate-400">
+                    <span className="text-muted-foreground">
                       {new Date(service.createdAt).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -593,7 +593,7 @@ export function ServiceDetailView({
 
         {/* ── Related services ────────────────────────── */}
         {relatedServices.length > 0 && (
-          <div className="mt-16 pt-8 border-t border-slate-800">
+          <div className="mt-16 pt-8 border-t border-border">
             <h2 className="text-lg font-bold text-white mb-5">
               More from {service.category?.name}
             </h2>
@@ -602,7 +602,7 @@ export function ServiceDetailView({
                 <Link
                   key={rs.id}
                   href={`/marketplace/services/${rs.slug}`}
-                  className="group rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden hover:border-primary/100/40 transition-all hover:-translate-y-0.5"
+                  className="group rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/100/40 transition-all hover:-translate-y-0.5"
                 >
                   <div
                     className={cn(
@@ -627,7 +627,7 @@ export function ServiceDetailView({
                     )}
                   </div>
                   <div className="p-4">
-                    <p className="text-xs font-semibold text-slate-300 line-clamp-2 leading-snug group-hover:text-white transition-colors mb-2">
+                    <p className="text-xs font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-white transition-colors mb-2">
                       {rs.title}
                     </p>
                     <div className="flex items-center justify-between">

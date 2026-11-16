@@ -62,9 +62,9 @@ export function CurriculumAccordion({
   }
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
+    <div className="rounded-2xl bg-card border border-border overflow-hidden">
       {/* Header */}
-      <div className="px-5 sm:px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+      <div className="px-5 sm:px-6 py-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BookOpen className="w-4 h-4 text-indigo-400" />
           <h2 className="text-sm font-bold text-white">Course Curriculum</h2>
@@ -87,7 +87,7 @@ export function CurriculumAccordion({
           return (
             <div
               key={section.id}
-              className="border-b border-slate-800/60 last:border-0"
+              className="border-b border-border/60 last:border-0"
             >
               {/* Section header */}
               <button
@@ -95,13 +95,13 @@ export function CurriculumAccordion({
                 className="w-full flex items-center gap-3 px-5 sm:px-6 py-4 hover:bg-accent/30 transition-colors text-left group"
               >
                 {/* Section number */}
-                <div className="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 text-xs font-bold flex items-center justify-center shrink-0 group-hover:bg-muted-foreground/70 transition-colors">
+                <div className="w-7 h-7 rounded-lg bg-accent text-muted-foreground text-xs font-bold flex items-center justify-center shrink-0 group-hover:bg-muted-foreground/70 transition-colors">
                   {idx + 1}
                 </div>
 
                 {/* Title + meta */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-200 truncate group-hover:text-white transition-colors">
+                  <p className="text-sm font-semibold text-foreground truncate group-hover:text-white transition-colors">
                     {section.title}
                   </p>
                   <p className="text-xs text-slate-600 mt-0.5">
@@ -143,7 +143,7 @@ export function CurriculumAccordion({
                         <span
                           className={cn(
                             "flex-1 text-xs truncate",
-                            locked ? "text-foreground0" : "text-slate-300"
+                            locked ? "text-foreground0" : "text-foreground"
                           )}
                         >
                           {lesson.title}

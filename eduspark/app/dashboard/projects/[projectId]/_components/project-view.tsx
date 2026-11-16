@@ -102,13 +102,13 @@ const MILESTONE_STATUS = {
     label: "Pending",
     icon: Clock,
     dot: "bg-muted-foreground/70 border-slate-600",
-    text: "text-slate-400",
-    badge: "bg-slate-800 text-slate-400 border-slate-700",
+    text: "text-muted-foreground",
+    badge: "bg-accent text-muted-foreground border-border",
   },
   [MilestoneStatus.IN_PROGRESS]: {
     label: "In Progress",
     icon: Zap,
-    dot: "bg-indigo-600 border-primary/100",
+    dot: "bg-primary border-primary/100",
     text: "text-indigo-300",
     badge: "bg-primary/50/10 text-indigo-300 border-primary/100/20",
   },
@@ -138,14 +138,14 @@ const MILESTONE_STATUS = {
 const PROJECT_STATUS = {
   [ProjectStatus.PENDING]: {
     label: "Awaiting Start",
-    color: "text-slate-400",
+    color: "text-muted-foreground",
     bg: "bg-muted-foreground/70",
     bar: "bg-muted/500",
     progress: 0,
   },
   [ProjectStatus.OPEN]: {
     label: "Open",
-    color: "text-slate-400",
+    color: "text-muted-foreground",
     bg: "bg-muted-foreground/70",
     bar: "bg-muted/500",
     progress: 0,
@@ -174,7 +174,7 @@ const PROJECT_STATUS = {
   [ProjectStatus.CANCELLED]: {
     label: "Cancelled",
     color: "text-foreground0",
-    bg: "bg-slate-800",
+    bg: "bg-accent",
     bar: "bg-muted-foreground/60",
     progress: 0,
   },
@@ -264,7 +264,7 @@ function SubmissionForm({
   const isValid = note.trim().length >= 10 && urlOk;
 
   return (
-    <div className="mt-4 p-4 rounded-xl bg-slate-800/70 border border-primary/100/20 space-y-3">
+    <div className="mt-4 p-4 rounded-xl bg-accent/70 border border-primary/100/20 space-y-3">
       <p className="text-xs font-semibold text-indigo-400">
         Add delivery details:
       </p>
@@ -274,7 +274,7 @@ function SubmissionForm({
         placeholder="Describe what you've delivered (e.g., 'Final logo files in SVG, PNG, and AI formats. Brand guidelines included.')"
         rows={3}
         maxLength={500}
-        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
+        className="w-full bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
       />
       <div>
         <input
@@ -283,7 +283,7 @@ function SubmissionForm({
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Delivery link (optional) — https://…"
           maxLength={500}
-          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder:text-muted-foreground600 focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
+          className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground600 focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
         />
         {!urlOk && (
           <p className="mt-1 text-[10px] text-red-400">Only https:// links are allowed.</p>
@@ -305,7 +305,7 @@ function SubmissionForm({
             disabled={!isValid || isPending}
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all",
-              "bg-indigo-600 hover:bg-primary/50 text-white",
+              "bg-primary hover:bg-primary/50 text-white",
               "disabled:opacity-40 disabled:cursor-not-allowed"
             )}
           >
@@ -333,7 +333,7 @@ function RevisionForm({
   const isValid = note.trim().length >= 10;
 
   return (
-    <div className="mt-4 p-4 rounded-xl bg-slate-800/70 border border-red-500/20 space-y-3">
+    <div className="mt-4 p-4 rounded-xl bg-accent/70 border border-red-500/20 space-y-3">
       <p className="text-xs font-semibold text-red-400">
         Describe what needs to be changed:
       </p>
@@ -343,7 +343,7 @@ function RevisionForm({
         placeholder="Be specific — e.g. 'Please revise the header section and adjust the color palette to match the brand guidelines provided.'"
         rows={3}
         maxLength={500}
-        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+        className="w-full bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
       />
       <div className="flex items-center justify-between">
         <span className="text-[10px] text-slate-600">
@@ -434,7 +434,7 @@ function MilestoneCard({
               "w-0.5 flex-1 mt-1",
               milestone.status === MilestoneStatus.APPROVED
                 ? "bg-emerald-500/30"
-                : "bg-slate-800"
+                : "bg-accent"
             )}
             style={{ minHeight: "3rem" }}
           />
@@ -446,14 +446,14 @@ function MilestoneCard({
         className={cn(
           "flex-1 mb-6 last:mb-0 rounded-2xl border overflow-hidden transition-all",
           milestone.status === MilestoneStatus.APPROVED
-            ? "bg-slate-900/60 border-emerald-500/15"
+            ? "bg-card/60 border-emerald-500/15"
             : milestone.status === MilestoneStatus.REVIEW_REQUESTED
-            ? "bg-slate-900 border-amber-500/20"
+            ? "bg-card border-amber-500/20"
             : milestone.status === MilestoneStatus.REVISION_NEEDED
-            ? "bg-slate-900 border-red-500/20"
+            ? "bg-card border-red-500/20"
             : milestone.status === MilestoneStatus.IN_PROGRESS
-            ? "bg-slate-900 border-primary/100/20"
-            : "bg-slate-900 border-slate-800"
+            ? "bg-card border-primary/100/20"
+            : "bg-card border-border"
         )}
       >
         {/* Card header */}
@@ -494,7 +494,7 @@ function MilestoneCard({
 
           {/* Description */}
           {milestone.description && (
-            <p className="text-sm text-slate-400 leading-relaxed mb-3">
+            <p className="text-sm text-muted-foreground leading-relaxed mb-3">
               {milestone.description}
             </p>
           )}
@@ -563,7 +563,7 @@ function MilestoneCard({
 
         {/* ── Action strip ───────────────────────────────────────────── */}
         {isProjectActive && (
-          <div className="border-t border-slate-800/80 px-5 py-3 bg-slate-800/20">
+          <div className="border-t border-border/80 px-5 py-3 bg-accent/20">
             {/* Creator actions */}
             {isCreator && (
               <div className="flex items-center gap-2 flex-wrap">
@@ -573,7 +573,7 @@ function MilestoneCard({
                     disabled={isPending}
                     className={cn(
                       "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
-                      "bg-indigo-600 hover:bg-primary/50 text-white",
+                      "bg-primary hover:bg-primary/50 text-white",
                       "disabled:opacity-50 disabled:cursor-not-allowed"
                     )}
                   >
@@ -634,7 +634,7 @@ function MilestoneCard({
                       className={cn(
                         "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
                         "bg-muted-foreground/70 hover:bg-red-500/20 border border-slate-600 hover:border-red-500/30",
-                        "text-slate-400 hover:text-red-400",
+                        "text-muted-foreground hover:text-red-400",
                         "disabled:opacity-50 disabled:cursor-not-allowed"
                       )}
                     >
@@ -865,10 +865,10 @@ export function ProjectView({
   }, [isPending, project.id, project.milestones, project.status]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
 
       {/* ── Project Header ─────────────────────────────────────────────────── */}
-      <div className="border-b border-slate-800 bg-slate-900/60 sticky top-0 z-30 backdrop-blur-md">
+      <div className="border-b border-border bg-card/60 sticky top-0 z-30 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
@@ -904,7 +904,7 @@ export function ProjectView({
                     ? "bg-amber-500/10 text-amber-300 border-amber-500/20"
                     : localProjectStatus === ProjectStatus.IN_PROGRESS
                     ? "bg-primary/50/10 text-indigo-300 border-primary/100/20"
-                    : "bg-slate-800 text-slate-400 border-slate-700"
+                    : "bg-accent text-muted-foreground border-border"
                 )}
               >
                 {localProjectStatus === ProjectStatus.COMPLETED && (
@@ -923,12 +923,12 @@ export function ProjectView({
               {project.chatRoom && (
                 <Link
                   href={`/dashboard/chat/${project.chatRoom.id}`}
-                  className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 border border-slate-700 text-slate-400 hover:text-foreground200 text-xs font-semibold transition-all"
+                  className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent hover:bg-muted-foreground/70 border border-border text-muted-foreground hover:text-foreground200 text-xs font-semibold transition-all"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />
                   <span>Chat</span>
                   {project.chatRoom.messageCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-indigo-600 text-white text-[9px] font-bold flex items-center justify-center">
+                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary text-white text-[9px] font-bold flex items-center justify-center">
                       {project.chatRoom.messageCount > 9
                         ? "9+"
                         : project.chatRoom.messageCount}
@@ -950,7 +950,7 @@ export function ProjectView({
                 {statusConfig.progress}%
               </span>
             </div>
-            <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div className="h-1.5 bg-accent rounded-full overflow-hidden">
               <div
                 className={cn(
                   "h-full rounded-full transition-all duration-700",
@@ -986,7 +986,7 @@ export function ProjectView({
           {/* ── Main: Milestone Timeline ─────────────────────────────────────── */}
           <main className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-sm font-bold text-slate-300 uppercase tracking-widest">
+              <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
                 Milestones
               </h2>
               <span className="text-xs text-slate-600">
@@ -1023,7 +1023,7 @@ export function ProjectView({
                   <h3 className="text-base font-bold text-white mb-1.5">
                     All Work Submitted
                   </h3>
-                  <p className="text-slate-400 text-sm mb-5 max-w-sm mx-auto">
+                  <p className="text-muted-foreground text-sm mb-5 max-w-sm mx-auto">
                     The creator has submitted all milestones for your review.
                     Approving this will mark the project as complete and release
                     payment.
@@ -1058,7 +1058,7 @@ export function ProjectView({
                 <h3 className="text-lg font-bold text-white mb-1.5">
                   Project Complete! 🎉
                 </h3>
-                <p className="text-slate-400 text-sm">
+                <p className="text-muted-foreground text-sm">
                   All milestones approved. This project has been successfully
                   delivered.
                 </p>
@@ -1071,8 +1071,8 @@ export function ProjectView({
 
             {/* Service info */}
             {project.service && (
-              <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-                <div className="px-4 py-3 border-b border-slate-800 bg-slate-800/40">
+              <div className="rounded-2xl bg-card border border-border overflow-hidden">
+                <div className="px-4 py-3 border-b border-border bg-accent/40">
                   <p className="text-[10px] font-bold text-foreground0 uppercase tracking-widest">
                     Service
                   </p>
@@ -1100,7 +1100,7 @@ export function ProjectView({
                   <Link
                     href={`/marketplace/services/${project.service.slug}`}
                     target="_blank"
-                    className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 text-slate-400 hover:text-foreground200 text-xs font-medium transition-all border border-slate-700"
+                    className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-accent hover:bg-muted-foreground/70 text-muted-foreground hover:text-foreground200 text-xs font-medium transition-all border border-border"
                   >
                     <ExternalLink className="w-3 h-3" />
                     View Service
@@ -1110,8 +1110,8 @@ export function ProjectView({
             )}
 
             {/* Parties */}
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-              <div className="px-4 py-3 border-b border-slate-800 bg-slate-800/40">
+            <div className="rounded-2xl bg-card border border-border overflow-hidden">
+              <div className="px-4 py-3 border-b border-border bg-accent/40">
                 <p className="text-[10px] font-bold text-foreground0 uppercase tracking-widest">
                   Participants
                 </p>
@@ -1130,7 +1130,7 @@ export function ProjectView({
                         <div className="flex-1 min-w-0">
                       <Link
                         href={`/profile/${project.client.id}`}
-                        className="text-sm font-semibold text-slate-200 truncate hover:text-primary400 transition-colors block"
+                        className="text-sm font-semibold text-foreground truncate hover:text-primary400 transition-colors block"
                       >
                         {project.client.name}
                       </Link>
@@ -1143,7 +1143,7 @@ export function ProjectView({
                   </div>
                 </div>
 
-                <div className="h-px bg-slate-800" />
+                <div className="h-px bg-accent" />
 
                 {/* Creator */}
                 {project.creator ? (
@@ -1159,7 +1159,7 @@ export function ProjectView({
                       <div className="flex-1 min-w-0">
                   <Link
   href={`/profile/${project.creator.id}`}
-  className="text-sm font-semibold text-slate-200 truncate hover:text-primary400 transition-colors block"
+  className="text-sm font-semibold text-foreground truncate hover:text-primary400 transition-colors block"
 >
   {project.creator.name}
 </Link>
@@ -1183,8 +1183,8 @@ export function ProjectView({
             </div>
 
             {/* Budget + Deadline */}
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-              <div className="px-4 py-3 border-b border-slate-800 bg-slate-800/40">
+            <div className="rounded-2xl bg-card border border-border overflow-hidden">
+              <div className="px-4 py-3 border-b border-border bg-accent/40">
                 <p className="text-[10px] font-bold text-foreground0 uppercase tracking-widest">
                   Details
                 </p>
@@ -1245,7 +1245,7 @@ export function ProjectView({
                   <MessageSquare className="w-5 h-5 text-indigo-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
+                  <p className="text-sm font-semibold text-foreground group-hover:text-white transition-colors">
                     Project Chat
                   </p>
                   <p className="text-xs text-foreground0">

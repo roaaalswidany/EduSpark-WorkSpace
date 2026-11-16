@@ -160,22 +160,22 @@ export const TIER_STYLES: Record<
   { color: string; bg: string; border: string; gradient: string }
 > = {
   COMMON: {
-    color: "text-slate-400",
-    bg: "bg-slate-800/60",
-    border: "border-slate-700",
+    color: "text-muted-foreground",
+    bg: "bg-accent/60",
+    border: "border-border",
     gradient: "from-slate-600 to-slate-700",
   },
   RARE: {
-    color: "text-blue-400",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/30",
+    color: "text-info",
+    bg: "bg-info/10",
+    border: "border-info/30",
     gradient: "from-blue-500 to-cyan-600",
   },
   EPIC: {
     color: "text-violet-400",
-    bg: "bg-violet-500/10",
+    bg: "bg-primary/10",
     border: "border-violet-500/30",
-    gradient: "from-violet-500 to-fuchsia-600",
+    gradient: "from-primary to-fuchsia-600",
   },
   LEGENDARY: {
     color: "text-amber-400",

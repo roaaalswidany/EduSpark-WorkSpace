@@ -147,7 +147,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
   };
 
   return (
-    <div className="rounded-lg bg-slate-950/40 border border-slate-800 p-3 space-y-2">
+    <div className="rounded-lg bg-background/40 border border-border p-3 space-y-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-foreground0">
           <Paperclip className="w-3 h-3" />
@@ -157,7 +157,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold bg-slate-800 hover:bg-muted-foreground/70 text-slate-300 transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold bg-accent hover:bg-muted-foreground/70 text-foreground transition-colors disabled:opacity-50"
         >
           {uploading ? (
             <Loader2 className="w-3 h-3 animate-spin" />
@@ -190,11 +190,11 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
           {attachments.map((att) => (
             <div
               key={att.id}
-              className="flex items-center gap-2 px-2 py-1.5 rounded bg-slate-900/60 border border-slate-800/60"
+              className="flex items-center gap-2 px-2 py-1.5 rounded bg-card/60 border border-border/60"
             >
               <FileText className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] text-slate-300 truncate">{att.fileName}</p>
+                <p className="text-[11px] text-foreground truncate">{att.fileName}</p>
                 <p className="text-[9px] text-slate-600">
                   {formatSize(att.fileSizeBytes)}
                   {att.status !== "CONFIRMED" && (
@@ -231,15 +231,15 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
             onClick={() => setDeleteDialog(null)}
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-            <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-5 space-y-4 pointer-events-auto">
+            <div className="w-full max-w-md rounded-2xl bg-card border border-border shadow-2xl p-5 space-y-4 pointer-events-auto">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
                   <AlertTriangle className="w-5 h-5 text-red-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-bold text-white">Delete attachment?</h3>
-                  <p className="text-sm text-slate-400 mt-1">
-                    <span className="font-mono text-slate-300">{deleteDialog.fileName}</span>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    <span className="font-mono text-foreground">{deleteDialog.fileName}</span>
                     {" "}will be permanently removed. This cannot be undone.
                   </p>
                 </div>
@@ -250,7 +250,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
                   type="button"
                   onClick={() => setDeleteDialog(null)}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-accent hover:bg-muted-foreground/70 text-foreground text-sm font-semibold transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>

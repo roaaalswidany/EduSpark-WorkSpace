@@ -149,7 +149,7 @@ function DeleteDialog({
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-destructive hover:bg-destructive text-destructive-foreground active:scale-95 transition-all disabled:opacity-50 shadow-lg shadow-red-500/20"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-destructive hover:bg-destructive text-destructive-foreground active:scale-95 transition-all disabled:opacity-50 shadow-lg shadow-rose-500/20"
           >
             {isPending ? (
               <>

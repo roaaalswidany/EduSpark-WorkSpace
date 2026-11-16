@@ -85,8 +85,8 @@ export default async function AdminDashboardPage() {
       label: "Active Users",
       value: totalUsers,
       icon: Users,
-      color: "text-blue-400",
-      bg: "bg-blue-500/10",
+      color: "text-info",
+      bg: "bg-info/10",
       trend: newUsersThisWeek > 0 ? `+${newUsersThisWeek} this week` : null,
     },
     {
@@ -260,7 +260,7 @@ export default async function AdminDashboardPage() {
                   <div
                     className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
                       log.severity === "CRITICAL"
-                        ? "bg-red-400"
+                        ? "bg-rose-400"
                         : log.severity === "WARNING"
                         ? "bg-amber-400"
                         : "bg-emerald-400"
@@ -328,7 +328,7 @@ export default async function AdminDashboardPage() {
               className="flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border hover:border-border hover:bg-background transition-colors group"
             >
               <div className="flex items-center gap-3">
-                <Users className="w-4 h-4 text-blue-400" />
+                <Users className="w-4 h-4 text-info" />
                 <span className="text-sm font-medium text-foreground">
                   Manage Users
                 </span>

@@ -262,21 +262,21 @@ export function QuizView({
   // ═══════════════════════════════════════════════════════════════
   if (view === "intro") {
     return (
-      <div className="min-h-screen bg-slate-950 text-foreground">
+      <div className="min-h-screen bg-background text-foreground">
         {/* Top bar */}
-        <div className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
+        <div className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
             <Link
               href={`/dashboard/student/courses/${course.id}`}
               className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent transition-colors"
             >
-              <ArrowLeft className="w-4 h-4 text-slate-400" />
+              <ArrowLeft className="w-4 h-4 text-muted-foreground" />
             </Link>
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
                 Certification Quiz
               </p>
-              <p className="text-xs text-slate-400 truncate">{course.title}</p>
+              <p className="text-xs text-muted-foreground truncate">{course.title}</p>
             </div>
           </div>
         </div>
@@ -292,7 +292,7 @@ export function QuizView({
               {quiz.title}
             </h1>
             {quiz.description && (
-              <p className="text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">
+              <p className="text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
                 {quiz.description}
               </p>
             )}
@@ -300,7 +300,7 @@ export function QuizView({
 
           {/* Info cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 p-5 text-center">
+            <div className="rounded-2xl bg-card border border-border p-5 text-center">
               <HelpCircle className="w-5 h-5 text-indigo-400 mx-auto mb-2" />
               <p className="text-xl font-black text-white tabular-nums">
                 {quiz.totalQuestions}
@@ -309,7 +309,7 @@ export function QuizView({
                 Questions
               </p>
             </div>
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 p-5 text-center">
+            <div className="rounded-2xl bg-card border border-border p-5 text-center">
               <Trophy className="w-5 h-5 text-amber-400 mx-auto mb-2" />
               <p className="text-xl font-black text-white tabular-nums">
                 {quiz.passingScore}%
@@ -318,7 +318,7 @@ export function QuizView({
                 To Pass
               </p>
             </div>
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 p-5 text-center">
+            <div className="rounded-2xl bg-card border border-border p-5 text-center">
               <Clock className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
               <p className="text-xl font-black text-white tabular-nums">
                 {quiz.timeLimit ? formatTime(quiz.timeLimit) : "—"}
@@ -355,9 +355,9 @@ export function QuizView({
                     ? "You already passed this quiz!"
                     : "Previous attempt did not pass"}
                 </p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-muted-foreground">
                   Score:{" "}
-                  <span className="font-semibold text-slate-300 tabular-nums">
+                  <span className="font-semibold text-foreground tabular-nums">
                     {lastAttempt.score.toFixed(1)}%
                   </span>{" "}
                   ({lastAttempt.correctQ}/{lastAttempt.totalQ} correct)
@@ -367,7 +367,7 @@ export function QuizView({
           )}
 
           {/* Rules */}
-          <div className="rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6 mb-8">
+          <div className="rounded-2xl bg-card border border-border p-5 sm:p-6 mb-8">
             <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-indigo-400" />
               Before you begin
@@ -386,7 +386,7 @@ export function QuizView({
               ].map((rule, i) => (
                 <li
                   key={i}
-                  className="flex items-start gap-2.5 text-sm text-slate-400 leading-relaxed"
+                  className="flex items-start gap-2.5 text-sm text-muted-foreground leading-relaxed"
                 >
                   <CheckCircle2 className="w-4 h-4 text-primary/800 shrink-0 mt-0.5" />
                   <span>{rule}</span>
@@ -400,7 +400,7 @@ export function QuizView({
             onClick={startQuiz}
             className={cn(
               "w-full flex items-center justify-center gap-2 h-14 rounded-2xl",
-              "bg-indigo-600 hover:bg-primary/50 text-white",
+              "bg-primary hover:bg-primary/50 text-white",
               "text-base font-bold transition-all active:scale-[0.98]",
               "shadow-lg shadow-emerald-500/20"
             )}
@@ -422,15 +422,15 @@ export function QuizView({
     const timerWarning = timeRemaining !== null && timeRemaining <= 60;
 
     return (
-      <div className="min-h-screen bg-slate-950 text-foreground flex flex-col">
+      <div className="min-h-screen bg-background text-foreground flex flex-col">
         {/* Top bar */}
-        <div className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
+        <div className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
                 Question {currentIndex + 1} of {quiz.questions.length}
               </p>
-              <p className="text-xs text-slate-400 truncate">{quiz.title}</p>
+              <p className="text-xs text-muted-foreground truncate">{quiz.title}</p>
             </div>
 
             {timeRemaining !== null && (
@@ -439,7 +439,7 @@ export function QuizView({
                   "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold tabular-nums",
                   timerWarning
                     ? "bg-red-500/10 text-red-400 border border-red-500/30"
-                    : "bg-slate-800 text-slate-300 border border-slate-700"
+                    : "bg-accent text-foreground border border-border"
                 )}
               >
                 <Clock className="w-3.5 h-3.5" />
@@ -449,9 +449,9 @@ export function QuizView({
           </div>
 
           {/* Progress bar */}
-          <div className="h-1 bg-slate-900 relative">
+          <div className="h-1 bg-card relative">
             <div
-              className="h-full bg-slate-800 transition-all duration-300"
+              className="h-full bg-accent transition-all duration-300"
               style={{ width: `${answeredPct}%` }}
             />
             <div
@@ -487,7 +487,7 @@ export function QuizView({
                     "border transition-all duration-150",
                     isSelected
                       ? "bg-primary/50/10 border-primary/100/50 shadow-lg shadow-primary/5"
-                      : "bg-slate-900 border-slate-800 hover:border-border700 hover:bg-card/80"
+                      : "bg-card border-border hover:border-border700 hover:bg-card/80"
                   )}
                 >
                   {/* Radio indicator */}
@@ -521,7 +521,7 @@ export function QuizView({
                         "text-sm leading-relaxed",
                         isSelected
                           ? "text-white font-medium"
-                          : "text-slate-300"
+                          : "text-foreground"
                       )}
                     >
                       {option}
@@ -534,7 +534,7 @@ export function QuizView({
         </div>
 
         {/* Footer actions */}
-        <div className="border-t border-slate-800 bg-slate-950/95 backdrop-blur-md sticky bottom-0 z-20">
+        <div className="border-t border-border bg-background/95 backdrop-blur-md sticky bottom-0 z-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
             {/* Previous */}
             <button
@@ -544,7 +544,7 @@ export function QuizView({
                 "flex items-center gap-1.5 px-4 h-11 rounded-xl text-sm font-semibold transition-all",
                 isFirst
                   ? "opacity-30 cursor-not-allowed text-slate-600"
-                  : "text-slate-300 hover:bg-accent border border-slate-700"
+                  : "text-foreground hover:bg-accent border border-border"
               )}
             >
               <ChevronLeft className="w-4 h-4" />
@@ -586,8 +586,8 @@ export function QuizView({
                 className={cn(
                   "flex items-center gap-1.5 px-4 h-11 rounded-xl text-sm font-bold transition-all",
                   !selectedForCurrent
-                    ? "bg-slate-800 text-slate-600 cursor-not-allowed"
-                    : "bg-indigo-600 hover:bg-primary/50 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
+                    ? "bg-accent text-slate-600 cursor-not-allowed"
+                    : "bg-primary hover:bg-primary/50 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
                 )}
               >
                 <span className="hidden sm:inline">Next</span>
@@ -600,7 +600,7 @@ export function QuizView({
                 className={cn(
                   "flex items-center gap-1.5 px-5 h-11 rounded-xl text-sm font-bold transition-all",
                   isPending || totalAnswered < quiz.questions.length
-                    ? "bg-slate-800 text-slate-600 cursor-not-allowed"
+                    ? "bg-accent text-slate-600 cursor-not-allowed"
                     : "bg-emerald-600 hover:bg-emerald-500 text-white active:scale-95 shadow-lg shadow-emerald-500/20"
                 )}
               >
@@ -635,21 +635,21 @@ export function QuizView({
     const passed = result.passed;
 
     return (
-      <div className="min-h-screen bg-slate-950 text-foreground">
+      <div className="min-h-screen bg-background text-foreground">
         {/* Top bar */}
-        <div className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
+        <div className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
             <Link
               href={`/dashboard/student/courses/${course.id}`}
               className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent transition-colors"
             >
-              <ArrowLeft className="w-4 h-4 text-slate-400" />
+              <ArrowLeft className="w-4 h-4 text-muted-foreground" />
             </Link>
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
                 Quiz Results
               </p>
-              <p className="text-xs text-slate-400 truncate">{quiz.title}</p>
+              <p className="text-xs text-muted-foreground truncate">{quiz.title}</p>
             </div>
           </div>
         </div>
@@ -682,7 +682,7 @@ export function QuizView({
               {passed ? "Congratulations! 🎉" : "Keep Learning!"}
             </h1>
 
-            <p className="text-sm text-slate-400 max-w-md mx-auto">
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
               {passed
                 ? "You passed the quiz. Your certificate has been issued."
                 : `You need ${result.passingScore}% or higher to pass. Review the feedback below and try again.`}
@@ -691,7 +691,7 @@ export function QuizView({
 
           {/* Score stats */}
           <div className="grid grid-cols-3 gap-3 mb-8">
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 p-4 text-center">
+            <div className="rounded-2xl bg-card border border-border p-4 text-center">
               <p
                 className={cn(
                   "text-2xl sm:text-3xl font-black tabular-nums",
@@ -704,7 +704,7 @@ export function QuizView({
                 Your Score
               </p>
             </div>
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 p-4 text-center">
+            <div className="rounded-2xl bg-card border border-border p-4 text-center">
               <p className="text-2xl sm:text-3xl font-black text-white tabular-nums">
                 {result.correctAnswers}
                 <span className="text-slate-600 text-lg">
@@ -715,8 +715,8 @@ export function QuizView({
                 Correct
               </p>
             </div>
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 p-4 text-center">
-              <p className="text-2xl sm:text-3xl font-black text-slate-400 tabular-nums">
+            <div className="rounded-2xl bg-card border border-border p-4 text-center">
+              <p className="text-2xl sm:text-3xl font-black text-muted-foreground tabular-nums">
                 {result.passingScore}%
               </p>
               <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-1">
@@ -736,9 +736,9 @@ export function QuizView({
                   <p className="text-sm font-bold text-amber-300 mb-1">
                     Certificate Issued!
                   </p>
-                  <p className="text-xs text-slate-400 mb-3">
+                  <p className="text-xs text-muted-foreground mb-3">
                     Credential ID:{" "}
-                    <span className="font-mono text-slate-300">
+                    <span className="font-mono text-foreground">
                       {result.certificate.credentialId}
                     </span>
                   </p>
@@ -763,7 +763,7 @@ export function QuizView({
                   <p className="text-sm font-bold text-indigo-300 mb-1">
                     Your account was upgraded!
                   </p>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-muted-foreground">
                     You are now a{" "}
                     <strong className="text-white">Creator</strong>. Head to
                     your dashboard to start offering services.
@@ -775,8 +775,8 @@ export function QuizView({
 
           {/* Feedback — revealed only after passing */}
           {passed && result.answerFeedback.length > 0 && (
-          <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden mb-6">
-            <div className="px-5 sm:px-6 py-4 border-b border-slate-800">
+          <div className="rounded-2xl bg-card border border-border overflow-hidden mb-6">
+            <div className="px-5 sm:px-6 py-4 border-b border-border">
               <h2 className="text-sm font-bold text-white">Answer Review</h2>
               <p className="text-xs text-foreground0 mt-0.5">
                 See how you answered each question
@@ -831,7 +831,7 @@ export function QuizView({
                                 ? "bg-emerald-500/10 border border-emerald-500/25"
                                 : isSelected
                                 ? "bg-red-500/10 border border-red-500/25"
-                                : "bg-slate-800/40 border border-slate-800"
+                                : "bg-accent/40 border border-border"
                             )}
                           >
                             <div className="shrink-0 mt-0.5">
@@ -850,7 +850,7 @@ export function QuizView({
                                   ? "text-emerald-300 font-medium"
                                   : isSelected
                                   ? "text-red-300"
-                                  : "text-slate-400"
+                                  : "text-muted-foreground"
                               )}
                             >
                               {opt}
@@ -889,8 +889,8 @@ export function QuizView({
               href={`/dashboard/student/courses/${course.id}`}
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 h-12 rounded-xl",
-                "bg-slate-900 hover:bg-accent border border-slate-800",
-                "text-slate-300 text-sm font-semibold transition-all"
+                "bg-card hover:bg-accent border border-border",
+                "text-foreground text-sm font-semibold transition-all"
               )}
             >
               <ArrowLeft className="w-4 h-4" />
@@ -901,8 +901,8 @@ export function QuizView({
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 h-12 rounded-xl",
                 passed
-                  ? "bg-slate-900 hover:bg-accent border border-slate-800 text-slate-300"
-                  : "bg-indigo-600 hover:bg-primary/50 text-white shadow-lg shadow-emerald-500/20",
+                  ? "bg-card hover:bg-accent border border-border text-foreground"
+                  : "bg-primary hover:bg-primary/50 text-white shadow-lg shadow-emerald-500/20",
                 "text-sm font-bold transition-all active:scale-[0.98]"
               )}
             >

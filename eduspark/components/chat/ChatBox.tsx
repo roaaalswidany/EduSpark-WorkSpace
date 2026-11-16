@@ -503,7 +503,7 @@ function ConnectionBanner({
       {isError && (
         <button
           onClick={onRetry}
-          className="flex items-center gap-1 text-destructive hover:text-red-200 font-semibold transition-colors"
+          className="flex items-center gap-1 text-destructive hover:text-destructive/80 font-semibold transition-colors"
         >
           <RotateCcw className="w-3 h-3" />
           Retry

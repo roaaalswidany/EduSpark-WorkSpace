@@ -66,10 +66,10 @@ export function ThumbnailUploader({
   };
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 flex flex-col sm:flex-row items-center gap-5 transition-all hover:border-border700">
+    <div className="rounded-xl border border-border bg-card/60 p-4 flex flex-col sm:flex-row items-center gap-5 transition-all hover:border-border700">
       {/* Image Preview */}
       <div 
-        className="relative w-full sm:w-40 aspect-video rounded-lg overflow-hidden bg-slate-950 border border-slate-800 shrink-0 group cursor-pointer"
+        className="relative w-full sm:w-40 aspect-video rounded-lg overflow-hidden bg-background border border-border shrink-0 group cursor-pointer"
         onClick={() => !isPending && inputRef.current?.click()}
       >
         {preview ? (
@@ -94,7 +94,7 @@ export function ThumbnailUploader({
         )}
 
         {isPending && (
-          <div className="absolute inset-0 bg-slate-950/80 flex items-center justify-center z-10">
+          <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-10">
             <Loader2 className="w-5 h-5 text-primary/800 animate-spin" />
           </div>
         )}
@@ -112,7 +112,7 @@ export function ThumbnailUploader({
                 </a>
               )}
             </h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               Recommended size: 1280x720 (16:9 aspect ratio).
             </p>
           </div>
@@ -121,7 +121,7 @@ export function ThumbnailUploader({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={isPending}
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-muted-foreground/70 border border-slate-700 text-white text-xs font-semibold disabled:opacity-50 transition-all"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent hover:bg-muted-foreground/70 border border-border text-white text-xs font-semibold disabled:opacity-50 transition-all"
           >
             {isPending ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />

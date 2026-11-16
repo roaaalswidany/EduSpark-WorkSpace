@@ -64,7 +64,7 @@ export function LessonAttachmentsViewer({ attachments }: Props) {
   };
 
   return (
-    <div className="rounded-xl bg-slate-900/60 border border-slate-800 p-5">
+    <div className="rounded-xl bg-card/60 border border-border p-5">
       <div className="flex items-center gap-2 mb-3">
         <Paperclip className="w-4 h-4 text-indigo-400" />
         <h3 className="text-sm font-bold text-white">
@@ -80,13 +80,13 @@ export function LessonAttachmentsViewer({ attachments }: Props) {
               key={att.id}
               onClick={() => handleDownload(att.id)}
               disabled={isPending}
-              className="w-full flex items-center gap-3 p-3 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-primary/100/40 hover:bg-background transition-colors group"
+              className="w-full flex items-center gap-3 p-3 rounded-lg bg-background/50 border border-border hover:border-primary/100/40 hover:bg-background transition-colors group"
             >
               <div className="w-9 h-9 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center shrink-0">
                 <Icon className="w-4 h-4 text-indigo-400" />
               </div>
               <div className="flex-1 min-w-0 text-left">
-                <p className="text-sm text-slate-200 truncate group-hover:text-primary300 transition-colors">
+                <p className="text-sm text-foreground truncate group-hover:text-primary300 transition-colors">
                   {att.fileName}
                 </p>
                 <p className="text-[10px] text-foreground0">

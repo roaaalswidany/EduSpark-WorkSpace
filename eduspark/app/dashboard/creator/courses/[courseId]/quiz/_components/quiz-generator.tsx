@@ -16,13 +16,13 @@ export function QuizGenerator({ courseId }: Props) {
   const [activeTab, setActiveTab] = useState<"ai" | "manual">("ai");
 
   return (
-    <div className="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden">
+    <div className="rounded-xl bg-card border border-border overflow-hidden">
       {/* Tabs Header */}
-      <div className="flex border-b border-slate-800">
+      <div className="flex border-b border-border">
         <button
           onClick={() => setActiveTab("ai")}
           className={`flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${
-            activeTab === "ai" ? "text-indigo-400 border-b-2 border-emerald-400 bg-slate-800/50" : "text-slate-400 hover:text-foreground200"
+            activeTab === "ai" ? "text-indigo-400 border-b-2 border-emerald-400 bg-accent/50" : "text-muted-foreground hover:text-foreground200"
           }`}
         >
           <Sparkles className="w-4 h-4" /> AI Generation
@@ -30,7 +30,7 @@ export function QuizGenerator({ courseId }: Props) {
         <button
           onClick={() => setActiveTab("manual")}
           className={`flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${
-            activeTab === "manual" ? "text-indigo-400 border-b-2 border-emerald-400 bg-slate-800/50" : "text-slate-400 hover:text-foreground200"
+            activeTab === "manual" ? "text-indigo-400 border-b-2 border-emerald-400 bg-accent/50" : "text-muted-foreground hover:text-foreground200"
           }`}
         >
           <PlusCircle className="w-4 h-4" /> Manual Entry
@@ -84,23 +84,23 @@ function AIGeneratorForm({ courseId }: { courseId: string }) {
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-2">Number of Questions</label>
+          <label className="block text-xs font-semibold text-muted-foreground mb-2">Number of Questions</label>
           <select
             value={questionCount}
             onChange={(e) => setQuestionCount(Number(e.target.value))}
             disabled={isPending}
-            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200"
+            className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground"
           >
             {[3, 5, 8, 10, 15].map((n) => <option key={n} value={n}>{n}</option>)}
           </select>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-2">Difficulty</label>
+          <label className="block text-xs font-semibold text-muted-foreground mb-2">Difficulty</label>
           <select
             value={difficulty}
             onChange={(e) => setDifficulty(e.target.value as any)}
             disabled={isPending}
-            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200"
+            className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground"
           >
             <option value="BEGINNER">Beginner</option>
             <option value="INTERMEDIATE">Intermediate</option>
@@ -119,7 +119,7 @@ function AIGeneratorForm({ courseId }: { courseId: string }) {
       <button
         onClick={handleGenerate}
         disabled={isPending}
-        className="w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-indigo-600 hover:bg-primary/50 text-white disabled:opacity-50 transition-all"
+        className="w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-primary hover:bg-primary/50 text-white disabled:opacity-50 transition-all"
       >
         {isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</> : <><Sparkles className="w-4 h-4" /> Generate with AI</>}
       </button>
@@ -197,19 +197,19 @@ function ManualQuestionForm({ courseId, onSuccess }: { courseId: string; onSucce
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold text-slate-400 mb-2">Question</label>
+        <label className="block text-xs font-semibold text-muted-foreground mb-2">Question</label>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           required
           rows={2}
-          className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 resize-none"
+          className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground resize-none"
           placeholder="Type your question here..."
         />
       </div>
 
       <div className="space-y-2">
-        <label className="block text-xs font-semibold text-slate-400">Options (Select the correct one)</label>
+        <label className="block text-xs font-semibold text-muted-foreground">Options (Select the correct one)</label>
         {options.map((opt, i) => (
           <div key={i} className="flex items-center gap-2">
             <input
@@ -217,7 +217,7 @@ function ManualQuestionForm({ courseId, onSuccess }: { courseId: string; onSucce
               name="correctOption"
               checked={correctOption === opt && opt !== ""}
               onChange={() => setCorrectOption(opt)}
-              className="w-4 h-4 text-emerald-600 bg-slate-950 border-slate-700 focus:ring-emerald-500"
+              className="w-4 h-4 text-emerald-600 bg-background border-border focus:ring-emerald-500"
               required
             />
             <input
@@ -225,7 +225,7 @@ function ManualQuestionForm({ courseId, onSuccess }: { courseId: string; onSucce
               value={opt}
               onChange={(e) => handleOptionChange(i, e.target.value)}
               required
-              className="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200"
+              className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground"
               placeholder={`Option ${i + 1}`}
             />
           </div>
@@ -233,13 +233,13 @@ function ManualQuestionForm({ courseId, onSuccess }: { courseId: string; onSucce
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-slate-400 mb-2">Explanation</label>
+        <label className="block text-xs font-semibold text-muted-foreground mb-2">Explanation</label>
         <textarea
           value={explanation}
           onChange={(e) => setExplanation(e.target.value)}
           required
           rows={2}
-          className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 resize-none"
+          className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground resize-none"
           placeholder="Why is this the correct answer?"
         />
       </div>

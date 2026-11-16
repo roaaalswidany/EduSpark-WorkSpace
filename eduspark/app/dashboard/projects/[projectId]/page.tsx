@@ -132,7 +132,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   return (
     <>
       {/* ── Breadcrumb bar ─────────────────────────── */}
-      <div className="border-b border-slate-800 bg-slate-950">
+      <div className="border-b border-border bg-background">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3">
           <Breadcrumbs
             items={[
@@ -151,7 +151,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         isCreator={isCreator}
       />
       {project.creator && (
-        <div className="bg-slate-950">
+        <div className="bg-background">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-10">
             <ProjectReviewPanel
               projectId={project.id}

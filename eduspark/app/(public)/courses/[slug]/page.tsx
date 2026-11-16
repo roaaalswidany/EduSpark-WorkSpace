@@ -180,9 +180,9 @@ export default async function CourseDetailPage({ params }: PageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       {/* ── Breadcrumb ─────────────────────────────────── */}
-      <div className="border-b border-slate-800 bg-slate-950">
+      <div className="border-b border-border bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-1.5 text-xs text-foreground0">
           <Link href="/courses" className="hover:text-foreground300 transition-colors">
             Courses
@@ -199,12 +199,12 @@ export default async function CourseDetailPage({ params }: PageProps) {
             </>
           )}
           <ChevronRight className="w-3 h-3" />
-          <span className="text-slate-400 truncate">{course.title}</span>
+          <span className="text-muted-foreground truncate">{course.title}</span>
         </div>
       </div>
 
       {/* ── Hero ───────────────────────────────────────── */}
-      <section className="relative bg-linear-to-b from-zinc-900 to-zinc-950 border-b border-slate-800">
+      <section className="relative bg-linear-to-b from-zinc-900 to-zinc-950 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
             {/* Left: Content */}
@@ -232,7 +232,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
               </h1>
 
               {/* Description */}
-              <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-3xl">
+              <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-3xl">
                 {course.description}
               </p>
 
@@ -273,7 +273,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   <p className="text-xs text-foreground0">Created by</p>
                   <Link
                     href={`/profile/${course.creator.id}`}
-                    className="text-sm font-semibold text-slate-200 hover:text-primary400 transition-colors"
+                    className="text-sm font-semibold text-foreground hover:text-primary400 transition-colors"
                   >
                     {course.creator.name}
                   </Link>
@@ -283,9 +283,9 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
             {/* Right: Enroll card (desktop) */}
             <aside className="hidden lg:block">
-              <div className="sticky top-20 rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
+              <div className="sticky top-20 rounded-2xl bg-card border border-border overflow-hidden">
                 {/* Thumbnail */}
-                <div className="relative aspect-video bg-slate-950">
+                <div className="relative aspect-video bg-background">
                   {course.thumbnail ? (
                     <Image
                       src={course.thumbnail}
@@ -327,7 +327,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   />
 
                   {/* What's included */}
-                  <div className="pt-4 border-t border-slate-800 space-y-2.5">
+                  <div className="pt-4 border-t border-border space-y-2.5">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-foreground0">
                       This course includes
                     </p>
@@ -340,7 +340,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                       ].map((item) => (
                         <li
                           key={item}
-                          className="flex items-center gap-2 text-xs text-slate-400"
+                          className="flex items-center gap-2 text-xs text-muted-foreground"
                         >
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                           {item}
@@ -361,7 +361,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
           {/* Main column */}
           <div className="space-y-8 min-w-0">
             {/* What you'll learn */}
-            <section className="rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6">
+            <section className="rounded-2xl bg-card border border-border p-5 sm:p-6">
               <h2 className="text-base font-bold text-white mb-4">
                 What you&apos;ll learn
               </h2>
@@ -369,7 +369,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 {outcomes.map((outcome) => (
                   <li
                     key={outcome}
-                    className="flex items-start gap-2.5 text-sm text-slate-400 leading-relaxed"
+                    className="flex items-start gap-2.5 text-sm text-muted-foreground leading-relaxed"
                   >
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                     <span>{outcome}</span>
@@ -401,7 +401,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
 
             {/* Instructor */}
-            <section className="rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6">
+            <section className="rounded-2xl bg-card border border-border p-5 sm:p-6">
               <h2 className="text-base font-bold text-white mb-4">
                 About the instructor
               </h2>
@@ -425,7 +425,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                     </p>
                   )}
                   {course.creator.bio && (
-                    <p className="text-xs text-slate-400 mt-3 leading-relaxed">
+                    <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
                       {course.creator.bio}
                     </p>
                   )}
@@ -436,7 +436,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
           {/* Right column (mobile enroll card) */}
           <aside className="lg:hidden">
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 p-5 space-y-4">
+            <div className="rounded-2xl bg-card border border-border p-5 space-y-4">
               <div className="flex items-baseline gap-2">
                 {price === 0 ? (
                   <span className="text-2xl font-black text-emerald-400">
