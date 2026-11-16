@@ -97,7 +97,7 @@ export function NotificationsClient({
           <button
             onClick={handleMarkAll}
             disabled={isPending}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-accent hover:bg-accent text-foreground transition-colors disabled:opacity-50"
           >
             <CheckCheck className="w-3.5 h-3.5" />
             Mark all as read
@@ -118,13 +118,13 @@ export function NotificationsClient({
               className={cn(
                 "group rounded-2xl border p-4 transition-all cursor-pointer relative",
                 read
-                  ? "bg-slate-900 border-slate-800 hover:border-slate-700"
-                  : "bg-indigo-500/5 border-indigo-500/20 hover:bg-indigo-500/10"
+                  ? "bg-card border-border hover:border-border"
+                  : "bg-primary/5 border-primary/20 hover:bg-primary/10"
               )}
             >
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-4 h-4 text-indigo-400" />
+                <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start gap-2 justify-between">
@@ -138,21 +138,21 @@ export function NotificationsClient({
                       <button
                         onClick={(e) => handleDelete(n.id, e)}
                         disabled={isDeleting || isPending}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-500/10"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10"
                         aria-label="Delete notification"
                       >
                         {isDeleting ? (
-                          <Loader2 className="w-3.5 h-3.5 text-red-400 animate-spin" />
+                          <Loader2 className="w-3.5 h-3.5 text-destructive animate-spin" />
                         ) : (
-                          <Trash2 className="w-3.5 h-3.5 text-slate-500 hover:text-red-400" />
+                          <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
                         )}
                       </button>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                     {n.body}
                   </p>
-                  <p className="text-[10px] text-slate-600 mt-2">
+                  <p className="text-[10px] text-muted-foreground/70 mt-2">
                     {new Date(n.createdAt).toLocaleString("en-US", {
                       month: "short",
                       day: "numeric",
@@ -174,19 +174,19 @@ export function NotificationsClient({
           onClick={() => setSelectedId(null)}
         >
           <div
-            className="relative w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg rounded-2xl bg-card border border-border shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-start gap-3 px-6 py-5 border-b border-slate-800">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
-                <Bell className="w-5 h-5 text-indigo-400" />
+            <div className="flex items-start gap-3 px-6 py-5 border-b border-border">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                <Bell className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <h2 className="text-base font-bold text-white leading-snug">
                   {selected.title}
                 </h2>
-                <p className="text-[11px] text-slate-500 mt-1">
+                <p className="text-[11px] text-muted-foreground mt-1">
                   {new Date(selected.createdAt).toLocaleString("en-US", {
                     weekday: "long",
                     month: "long",
@@ -199,7 +199,7 @@ export function NotificationsClient({
               </div>
               <button
                 onClick={() => setSelectedId(null)}
-                className="w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-slate-300 flex items-center justify-center transition-colors shrink-0"
+                className="w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -207,16 +207,16 @@ export function NotificationsClient({
 
             {/* Body */}
             <div className="px-6 py-5">
-              <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
+              <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
                 {selected.body}
               </p>
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-slate-800 flex items-center justify-end gap-2 bg-slate-950/40">
+            <div className="px-6 py-4 border-t border-border flex items-center justify-end gap-2 bg-background/40">
               <button
                 onClick={() => setSelectedId(null)}
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
               >
                 Close
               </button>
@@ -224,7 +224,7 @@ export function NotificationsClient({
                 <Link
                   href={selected.link}
                   onClick={() => setSelectedId(null)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-primary hover:bg-primary text-white transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
                   Go to page

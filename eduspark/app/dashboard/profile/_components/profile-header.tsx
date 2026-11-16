@@ -37,9 +37,9 @@ const ROLE_LABELS: Record<Role, string> = {
 };
 
 const ROLE_STYLES: Record<Role, string> = {
-  STUDENT: "bg-slate-700/60 text-slate-300 border-slate-600",
+  STUDENT: "bg-accent/60 text-foreground border-border",
   CREATOR: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  ADMIN: "bg-violet-500/10 text-violet-400 border-violet-500/20",
+  ADMIN: "bg-info/10 text-info border-info/20",
 };
 
 function Avatar({
@@ -101,7 +101,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
       label: "Courses",
       value: stats.enrollments,
       icon: GraduationCap,
-      color: "text-indigo-400",
+      color: "text-primary",
     },
     {
       label: "Certificates",
@@ -119,12 +119,12 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
       label: "Projects",
       value: stats.projects,
       icon: Briefcase,
-      color: "text-violet-400",
+      color: "text-info",
     },
   ];
 
   return (
-    <div className="rounded-3xl bg-slate-900 border border-slate-800 overflow-hidden">
+    <div className="rounded-3xl bg-card border border-border overflow-hidden">
       {/* Cover band */}
       <div className="h-28 sm:h-32 bg-linear-to-br from-indigo-500/20 via-violet-500/10 to-fuchsia-500/10 relative">
         <div
@@ -147,7 +147,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
               {user.name}
             </h1>
             {user.headline && (
-              <p className="text-sm text-indigo-400 mt-1">{user.headline}</p>
+              <p className="text-sm text-primary mt-1">{user.headline}</p>
             )}
           </div>
 
@@ -165,7 +165,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
         </div>
 
         {/* Meta row */}
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-5 text-xs text-slate-500">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-5 text-xs text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <Mail className="w-3.5 h-3.5" />
             <span>{user.email}</span>
@@ -179,7 +179,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
               href={user.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-indigo-400 transition-colors"
+              className="flex items-center gap-1.5 hover:text-primary transition-colors"
             >
               <Globe className="w-3.5 h-3.5" />
               <span className="truncate max-w-50">
@@ -190,19 +190,19 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-slate-800">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-border">
           {statItems.map((s) => {
             const Icon = s.icon;
             return (
               <div key={s.label} className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-accent border border-border flex items-center justify-center shrink-0">
                   <Icon className={cn("w-4 h-4", s.color)} />
                 </div>
                 <div>
                   <p className="text-lg font-black text-white tabular-nums leading-none">
                     {s.value}
                   </p>
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-1">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-1">
                     {s.label}
                   </p>
                 </div>

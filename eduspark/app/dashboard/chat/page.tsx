@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { ChatRoomList } from "./_components/chat-room-list-item";
 
 export const metadata = {
-  title: "Messages — EduSpark",
+  title: "Messages â€” EduSpark",
 };
 
 export default async function ChatPage() {
@@ -28,7 +28,7 @@ export default async function ChatPage() {
       participants: {
         select: {
           user: {
-            // 👇 تم حذف image: true من هنا
+            // ًں‘‡ طھظ… ط­ط°ظپ image: true ظ…ظ† ظ‡ظ†ط§
             select: { id: true, name: true, role: true },
           },
         },
@@ -79,14 +79,14 @@ export default async function ChatPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-xs font-bold text-indigo-400 mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <MessageSquare className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Inbox</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
           Messages
         </h1>
-        <p className="text-sm text-slate-500 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           {roomsData.length === 0
             ? "No conversations yet. Start a project to unlock chat."
             : `${roomsData.length} ${
@@ -106,20 +106,20 @@ export default async function ChatPage() {
 
 function EmptyState() {
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 sm:p-16 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-5">
-        <MessageSquare className="w-7 h-7 text-indigo-400" />
+    <div className="rounded-2xl bg-card border border-border p-12 sm:p-16 text-center">
+      <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
+        <MessageSquare className="w-7 h-7 text-primary" />
       </div>
       <h2 className="text-lg font-bold text-white mb-1.5">
         No conversations yet
       </h2>
-      <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6 leading-relaxed">
+      <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
         Chats unlock automatically when you order a service, enroll in a
         course, or a creator accepts your project.
       </p>
       <Link
         href="/marketplace"
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
       >
         <Search className="w-4 h-4" />
         Browse Services

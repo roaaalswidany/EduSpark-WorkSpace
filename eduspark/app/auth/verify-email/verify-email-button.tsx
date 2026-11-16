@@ -20,8 +20,8 @@ export function VerifyEmailButton({ email, token }: { email: string; token: stri
   }
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-400">Confirm that <b className="text-slate-200">{email}</b> is your email address.</p>
-      {state === "error" && <p className="text-sm text-red-400">{message}</p>}
+      <p className="text-sm text-muted-foreground">Confirm that <b className="text-foreground">{email}</b> is your email address.</p>
+      {state === "error" && <p className="text-sm text-destructive">{message}</p>}
       <button
         disabled={isPending}
         className={buttonClass}
@@ -33,7 +33,7 @@ export function VerifyEmailButton({ email, token }: { email: string; token: stri
           })
         }
       >
-        {isPending ? "Confirming…" : "Confirm email"}
+        {isPending ? "Confirmingâ€¦" : "Confirm email"}
       </button>
     </div>
   );

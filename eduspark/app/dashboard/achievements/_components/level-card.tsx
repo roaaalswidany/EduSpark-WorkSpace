@@ -55,22 +55,22 @@ export function LevelCard({
               {current.icon}
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 Current Level
               </p>
               <p className={cn("text-2xl font-black", current.color)}>
                 {current.label}
               </p>
-              <p className="text-xs text-slate-500">{current.labelAr}</p>
+              <p className="text-xs text-muted-foreground">{current.labelAr}</p>
             </div>
           </div>
 
           <div className="text-right">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Rank
             </p>
             <p className="text-2xl font-black text-white tabular-nums">
-              #{userRank || "—"}
+              #{userRank || "â€”"}
             </p>
           </div>
         </div>
@@ -84,12 +84,12 @@ export function LevelCard({
               </span>
             </div>
             {next && (
-              <p className="text-xs text-slate-500 tabular-nums">
+              <p className="text-xs text-muted-foreground tabular-nums">
                 {xpToNextFormatted} to {next.label}
               </p>
             )}
           </div>
-          <div className="h-2 rounded-full bg-slate-950/60 overflow-hidden">
+          <div className="h-2 rounded-full bg-background/60 overflow-hidden">
             <div
               className={cn(
                 "h-full bg-linear-to-r transition-all duration-700",
@@ -99,7 +99,7 @@ export function LevelCard({
             />
           </div>
           {next && (
-            <p className="text-[10px] text-slate-600 mt-1.5">
+            <p className="text-[10px] text-muted-foreground/70 mt-1.5">
               {xpInLevelFormatted} / {levelSpanFormatted} XP in this level
             </p>
           )}
@@ -122,7 +122,7 @@ export function LevelCard({
             icon={TrendingUp}
             label="Next Level"
             value={next ? next.label : "MAX"}
-            color="text-indigo-400"
+            color="text-primary"
           />
         </div>
       </div>
@@ -142,12 +142,12 @@ function StatBox({
   color: string;
 }) {
   return (
-    <div className="rounded-xl bg-slate-950/60 border border-slate-800 p-3">
+    <div className="rounded-xl bg-background/60 border border-border p-3">
       <Icon className={cn("w-4 h-4 mb-1.5", color)} />
       <p className="text-lg font-black text-white tabular-nums leading-none">
         {value}
       </p>
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-1">
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-1">
         {label}
       </p>
     </div>

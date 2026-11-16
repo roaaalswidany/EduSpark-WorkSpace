@@ -12,7 +12,7 @@ import {
 } from "../../orders/_components/order-card";
 
 export const metadata = {
-  title: "Incoming Orders — EduSpark",
+  title: "Incoming Orders â€” EduSpark",
 };
 
 export default async function CreatorOrdersPage() {
@@ -89,7 +89,7 @@ export default async function CreatorOrdersPage() {
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
           Incoming Orders
         </h1>
-        <p className="text-sm text-slate-500 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           Manage orders from your clients.
         </p>
       </div>
@@ -97,27 +97,27 @@ export default async function CreatorOrdersPage() {
       {/* Stats */}
       {orders.length > 0 && (
         <div className="grid grid-cols-3 gap-3 mb-8">
-          <div className="rounded-2xl bg-slate-900 border border-slate-800 p-4">
+          <div className="rounded-2xl bg-card border border-border p-4">
             <p className="text-2xl font-black text-white tabular-nums leading-none">
               {newCount}
             </p>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-2">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">
               New
             </p>
           </div>
-          <div className="rounded-2xl bg-slate-900 border border-slate-800 p-4">
+          <div className="rounded-2xl bg-card border border-border p-4">
             <p className="text-2xl font-black text-white tabular-nums leading-none">
               {activeCount}
             </p>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-2">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">
               In Progress
             </p>
           </div>
-          <div className="rounded-2xl bg-slate-900 border border-slate-800 p-4">
+          <div className="rounded-2xl bg-card border border-border p-4">
             <p className="text-2xl font-black text-white tabular-nums leading-none">
               {completedCount}
             </p>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 mt-2">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">
               Completed
             </p>
           </div>
@@ -125,19 +125,19 @@ export default async function CreatorOrdersPage() {
       )}
 
       {orders.length === 0 ? (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 sm:p-16 text-center">
+        <div className="rounded-2xl bg-card border border-border p-12 sm:p-16 text-center">
           <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-5">
             <Inbox className="w-7 h-7 text-emerald-400" />
           </div>
           <h2 className="text-lg font-bold text-white mb-1.5">
             No incoming orders
           </h2>
-          <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6 leading-relaxed">
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
             When clients order your services, their orders will appear here.
           </p>
           <Link
             href="/dashboard/creator/services"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
           >
             <ShieldAlert className="w-4 h-4" />
             View My Services

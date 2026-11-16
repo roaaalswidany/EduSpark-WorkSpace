@@ -73,7 +73,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
   const handleSave = () => {
     setServerError(null);
 
-    const toastId = toast.loading("Saving profile…");
+    const toastId = toast.loading("Saving profileâ€¦");
 
     startTransition(async () => {
       const result = await updateProfileAction({
@@ -94,7 +94,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
         return;
       }
 
-      toast.success("Profile updated successfully! ✨", { id: toastId });
+      toast.success("Profile updated successfully! âœ¨", { id: toastId });
       setIsEditing(false);
       router.refresh();
     });
@@ -107,8 +107,8 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
 
       {/* Edit toggle */}
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-indigo-400" />
+        <h2 className="text-sm font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-primary" />
           {isEditing ? "Edit Profile" : "About"}
         </h2>
 
@@ -117,8 +117,8 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
             onClick={() => setIsEditing(true)}
             className={cn(
               "inline-flex items-center gap-2 px-4 py-2 rounded-lg",
-              "bg-slate-800 hover:bg-slate-700 text-slate-200",
-              "text-xs font-semibold border border-slate-700",
+              "bg-accent hover:bg-accent text-foreground",
+              "text-xs font-semibold border border-border",
               "transition-all active:scale-95"
             )}
           >
@@ -132,8 +132,8 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               disabled={isPending}
               className={cn(
                 "inline-flex items-center gap-2 px-4 py-2 rounded-lg",
-                "bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200",
-                "text-xs font-semibold border border-slate-700",
+                "bg-accent hover:bg-accent text-muted-foreground hover:text-foreground",
+                "text-xs font-semibold border border-border",
                 "transition-all active:scale-95 disabled:opacity-50"
               )}
             >
@@ -145,7 +145,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               disabled={isPending}
               className={cn(
                 "inline-flex items-center gap-2 px-4 py-2 rounded-lg",
-                "bg-indigo-600 hover:bg-indigo-500 text-white",
+                "bg-primary hover:bg-primary text-white",
                 "text-xs font-bold",
                 "transition-all active:scale-95 disabled:opacity-50",
                 "shadow-lg shadow-indigo-500/20"
@@ -154,7 +154,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               {isPending ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  Saving…
+                  Savingâ€¦
                 </>
               ) : (
                 <>
@@ -172,11 +172,11 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
         <div className="space-y-4">
           <Section title="Bio" icon={FileText}>
             {user.bio ? (
-              <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                 {user.bio}
               </p>
             ) : (
-              <p className="text-sm text-slate-600 italic">
+              <p className="text-sm text-muted-foreground/70 italic">
                 No bio added yet. Click &quot;Edit Profile&quot; to add one.
               </p>
             )}
@@ -188,12 +188,12 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
                 href={user.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors break-all"
+                className="text-sm text-primary hover:text-primary transition-colors break-all"
               >
                 {user.website}
               </a>
             ) : (
-              <p className="text-sm text-slate-600 italic">
+              <p className="text-sm text-muted-foreground/70 italic">
                 No website added yet.
               </p>
             )}
@@ -203,7 +203,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
 
       {/* Edit mode */}
       {isEditing && (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6 sm:p-8 space-y-6">
+        <div className="rounded-2xl bg-card border border-border p-6 sm:p-8 space-y-6">
           <Field
             label="Full Name"
             required
@@ -216,7 +216,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               disabled={isPending}
               maxLength={60}
-              className="w-full h-11 px-3 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
             />
           </Field>
 
@@ -232,7 +232,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               disabled={isPending}
               maxLength={100}
               placeholder="e.g. Senior Full-Stack Developer"
-              className="w-full h-11 px-3 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
             />
           </Field>
 
@@ -247,8 +247,8 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               disabled={isPending}
               maxLength={500}
               rows={5}
-              placeholder="Tell others about yourself, your expertise, and what you do…"
-              className="w-full px-3 py-2.5 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none disabled:opacity-50 transition-all"
+              placeholder="Tell others about yourself, your expertise, and what you doâ€¦"
+              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 resize-none disabled:opacity-50 transition-all"
             />
           </Field>
 
@@ -259,14 +259,14 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               onChange={(e) => setForm({ ...form, website: e.target.value })}
               disabled={isPending}
               placeholder="https://your-portfolio.com"
-              className="w-full h-11 px-3 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
             />
           </Field>
 
           {serverError && (
-            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-              <p className="text-sm text-red-300">{serverError}</p>
+            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+              <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+              <p className="text-sm text-destructive">{serverError}</p>
             </div>
           )}
         </div>
@@ -275,7 +275,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
   );
 }
 
-// ─── Sub-components ─────────────────────────────────────────────────
+// â”€â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function Section({
   title,
@@ -287,8 +287,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 p-5 sm:p-6">
-      <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 flex items-center gap-2">
+    <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
+      <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
         <Icon className="w-3.5 h-3.5" />
         {title}
       </h3>
@@ -313,13 +313,13 @@ function Field({
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <label className="flex items-center gap-2 text-sm font-semibold text-slate-300">
-          <Icon className="w-3.5 h-3.5 text-slate-500" />
+        <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <Icon className="w-3.5 h-3.5 text-muted-foreground" />
           {label}
-          {required && <span className="text-red-400">*</span>}
+          {required && <span className="text-destructive">*</span>}
         </label>
         {hint && (
-          <span className="text-[10px] text-slate-600 tabular-nums">
+          <span className="text-[10px] text-muted-foreground/70 tabular-nums">
             {hint}
           </span>
         )}

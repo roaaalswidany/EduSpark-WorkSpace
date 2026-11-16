@@ -10,14 +10,14 @@ export function NotificationsBell() {
   return (
     <Link
       href="/dashboard/notifications"
-      className="relative flex items-center justify-center w-9 h-9 rounded-lg hover:bg-slate-800 transition-colors"
+      className="relative flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent transition-colors"
       aria-label="Notifications"
       title={isConnected ? "Real-time enabled" : "Connecting..."}
     >
-      <Bell className="w-4 h-4 text-slate-400" />
+      <Bell className="w-4 h-4 text-muted-foreground" />
 
       {unreadCount > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center tabular-nums">
+        <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-destructive text-white text-[9px] font-bold flex items-center justify-center tabular-nums">
           {unreadCount > 9 ? "9+" : unreadCount}
         </span>
       )}

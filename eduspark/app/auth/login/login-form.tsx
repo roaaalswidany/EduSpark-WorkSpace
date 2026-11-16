@@ -44,8 +44,8 @@ export function LoginForm() {
     setIsPending(true);
 
     try {
-      // نستخدم signIn مباشرة ليتحقق من كلمة المرور ويصدر الكوكيز في خطوة واحدة
-      // هذا يمنع الحظر المزدوج ويحل المشكلة
+      // ظ†ط³طھط®ط¯ظ… signIn ظ…ط¨ط§ط´ط±ط© ظ„ظٹطھط­ظ‚ظ‚ ظ…ظ† ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ظˆظٹطµط¯ط± ط§ظ„ظƒظˆظƒظٹط² ظپظٹ ط®ط·ظˆط© ظˆط§ط­ط¯ط©
+      // ظ‡ط°ط§ ظٹظ…ظ†ط¹ ط§ظ„ط­ط¸ط± ط§ظ„ظ…ط²ط¯ظˆط¬ ظˆظٹط­ظ„ ط§ظ„ظ…ط´ظƒظ„ط©
       const result = await signIn("credentials", {
         email,
         password,
@@ -66,7 +66,7 @@ export function LoginForm() {
         return;
       }
 
-      // نجاح
+      // ظ†ط¬ط§ط­
       router.push(callbackUrl);
       router.refresh();
     } catch (err) {
@@ -77,7 +77,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
@@ -90,18 +90,18 @@ export function LoginForm() {
             </span>
           </Link>
           <h1 className="text-2xl font-bold text-white">Welcome back</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Sign in to continue to EduSpark
           </p>
         </div>
 
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6 sm:p-8">
+        <div className="rounded-2xl bg-card border border-border p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-300 mb-1.5"
+                className="block text-sm font-medium text-foreground mb-1.5"
               >
                 Email
               </label>
@@ -114,7 +114,7 @@ export function LoginForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isPending}
                 placeholder="you@example.com"
-                className="w-full h-11 px-3 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
               />
             </div>
 
@@ -123,13 +123,13 @@ export function LoginForm() {
               <div className="flex items-center justify-between mb-1.5">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-slate-300"
+                  className="block text-sm font-medium text-foreground"
                 >
                   Password
                 </label>
                 <Link
                   href="/auth/forgot-password"
-                  className="text-xs text-indigo-400 hover:text-indigo-300"
+                  className="text-xs text-primary hover:text-primary"
                 >
                   Forgot password?
                 </Link>
@@ -143,15 +143,15 @@ export function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isPending}
-                  placeholder="••••••••"
-                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   disabled={isPending}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-md text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-colors disabled:opacity-50"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors disabled:opacity-50"
                 >
                   {showPassword ? (
                     <EyeOff className="w-4 h-4" />
@@ -174,21 +174,21 @@ export function LoginForm() {
 
             {/* Generic Error */}
             {error && !isRateLimited && (
-              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                <p className="text-sm text-red-300">{error}</p>
+              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+                <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+                <p className="text-sm text-destructive">{error}</p>
               </div>
             )}
 
             <button
               type="submit"
               disabled={isPending || !email || !password}
-              className="w-full h-11 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full h-11 rounded-lg bg-primary hover:bg-primary text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Signing in…
+                  Signing inâ€¦
                 </>
               ) : (
                 "Sign in"
@@ -196,11 +196,11 @@ export function LoginForm() {
             </button>
           </form>
 
-          <p className="text-center text-sm text-slate-500 mt-6">
+          <p className="text-center text-sm text-muted-foreground mt-6">
             Don&apos;t have an account?{" "}
             <Link
               href="/auth/register"
-              className="text-indigo-400 hover:text-indigo-300 font-medium"
+              className="text-primary hover:text-primary font-medium"
             >
               Create one
             </Link>

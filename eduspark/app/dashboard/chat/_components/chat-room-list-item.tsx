@@ -99,7 +99,7 @@ const TYPE_BADGE: Record<
   PROJECT: {
     label: "Project",
     className:
-      "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+      "bg-primary/10 text-primary border-primary/20",
     icon: Sparkles,
   },
   COURSE: {
@@ -111,7 +111,7 @@ const TYPE_BADGE: Record<
   DIRECT: {
     label: "Direct",
     className:
-      "bg-violet-500/10 text-violet-400 border-violet-500/20",
+      "bg-info/10 text-info border-info/20",
     icon: MessageSquare,
   },
   SUPPORT: {
@@ -148,7 +148,7 @@ function RoomRow({
     : "No messages yet";
 
   const truncated =
-    preview.length > 60 ? `${preview.slice(0, 60)}…` : preview;
+    preview.length > 60 ? `${preview.slice(0, 60)}â€¦` : preview;
 
   const badgeConfig = TYPE_BADGE[room.type];
   const BadgeIcon = badgeConfig.icon;
@@ -158,8 +158,8 @@ function RoomRow({
       href={`/dashboard/chat/${room.id}`}
       className={cn(
         "group flex items-center gap-4 p-4 rounded-2xl",
-        "bg-slate-900 border border-slate-800",
-        "hover:border-indigo-500/40 hover:bg-slate-900/80",
+        "bg-card border border-border",
+        "hover:border-primary/40 hover:bg-card/80",
         "transition-all duration-200"
       )}
     >
@@ -171,8 +171,8 @@ function RoomRow({
             badge
           />
         ) : (
-          <div className="w-11 h-11 rounded-full bg-slate-800 flex items-center justify-center">
-            <MessageSquare className="w-5 h-5 text-slate-600" />
+          <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
+            <MessageSquare className="w-5 h-5 text-muted-foreground/70" />
           </div>
         )}
 
@@ -203,7 +203,7 @@ function RoomRow({
         <p
           className={cn(
             "text-xs truncate",
-            lastMessage?.isSystem ? "text-slate-600 italic" : "text-slate-500"
+            lastMessage?.isSystem ? "text-muted-foreground/70 italic" : "text-muted-foreground"
           )}
         >
           {truncated}
@@ -211,10 +211,10 @@ function RoomRow({
       </div>
 
       <div className="shrink-0 flex flex-col items-end gap-1">
-        <span className="text-[10px] text-slate-600 tabular-nums">
+        <span className="text-[10px] text-muted-foreground/70 tabular-nums">
           {formatRelative(room.updatedAt)}
         </span>
-        <ChevronRight className="w-4 h-4 text-slate-700 group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all" />
+        <ChevronRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
       </div>
     </Link>
   );

@@ -95,7 +95,7 @@ export function CoursesFilterBar({
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         {/* Search input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             value={searchInput}
@@ -103,19 +103,19 @@ export function CoursesFilterBar({
             placeholder="Search courses..."
             className={cn(
               "w-full h-11 pl-10 pr-10 rounded-xl",
-              "bg-slate-900 border border-slate-800 text-slate-200",
-              "placeholder:text-slate-600",
-              "focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500",
+              "bg-card border border-border text-foreground",
+              "placeholder:text-muted-foreground/70",
+              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
               "transition-all"
             )}
           />
           {isPending && (
-            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 animate-spin" />
+            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary animate-spin" />
           )}
           {!isPending && searchInput && (
             <button
               onClick={() => setSearchInput("")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               <X className="w-4 h-4" />
             </button>
@@ -128,8 +128,8 @@ export function CoursesFilterBar({
           onChange={(e) => updateFilter("sort", e.target.value)}
           className={cn(
             "hidden sm:block h-11 px-4 rounded-xl",
-            "bg-slate-900 border border-slate-800 text-slate-200 text-sm",
-            "focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500",
+            "bg-card border border-border text-foreground text-sm",
+            "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
             "cursor-pointer transition-all"
           )}
         >
@@ -145,7 +145,7 @@ export function CoursesFilterBar({
           onClick={() => setShowMobileFilters((v) => !v)}
           className={cn(
             "sm:hidden flex items-center justify-center gap-2 h-11 px-4 rounded-xl",
-            "bg-slate-900 border border-slate-800 text-slate-300 text-sm font-medium",
+            "bg-card border border-border text-foreground text-sm font-medium",
             "active:scale-95 transition-all"
           )}
         >
@@ -166,8 +166,8 @@ export function CoursesFilterBar({
           className={cn(
             "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap",
             !activeCategory
-              ? "bg-indigo-500/10 text-indigo-300 border-indigo-500/30"
-              : "bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-300"
+              ? "bg-primary/10 text-primary border-primary/30"
+              : "bg-card text-muted-foreground border-border hover:border-border hover:text-foreground"
           )}
         >
           All ({totalCourses})
@@ -181,8 +181,8 @@ export function CoursesFilterBar({
               className={cn(
                 "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap",
                 isActive
-                  ? "bg-indigo-500/10 text-indigo-300 border-indigo-500/30"
-                  : "bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-300"
+                  ? "bg-primary/10 text-primary border-primary/30"
+                  : "bg-card text-muted-foreground border-border hover:border-border hover:text-foreground"
               )}
             >
               {cat.name} ({cat.count})
@@ -198,7 +198,7 @@ export function CoursesFilterBar({
           showMobileFilters ? "flex" : "hidden sm:flex"
         )}
       >
-        <span className="text-xs text-slate-600 font-medium">Level:</span>
+        <span className="text-xs text-muted-foreground/70 font-medium">Level:</span>
         {LEVEL_OPTIONS.map((opt) => {
           const isActive = activeLevel === opt.value;
           return (
@@ -208,8 +208,8 @@ export function CoursesFilterBar({
               className={cn(
                 "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap",
                 isActive
-                  ? "bg-indigo-500/10 text-indigo-300 border-indigo-500/30"
-                  : "bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-300"
+                  ? "bg-primary/10 text-primary border-primary/30"
+                  : "bg-card text-muted-foreground border-border hover:border-border hover:text-foreground"
               )}
             >
               {opt.label}
@@ -223,8 +223,8 @@ export function CoursesFilterBar({
           onChange={(e) => updateFilter("sort", e.target.value)}
           className={cn(
             "sm:hidden ml-auto h-9 px-3 rounded-lg",
-            "bg-slate-900 border border-slate-800 text-slate-200 text-xs",
-            "focus:outline-none focus:border-indigo-500 cursor-pointer"
+            "bg-card border border-border text-foreground text-xs",
+            "focus:outline-none focus:border-primary cursor-pointer"
           )}
         >
           {SORT_OPTIONS.map((opt) => (
@@ -238,7 +238,7 @@ export function CoursesFilterBar({
         {hasFilters && (
           <button
             onClick={clearAll}
-            className="ml-auto sm:ml-2 flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+            className="ml-auto sm:ml-2 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="w-3 h-3" />
             Clear

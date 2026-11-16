@@ -68,11 +68,11 @@ function FormSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-800 bg-slate-900/80">
-        <h2 className="text-sm font-bold text-slate-200">{title}</h2>
+    <div className="rounded-2xl bg-card border border-border overflow-hidden">
+      <div className="px-6 py-4 border-b border-border bg-card/80">
+        <h2 className="text-sm font-bold text-foreground">{title}</h2>
         {description && (
-          <p className="text-xs text-slate-500 mt-0.5">{description}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
         )}
       </div>
       <div className="p-6 space-y-5">{children}</div>
@@ -122,15 +122,15 @@ function TagInput({
         onClick={() => inputRef.current?.focus()}
         className={cn(
           "min-h-11 flex flex-wrap gap-1.5 items-center px-3 py-2 rounded-lg",
-          "bg-slate-950 border border-slate-700 cursor-text",
-          "focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all"
+          "bg-background border border-border cursor-text",
+          "focus-within:border-primary focus-within:ring-1 focus-within:ring-indigo-500 transition-all"
         )}
       >
         {value.map((tag) => (
           <Badge
             key={tag}
             variant="secondary"
-            className="flex items-center gap-1 bg-indigo-500/10 text-indigo-300 border-indigo-500/20 hover:bg-indigo-500/20 text-xs"
+            className="flex items-center gap-1 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 text-xs"
           >
             <Tag className="w-2.5 h-2.5" />
             {tag}
@@ -154,23 +154,23 @@ function TagInput({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             onBlur={() => input && addTag(input)}
-            placeholder={value.length === 0 ? "Type a tag, press Enter…" : ""}
-            className="flex-1 min-w-30 bg-transparent text-sm text-slate-200 placeholder:text-slate-600 outline-none"
+            placeholder={value.length === 0 ? "Type a tag, press Enterâ€¦" : ""}
+            className="flex-1 min-w-30 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/70 outline-none"
           />
         )}
       </div>
-      <p className="text-[11px] text-slate-600">
-        {value.length}/{max} tags added · Press{" "}
-        <kbd className="px-1 py-0.5 rounded bg-slate-800 text-slate-500 font-mono text-[10px]">
+      <p className="text-[11px] text-muted-foreground/70">
+        {value.length}/{max} tags added آ· Press{" "}
+        <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground font-mono text-[10px]">
           Enter
         </kbd>{" "}
         or{" "}
-        <kbd className="px-1 py-0.5 rounded bg-slate-800 text-slate-500 font-mono text-[10px]">
+        <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground font-mono text-[10px]">
           ,
         </kbd>{" "}
         to add
       </p>
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }
@@ -200,7 +200,7 @@ function PortfolioLinksInput({
       {value.map((link, i) => (
         <div key={i} className="flex items-center gap-2">
           <div className="relative flex-1">
-            <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-600" />
+            <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/70" />
             <input
               type="url"
               value={link}
@@ -208,9 +208,9 @@ function PortfolioLinksInput({
               placeholder="https://your-portfolio.com/project"
               className={cn(
                 "w-full pl-9 pr-4 py-2.5 rounded-lg text-sm",
-                "bg-slate-950 border border-slate-700 text-slate-200",
-                "placeholder:text-slate-600",
-                "focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500",
+                "bg-background border border-border text-foreground",
+                "placeholder:text-muted-foreground/70",
+                "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
                 "transition-all"
               )}
             />
@@ -218,7 +218,7 @@ function PortfolioLinksInput({
           <button
             type="button"
             onClick={() => removeLink(i)}
-            className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-red-500/10 text-slate-600 hover:text-red-400 transition-colors border border-slate-700 hover:border-red-500/30"
+            className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-destructive/10 text-muted-foreground/70 hover:text-destructive transition-colors border border-border hover:border-destructive/30"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
@@ -229,7 +229,7 @@ function PortfolioLinksInput({
         <button
           type="button"
           onClick={addLink}
-          className="flex items-center gap-2 text-xs text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+          className="flex items-center gap-2 text-xs text-primary hover:text-primary font-medium transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
           Add portfolio link {value.length > 0 ? `(${value.length}/5)` : ""}
@@ -310,7 +310,7 @@ function NumberInput({
   return (
     <div className="relative flex items-center">
       {prefix && (
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm select-none pointer-events-none">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm select-none pointer-events-none">
           {prefix}
         </span>
       )}
@@ -323,16 +323,16 @@ function NumberInput({
         onBlur={handleBlur}
         className={cn(
           "w-full py-2.5 rounded-lg text-sm",
-          "bg-slate-950 border border-slate-700 text-slate-200",
-          "placeholder:text-slate-600",
-          "focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500",
+          "bg-background border border-border text-foreground",
+          "placeholder:text-muted-foreground/70",
+          "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
           "transition-all",
           prefix ? "pl-7" : "pl-3",
           suffix ? "pr-12" : "pr-3"
         )}
       />
       {suffix && (
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs select-none pointer-events-none">
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs select-none pointer-events-none">
           {suffix}
         </span>
       )}
@@ -408,7 +408,7 @@ export function ServiceCreationForm({
     setServerError(null);
 
     const toastId = toast.loading(
-      isEdit ? "Saving changes…" : "Publishing service…"
+      isEdit ? "Saving changesâ€¦" : "Publishing serviceâ€¦"
     );
 
     startTransition(async () => {
@@ -422,17 +422,17 @@ export function ServiceCreationForm({
         const sentToReview = "sentToReview" in result && result.sentToReview;
         toast.success(
           !isEdit
-            ? "Service submitted for review 📬"
+            ? "Service submitted for review ًں“¬"
             : sentToReview
-            ? "Changes sent for review 📬"
-            : "Service updated successfully! ✨",
+            ? "Changes sent for review ًں“¬"
+            : "Service updated successfully! âœ¨",
           {
             id: toastId,
             description: !isEdit
               ? "It will appear in the marketplace once an administrator approves it."
               : sentToReview
               ? "The service is hidden until an administrator approves your changes."
-              : "Redirecting to your services…",
+              : "Redirecting to your servicesâ€¦",
           }
         );
         setTimeout(() => router.push("/dashboard/creator/services"), 1200);
@@ -469,8 +469,8 @@ export function ServiceCreationForm({
         <h2 className="text-xl font-bold text-white mb-2">
           {isEdit ? "Service Updated!" : "Service Created!"}
         </h2>
-        <p className="text-slate-400 text-sm">
-          Redirecting to your services…
+        <p className="text-muted-foreground text-sm">
+          Redirecting to your servicesâ€¦
         </p>
       </div>
     );
@@ -488,30 +488,30 @@ export function ServiceCreationForm({
             name="courseId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-300">
-                  Certified Course <span className="text-red-400">*</span>
+                <FormLabel className="text-foreground">
+                  Certified Course <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <Combobox
                     options={certifiedCourses.map((cert) => ({
                       value: cert.courseId,
                       label: cert.courseTitle,
-                      description: `Score ${cert.score}% · ${cert.courseLevel}`,
+                      description: `Score ${cert.score}% آ· ${cert.courseLevel}`,
                       icon: (
-                        <BookOpen className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                        <BookOpen className="w-3.5 h-3.5 text-primary shrink-0" />
                       ),
                     }))}
                     value={field.value}
                     onChange={(v) => field.onChange(v)}
-                    placeholder="Select a certified course…"
-                    searchPlaceholder="Search courses…"
+                    placeholder="Select a certified courseâ€¦"
+                    searchPlaceholder="Search coursesâ€¦"
                     emptyMessage="No matching courses."
                   />
                 </FormControl>
-                <FormDescription className="text-slate-600 text-xs">
+                <FormDescription className="text-muted-foreground/70 text-xs">
                   Only courses with a passing certificate are listed.
                 </FormDescription>
-                <FormMessage className="text-red-400 text-xs" />
+                <FormMessage className="text-destructive text-xs" />
               </FormItem>
             )}
           />
@@ -525,12 +525,12 @@ export function ServiceCreationForm({
                 <p className="text-xs font-semibold text-amber-300 truncate">
                   {selectedCourse.courseTitle}
                 </p>
-                <p className="text-[10px] text-slate-500 mt-0.5">
+                <p className="text-[10px] text-muted-foreground mt-0.5">
                   Credential{" "}
-                  <span className="font-mono text-slate-400">
+                  <span className="font-mono text-muted-foreground">
                     {selectedCourse.credentialId}
                   </span>{" "}
-                  · Score{" "}
+                  آ· Score{" "}
                   <span className="text-amber-400 font-semibold">
                     {selectedCourse.score}%
                   </span>
@@ -540,9 +540,9 @@ export function ServiceCreationForm({
           )}
 
           {/* Category auto-derived notice */}
-          <div className="flex items-start gap-2.5 p-3 rounded-lg bg-indigo-500/5 border border-indigo-500/15">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0 mt-0.5" />
-            <p className="text-[11px] text-indigo-300 leading-relaxed">
+          <div className="flex items-start gap-2.5 p-3 rounded-lg bg-primary/5 border border-primary/15">
+            <Sparkles className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+            <p className="text-[11px] text-primary leading-relaxed">
               <span className="font-bold">Category is set automatically</span>{" "}
               from your certificate. You can only offer services in categories
               you&apos;re certified in.
@@ -559,19 +559,19 @@ export function ServiceCreationForm({
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-300">
-                  Service Title <span className="text-red-400">*</span>
+                <FormLabel className="text-foreground">
+                  Service Title <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="e.g. I will build a full-stack Next.js web application…"
-                    className="bg-slate-950 border-slate-700 text-slate-200 placeholder:text-slate-600 focus:border-indigo-500 focus:ring-indigo-500 h-10"
+                    placeholder="e.g. I will build a full-stack Next.js web applicationâ€¦"
+                    className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-indigo-500 h-10"
                   />
                 </FormControl>
                 <div className="flex justify-between items-center">
-                  <FormMessage className="text-red-400 text-xs" />
-                  <span className="text-[10px] text-slate-600 ml-auto">
+                  <FormMessage className="text-destructive text-xs" />
+                  <span className="text-[10px] text-muted-foreground/70 ml-auto">
                     {field.value?.length ?? 0}/100
                   </span>
                 </div>
@@ -584,20 +584,20 @@ export function ServiceCreationForm({
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-300">
-                  Description <span className="text-red-400">*</span>
+                <FormLabel className="text-foreground">
+                  Description <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
                     rows={6}
-                    placeholder="Describe exactly what you'll deliver, what's included, your process, and any requirements from the buyer…"
-                    className="bg-slate-950 border-slate-700 text-slate-200 placeholder:text-slate-600 focus:border-indigo-500 focus:ring-indigo-500 resize-none"
+                    placeholder="Describe exactly what you'll deliver, what's included, your process, and any requirements from the buyerâ€¦"
+                    className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-indigo-500 resize-none"
                   />
                 </FormControl>
                 <div className="flex justify-between items-center">
-                  <FormMessage className="text-red-400 text-xs" />
-                  <span className="text-[10px] text-slate-600 ml-auto">
+                  <FormMessage className="text-destructive text-xs" />
+                  <span className="text-[10px] text-muted-foreground/70 ml-auto">
                     {field.value?.length ?? 0}/3000
                   </span>
                 </div>
@@ -616,10 +616,10 @@ export function ServiceCreationForm({
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-slate-300">
+                  <FormLabel className="text-foreground">
                     <span className="flex items-center gap-1.5">
                       <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
-                      Price (USD) <span className="text-red-400">*</span>
+                      Price (USD) <span className="text-destructive">*</span>
                     </span>
                   </FormLabel>
                   <FormControl>
@@ -633,10 +633,10 @@ export function ServiceCreationForm({
                       placeholder="25.00"
                     />
                   </FormControl>
-                  <FormDescription className="text-slate-600 text-xs">
-                    Min $5 · Max $10,000
+                  <FormDescription className="text-muted-foreground/70 text-xs">
+                    Min $5 آ· Max $10,000
                   </FormDescription>
-                  <FormMessage className="text-red-400 text-xs" />
+                  <FormMessage className="text-destructive text-xs" />
                 </FormItem>
               )}
             />
@@ -646,10 +646,10 @@ export function ServiceCreationForm({
               name="deliveryDays"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-slate-300">
+                  <FormLabel className="text-foreground">
                     <span className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-indigo-400" />
-                      Delivery Time <span className="text-red-400">*</span>
+                      <Clock className="w-3.5 h-3.5 text-primary" />
+                      Delivery Time <span className="text-destructive">*</span>
                     </span>
                   </FormLabel>
                   <FormControl>
@@ -662,10 +662,10 @@ export function ServiceCreationForm({
                       placeholder="3"
                     />
                   </FormControl>
-                  <FormDescription className="text-slate-600 text-xs">
-                    1–90 calendar days
+                  <FormDescription className="text-muted-foreground/70 text-xs">
+                    1â€“90 calendar days
                   </FormDescription>
-                  <FormMessage className="text-red-400 text-xs" />
+                  <FormMessage className="text-destructive text-xs" />
                 </FormItem>
               )}
             />
@@ -675,9 +675,9 @@ export function ServiceCreationForm({
               name="revisions"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-slate-300">
+                  <FormLabel className="text-foreground">
                     <span className="flex items-center gap-1.5">
-                      <RotateCcw className="w-3.5 h-3.5 text-violet-400" />
+                      <RotateCcw className="w-3.5 h-3.5 text-info" />
                       Revisions
                     </span>
                   </FormLabel>
@@ -690,10 +690,10 @@ export function ServiceCreationForm({
                       placeholder="1"
                     />
                   </FormControl>
-                  <FormDescription className="text-slate-600 text-xs">
+                  <FormDescription className="text-muted-foreground/70 text-xs">
                     0 = no revisions
                   </FormDescription>
-                  <FormMessage className="text-red-400 text-xs" />
+                  <FormMessage className="text-destructive text-xs" />
                 </FormItem>
               )}
             />
@@ -709,8 +709,8 @@ export function ServiceCreationForm({
             name="tags"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-300">
-                  Tags <span className="text-red-400">*</span>
+                <FormLabel className="text-foreground">
+                  Tags <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <TagInput
@@ -731,9 +731,9 @@ export function ServiceCreationForm({
             name="portfolioLinks"
             render={() => (
               <FormItem>
-                <FormLabel className="text-slate-300">
+                <FormLabel className="text-foreground">
                   Portfolio Links{" "}
-                  <span className="text-slate-600 font-normal text-xs">
+                  <span className="text-muted-foreground/70 font-normal text-xs">
                     (optional)
                   </span>
                 </FormLabel>
@@ -747,19 +747,19 @@ export function ServiceCreationForm({
                     }
                   />
                 </FormControl>
-                <FormDescription className="text-slate-600 text-xs">
+                <FormDescription className="text-muted-foreground/70 text-xs">
                   Add up to 5 links to showcase your previous work.
                 </FormDescription>
-                <FormMessage className="text-red-400 text-xs" />
+                <FormMessage className="text-destructive text-xs" />
               </FormItem>
             )}
           />
         </FormSection>
 
         {serverError && (
-          <div className="flex items-start gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/20">
-            <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-            <p className="text-red-300 text-sm">{serverError}</p>
+          <div className="flex items-start gap-3 p-4 rounded-xl bg-destructive/5 border border-destructive/20">
+            <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+            <p className="text-destructive text-sm">{serverError}</p>
           </div>
         )}
 
@@ -769,19 +769,19 @@ export function ServiceCreationForm({
             variant="ghost"
             onClick={() => router.push("/dashboard/creator/services")}
             disabled={isPending}
-            className="text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+            className="text-muted-foreground hover:text-foreground hover:bg-accent"
           >
             Cancel
           </Button>
           <Button
             type="submit"
             disabled={isPending}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-8 shadow-lg shadow-indigo-500/20 disabled:opacity-50"
+            className="bg-primary hover:bg-primary text-white font-semibold px-8 shadow-lg shadow-indigo-500/20 disabled:opacity-50"
           >
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                {isEdit ? "Saving…" : "Publishing…"}
+                {isEdit ? "Savingâ€¦" : "Publishingâ€¦"}
               </>
             ) : isEdit ? (
               "Save Changes"

@@ -69,7 +69,7 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
           <h2 className="text-lg font-bold text-white">Badges</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             {earned} of {badges.length} unlocked
           </p>
         </div>
@@ -83,8 +83,8 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
                 filter === f
-                  ? "bg-slate-800 text-white"
-                  : "text-slate-500 hover:text-slate-300 hover:bg-slate-900"
+                  ? "bg-accent text-white"
+                  : "text-muted-foreground hover:text-foreground hover:bg-card"
               )}
             >
               {f === "all" ? "All" : f === "earned" ? "Earned" : "Locked"}
@@ -101,8 +101,8 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
       </div>
 
       {filtered.length === 0 && (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 text-center">
-          <p className="text-sm text-slate-500">
+        <div className="rounded-2xl bg-card border border-border p-12 text-center">
+          <p className="text-sm text-muted-foreground">
             No badges match this filter.
           </p>
         </div>
@@ -121,7 +121,7 @@ function BadgeCard({ badge }: { badge: BadgeData }) {
         "relative rounded-2xl border p-4 transition-all",
         badge.earned
           ? cn(tier.border, tier.bg, "hover:scale-[1.02]")
-          : "border-slate-800 bg-slate-900/50 opacity-60"
+          : "border-border bg-card/50 opacity-60"
       )}
     >
       {/* Icon */}
@@ -130,13 +130,13 @@ function BadgeCard({ badge }: { badge: BadgeData }) {
           "flex items-center justify-center w-12 h-12 rounded-xl mb-3 mx-auto",
           badge.earned
             ? cn("bg-linear-to-br shadow-lg", tier.gradient)
-            : "bg-slate-800"
+            : "bg-accent"
         )}
       >
         {badge.earned ? (
           <Icon className="w-6 h-6 text-white" />
         ) : (
-          <Lock className="w-5 h-5 text-slate-600" />
+          <Lock className="w-5 h-5 text-muted-foreground/70" />
         )}
       </div>
 
@@ -144,23 +144,23 @@ function BadgeCard({ badge }: { badge: BadgeData }) {
       <p
         className={cn(
           "text-sm font-bold text-center mb-1 line-clamp-1",
-          badge.earned ? "text-white" : "text-slate-500"
+          badge.earned ? "text-white" : "text-muted-foreground"
         )}
       >
         {badge.nameAr}
       </p>
 
       {/* Description */}
-      <p className="text-[10px] text-slate-500 text-center leading-relaxed line-clamp-2">
+      <p className="text-[10px] text-muted-foreground text-center leading-relaxed line-clamp-2">
         {badge.descriptionAr}
       </p>
 
       {/* Tier + XP */}
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-800/60">
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/60">
         <span
           className={cn(
             "text-[9px] font-bold uppercase tracking-wider",
-            badge.earned ? tier.color : "text-slate-600"
+            badge.earned ? tier.color : "text-muted-foreground/70"
           )}
         >
           {badge.tier}

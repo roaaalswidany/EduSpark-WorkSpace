@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { OrderCard, type OrderCardData } from "./_components/order-card";
 
 export const metadata = {
-  title: "My Orders — EduSpark",
+  title: "My Orders â€” EduSpark",
 };
 
 export default async function MyOrdersPage() {
@@ -29,7 +29,7 @@ export default async function MyOrdersPage() {
       createdAt: true,
       updatedAt: true,
       creator: {
-        // 👇 تم حذف image: true من هنا
+        // ًں‘‡ طھظ… ط­ط°ظپ image: true ظ…ظ† ظ‡ظ†ط§
         select: { id: true, name: true, headline: true },
       },
       service: {
@@ -55,7 +55,7 @@ export default async function MyOrdersPage() {
     counterpart: p.creator ?? {
       id: "",
       name: "Unassigned",
-      // 👇 تم حذف image: null من هنا
+      // ًں‘‡ طھظ… ط­ط°ظپ image: null ظ…ظ† ظ‡ظ†ط§
       headline: null,
     },
     service: p.service,
@@ -70,14 +70,14 @@ export default async function MyOrdersPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-xs font-bold text-indigo-400 mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <ShoppingBag className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Buying</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
           My Orders
         </h1>
-        <p className="text-sm text-slate-500 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           {orders.length === 0
             ? "No orders yet. Order a service to get started."
             : `${orders.length} ${orders.length === 1 ? "order" : "orders"}`}
@@ -85,20 +85,20 @@ export default async function MyOrdersPage() {
       </div>
 
       {orders.length === 0 ? (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 sm:p-16 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-5">
-            <ShoppingBag className="w-7 h-7 text-indigo-400" />
+        <div className="rounded-2xl bg-card border border-border p-12 sm:p-16 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
+            <ShoppingBag className="w-7 h-7 text-primary" />
           </div>
           <h2 className="text-lg font-bold text-white mb-1.5">
             No orders yet
           </h2>
-          <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6 leading-relaxed">
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
             Browse the marketplace and hire a certified creator to see your
             orders here.
           </p>
           <Link
             href="/marketplace"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
           >
             <Search className="w-4 h-4" />
             Browse Marketplace

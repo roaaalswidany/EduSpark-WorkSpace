@@ -64,7 +64,7 @@ export default async function MyCertificatesPage() {
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
           My Certificates
         </h1>
-        <p className="text-sm text-slate-500 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           {data.length === 0
             ? "Complete courses and pass the certification quizzes to earn certificates."
             : `You've earned ${data.length} ${data.length === 1 ? "certificate" : "certificates"}`}
@@ -73,20 +73,20 @@ export default async function MyCertificatesPage() {
 
       {/* Empty state */}
       {data.length === 0 ? (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 sm:p-16 text-center">
+        <div className="rounded-2xl bg-card border border-border p-12 sm:p-16 text-center">
           <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-5">
             <Award className="w-7 h-7 text-amber-400" />
           </div>
           <h2 className="text-lg font-bold text-white mb-1.5">
             No certificates yet
           </h2>
-          <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6 leading-relaxed">
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
             Finish a course and pass its certification quiz to unlock your first
             certificate.
           </p>
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
           >
             <Search className="w-4 h-4" />
             Browse Courses

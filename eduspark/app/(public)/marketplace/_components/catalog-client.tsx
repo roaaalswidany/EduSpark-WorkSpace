@@ -24,7 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-// ─── Types ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface ServiceCardData {
   id: string;
@@ -42,7 +42,7 @@ export interface ServiceCardData {
     id: string;
     name: string;
     headline: string | null;
-    // 👇 تم حذف image من هنا
+    // ًں‘‡ طھظ… ط­ط°ظپ image ظ…ظ† ظ‡ظ†ط§
     /** Category IDs the creator is certified in */
     certifiedCategories: string[];
   };
@@ -69,7 +69,7 @@ interface CatalogClientProps {
   categories: CategoryFilterOption[];
 }
 
-// ─── Thumbnail Gradient Map ────────────────────────────────────────
+// â”€â”€â”€ Thumbnail Gradient Map â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const GRADIENTS = [
   "from-violet-600 to-indigo-700",
@@ -87,9 +87,9 @@ function getGradient(id: string): string {
   return GRADIENTS[code % GRADIENTS.length];
 }
 
-// ─── Creator Avatar ────────────────────────────────────────────────
+// â”€â”€â”€ Creator Avatar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// 👇 تم تنظيف المكون ليتجاهل الصور
+// ًں‘‡ طھظ… طھظ†ط¸ظٹظپ ط§ظ„ظ…ظƒظˆظ† ظ„ظٹطھط¬ط§ظ‡ظ„ ط§ظ„طµظˆط±
 function CreatorAvatar({
   name,
   size = 28,
@@ -123,7 +123,7 @@ function CreatorAvatar({
   );
 }
 
-// ─── Service Card ──────────────────────────────────────────────────
+// â”€â”€â”€ Service Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function ServiceCard({ service }: { service: ServiceCardData }) {
   const router = useRouter();
@@ -134,7 +134,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
       onClick={() => router.push(`/marketplace/services/${service.slug}`)}
       className="group block cursor-pointer"
     >
-      <article className="h-full rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-2xl hover:shadow-indigo-500/8">
+      <article className="h-full rounded-2xl bg-card border border-border overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-2xl hover:shadow-indigo-500/8">
         {/* Thumbnail */}
         <div
           className={cn(
@@ -194,7 +194,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
 
           {/* Creator row */}
           <div className="flex items-center gap-2">
-            {/* 👇 تم إزالة تمرير الصورة هنا */}
+            {/* ًں‘‡ طھظ… ط¥ط²ط§ظ„ط© طھظ…ط±ظٹط± ط§ظ„طµظˆط±ط© ظ‡ظ†ط§ */}
             <CreatorAvatar
               name={service.creator.name}
               size={26}
@@ -203,15 +203,15 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
               <Link
                 href={`/profile/${service.creator.id}`}
                 onClick={(e) => e.stopPropagation()}
-                className="text-xs font-semibold text-slate-400 hover:text-indigo-400 truncate transition-colors block"
+                className="text-xs font-semibold text-muted-foreground hover:text-primary truncate transition-colors block"
               >
                 {service.creator.name}
               </Link>
             </div>
             {service._count.orders > 0 && (
-              <div className="flex items-center gap-0.5 text-[10px] text-slate-600">
+              <div className="flex items-center gap-0.5 text-[10px] text-muted-foreground/70">
                 <Star className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
-                <span className="text-slate-500 font-medium">
+                <span className="text-muted-foreground font-medium">
                   {service._count.orders}
                 </span>
               </div>
@@ -219,7 +219,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
           </div>
 
           {/* Title */}
-          <h3 className="text-sm font-semibold text-slate-300 line-clamp-2 leading-snug group-hover:text-white transition-colors flex-1">
+          <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-white transition-colors flex-1">
             {service.title}
           </h3>
 
@@ -229,13 +229,13 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
               {service.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="px-1.5 py-0.5 rounded-md bg-slate-800 text-slate-500 text-[10px] font-medium"
+                  className="px-1.5 py-0.5 rounded-md bg-accent text-muted-foreground text-[10px] font-medium"
                 >
                   #{tag}
                 </span>
               ))}
               {service.tags.length > 3 && (
-                <span className="px-1.5 py-0.5 rounded-md bg-slate-800 text-slate-600 text-[10px]">
+                <span className="px-1.5 py-0.5 rounded-md bg-accent text-muted-foreground/70 text-[10px]">
                   +{service.tags.length - 3}
                 </span>
               )}
@@ -243,13 +243,13 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
           )}
 
           {/* Price + delivery row */}
-          <div className="flex items-end justify-between pt-2.5 border-t border-slate-800">
-            <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+          <div className="flex items-end justify-between pt-2.5 border-t border-border">
+            <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
               <Clock className="w-3 h-3" />
               <span>{service.deliveryDays}d delivery</span>
             </div>
             <div className="text-right">
-              <p className="text-[9px] font-medium text-slate-600 uppercase tracking-wider">
+              <p className="text-[9px] font-medium text-muted-foreground/70 uppercase tracking-wider">
                 From
               </p>
               <p className="text-lg font-black text-white leading-none">
@@ -263,12 +263,12 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
   );
 }
 
-// ─── Sort Dropdown ─────────────────────────────────────────────────
+// â”€â”€â”€ Sort Dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const SORT_LABELS: Record<SortOrder, string> = {
   newest: "Newest First",
-  price_asc: "Price: Low → High",
-  price_desc: "Price: High → Low",
+  price_asc: "Price: Low â†’ High",
+  price_desc: "Price: High â†’ Low",
   popular: "Most Popular",
 };
 
@@ -299,8 +299,8 @@ function SortDropdown({
         onClick={() => setOpen((v) => !v)}
         className={cn(
           "flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium",
-          "bg-slate-900 border border-slate-800 text-slate-400",
-          "hover:border-slate-700 hover:text-slate-200 transition-all"
+          "bg-card border border-border text-muted-foreground",
+          "hover:border-border hover:text-foreground transition-all"
         )}
       >
         <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -314,7 +314,7 @@ function SortDropdown({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1.5 w-48 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl shadow-black/40 overflow-hidden z-20">
+        <div className="absolute right-0 top-full mt-1.5 w-48 rounded-xl bg-card border border-border shadow-2xl shadow-black/40 overflow-hidden z-20">
           {(Object.keys(SORT_LABELS) as SortOrder[]).map((key) => (
             <button
               key={key}
@@ -326,8 +326,8 @@ function SortDropdown({
               className={cn(
                 "w-full text-left px-4 py-2.5 text-sm transition-colors",
                 key === value
-                  ? "bg-indigo-500/10 text-indigo-300 font-semibold"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                  ? "bg-primary/10 text-primary font-semibold"
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
             >
               {SORT_LABELS[key]}
@@ -339,7 +339,7 @@ function SortDropdown({
   );
 }
 
-// ─── Empty State ───────────────────────────────────────────────────
+// â”€â”€â”€ Empty State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function EmptyState({
   query,
@@ -352,21 +352,21 @@ function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center col-span-full">
-      <div className="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mb-5">
-        <Search className="w-8 h-8 text-slate-600" />
+      <div className="w-20 h-20 rounded-2xl bg-accent border border-border flex items-center justify-center mb-5">
+        <Search className="w-8 h-8 text-muted-foreground/70" />
       </div>
-      <h3 className="text-lg font-bold text-slate-300 mb-2">
+      <h3 className="text-lg font-bold text-foreground mb-2">
         {query ? `No results for "${query}"` : "No services available"}
       </h3>
-      <p className="text-slate-500 text-sm max-w-xs leading-relaxed">
+      <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
         {query
           ? "Try a different search term or browse by category."
-          : "Check back soon — creators are completing certifications daily."}
+          : "Check back soon â€” creators are completing certifications daily."}
       </p>
       {hasFilters && (
         <button
           onClick={onClear}
-          className="mt-5 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+          className="mt-5 text-sm font-semibold text-primary hover:text-primary transition-colors"
         >
           Clear all filters
         </button>
@@ -375,7 +375,7 @@ function EmptyState({
   );
 }
 
-// ─── Main Catalog Component ────────────────────────────────────────
+// â”€â”€â”€ Main Catalog Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function CatalogClient({
   initialServices,
@@ -386,7 +386,7 @@ export function CatalogClient({
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
 
-  // Debounce search input — 280ms gives snappy feel without thrashing
+  // Debounce search input â€” 280ms gives snappy feel without thrashing
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQuery(searchInput.trim()), 280);
     return () => clearTimeout(t);
@@ -454,9 +454,9 @@ export function CatalogClient({
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-background text-slate-100">
 
-      {/* ─── Hero ─────────────────────────────────────────────────── */}
+      {/* â”€â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="relative pt-16 pb-12 px-4 overflow-hidden">
         {/* Background radial glow */}
         <div
@@ -469,7 +469,7 @@ export function CatalogClient({
         />
 
         <div className="relative max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-6">
             <Sparkles className="w-3.5 h-3.5" />
             All creators are EduSpark certified
           </div>
@@ -482,14 +482,14 @@ export function CatalogClient({
             Experts
           </h1>
 
-          <p className="text-slate-400 text-lg leading-relaxed mb-8 max-w-xl mx-auto">
+          <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-xl mx-auto">
             Every creator proved their skills through our rigorous course
-            program — your work is in trusted hands.
+            program â€” your work is in trusted hands.
           </p>
 
           {/* Search bar */}
           <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 pointer-events-none" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
             <input
               type="text"
               value={searchInput}
@@ -497,16 +497,16 @@ export function CatalogClient({
               placeholder="Search services, skills, or creators..."
               className={cn(
                 "w-full pl-12 pr-12 py-4 rounded-2xl text-sm",
-                "bg-slate-900 border border-slate-700 text-slate-200",
-                "placeholder:text-slate-600",
-                "focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20",
+                "bg-card border border-border text-foreground",
+                "placeholder:text-muted-foreground/70",
+                "focus:outline-none focus:border-primary focus:ring-2 focus:ring-indigo-500/20",
                 "transition-all shadow-xl shadow-black/20"
               )}
             />
             {searchInput && (
               <button
                 onClick={clearSearch}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-400 transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground/70 hover:text-muted-foreground transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -514,9 +514,9 @@ export function CatalogClient({
           </div>
 
           {/* Stats strip */}
-          <div className="flex items-center justify-center gap-6 mt-8 text-sm text-slate-500">
+          <div className="flex items-center justify-center gap-6 mt-8 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              <Package className="w-4 h-4 text-indigo-400" />
+              <Package className="w-4 h-4 text-primary" />
               <span>
                 <span className="text-white font-bold">
                   {initialServices.length}
@@ -524,15 +524,15 @@ export function CatalogClient({
                 services
               </span>
             </div>
-            <div className="w-px h-4 bg-slate-800" />
+            <div className="w-px h-4 bg-accent" />
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-violet-400" />
+              <Users className="w-4 h-4 text-info" />
               <span>
                 <span className="text-white font-bold">{totalCreators}</span>{" "}
                 experts
               </span>
             </div>
-            <div className="w-px h-4 bg-slate-800" />
+            <div className="w-px h-4 bg-accent" />
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-amber-400" />
               <span>
@@ -543,8 +543,8 @@ export function CatalogClient({
         </div>
       </section>
 
-      {/* ─── Filters ──────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80">
+      {/* â”€â”€â”€ Filters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div className="sticky top-0 z-30 bg-background/90 backdrop-blur-md border-b border-border/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Category pills */}
           <div className="flex items-center gap-2 py-3 overflow-x-auto scrollbar-none">
@@ -553,8 +553,8 @@ export function CatalogClient({
               className={cn(
                 "shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-all",
                 activeCategoryId === null
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25"
-                  : "bg-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-700"
+                  ? "bg-primary text-white shadow-lg shadow-indigo-500/25"
+                  : "bg-accent text-muted-foreground hover:text-foreground hover:bg-accent"
               )}
             >
               All Services
@@ -571,8 +571,8 @@ export function CatalogClient({
                 className={cn(
                   "shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap",
                   activeCategoryId === cat.id
-                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25"
-                    : "bg-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-700"
+                    ? "bg-primary text-white shadow-lg shadow-indigo-500/25"
+                    : "bg-accent text-muted-foreground hover:text-foreground hover:bg-accent"
                 )}
               >
                 {cat.name}
@@ -582,20 +582,20 @@ export function CatalogClient({
         </div>
       </div>
 
-      {/* ─── Catalog content ──────────────────────────────────────── */}
+      {/* â”€â”€â”€ Catalog content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
         {/* Results bar */}
         <div className="flex items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-muted-foreground">
               <span className="text-white font-semibold">{filtered.length}</span>{" "}
               {filtered.length === 1 ? "service" : "services"}
               {debouncedQuery && (
-                <span className="text-slate-600">
+                <span className="text-muted-foreground/70">
                   {" "}
                   for &ldquo;
-                  <span className="text-slate-400">{debouncedQuery}</span>
+                  <span className="text-muted-foreground">{debouncedQuery}</span>
                   &rdquo;
                 </span>
               )}
@@ -604,7 +604,7 @@ export function CatalogClient({
             {hasActiveFilters && (
               <button
                 onClick={clearAll}
-                className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 font-medium transition-colors"
+                className="flex items-center gap-1 text-xs text-destructive hover:text-destructive font-medium transition-colors"
               >
                 <X className="w-3 h-3" />
                 Clear all

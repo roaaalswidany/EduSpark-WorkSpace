@@ -65,7 +65,7 @@ export default function RegisterPage() {
     confirmPassword.length > 0 && password === confirmPassword;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
@@ -78,18 +78,18 @@ export default function RegisterPage() {
             </span>
           </Link>
           <h1 className="text-2xl font-bold text-white">Create your account</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Join EduSpark and start learning
           </p>
         </div>
 
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6 sm:p-8">
+        <div className="rounded-2xl bg-card border border-border p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name */}
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-slate-300 mb-1.5"
+                className="block text-sm font-medium text-foreground mb-1.5"
               >
                 Full name
               </label>
@@ -102,10 +102,10 @@ export default function RegisterPage() {
                 onChange={(e) => setName(e.target.value)}
                 disabled={isPending}
                 placeholder="John Doe"
-                className="w-full h-11 px-3 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
               />
               {fieldErrors.name?.[0] && (
-                <p className="text-xs text-red-400 mt-1.5">
+                <p className="text-xs text-destructive mt-1.5">
                   {fieldErrors.name[0]}
                 </p>
               )}
@@ -115,7 +115,7 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-300 mb-1.5"
+                className="block text-sm font-medium text-foreground mb-1.5"
               >
                 Email
               </label>
@@ -128,20 +128,20 @@ export default function RegisterPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isPending}
                 placeholder="you@example.com"
-                className="w-full h-11 px-3 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
               />
               {fieldErrors.email?.[0] && (
-                <p className="text-xs text-red-400 mt-1.5">
+                <p className="text-xs text-destructive mt-1.5">
                   {fieldErrors.email[0]}
                 </p>
               )}
             </div>
 
-            {/* Password — with show/hide toggle */}
+            {/* Password â€” with show/hide toggle */}
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-slate-300 mb-1.5"
+                className="block text-sm font-medium text-foreground mb-1.5"
               >
                 Password
               </label>
@@ -154,15 +154,15 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isPending}
-                  placeholder="••••••••"
-                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   disabled={isPending}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-md text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-colors disabled:opacity-50"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors disabled:opacity-50"
                 >
                   {showPassword ? (
                     <EyeOff className="w-4 h-4" />
@@ -181,7 +181,7 @@ export default function RegisterPage() {
                       <li
                         key={i}
                         className={`flex items-center gap-1.5 text-xs ${
-                          passed ? "text-emerald-400" : "text-slate-600"
+                          passed ? "text-emerald-400" : "text-muted-foreground/70"
                         }`}
                       >
                         <Check
@@ -197,17 +197,17 @@ export default function RegisterPage() {
               )}
 
               {fieldErrors.password?.[0] && (
-                <p className="text-xs text-red-400 mt-1.5">
+                <p className="text-xs text-destructive mt-1.5">
                   {fieldErrors.password[0]}
                 </p>
               )}
             </div>
 
-            {/* Confirm Password — with show/hide toggle */}
+            {/* Confirm Password â€” with show/hide toggle */}
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-slate-300 mb-1.5"
+                className="block text-sm font-medium text-foreground mb-1.5"
               >
                 Confirm password
               </label>
@@ -220,8 +220,8 @@ export default function RegisterPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   disabled={isPending}
-                  placeholder="••••••••"
-                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
                 />
                 <button
                   type="button"
@@ -230,7 +230,7 @@ export default function RegisterPage() {
                   aria-label={
                     showConfirmPassword ? "Hide password" : "Show password"
                   }
-                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-md text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-colors disabled:opacity-50"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors disabled:opacity-50"
                 >
                   {showConfirmPassword ? (
                     <EyeOff className="w-4 h-4" />
@@ -240,27 +240,27 @@ export default function RegisterPage() {
                 </button>
               </div>
               {confirmPassword.length > 0 && !passwordsMatch && (
-                <p className="text-xs text-red-400 mt-1.5">
+                <p className="text-xs text-destructive mt-1.5">
                   Passwords do not match.
                 </p>
               )}
               {fieldErrors.confirmPassword?.[0] && (
-                <p className="text-xs text-red-400 mt-1.5">
+                <p className="text-xs text-destructive mt-1.5">
                   {fieldErrors.confirmPassword[0]}
                 </p>
               )}
             </div>
 
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted-foreground">
               New accounts start as Students. Pass a course certification quiz
               to unlock Creator access.
             </p>
 
             {/* General error */}
             {generalError && (
-              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                <p className="text-sm text-red-300">{generalError}</p>
+              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+                <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+                <p className="text-sm text-destructive">{generalError}</p>
               </div>
             )}
 
@@ -275,12 +275,12 @@ export default function RegisterPage() {
                 !confirmPassword ||
                 !passwordsMatch
               }
-              className="w-full h-11 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full h-11 rounded-lg bg-primary hover:bg-primary text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Creating account…
+                  Creating accountâ€¦
                 </>
               ) : (
                 "Create account"
@@ -288,11 +288,11 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p className="text-center text-sm text-slate-500 mt-6">
+          <p className="text-center text-sm text-muted-foreground mt-6">
             Already have an account?{" "}
             <Link
               href="/auth/login"
-              className="text-indigo-400 hover:text-indigo-300 font-medium"
+              className="text-primary hover:text-primary font-medium"
             >
               Sign in
             </Link>

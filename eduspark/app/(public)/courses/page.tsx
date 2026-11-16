@@ -33,7 +33,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
 
-  // ── Build where clause ──────────────────────────────────────────
+  // â”€â”€ Build where clause â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const where: Prisma.CourseWhereInput = {
     status: CourseStatus.PUBLISHED,
   };
@@ -56,7 +56,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     where.level = sp.level as CourseLevel;
   }
 
-  // ── Sort mapping ────────────────────────────────────────────────
+  // â”€â”€ Sort mapping â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let orderBy: Prisma.CourseOrderByWithRelationInput = { createdAt: "desc" };
   switch (sp.sort) {
     case "popular":
@@ -73,7 +73,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       break;
   }
 
-  // ── Cache key (unique per filter/page combo) ────────────────────
+  // â”€â”€ Cache key (unique per filter/page combo) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const listCacheKey = CacheKeys.coursesList({
     q: sp.q,
     category: sp.category,
@@ -82,7 +82,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     page,
   });
 
-  // ── Fetch data in parallel — with caching ───────────────────────
+  // â”€â”€ Fetch data in parallel â€” with caching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const [{ coursesRaw, total }, categoriesRaw] = await Promise.all([
     // Cache: courses list + count (60s TTL)
     cached(listCacheKey, CacheTTL.medium, async () => {
@@ -105,7 +105,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
             totalRating: true,
             ratingCount: true,
             creator: {
-              // 👇 تم حذف image: true من هنا
+              // ًں‘‡ طھظ… ط­ط°ظپ image: true ظ…ظ† ظ‡ظ†ط§
               select: { id: true, name: true, headline: true },
             },
             category: { select: { id: true, name: true, slug: true } },
@@ -121,7 +121,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       return { coursesRaw: courses, total: count };
     }),
 
-    // Cache: categories (5 min TTL — changes rarely)
+    // Cache: categories (5 min TTL â€” changes rarely)
     cached(CacheKeys.coursesCategories(), CacheTTL.long, () =>
       db.category.findMany({
         where: {
@@ -142,7 +142,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     ),
   ]);
 
-  // ── Enrollments for current user (NOT cached — user-specific) ───
+  // â”€â”€ Enrollments for current user (NOT cached â€” user-specific) â”€â”€â”€
   let enrollmentMap = new Map<
     string,
     { progress: number; isPassed: boolean }
@@ -164,7 +164,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     );
   }
 
-  // ── Shape courses ───────────────────────────────────────────────
+  // â”€â”€ Shape courses â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const courses: CourseCardData[] = coursesRaw.map((c) => {
     const totalLessons = c.sections.reduce(
       (sum, s) => sum + s.lessons.length,
@@ -213,7 +213,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     !!sp.level ||
     (sp.sort && sp.sort !== "newest");
 
-  // ── Build pagination URL helper ─────────────────────────────────
+  // â”€â”€ Build pagination URL helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function buildPageUrl(targetPage: number): string {
     const params = new URLSearchParams();
     if (sp.q) params.set("q", sp.q);
@@ -226,11 +226,11 @@ export default async function CoursesPage({ searchParams }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      {/* ── Hero ──────────────────────────────────────────────────── */}
+    <div className="min-h-screen bg-background text-slate-100">
+      {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-6">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-4">
             <BookOpen className="w-3 h-3" />
             {total} {total === 1 ? "course" : "courses"} available
           </div>
@@ -240,28 +240,28 @@ export default async function CoursesPage({ searchParams }: PageProps) {
               at your own pace.
             </span>
           </h1>
-          <p className="mt-3 text-slate-500 text-sm sm:text-base leading-relaxed">
+          <p className="mt-3 text-muted-foreground text-sm sm:text-base leading-relaxed">
             Discover expert-led courses, earn certificates, and unlock your
             potential with EduSpark.
           </p>
         </div>
       </section>
 
-      {/* ── Filters ───────────────────────────────────────────────── */}
+      {/* â”€â”€ Filters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
         <CoursesFilterBar categories={categories} totalCourses={total} />
       </section>
 
-      {/* ── Results ───────────────────────────────────────────────── */}
+      {/* â”€â”€ Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="flex items-center justify-between mb-5">
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-muted-foreground">
             {total === 0
               ? "No courses found"
-              : `Showing ${skip + 1}–${Math.min(skip + PAGE_SIZE, total)} of ${total}`}
+              : `Showing ${skip + 1}â€“${Math.min(skip + PAGE_SIZE, total)} of ${total}`}
           </p>
           {totalPages > 1 && (
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-muted-foreground/70">
               Page {page} of {totalPages}
             </p>
           )}
@@ -269,13 +269,13 @@ export default async function CoursesPage({ searchParams }: PageProps) {
 
         {courses.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-4">
-              <Search className="w-7 h-7 text-slate-700" />
+            <div className="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center mb-4">
+              <Search className="w-7 h-7 text-muted-foreground/70" />
             </div>
-            <h3 className="text-base font-bold text-slate-300 mb-1">
+            <h3 className="text-base font-bold text-foreground mb-1">
               No courses found
             </h3>
-            <p className="text-sm text-slate-600 max-w-sm mb-5">
+            <p className="text-sm text-muted-foreground/70 max-w-sm mb-5">
               {hasFilters
                 ? "Try adjusting your filters or search query."
                 : "No published courses yet. Check back soon!"}
@@ -283,7 +283,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
             {hasFilters && (
               <Link
                 href="/courses"
-                className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+                className="px-4 py-2 rounded-lg bg-accent hover:bg-accent text-foreground text-xs font-semibold transition-colors"
               >
                 Clear filters
               </Link>
@@ -302,9 +302,9 @@ export default async function CoursesPage({ searchParams }: PageProps) {
             {page > 1 && (
               <Link
                 href={buildPageUrl(page - 1)}
-                className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+                className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
               >
-                ← Previous
+                â†گ Previous
               </Link>
             )}
 
@@ -321,8 +321,8 @@ export default async function CoursesPage({ searchParams }: PageProps) {
                     href={buildPageUrl(p)}
                     className={
                       p === page
-                        ? "w-9 h-9 flex items-center justify-center rounded-lg bg-indigo-600 text-white text-xs font-bold"
-                        : "w-9 h-9 flex items-center justify-center rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white text-xs font-semibold transition-colors"
+                        ? "w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold"
+                        : "w-9 h-9 flex items-center justify-center rounded-lg bg-card border border-border hover:border-border text-muted-foreground hover:text-white text-xs font-semibold transition-colors"
                     }
                   >
                     {p}
@@ -331,8 +331,8 @@ export default async function CoursesPage({ searchParams }: PageProps) {
               }
               if (p === page - 2 || p === page + 2) {
                 return (
-                  <span key={p} className="text-slate-700 text-xs">
-                    …
+                  <span key={p} className="text-muted-foreground/70 text-xs">
+                    â€¦
                   </span>
                 );
               }
@@ -342,9 +342,9 @@ export default async function CoursesPage({ searchParams }: PageProps) {
             {page < totalPages && (
               <Link
                 href={buildPageUrl(page + 1)}
-                className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+                className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
               >
-                Next →
+                Next â†’
               </Link>
             )}
           </div>

@@ -33,18 +33,18 @@ export function UserMenu({ user }: { user: Session["user"] }) {
       {/* Trigger */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-accent transition-colors"
       >
-        {/* إلغاء الصورة وعرض الأحرف الأولى دائماً */}
-        <div className="w-8 h-8 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">
+        {/* ط¥ظ„ط؛ط§ط، ط§ظ„طµظˆط±ط© ظˆط¹ط±ط¶ ط§ظ„ط£ط­ط±ظپ ط§ظ„ط£ظˆظ„ظ‰ ط¯ط§ط¦ظ…ط§ظ‹ */}
+        <div className="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">
           {initials}
         </div>
         
-        <span className="hidden sm:block text-sm text-slate-300 max-w-30 truncate">
+        <span className="hidden sm:block text-sm text-foreground max-w-30 truncate">
           {user?.name}
         </span>
         <ChevronDown
-          className={`w-3.5 h-3.5 text-slate-500 transition-transform ${
+          className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${
             open ? "rotate-180" : ""
           }`}
         />
@@ -52,13 +52,13 @@ export function UserMenu({ user }: { user: Session["user"] }) {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 mt-2 w-56 rounded-xl bg-slate-900 border border-slate-800 shadow-xl overflow-hidden z-50">
+        <div className="absolute right-0 mt-2 w-56 rounded-xl bg-card border border-border shadow-xl overflow-hidden z-50">
           {/* User info */}
-          <div className="px-4 py-3 border-b border-slate-800">
+          <div className="px-4 py-3 border-b border-border">
             <p className="text-sm font-semibold text-white truncate">
               {user?.name}
             </p>
-            <p className="text-xs text-slate-500 truncate mt-0.5">
+            <p className="text-xs text-muted-foreground truncate mt-0.5">
               {user?.email}
             </p>
           </div>
@@ -68,7 +68,7 @@ export function UserMenu({ user }: { user: Session["user"] }) {
             <Link
               href="/dashboard"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-accent hover:text-white transition-colors"
             >
               <LayoutDashboard className="w-4 h-4" />
               Dashboard
@@ -76,7 +76,7 @@ export function UserMenu({ user }: { user: Session["user"] }) {
             <Link
               href="/dashboard/profile"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-accent hover:text-white transition-colors"
             >
               <User className="w-4 h-4" />
               Profile
@@ -84,10 +84,10 @@ export function UserMenu({ user }: { user: Session["user"] }) {
           </div>
 
           {/* Logout */}
-          <div className="border-t border-slate-800 py-1">
+          <div className="border-t border-border py-1">
             <button
               onClick={() => signOut({ callbackUrl: "/auth/login" })}
-              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors"
             >
               <LogOut className="w-4 h-4" />
               Sign out

@@ -13,7 +13,7 @@ export default async function MyCoursesPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/auth/login");
 
-  // ── Fetch enrolled courses ──────────────────────────
+  // â”€â”€ Fetch enrolled courses â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const enrollments = await db.enrollment.findMany({
     where: { userId: session.user.id },
     orderBy: { updatedAt: "desc" },
@@ -33,7 +33,7 @@ export default async function MyCoursesPage() {
           thumbnail: true,
           level: true,
           creator: {
-            // 👇 تم حذف image: true من هنا
+            // ًں‘‡ طھظ… ط­ط°ظپ image: true ظ…ظ† ظ‡ظ†ط§
             select: { id: true, name: true, headline: true },
           },
           category: { select: { id: true, name: true, slug: true } },
@@ -47,7 +47,7 @@ export default async function MyCoursesPage() {
     },
   });
 
-  // ── Shape data ──────────────────────────────────────
+  // â”€â”€ Shape data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const courses: EnrolledCourse[] = enrollments.map((e) => {
     const totalLessons = e.course.sections.reduce(
       (sum, s) => sum + s.lessons.length,
@@ -85,9 +85,9 @@ export default async function MyCoursesPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-      {/* ── Header ──────────────────────────────────── */}
+      {/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-xs font-bold text-indigo-400 mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <BookOpen className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">My Learning</span>
         </div>
@@ -95,48 +95,48 @@ export default async function MyCoursesPage() {
           My Courses
         </h1>
         {totalCount > 0 ? (
-          <p className="text-sm text-slate-500 mt-2">
-            <span className="text-indigo-400 font-semibold">
+          <p className="text-sm text-muted-foreground mt-2">
+            <span className="text-primary font-semibold">
               {inProgressCount}
             </span>{" "}
-            in progress ·{" "}
+            in progress آ·{" "}
             <span className="text-emerald-400 font-semibold">
               {completedCount}
             </span>{" "}
-            completed ·{" "}
-            <span className="text-slate-300 font-semibold">{totalCount}</span>{" "}
+            completed آ·{" "}
+            <span className="text-foreground font-semibold">{totalCount}</span>{" "}
             total
           </p>
         ) : (
-          <p className="text-sm text-slate-500 mt-2">
+          <p className="text-sm text-muted-foreground mt-2">
             You haven&apos;t enrolled in any course yet.
           </p>
         )}
       </div>
 
-      {/* ── Empty state ───────────────────────────────── */}
+      {/* â”€â”€ Empty state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {totalCount === 0 ? (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 sm:p-16 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-5">
-            <Sparkles className="w-7 h-7 text-indigo-400" />
+        <div className="rounded-2xl bg-card border border-border p-12 sm:p-16 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
+            <Sparkles className="w-7 h-7 text-primary" />
           </div>
           <h2 className="text-lg font-bold text-white mb-1.5">
             Start your learning journey
           </h2>
-          <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6 leading-relaxed">
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
             Browse our catalog of expert-led courses and enroll in your first
             course to get started.
           </p>
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-white text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
           >
             <Search className="w-4 h-4" />
             Browse Courses
           </Link>
         </div>
       ) : (
-        /* ── Courses grid ────────────────────────────── */
+        /* â”€â”€ Courses grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {courses.map((course) => (
             <EnrolledCourseCard key={course.enrollmentId} course={course} />

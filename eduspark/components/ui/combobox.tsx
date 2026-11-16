@@ -34,9 +34,9 @@ export function Combobox({
   options,
   value,
   onChange,
-  placeholder = "Select an option…",
+  placeholder = "Select an optionâ€¦",
   emptyMessage = "No matches found.",
-  searchPlaceholder = "Search…",
+  searchPlaceholder = "Searchâ€¦",
   className,
   disabled = false,
   clearable = false,
@@ -152,8 +152,8 @@ export function Combobox({
         disabled={disabled}
         className={cn(
           "w-full h-10 flex items-center justify-between gap-2 px-3 rounded-lg",
-          "bg-slate-950 border border-slate-700 text-left text-sm",
-          "focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500",
+          "bg-background border border-border text-left text-sm",
+          "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
           "transition-all",
           disabled && "opacity-50 cursor-not-allowed"
         )}
@@ -161,7 +161,7 @@ export function Combobox({
         <span
           className={cn(
             "flex items-center gap-2 min-w-0 flex-1",
-            selected ? "text-slate-200" : "text-slate-600"
+            selected ? "text-foreground" : "text-muted-foreground/70"
           )}
         >
           {selected?.icon}
@@ -176,14 +176,14 @@ export function Combobox({
               role="button"
               tabIndex={-1}
               onClick={handleClear}
-              className="flex items-center justify-center w-5 h-5 rounded hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition-colors"
+              className="flex items-center justify-center w-5 h-5 rounded hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-3 h-3" />
             </span>
           )}
           <ChevronDown
             className={cn(
-              "w-4 h-4 text-slate-500 transition-transform",
+              "w-4 h-4 text-muted-foreground transition-transform",
               open && "rotate-180"
             )}
           />
@@ -192,10 +192,10 @@ export function Combobox({
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl shadow-black/60 overflow-hidden">
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-xl bg-card border border-border shadow-2xl shadow-black/60 overflow-hidden">
           {/* Search input */}
-          <div className="relative border-b border-slate-800">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 pointer-events-none" />
+          <div className="relative border-b border-border">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
             <input
               ref={inputRef}
               type="text"
@@ -206,14 +206,14 @@ export function Combobox({
               }}
               onKeyDown={handleKeyDown}
               placeholder={searchPlaceholder}
-              className="w-full h-10 pl-9 pr-3 bg-transparent text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none"
+              className="w-full h-10 pl-9 pr-3 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
             />
           </div>
 
           {/* Options list */}
           <div ref={listRef} className="max-h-64 overflow-y-auto py-1">
             {filtered.length === 0 ? (
-              <div className="px-3 py-6 text-center text-xs text-slate-500">
+              <div className="px-3 py-6 text-center text-xs text-muted-foreground">
                 {emptyMessage}
               </div>
             ) : (
@@ -231,9 +231,9 @@ export function Combobox({
                     onClick={() => !opt.disabled && handleSelect(opt.value)}
                     className={cn(
                       "w-full flex items-center gap-2 px-3 py-2 text-left text-sm transition-colors",
-                      isHighlighted && "bg-slate-800",
-                      isSelected && "text-indigo-300",
-                      !isSelected && !isHighlighted && "text-slate-300",
+                      isHighlighted && "bg-accent",
+                      isSelected && "text-primary",
+                      !isSelected && !isHighlighted && "text-foreground",
                       opt.disabled && "opacity-40 cursor-not-allowed"
                     )}
                   >
@@ -241,13 +241,13 @@ export function Combobox({
                     <span className="flex-1 min-w-0">
                       <span className="block truncate">{opt.label}</span>
                       {opt.description && (
-                        <span className="block text-[10px] text-slate-500 mt-0.5 truncate">
+                        <span className="block text-[10px] text-muted-foreground mt-0.5 truncate">
                           {opt.description}
                         </span>
                       )}
                     </span>
                     {isSelected && (
-                      <Check className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                      <Check className="w-3.5 h-3.5 text-primary shrink-0" />
                     )}
                   </button>
                 );

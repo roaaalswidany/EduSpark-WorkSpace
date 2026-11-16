@@ -68,7 +68,7 @@ const STATUS_BADGE: Record<ServiceStatus, string> = {
   PENDING_REVIEW: "bg-sky-500/10 text-sky-400 border-sky-500/20",
   ACTIVE: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
   PAUSED: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  ARCHIVED: "bg-slate-700/50 text-slate-400 border-slate-700",
+  ARCHIVED: "bg-accent/50 text-muted-foreground border-border",
 };
 
 const STATUS_TOAST: Record<
@@ -80,15 +80,15 @@ const STATUS_TOAST: Record<
     description: "The service is waiting for an administrator decision.",
   },
   ACTIVE: {
-    title: "Service activated ▶️",
+    title: "Service activated â–¶ï¸ڈ",
     description: "The service is now visible in the marketplace.",
   },
   PAUSED: {
-    title: "Service paused ⏸️",
+    title: "Service paused âڈ¸ï¸ڈ",
     description: "The service is now hidden from buyers.",
   },
   ARCHIVED: {
-    title: "Service archived 🗄️",
+    title: "Service archived ًں—„ï¸ڈ",
     description: "The service has been archived and is no longer active.",
   },
 };
@@ -144,7 +144,7 @@ function ServiceThumb({
   );
 }
 
-// ─── Service Details Modal ────────────────────────────────────────
+// â”€â”€â”€ Service Details Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function ServiceDetailsModal({
   service,
@@ -163,16 +163,16 @@ function ServiceDetailsModal({
         className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
       />
-      <div className="relative w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden animate-scale-in">
+      <div className="relative w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl bg-card border border-border shadow-2xl overflow-hidden animate-scale-in">
         {/* Header */}
-        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-800">
+        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border">
           <div>
             <h2 className="text-lg font-bold text-white">Review Service</h2>
-            <p className="text-xs text-slate-500 mt-0.5">Review all details before making a decision.</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Review all details before making a decision.</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+            className="p-2 rounded-lg hover:bg-accent text-muted-foreground hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -183,7 +183,7 @@ function ServiceDetailsModal({
           {/* Thumbnail + Main Info */}
           <div className="flex flex-col sm:flex-row gap-6">
             <div className="w-full sm:w-64 shrink-0">
-              <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-950 border border-slate-800">
+              <div className="relative aspect-video rounded-xl overflow-hidden bg-background border border-border">
                 <ServiceThumb id={service.id} title={service.title} thumbnail={service.thumbnail} size={256} />
               </div>
             </div>
@@ -198,12 +198,12 @@ function ServiceDetailsModal({
                   {service.status}
                 </span>
                 <h1 className="text-xl font-bold text-white">{service.title}</h1>
-                <p className="text-sm text-slate-400 mt-1">
-                  By <Link href={`/profile/${service.creator.id}`} className="text-indigo-400 hover:underline">{service.creator.name}</Link>
-                  {service.category && <> · {service.category.name}</>}
+                <p className="text-sm text-muted-foreground mt-1">
+                  By <Link href={`/profile/${service.creator.id}`} className="text-primary hover:underline">{service.creator.name}</Link>
+                  {service.category && <> آ· {service.category.name}</>}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-4 text-sm text-slate-500">
+              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {service.deliveryDays} days delivery</span>
                 <span className="flex items-center gap-1.5"><RotateCcw className="w-4 h-4" /> {service.revisions} revisions</span>
                 <span className="flex items-center gap-1.5"><ShoppingCart className="w-4 h-4" /> {service._count.orders} orders</span>
@@ -216,8 +216,8 @@ function ServiceDetailsModal({
 
           {/* Description */}
           <div>
-            <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><FileText className="w-4 h-4 text-indigo-400" /> Description</h3>
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+            <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><FileText className="w-4 h-4 text-primary" /> Description</h3>
+            <div className="p-4 rounded-xl bg-background border border-border text-sm text-foreground leading-relaxed whitespace-pre-wrap">
               {service.description}
             </div>
           </div>
@@ -225,10 +225,10 @@ function ServiceDetailsModal({
           {/* Tags */}
           {service.tags.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><Tag className="w-4 h-4 text-indigo-400" /> Tags</h3>
+              <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><Tag className="w-4 h-4 text-primary" /> Tags</h3>
               <div className="flex flex-wrap gap-2">
                 {service.tags.map((tag) => (
-                  <span key={tag} className="px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs text-slate-300">
+                  <span key={tag} className="px-2.5 py-1 rounded-full bg-accent border border-border text-xs text-foreground">
                     #{tag}
                   </span>
                 ))}
@@ -239,7 +239,7 @@ function ServiceDetailsModal({
           {/* Portfolio Links */}
           {service.portfolioLinks.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><LinkIcon className="w-4 h-4 text-indigo-400" /> Portfolio</h3>
+              <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2"><LinkIcon className="w-4 h-4 text-primary" /> Portfolio</h3>
               <div className="space-y-2">
                 {service.portfolioLinks.map((link, i) => isHttpsUrl(link) ? (
                   <a
@@ -247,7 +247,7 @@ function ServiceDetailsModal({
                     href={link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-indigo-500/40 text-sm text-slate-400 hover:text-indigo-300 transition-all"
+                    className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/40 text-sm text-muted-foreground hover:text-primary transition-all"
                   >
                     <ExternalLink className="w-4 h-4 shrink-0" />
                     <span className="truncate">{link}</span>
@@ -255,7 +255,7 @@ function ServiceDetailsModal({
                 ) : (
                   <div
                     key={i}
-                    className="flex items-center gap-2 p-3 rounded-lg bg-slate-950 border border-red-500/30 text-sm text-red-300"
+                    className="flex items-center gap-2 p-3 rounded-lg bg-background border border-destructive/30 text-sm text-destructive"
                   >
                     <span className="truncate">Unsafe link not shown: {link}</span>
                   </div>
@@ -266,10 +266,10 @@ function ServiceDetailsModal({
         </div>
 
         {/* Footer */}
-        <div className="shrink-0 px-6 py-4 border-t border-slate-800 bg-slate-950/40 flex items-center justify-end gap-3">
+        <div className="shrink-0 px-6 py-4 border-t border-border bg-background/40 flex items-center justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+            className="px-4 py-2 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
           >
             Close
           </button>
@@ -294,7 +294,7 @@ function ServiceDetailsModal({
           {service.status !== "ARCHIVED" && service.status !== "PENDING_REVIEW" && (
             <button
               onClick={onArchive}
-              className="px-4 py-2 rounded-lg text-sm font-bold text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition-all"
+              className="px-4 py-2 rounded-lg text-sm font-bold text-destructive bg-destructive/10 hover:bg-destructive/20 border border-destructive/20 transition-all"
             >
               Archive
             </button>
@@ -313,7 +313,7 @@ function ServiceDetailsModal({
   );
 }
 
-// ─── Main Table Component ─────────────────────────────────────────
+// â”€â”€â”€ Main Table Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function ServicesTable({
   services,
@@ -340,7 +340,7 @@ export function ServicesTable({
   const [reasonInput, setReasonInput] = useState("");
   const [reasonError, setReasonError] = useState<string | null>(null);
   
-  // 👇 حالة المودال الجديد
+  // ًں‘‡ ط­ط§ظ„ط© ط§ظ„ظ…ظˆط¯ط§ظ„ ط§ظ„ط¬ط¯ظٹط¯
   const [selectedService, setSelectedService] = useState<ServiceRow | null>(null);
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -393,7 +393,7 @@ export function ServicesTable({
   ) => {
     setPendingServiceId(service.id);
 
-    const toastId = toast.loading(`Updating to ${status.toLowerCase()}…`);
+    const toastId = toast.loading(`Updating to ${status.toLowerCase()}â€¦`);
 
     startTransition(async () => {
       const result = await updateServiceAction({
@@ -452,14 +452,14 @@ export function ServicesTable({
     executeChangeStatus(service, status);
   };
 
-  // Review decision (admin gate): approve → ACTIVE; reject → PAUSED with a note the creator sees.
+  // Review decision (admin gate): approve â†’ ACTIVE; reject â†’ PAUSED with a note the creator sees.
   const runReview = (
     service: ServiceRow,
     decision: "APPROVE" | "REJECT",
     note?: string
   ) => {
     setPendingServiceId(service.id);
-    const toastId = toast.loading(decision === "APPROVE" ? "Approving…" : "Sending feedback…");
+    const toastId = toast.loading(decision === "APPROVE" ? "Approvingâ€¦" : "Sending feedbackâ€¦");
 
     startTransition(async () => {
       const result = await reviewServiceAction({ serviceId: service.id, decision, note });
@@ -480,7 +480,7 @@ export function ServicesTable({
         return;
       }
 
-      toast.success(decision === "APPROVE" ? "Service approved 🚀" : "Feedback sent 📝", {
+      toast.success(decision === "APPROVE" ? "Service approved ًںڑ€" : "Feedback sent ًں“‌", {
         id: toastId,
         description:
           decision === "APPROVE"
@@ -546,27 +546,27 @@ export function ServicesTable({
       {/* Search + Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Search by title or description…"
+            placeholder="Search by title or descriptionâ€¦"
             className={cn(
               "w-full h-11 pl-10 pr-10 rounded-xl",
-              "bg-slate-900 border border-slate-800 text-slate-200",
-              "placeholder:text-slate-600",
-              "focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              "bg-card border border-border text-foreground",
+              "placeholder:text-muted-foreground/70",
+              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500"
             )}
           />
           {isPending && (
-            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 animate-spin" />
+            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary animate-spin" />
           )}
           {!isPending && searchInput && (
             <button
               type="button"
               onClick={() => handleSearchChange("")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               <X className="w-4 h-4" />
             </button>
@@ -584,8 +584,8 @@ export function ServicesTable({
                 className={cn(
                   "shrink-0 px-3.5 py-2 rounded-full text-xs font-bold border transition-all",
                   active
-                    ? "bg-indigo-500/10 text-indigo-300 border-indigo-500/30"
-                    : "bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-300"
+                    ? "bg-primary/10 text-primary border-primary/30"
+                    : "bg-card text-muted-foreground border-border hover:border-border hover:text-foreground"
                 )}
               >
                 {f.label} ({f.count})
@@ -597,49 +597,49 @@ export function ServicesTable({
 
       {/* Results count */}
       {total > 0 && (
-        <p className="text-xs text-slate-500">
-          Showing {services.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–
+        <p className="text-xs text-muted-foreground">
+          Showing {services.length > 0 ? (currentPage - 1) * 20 + 1 : 0}â€“
           {Math.min(currentPage * 20, total)} of {total}
           {totalPages > 1 && (
-            <span className="text-slate-600 ml-2">
-              · Page {currentPage} of {totalPages}
+            <span className="text-muted-foreground/70 ml-2">
+              آ· Page {currentPage} of {totalPages}
             </span>
           )}
         </p>
       )}
 
       {actionError && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-          <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-          <p className="text-sm text-red-300">{actionError}</p>
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+          <AlertCircle className="w-4 h-4 text-destructive shrink-0" />
+          <p className="text-sm text-destructive">{actionError}</p>
         </div>
       )}
 
       {services.length === 0 ? (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-5">
-            <Store className="w-7 h-7 text-slate-600" />
+        <div className="rounded-2xl bg-card border border-border p-12 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-accent border border-border flex items-center justify-center mx-auto mb-5">
+            <Store className="w-7 h-7 text-muted-foreground/70" />
           </div>
           <h2 className="text-lg font-bold text-white mb-1.5">
             No services found
           </h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-muted-foreground">
             Try adjusting your search or filters.
           </p>
         </div>
       ) : (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-visible">
-          <div className="hidden lg:grid grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+        <div className="rounded-2xl bg-card border border-border overflow-visible">
+          <div className="hidden lg:grid grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-4 px-5 py-3 border-b border-border bg-card/60 rounded-t-2xl">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Service
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Creator
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Stats
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Status
             </span>
             <span className="w-8" />
@@ -653,7 +653,7 @@ export function ServicesTable({
               return (
                 <div
                   key={s.id}
-                  className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
+                  className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-accent/40 transition-colors"
                 >
                   {/* Service */}
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
@@ -666,9 +666,9 @@ export function ServicesTable({
                       <p className="text-sm font-semibold text-white truncate">
                         {s.title}
                       </p>
-                      <p className="text-xs text-slate-500 truncate mt-0.5">
-                        {s.category?.name ?? "Uncategorized"} · $
-                        {s.price.toFixed(2)} ·{" "}
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">
+                        {s.category?.name ?? "Uncategorized"} آ· $
+                        {s.price.toFixed(2)} آ·{" "}
                         <span className="inline-flex items-center gap-0.5">
                           <Clock className="w-3 h-3" />
                           {s.deliveryDays}d
@@ -679,20 +679,20 @@ export function ServicesTable({
 
                   {/* Creator */}
                   <div className="flex lg:block">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">
+                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center">
                       Creator:
                     </span>
                     <Link
                       href={`/profile/${s.creator.id}`}
-                      className="text-xs text-slate-400 hover:text-indigo-400 transition-colors"
+                      className="text-xs text-muted-foreground hover:text-primary transition-colors"
                     >
                       {s.creator.name}
                     </Link>
                   </div>
 
                   {/* Stats */}
-                  <div className="flex lg:block gap-3 text-xs text-slate-500">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">
+                  <div className="flex lg:block gap-3 text-xs text-muted-foreground">
+                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center">
                       Stats:
                     </span>
                     <span className="inline-flex items-center gap-1">
@@ -707,7 +707,7 @@ export function ServicesTable({
 
                   {/* Status */}
                   <div className="flex lg:block">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">
+                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center">
                       Status:
                     </span>
                     <span
@@ -723,14 +723,14 @@ export function ServicesTable({
                   {/* Menu */}
                   <div className="absolute top-4 right-4 lg:static lg:justify-self-end">
                     {isPendingService ? (
-                      <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
+                      <Loader2 className="w-4 h-4 text-primary animate-spin" />
                     ) : (
                       <button
                         type="button"
                         onClick={() =>
                           setOpenMenuId(openMenuId === s.id ? null : s.id)
                         }
-                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-white transition-colors"
+                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-white transition-colors"
                         aria-label="Service actions"
                       >
                         <MoreVertical className="w-4 h-4" />
@@ -745,7 +745,7 @@ export function ServicesTable({
                         />
                         <div
                           className={cn(
-                            "absolute right-0 w-56 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl shadow-black/60 overflow-hidden z-20",
+                            "absolute right-0 w-56 rounded-xl bg-card border border-border shadow-2xl shadow-black/60 overflow-hidden z-20",
                             "animate-slide-down",
                             isLastRow
                               ? "bottom-full mb-1 origin-bottom-right"
@@ -755,8 +755,8 @@ export function ServicesTable({
 
                     {s.status === "PENDING_REVIEW" && (
                             <>
-                              <div className="px-3 py-2 border-b border-slate-800">
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Review</p>
+                              <div className="px-3 py-2 border-b border-border">
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Review</p>
                               </div>
                               <button
                                 type="button"
@@ -764,7 +764,7 @@ export function ServicesTable({
                                   setSelectedService(s);
                                   setOpenMenuId(null);
                                 }}
-                                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300 transition-colors"
+                                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-primary hover:bg-primary/10 hover:text-primary transition-colors"
                               >
                                 <Eye className="w-3.5 h-3.5" />
                                 Review Details
@@ -782,9 +782,9 @@ export function ServicesTable({
                                 onClick={() => handleRequestChanges(s)}
                                 className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors"
                               >
-                                Request changes…
+                                Request changesâ€¦
                               </button>
-                              <div className="h-px bg-slate-800" />
+                              <div className="h-px bg-accent" />
                             </>
                           )}
                           
@@ -792,14 +792,14 @@ export function ServicesTable({
                             href={`/marketplace/services/${s.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                            className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
                             View Public
                           </a>
-                          <div className="h-px bg-slate-800" />
-                          <div className="px-3 py-2 border-b border-slate-800">
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                          <div className="h-px bg-accent" />
+                          <div className="px-3 py-2 border-b border-border">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
                               Change status
                             </p>
                           </div>
@@ -807,7 +807,7 @@ export function ServicesTable({
                             type="button"
                             onClick={() => handleChangeStatus(s, "ACTIVE")}
                             disabled={s.status === "ACTIVE" || s.status === "PENDING_REVIEW"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Activate
                           </button>
@@ -815,7 +815,7 @@ export function ServicesTable({
                             type="button"
                             onClick={() => handleChangeStatus(s, "PAUSED")}
                             disabled={s.status === "PAUSED"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Pause
                           </button>
@@ -823,7 +823,7 @@ export function ServicesTable({
                             type="button"
                             onClick={() => handleChangeStatus(s, "ARCHIVED")}
                             disabled={s.status === "ARCHIVED"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Archive
                           </button>
@@ -844,9 +844,9 @@ export function ServicesTable({
           {currentPage > 1 && (
             <Link
               href={buildPageUrl(currentPage - 1)}
-              className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
             >
-              ← Previous
+              â†گ Previous
             </Link>
           )}
 
@@ -864,8 +864,8 @@ export function ServicesTable({
                   className={cn(
                     "w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors",
                     p === currentPage
-                      ? "bg-indigo-600 text-white font-bold"
-                      : "bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white"
+                      ? "bg-primary text-white font-bold"
+                      : "bg-card border border-border hover:border-border text-muted-foreground hover:text-white"
                   )}
                 >
                   {p}
@@ -874,8 +874,8 @@ export function ServicesTable({
             }
             if (p === currentPage - 2 || p === currentPage + 2) {
               return (
-                <span key={p} className="text-slate-700 text-xs">
-                  …
+                <span key={p} className="text-muted-foreground/70 text-xs">
+                  â€¦
                 </span>
               );
             }
@@ -885,9 +885,9 @@ export function ServicesTable({
           {currentPage < totalPages && (
             <Link
               href={buildPageUrl(currentPage + 1)}
-              className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
             >
-              Next →
+              Next â†’
             </Link>
           )}
         </div>
@@ -905,19 +905,19 @@ export function ServicesTable({
             }}
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-            <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-5 space-y-4 pointer-events-auto">
+            <div className="w-full max-w-md rounded-2xl bg-card border border-border shadow-2xl p-5 space-y-4 pointer-events-auto">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <XCircle className="w-5 h-5 text-red-400" />
+                  <XCircle className="w-5 h-5 text-destructive" />
                   <h3 className="text-lg font-bold text-white">
                     {archiveDialog.mode === "REJECT" ? "Request changes" : "Archive service"}
                   </h3>
                 </div>
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-muted-foreground">
                   {archiveDialog.mode === "REJECT"
                     ? "Tell the creator what must change before"
                     : "Please provide a reason for archiving"}{" "}
-                  <strong className="text-slate-200">
+                  <strong className="text-foreground">
                     &quot;{archiveDialog.serviceTitle}&quot;
                   </strong>
                   {archiveDialog.mode === "REJECT"
@@ -927,7 +927,7 @@ export function ServicesTable({
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
                   Reason (required)
                 </label>
                 <textarea
@@ -940,21 +940,21 @@ export function ServicesTable({
                   autoFocus
                   maxLength={500}
                   className={cn(
-                    "w-full bg-slate-950 border rounded-lg px-3 py-2 text-sm text-slate-200 resize-none",
+                    "w-full bg-background border rounded-lg px-3 py-2 text-sm text-foreground resize-none",
                     "focus:outline-none",
                     reasonError
-                      ? "border-red-500"
-                      : "border-slate-700 focus:border-indigo-500"
+                      ? "border-destructive"
+                      : "border-border focus:border-primary"
                   )}
                   placeholder="e.g., Service offering violates marketplace policy."
                 />
                 {reasonError && (
-                  <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                  <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" />
                     {reasonError}
                   </p>
                 )}
-                <p className="text-xs text-slate-600 mt-1.5">
+                <p className="text-xs text-muted-foreground/70 mt-1.5">
                   {reasonInput.trim().length}/500 characters (minimum 10)
                 </p>
               </div>
@@ -968,7 +968,7 @@ export function ServicesTable({
                     setReasonError(null);
                   }}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-accent hover:bg-accent text-foreground text-sm font-semibold transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -976,7 +976,7 @@ export function ServicesTable({
                   type="button"
                   onClick={handleConfirmArchive}
                   disabled={isPending || reasonInput.trim().length < 10}
-                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-destructive hover:bg-destructive text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

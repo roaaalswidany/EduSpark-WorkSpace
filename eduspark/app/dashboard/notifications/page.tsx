@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { NotificationsClient } from "./_components/notifications-client";
 
 export const metadata = {
-  title: "Notifications — EduSpark",
+  title: "Notifications â€” EduSpark",
 };
 
 const PAGE_SIZE = 20;
@@ -56,7 +56,7 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       <div className="mb-6">
-        <div className="flex items-center gap-2 text-xs font-bold text-indigo-400 mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <Bell className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Inbox</span>
         </div>
@@ -64,16 +64,16 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
           Notifications
         </h1>
         {total > 0 && (
-          <p className="text-sm text-slate-500 mt-2">
+          <p className="text-sm text-muted-foreground mt-2">
             {total} {total === 1 ? "notification" : "notifications"}
             {unreadCount > 0 && (
-              <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
                 {unreadCount} unread
               </span>
             )}
             {totalPages > 1 && (
-              <span className="text-xs text-slate-600 ml-2">
-                · Page {page} of {totalPages}
+              <span className="text-xs text-muted-foreground/70 ml-2">
+                آ· Page {page} of {totalPages}
               </span>
             )}
           </p>
@@ -81,12 +81,12 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
       </div>
 
       {notifications.length === 0 ? (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-5">
-            <Bell className="w-7 h-7 text-indigo-400" />
+        <div className="rounded-2xl bg-card border border-border p-12 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
+            <Bell className="w-7 h-7 text-primary" />
           </div>
           <h2 className="text-lg font-bold text-white mb-1.5">All caught up!</h2>
-          <p className="text-sm text-slate-500 max-w-sm mx-auto">
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto">
             You don&apos;t have any notifications yet. We&apos;ll let you know
             when something important happens.
           </p>
@@ -107,9 +107,9 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
               {page > 1 && (
                 <Link
                   href={buildPageUrl(page - 1)}
-                  className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+                  className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
                 >
-                  ← Previous
+                  â†گ Previous
                 </Link>
               )}
 
@@ -126,8 +126,8 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
                       href={buildPageUrl(p)}
                       className={
                         p === page
-                          ? "w-9 h-9 flex items-center justify-center rounded-lg bg-indigo-600 text-white text-xs font-bold"
-                          : "w-9 h-9 flex items-center justify-center rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white text-xs font-semibold transition-colors"
+                          ? "w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold"
+                          : "w-9 h-9 flex items-center justify-center rounded-lg bg-card border border-border hover:border-border text-muted-foreground hover:text-white text-xs font-semibold transition-colors"
                       }
                     >
                       {p}
@@ -136,8 +136,8 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
                 }
                 if (p === page - 2 || p === page + 2) {
                   return (
-                    <span key={p} className="text-slate-700 text-xs">
-                      …
+                    <span key={p} className="text-muted-foreground/70 text-xs">
+                      â€¦
                     </span>
                   );
                 }
@@ -147,9 +147,9 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
               {page < totalPages && (
                 <Link
                   href={buildPageUrl(page + 1)}
-                  className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+                  className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
                 >
-                  Next →
+                  Next â†’
                 </Link>
               )}
             </div>

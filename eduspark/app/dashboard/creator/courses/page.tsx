@@ -39,20 +39,20 @@ export default async function CreatorCoursesPage() {
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <GraduationCap className="w-6 h-6 text-indigo-400" />
+            <GraduationCap className="w-6 h-6 text-primary" />
             My Courses
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Manage your courses, curriculum, and certification quizzes.
           </p>
         </div>
         
-        {/* زر إنشاء كورس جديد */}
+        {/* ط²ط± ط¥ظ†ط´ط§ط، ظƒظˆط±ط³ ط¬ط¯ظٹط¯ */}
         <CreateCourseForm />
       </div>
 
       {courses.length === 0 ? (
-        <div className="text-center p-12 bg-slate-900 border border-slate-800 rounded-xl text-slate-500">
+        <div className="text-center p-12 bg-card border border-border rounded-xl text-muted-foreground">
           You haven&apos;t created any courses yet. Click "Create Course" to get started.
         </div>
       ) : (
@@ -60,7 +60,7 @@ export default async function CreatorCoursesPage() {
           {courses.map((course) => (
             <div
               key={course.id}
-              className="p-5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col gap-4"
+              className="p-5 rounded-xl bg-card border border-border flex flex-col gap-4"
             >
               <div>
                 <div className="flex items-start justify-between gap-2">
@@ -75,13 +75,13 @@ export default async function CreatorCoursesPage() {
                         ? "bg-amber-500/10 text-amber-400"
                         : course.status === "PENDING_REVIEW"
                         ? "bg-sky-500/10 text-sky-400"
-                        : "bg-slate-700/50 text-slate-400"
+                        : "bg-accent/50 text-muted-foreground"
                     }`}
                   >
                     {course.status.replace("_", " ")}
                   </span>
                 </div>
-                <div className="flex items-center gap-4 mt-3 text-xs text-slate-400 flex-wrap">
+                <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground flex-wrap">
                   <span className="flex items-center gap-1.5">
                     <Users className="w-3.5 h-3.5" />
                     {course._count.enrollments} Students
@@ -97,17 +97,17 @@ export default async function CreatorCoursesPage() {
                 </div>
               </div>
 
-              <div className="mt-auto pt-4 border-t border-slate-800 grid grid-cols-2 gap-2">
+              <div className="mt-auto pt-4 border-t border-border grid grid-cols-2 gap-2">
                 <Link
                   href={`/dashboard/creator/courses/${course.id}/edit`}
-                  className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
+                  className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold bg-primary hover:bg-primary text-white transition-colors"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                   Edit Curriculum
                 </Link>
                 <Link
                   href={`/dashboard/creator/courses/${course.id}/quiz`}
-                  className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 transition-colors"
+                  className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold bg-accent hover:bg-accent border border-border text-foreground transition-colors"
                 >
                   <Settings className="w-3.5 h-3.5" />
                   Manage Quiz

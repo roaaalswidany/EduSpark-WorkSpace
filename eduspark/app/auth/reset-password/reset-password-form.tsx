@@ -33,23 +33,23 @@ export function ResetPasswordForm({ email, token }: { email: string; token: stri
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <p className="text-xs text-slate-500">Resetting the password for {email}</p>
+      <p className="text-xs text-muted-foreground">Resetting the password for {email}</p>
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1.5">New password</label>
+        <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1.5">New password</label>
         <input id="password" type="password" required autoComplete="new-password" value={password}
           onChange={(e) => setPassword(e.target.value)} disabled={isPending} className={inputClass} />
-        <p className="text-xs text-slate-500 mt-1.5">
-          8–72 characters with an uppercase letter, a lowercase letter, a number and a symbol.
+        <p className="text-xs text-muted-foreground mt-1.5">
+          8â€“72 characters with an uppercase letter, a lowercase letter, a number and a symbol.
         </p>
       </div>
       <div>
-        <label htmlFor="confirm" className="block text-sm font-medium text-slate-300 mb-1.5">Confirm password</label>
+        <label htmlFor="confirm" className="block text-sm font-medium text-foreground mb-1.5">Confirm password</label>
         <input id="confirm" type="password" required autoComplete="new-password" value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)} disabled={isPending} className={inputClass} />
       </div>
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
       <button type="submit" disabled={isPending || !password} className={buttonClass}>
-        {isPending ? "Saving…" : "Change password"}
+        {isPending ? "Savingâ€¦" : "Change password"}
       </button>
     </form>
   );

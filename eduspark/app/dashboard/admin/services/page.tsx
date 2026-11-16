@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { ServicesTable } from "./_components/services-table";
 
 export const metadata = {
-  title: "Services — Admin — EduSpark",
+  title: "Services â€” Admin â€” EduSpark",
 };
 
 const PAGE_SIZE = 20;
@@ -93,7 +93,7 @@ export default async function AdminServicesPage({ searchParams }: PageProps) {
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
           Services
         </h1>
-        <p className="text-sm text-slate-500 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           Moderate and review all marketplace services.
         </p>
       </div>

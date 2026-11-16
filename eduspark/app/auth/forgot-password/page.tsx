@@ -32,14 +32,14 @@ export default function ForgotPasswordPage() {
             If an account exists for <b>{email}</b>, a reset link is on its way. It expires in
             1 hour.
           </p>
-          <Link href="/auth/login" className="block text-center text-sm text-indigo-400 hover:text-indigo-300">
+          <Link href="/auth/login" className="block text-center text-sm text-primary hover:text-primary">
             Back to sign in
           </Link>
         </div>
       ) : (
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1.5">
+            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">
               Email
             </label>
             <input
@@ -48,11 +48,11 @@ export default function ForgotPasswordPage() {
               placeholder="you@example.com" className={inputClass}
             />
           </div>
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="text-sm text-destructive">{error}</p>}
           <button type="submit" disabled={isPending || !email} className={buttonClass}>
-            {isPending ? "Sending…" : "Send reset link"}
+            {isPending ? "Sendingâ€¦" : "Send reset link"}
           </button>
-          <Link href="/auth/login" className="block text-center text-sm text-slate-400 hover:text-slate-200">
+          <Link href="/auth/login" className="block text-center text-sm text-muted-foreground hover:text-foreground">
             Back to sign in
           </Link>
         </form>

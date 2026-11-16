@@ -37,7 +37,7 @@ export function ServiceThumbnailUploader({
     formData.append("file", file);
     formData.append("serviceId", serviceId);
 
-    const toastId = toast.loading("Uploading thumbnail…");
+    const toastId = toast.loading("Uploading thumbnailâ€¦");
     startTransition(async () => {
       const res = await updateServiceThumbnailAction(formData);
       if (res.success) {
@@ -66,9 +66,9 @@ export function ServiceThumbnailUploader({
   };
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 flex flex-col sm:flex-row items-center gap-5 transition-all hover:border-slate-700">
+    <div className="rounded-xl border border-border bg-card/60 p-4 flex flex-col sm:flex-row items-center gap-5 transition-all hover:border-border">
       <div 
-        className="relative w-full sm:w-40 aspect-video rounded-lg overflow-hidden bg-slate-950 border border-slate-800 shrink-0 group cursor-pointer"
+        className="relative w-full sm:w-40 aspect-video rounded-lg overflow-hidden bg-background border border-border shrink-0 group cursor-pointer"
         onClick={() => !isPending && inputRef.current?.click()}
       >
         {preview ? (
@@ -86,15 +86,15 @@ export function ServiceThumbnailUploader({
             </div>
           </>
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 group-hover:text-indigo-400 transition-colors gap-1">
+          <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground group-hover:text-primary transition-colors gap-1">
             <ImageIcon className="w-5 h-5" />
             <span className="text-[9px] font-medium uppercase tracking-wider">No Image</span>
           </div>
         )}
 
         {isPending && (
-          <div className="absolute inset-0 bg-slate-950/80 flex items-center justify-center z-10">
-            <Loader2 className="w-5 h-5 text-indigo-500 animate-spin" />
+          <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-10">
+            <Loader2 className="w-5 h-5 text-primary animate-spin" />
           </div>
         )}
       </div>
@@ -105,12 +105,12 @@ export function ServiceThumbnailUploader({
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
               Service Cover Image
               {preview && (
-                <a href={preview} target="_blank" rel="noreferrer" className="text-slate-500 hover:text-indigo-400 transition-colors" title="Open in new tab">
+                <a href={preview} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary transition-colors" title="Open in new tab">
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               )}
             </h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               Recommended size: 1280x720 (16:9 aspect ratio).
             </p>
           </div>
@@ -119,7 +119,7 @@ export function ServiceThumbnailUploader({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={isPending}
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold disabled:opacity-50 transition-all"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent hover:bg-accent border border-border text-white text-xs font-semibold disabled:opacity-50 transition-all"
           >
             {isPending ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />

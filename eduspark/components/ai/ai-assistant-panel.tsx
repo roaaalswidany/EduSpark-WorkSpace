@@ -40,15 +40,15 @@ const WELCOME_MESSAGE: AiMessageData = {
   id: "welcome",
   role: "assistant",
   content:
-    "أهلاً! 👋 أنا مساعد **EduSpark** الذكي.\n\nكيف يمكنني مساعدتك؟",
+    "ط£ظ‡ظ„ط§ظ‹! ًں‘‹ ط£ظ†ط§ ظ…ط³ط§ط¹ط¯ **EduSpark** ط§ظ„ط°ظƒظٹ.\n\nظƒظٹظپ ظٹظ…ظƒظ†ظ†ظٹ ظ…ط³ط§ط¹ط¯طھظƒطں",
   createdAt: new Date().toISOString(),
 };
 
 const QUICK_PROMPTS = [
-  "📚 اقترح لي كورسات",
-  "🎓 كيف أحصل على شهادة؟",
-  "🛒 اشرح لي السوق",
-  "🎨 كيف أصبح منشئ؟",
+  "ًں“ڑ ط§ظ‚طھط±ط­ ظ„ظٹ ظƒظˆط±ط³ط§طھ",
+  "ًںژ“ ظƒظٹظپ ط£ط­طµظ„ ط¹ظ„ظ‰ ط´ظ‡ط§ط¯ط©طں",
+  "ًں›’ ط§ط´ط±ط­ ظ„ظٹ ط§ظ„ط³ظˆظ‚",
+  "ًںژ¨ ظƒظٹظپ ط£طµط¨ط­ ظ…ظ†ط´ط¦طں",
 ];
 
 export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
@@ -89,7 +89,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     });
   }, [showHistory]);
 
-  // ── Send message ─────────────────────────────────────────────
+  // â”€â”€ Send message â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -138,9 +138,9 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
         setError(
           err instanceof Error
             ? err.message === "UNAUTHORIZED"
-              ? "انتهت الجلسة. يرجى تسجيل الدخول مجدداً."
-              : "حدث خطأ. يرجى المحاولة مرة أخرى."
-            : "حدث خطأ غير متوقع."
+              ? "ط§ظ†طھظ‡طھ ط§ظ„ط¬ظ„ط³ط©. ظٹط±ط¬ظ‰ طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„ ظ…ط¬ط¯ط¯ط§ظ‹."
+              : "ط­ط¯ط« ط®ط·ط£. ظٹط±ط¬ظ‰ ط§ظ„ظ…ط­ط§ظˆظ„ط© ظ…ط±ط© ط£ط®ط±ظ‰."
+            : "ط­ط¯ط« ط®ط·ط£ ط؛ظٹط± ظ…طھظˆظ‚ط¹."
         );
         // Remove optimistic message on error
         setMessages((prev) => prev.filter((m) => m.id !== optimisticUser.id));
@@ -163,7 +163,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     }
   };
 
-  // ── New conversation ─────────────────────────────────────────
+  // â”€â”€ New conversation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const startNewChat = () => {
     setConversationId(null);
@@ -173,7 +173,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     setShowHistory(false);
   };
 
-  // ── Load conversation ────────────────────────────────────────
+  // â”€â”€ Load conversation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const loadConversation = async (id: string) => {
     setShowHistory(false);
@@ -191,13 +191,13 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
       );
       setSuggestions([]);
     } else {
-      setError("تعذر تحميل المحادثة.");
+      setError("طھط¹ط°ط± طھط­ظ…ظٹظ„ ط§ظ„ظ…ط­ط§ط¯ط«ط©.");
     }
 
     setIsLoading(false);
   };
 
-  // ── Delete conversation ──────────────────────────────────────
+  // â”€â”€ Delete conversation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const deleteConversation = async (
     e: React.MouseEvent,
@@ -211,42 +211,42 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
     }
   };
 
-  // ── Handle suggestion click ──────────────────────────────────
+  // â”€â”€ Handle suggestion click â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const handleSuggestion = (s: Suggestion) => {
     if (s.href.startsWith("#")) {
       // Internal shortcut
-      if (s.href === "#recommend") void sendMessage("اقترح لي كورسات");
+      if (s.href === "#recommend") void sendMessage("ط§ظ‚طھط±ط­ ظ„ظٹ ظƒظˆط±ط³ط§طھ");
       else if (s.href === "#certified")
-        void sendMessage("كيف أحصل على شهادة؟");
+        void sendMessage("ظƒظٹظپ ط£ط­طµظ„ ط¹ظ„ظ‰ ط´ظ‡ط§ط¯ط©طں");
       return;
     }
     router.push(s.href);
     onClose();
   };
 
-  // ── Render ───────────────────────────────────────────────────
+  // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   return (
     <div
       className={cn(
         "fixed bottom-6 right-6 z-50",
         "w-95 max-w-[calc(100vw-3rem)] h-150 max-h-[calc(100vh-6rem)]",
-        "rounded-2xl bg-slate-900 border border-slate-800",
+        "rounded-2xl bg-card border border-border",
         "shadow-2xl shadow-black/60",
         "flex flex-col overflow-hidden",
         "animate-bounce-in"
       )}
     >
       {/* Header */}
-      <div className="shrink-0 flex items-center gap-3 px-4 h-14 border-b border-slate-800 bg-slate-900/80">
+      <div className="shrink-0 flex items-center gap-3 px-4 h-14 border-b border-border bg-card/80">
         <div className="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
           <Sparkles className="w-4 h-4 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-white">مساعد EduSpark</p>
-          <p className="text-[10px] text-slate-500">
-            {showHistory ? "المحادثات السابقة" : "مدعوم بالذكاء الاصطناعي"}
+          <p className="text-sm font-bold text-white">ظ…ط³ط§ط¹ط¯ EduSpark</p>
+          <p className="text-[10px] text-muted-foreground">
+            {showHistory ? "ط§ظ„ظ…ط­ط§ط¯ط«ط§طھ ط§ظ„ط³ط§ط¨ظ‚ط©" : "ظ…ط¯ط¹ظˆظ… ط¨ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ"}
           </p>
         </div>
 
@@ -254,7 +254,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
           type="button"
           onClick={() => setShowHistory((v) => !v)}
           title="History"
-          className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
         >
           <MessageSquare className="w-4 h-4" />
         </button>
@@ -263,7 +263,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
           type="button"
           onClick={startNewChat}
           title="New chat"
-          className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
         >
           <Plus className="w-4 h-4" />
         </button>
@@ -272,7 +272,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
           type="button"
           onClick={onClose}
           title="Close"
-          className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
@@ -283,9 +283,9 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
         <div className="flex-1 overflow-y-auto p-3 space-y-1.5 animate-fade-in">
           {conversations.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center px-6">
-              <MessageSquare className="w-10 h-10 text-slate-700 mb-3" />
-              <p className="text-sm text-slate-500">
-                لا توجد محادثات سابقة
+              <MessageSquare className="w-10 h-10 text-muted-foreground/70 mb-3" />
+              <p className="text-sm text-muted-foreground">
+                ظ„ط§ طھظˆط¬ط¯ ظ…ط­ط§ط¯ط«ط§طھ ط³ط§ط¨ظ‚ط©
               </p>
             </div>
           ) : (
@@ -295,19 +295,19 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                 onClick={() => void loadConversation(c.id)}
                 className={cn(
                   "group w-full flex items-center gap-2 p-3 rounded-lg",
-                  "hover:bg-slate-800 transition-colors cursor-pointer",
+                  "hover:bg-accent transition-colors cursor-pointer",
                   "animate-slide-up",
                   i < 6 && `stagger-${i + 1}`,
-                  conversationId === c.id && "bg-slate-800"
+                  conversationId === c.id && "bg-accent"
                 )}
               >
-                <MessageSquare className="w-4 h-4 text-slate-500 shrink-0" />
+                <MessageSquare className="w-4 h-4 text-muted-foreground shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-slate-200 truncate">
+                  <p className="text-xs font-medium text-foreground truncate">
                     {c.title}
                   </p>
-                  <p className="text-[10px] text-slate-600 mt-0.5">
-                    {c.messageCount} رسالة
+                  <p className="text-[10px] text-muted-foreground/70 mt-0.5">
+                    {c.messageCount} ط±ط³ط§ظ„ط©
                   </p>
                 </div>
                 <button
@@ -316,7 +316,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                     e.stopPropagation();
                     void deleteConversation(e, c.id);
                   }}
-                  className="opacity-0 group-hover:opacity-100 flex items-center justify-center w-6 h-6 rounded hover:bg-red-500/10 text-slate-600 hover:text-red-400 transition-all"
+                  className="opacity-0 group-hover:opacity-100 flex items-center justify-center w-6 h-6 rounded hover:bg-destructive/10 text-muted-foreground/70 hover:text-destructive transition-all"
                 >
                   <Trash2 className="w-3 h-3" />
                 </button>
@@ -345,7 +345,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                 <div className="w-7 h-7 rounded-full bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0">
                   <Sparkles className="w-3.5 h-3.5 text-white" />
                 </div>
-                <div className="rounded-2xl rounded-tl-sm bg-slate-800/60 border border-slate-700/50 px-4 py-3">
+                <div className="rounded-2xl rounded-tl-sm bg-accent/60 border border-border/50 px-4 py-3">
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
                     <span
@@ -362,9 +362,9 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
             )}
 
             {error && (
-              <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20 animate-slide-down">
-                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                <p className="text-xs text-red-300">{error}</p>
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20 animate-slide-down">
+                <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+                <p className="text-xs text-destructive">{error}</p>
               </div>
             )}
 
@@ -378,8 +378,8 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                     onClick={() => handleSuggestion(s)}
                     className={cn(
                       "px-3 py-1.5 rounded-full text-xs font-medium",
-                      "bg-indigo-500/10 text-indigo-300 border border-indigo-500/20",
-                      "hover:bg-indigo-500/20 hover:text-indigo-200",
+                      "bg-primary/10 text-primary border border-primary/20",
+                      "hover:bg-primary/20 hover:text-indigo-200",
                       "transition-colors",
                       "animate-slide-up",
                       i < 4 && `stagger-${i + 1}`
@@ -394,8 +394,8 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
             {/* Quick prompts */}
             {messages.length === 1 && !isLoading && (
               <div className="space-y-2 pt-2 animate-fade-in">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
-                  أسئلة شائعة
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
+                  ط£ط³ط¦ظ„ط© ط´ط§ط¦ط¹ط©
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {QUICK_PROMPTS.map((q, i) => (
@@ -405,8 +405,8 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                       onClick={() => void sendMessage(q)}
                       className={cn(
                         "px-3 py-1.5 rounded-full text-xs",
-                        "bg-slate-800 text-slate-300 border border-slate-700",
-                        "hover:bg-slate-700 hover:text-white",
+                        "bg-accent text-foreground border border-border",
+                        "hover:bg-accent hover:text-white",
                         "transition-colors",
                         "animate-slide-up",
                         i < 4 && `stagger-${i + 1}`
@@ -423,7 +423,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
           {/* Input */}
           <form
             onSubmit={handleSubmit}
-            className="shrink-0 p-3 border-t border-slate-800 bg-slate-900/60"
+            className="shrink-0 p-3 border-t border-border bg-card/60"
           >
             <div className="flex items-end gap-2">
               <textarea
@@ -431,15 +431,15 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="اكتب سؤالك…"
+                placeholder="ط§ظƒطھط¨ ط³ط¤ط§ظ„ظƒâ€¦"
                 rows={1}
                 maxLength={2000}
                 disabled={isLoading}
                 className={cn(
                   "flex-1 px-3 py-2.5 rounded-xl text-sm",
-                  "bg-slate-950 border border-slate-700 text-slate-200",
-                  "placeholder:text-slate-600 resize-none",
-                  "focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500",
+                  "bg-background border border-border text-foreground",
+                  "placeholder:text-muted-foreground/70 resize-none",
+                  "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
                   "disabled:opacity-50",
                   "max-h-32 overflow-y-auto"
                 )}
@@ -457,8 +457,8 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                   "shrink-0 flex items-center justify-center w-10 h-10 rounded-xl",
                   "transition-all duration-150 active:scale-95",
                   input.trim() && !isLoading
-                    ? "bg-indigo-600 hover:bg-indigo-500 text-white"
-                    : "bg-slate-800 text-slate-600 cursor-not-allowed"
+                    ? "bg-primary hover:bg-primary text-white"
+                    : "bg-accent text-muted-foreground/70 cursor-not-allowed"
                 )}
               >
                 {isLoading ? (

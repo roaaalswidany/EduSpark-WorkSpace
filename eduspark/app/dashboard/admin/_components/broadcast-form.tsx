@@ -18,7 +18,7 @@ export function BroadcastForm() {
       const result = await broadcastNotificationAction({ title, body });
       
       if (result.success) {
-        toast.success(`Notification sent to ${result.count} users! 🎉`);
+        toast.success(`Notification sent to ${result.count} users! ًںژ‰`);
         setTitle("");
         setBody("");
       } else {
@@ -35,7 +35,7 @@ export function BroadcastForm() {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         disabled={isPending}
-        className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:border-indigo-500 outline-none"
+        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-white focus:border-primary outline-none"
       />
       <textarea
         placeholder="Message body..."
@@ -43,12 +43,12 @@ export function BroadcastForm() {
         onChange={(e) => setBody(e.target.value)}
         disabled={isPending}
         rows={3}
-        className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:border-indigo-500 outline-none resize-none"
+        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-white focus:border-primary outline-none resize-none"
       />
       <button
         type="submit"
         disabled={isPending || !title || !body}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold disabled:opacity-50 transition-colors"
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary text-white text-sm font-bold disabled:opacity-50 transition-colors"
       >
         {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
         {isPending ? "Sending..." : "Send to All Users"}

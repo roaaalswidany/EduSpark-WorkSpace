@@ -24,7 +24,7 @@ export interface OrderCardData {
     id: string;
     name: string;
     headline: string | null;
-    // 👇 تم حذف image من هنا
+    // ًں‘‡ طھظ… ط­ط°ظپ image ظ…ظ† ظ‡ظ†ط§
   };
   service: {
     title: string;
@@ -43,15 +43,15 @@ const STATUS_CONFIG: Record<
 > = {
   PENDING: {
     label: "Awaiting Start",
-    className: "bg-slate-700/50 text-slate-400 border-slate-700",
+    className: "bg-accent/50 text-muted-foreground border-border",
   },
   OPEN: {
     label: "Open",
-    className: "bg-slate-700/50 text-slate-400 border-slate-700",
+    className: "bg-accent/50 text-muted-foreground border-border",
   },
   IN_PROGRESS: {
     label: "In Progress",
-    className: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+    className: "bg-primary/10 text-primary border-primary/20",
   },
   REVIEW_REQUESTED: {
     label: "Under Review",
@@ -63,7 +63,7 @@ const STATUS_CONFIG: Record<
   },
   CANCELLED: {
     label: "Cancelled",
-    className: "bg-red-500/10 text-red-400 border-red-500/20",
+    className: "bg-destructive/10 text-destructive border-destructive/20",
   },
   DISPUTED: {
     label: "Disputed",
@@ -84,7 +84,7 @@ function getGradient(id: string): string {
   return GRADIENTS[code % GRADIENTS.length];
 }
 
-// 👇 تم تنظيف المكون ليتجاهل الصور
+// ًں‘‡ طھظ… طھظ†ط¸ظٹظپ ط§ظ„ظ…ظƒظˆظ† ظ„ظٹطھط¬ط§ظ‡ظ„ ط§ظ„طµظˆط±
 function CounterpartAvatar({
   name,
   size = 40,
@@ -147,7 +147,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
       : 0;
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden hover:border-slate-700 transition-all group">
+    <div className="rounded-2xl bg-card border border-border overflow-hidden hover:border-border transition-all group">
       {/* Top row: image + main info */}
       <div className="flex flex-col sm:flex-row gap-4 p-4 sm:p-5">
         {/* Thumbnail */}
@@ -178,7 +178,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3 mb-2">
             <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-1">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mb-1">
                 {isBuyer ? "Order" : "Incoming Order"}
               </p>
               <h3 className="text-sm font-bold text-white line-clamp-1">
@@ -198,14 +198,14 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
 
           {/* Counterpart */}
           <div className="flex items-center gap-2 mb-3">
-            {/* 👇 تم إزالة تمرير الصورة هنا */}
+            {/* ًں‘‡ طھظ… ط¥ط²ط§ظ„ط© طھظ…ط±ظٹط± ط§ظ„طµظˆط±ط© ظ‡ظ†ط§ */}
             <CounterpartAvatar
               name={order.counterpart.name}
               size={28}
             />
             <div className="min-w-0">
-              <p className="text-xs text-slate-400 truncate">
-                <span className="text-slate-600">
+              <p className="text-xs text-muted-foreground truncate">
+                <span className="text-muted-foreground/70">
                   {isBuyer ? "Creator: " : "Client: "}
                 </span>
                 {order.counterpart.name}
@@ -214,11 +214,11 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
           </div>
 
           {/* Meta */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-slate-500">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground">
             {order.budget !== null && (
               <span className="flex items-center gap-1">
                 <DollarSign className="w-3 h-3" />
-                <span className="text-slate-300 font-semibold tabular-nums">
+                <span className="text-foreground font-semibold tabular-nums">
                   ${order.budget.toFixed(2)}
                 </span>
               </span>
@@ -233,7 +233,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
               </span>
             )}
             <span className="flex items-center gap-1">
-              <span className="text-slate-600">Updated</span>
+              <span className="text-muted-foreground/70">Updated</span>
               {formatRelative(order.updatedAt)}
             </span>
           </div>
@@ -243,7 +243,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
       {/* Progress bar */}
       {order.milestoneStats.total > 0 && (
         <div className="px-4 sm:px-5 pb-3">
-          <div className="flex items-center justify-between text-[10px] font-semibold text-slate-600 mb-1.5">
+          <div className="flex items-center justify-between text-[10px] font-semibold text-muted-foreground/70 mb-1.5">
             <span>
               {order.milestoneStats.completed} of {order.milestoneStats.total}{" "}
               milestones
@@ -251,13 +251,13 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
             <span
               className={cn(
                 "tabular-nums",
-                progress === 100 ? "text-emerald-400" : "text-indigo-400"
+                progress === 100 ? "text-emerald-400" : "text-primary"
               )}
             >
               {progress}%
             </span>
           </div>
-          <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-1.5 bg-accent rounded-full overflow-hidden">
             <div
               className={cn(
                 "h-full rounded-full transition-all duration-500",
@@ -272,12 +272,12 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-2 px-4 sm:px-5 py-3 border-t border-slate-800 bg-slate-950/40">
+      <div className="flex items-center gap-2 px-4 sm:px-5 py-3 border-t border-border bg-background/40">
         <Link
           href={`/dashboard/projects/${order.id}`}
           className={cn(
             "flex-1 flex items-center justify-center gap-1.5 h-9 rounded-lg text-xs font-bold transition-all",
-            "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/10 active:scale-95"
+            "bg-primary hover:bg-primary text-white shadow-lg shadow-indigo-500/10 active:scale-95"
           )}
         >
           <ArrowRight className="w-3.5 h-3.5" />
@@ -288,7 +288,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
             href={`/dashboard/chat/${order.chatRoomId}`}
             className={cn(
               "flex items-center justify-center gap-1.5 px-3.5 h-9 rounded-lg text-xs font-bold transition-all",
-              "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 active:scale-95"
+              "bg-accent hover:bg-accent text-foreground border border-border active:scale-95"
             )}
           >
             <MessageSquare className="w-3.5 h-3.5" />

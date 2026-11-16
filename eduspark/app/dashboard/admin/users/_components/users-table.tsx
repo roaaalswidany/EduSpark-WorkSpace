@@ -50,15 +50,15 @@ interface UsersTableProps {
 }
 
 const ROLE_BADGE: Record<Role, string> = {
-  ADMIN: "bg-violet-500/10 text-violet-400 border-violet-500/20",
+  ADMIN: "bg-info/10 text-info border-info/20",
   CREATOR: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  STUDENT: "bg-slate-700/50 text-slate-400 border-slate-700",
+  STUDENT: "bg-accent/50 text-muted-foreground border-border",
 };
 
 const ROLE_LABEL: Record<Role, string> = {
-  ADMIN: "Admin 👑",
-  CREATOR: "Creator ✨",
-  STUDENT: "Student 🎓",
+  ADMIN: "Admin ًں‘‘",
+  CREATOR: "Creator âœ¨",
+  STUDENT: "Student ًںژ“",
 };
 
 const ROLE_FILTERS: { value: string; label: string; count: number }[] = [
@@ -169,13 +169,13 @@ export function UsersTable({
     updateURL({ role });
   };
 
-  // Low-level executor — runs the actual action and shows toasts.
+  // Low-level executor â€” runs the actual action and shows toasts.
   const executeToggle = (user: UserRow, reason?: string) => {
     setPendingUserId(user.id);
 
     const isSuspending = user.isActive;
     const toastId = toast.loading(
-      isSuspending ? "Suspending account…" : "Activating account…"
+      isSuspending ? "Suspending accountâ€¦" : "Activating accountâ€¦"
     );
 
     startTransition(async () => {
@@ -217,24 +217,24 @@ export function UsersTable({
     });
   };
 
-  // User-facing handler — opens the reason dialog when suspending.
+  // User-facing handler â€” opens the reason dialog when suspending.
   const handleToggleActive = (user: UserRow) => {
     setOpenMenuId(null);
     setActionError(null);
 
-    // Reactivation — no reason needed, execute immediately.
+    // Reactivation â€” no reason needed, execute immediately.
     if (!user.isActive) {
       executeToggle(user, undefined);
       return;
     }
 
-    // Suspension — require a reason first.
+    // Suspension â€” require a reason first.
     setSuspendDialog({ userId: user.id, userName: user.name });
     setReasonInput("");
     setReasonError(null);
   };
 
-  // Dialog submit — validates the reason, then executes.
+  // Dialog submit â€” validates the reason, then executes.
   const handleConfirmSuspend = () => {
     if (!suspendDialog) return;
 
@@ -260,7 +260,7 @@ export function UsersTable({
     setActionError(null);
     setPendingUserId(user.id);
 
-    const toastId = toast.loading(`Updating role to ${role}…`);
+    const toastId = toast.loading(`Updating role to ${role}â€¦`);
 
     startTransition(async () => {
       const result = await updateUserAction({
@@ -312,27 +312,27 @@ export function UsersTable({
       {/* Search + Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Search by name or email…"
+            placeholder="Search by name or emailâ€¦"
             className={cn(
               "w-full h-11 pl-10 pr-10 rounded-xl",
-              "bg-slate-900 border border-slate-800 text-slate-200",
-              "placeholder:text-slate-600",
-              "focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              "bg-card border border-border text-foreground",
+              "placeholder:text-muted-foreground/70",
+              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500"
             )}
           />
           {isPending && (
-            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 animate-spin" />
+            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary animate-spin" />
           )}
           {!isPending && searchInput && (
             <button
               type="button"
               onClick={() => handleSearchChange("")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               <X className="w-4 h-4" />
             </button>
@@ -350,8 +350,8 @@ export function UsersTable({
                 className={cn(
                   "shrink-0 px-3.5 py-2 rounded-full text-xs font-bold border transition-all",
                   active
-                    ? "bg-indigo-500/10 text-indigo-300 border-indigo-500/30"
-                    : "bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-300"
+                    ? "bg-primary/10 text-primary border-primary/30"
+                    : "bg-card text-muted-foreground border-border hover:border-border hover:text-foreground"
                 )}
               >
                 {f.label} ({f.count})
@@ -363,12 +363,12 @@ export function UsersTable({
 
       {/* Results count */}
       {total > 0 && (
-        <p className="text-xs text-slate-500">
-          Showing {users.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–
+        <p className="text-xs text-muted-foreground">
+          Showing {users.length > 0 ? (currentPage - 1) * 20 + 1 : 0}â€“
           {Math.min(currentPage * 20, total)} of {total}
           {totalPages > 1 && (
-            <span className="text-slate-600 ml-2">
-              · Page {currentPage} of {totalPages}
+            <span className="text-muted-foreground/70 ml-2">
+              آ· Page {currentPage} of {totalPages}
             </span>
           )}
         </p>
@@ -376,37 +376,37 @@ export function UsersTable({
 
       {/* Action Error */}
       {actionError && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-          <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-          <p className="text-sm text-red-300">{actionError}</p>
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+          <AlertCircle className="w-4 h-4 text-destructive shrink-0" />
+          <p className="text-sm text-destructive">{actionError}</p>
         </div>
       )}
 
       {/* Table */}
       {users.length === 0 ? (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 p-12 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-5">
-            <Search className="w-7 h-7 text-slate-600" />
+        <div className="rounded-2xl bg-card border border-border p-12 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-accent border border-border flex items-center justify-center mx-auto mb-5">
+            <Search className="w-7 h-7 text-muted-foreground/70" />
           </div>
           <h2 className="text-lg font-bold text-white mb-1.5">No users found</h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-muted-foreground">
             Try adjusting your search or filters.
           </p>
         </div>
       ) : (
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-visible">
+        <div className="rounded-2xl bg-card border border-border overflow-visible">
           {/* Desktop header */}
-          <div className="hidden lg:grid grid-cols-[1.5fr_0.8fr_1.7fr_0.6fr_auto] gap-4 px-5 py-3 border-b border-slate-800 bg-slate-900/60 rounded-t-2xl">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+          <div className="hidden lg:grid grid-cols-[1.5fr_0.8fr_1.7fr_0.6fr_auto] gap-4 px-5 py-3 border-b border-border bg-card/60 rounded-t-2xl">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               User
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Role
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Activity
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Status
             </span>
             <span className="w-8" />
@@ -421,7 +421,7 @@ export function UsersTable({
               return (
                 <div
                   key={u.id}
-                  className="relative grid grid-cols-1 lg:grid-cols-[1.5fr_0.8fr_1.7fr_0.6fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-slate-800/40 transition-colors"
+                  className="relative grid grid-cols-1 lg:grid-cols-[1.5fr_0.8fr_1.7fr_0.6fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-accent/40 transition-colors"
                 >
                   {/* User */}
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
@@ -430,12 +430,12 @@ export function UsersTable({
                       <p className="text-sm font-semibold text-white truncate flex items-center gap-2">
                         {u.name}
                         {isSelf && (
-                          <span className="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
                             YOU
                           </span>
                         )}
                       </p>
-                      <p className="text-xs text-slate-500 truncate">
+                      <p className="text-xs text-muted-foreground truncate">
                         {u.email}
                       </p>
                     </div>
@@ -443,7 +443,7 @@ export function UsersTable({
 
                   {/* Role */}
                   <div className="flex lg:block min-w-0">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center">
+                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center">
                       Role:
                     </span>
                     <span
@@ -458,20 +458,20 @@ export function UsersTable({
                   </div>
 
                   {/* Activity */}
-                  <div className="flex lg:block gap-3 text-xs text-slate-500 min-w-0">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center shrink-0">
+                  <div className="flex lg:block gap-3 text-xs text-muted-foreground min-w-0">
+                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center shrink-0">
                       Activity:
                     </span>
                     <span className="truncate">
-                      {u._count.enrollments} courses ·{" "}
-                      {u._count.certificates} certificates ·{" "}
+                      {u._count.enrollments} courses آ·{" "}
+                      {u._count.certificates} certificates آ·{" "}
                       {u._count.services} services
                     </span>
                   </div>
 
                   {/* Status */}
                   <div className="flex lg:block min-w-0">
-                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-slate-600 mr-2 self-center shrink-0">
+                    <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center shrink-0">
                       Status:
                     </span>
                     {u.isActive ? (
@@ -480,7 +480,7 @@ export function UsersTable({
                         Active
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-xs text-red-400 font-semibold whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1 text-xs text-destructive font-semibold whitespace-nowrap">
                         <XCircle className="w-3.5 h-3.5" />
                         Suspended
                       </span>
@@ -490,7 +490,7 @@ export function UsersTable({
                   {/* Menu */}
                   <div className="absolute top-4 right-4 lg:static lg:justify-self-end">
                     {isPendingUser ? (
-                      <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
+                      <Loader2 className="w-4 h-4 text-primary animate-spin" />
                     ) : (
                       <button
                         type="button"
@@ -498,7 +498,7 @@ export function UsersTable({
                           setOpenMenuId(openMenuId === u.id ? null : u.id)
                         }
                         disabled={isSelf}
-                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="User actions"
                       >
                         <MoreVertical className="w-4 h-4" />
@@ -513,15 +513,15 @@ export function UsersTable({
                         />
                         <div
                           className={cn(
-                            "absolute right-0 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl shadow-black/60 overflow-hidden z-20",
+                            "absolute right-0 w-52 rounded-xl bg-card border border-border shadow-2xl shadow-black/60 overflow-hidden z-20",
                             "animate-slide-down",
                             isLastRow
                               ? "bottom-full mb-1 origin-bottom-right"
                               : "top-full mt-1 origin-top-right"
                           )}
                         >
-                          <div className="px-3 py-2 border-b border-slate-800">
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                          <div className="px-3 py-2 border-b border-border">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
                               Change role
                             </p>
                           </div>
@@ -529,7 +529,7 @@ export function UsersTable({
                             type="button"
                             onClick={() => handleChangeRole(u, "STUDENT")}
                             disabled={u.role === "STUDENT"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Make Student
                           </button>
@@ -537,7 +537,7 @@ export function UsersTable({
                             type="button"
                             onClick={() => handleChangeRole(u, "CREATOR")}
                             disabled={u.role === "CREATOR"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Make Creator
                           </button>
@@ -545,18 +545,18 @@ export function UsersTable({
                             type="button"
                             onClick={() => handleChangeRole(u, "ADMIN")}
                             disabled={u.role === "ADMIN"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             Make Admin
                           </button>
-                          <div className="h-px bg-slate-800" />
+                          <div className="h-px bg-accent" />
                           <button
                             type="button"
                             onClick={() => handleToggleActive(u)}
                             className={cn(
                               "w-full text-left px-3.5 py-2 text-xs transition-colors",
                               u.isActive
-                                ? "text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                                ? "text-destructive hover:bg-destructive/10 hover:text-destructive"
                                 : "text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300"
                             )}
                           >
@@ -579,9 +579,9 @@ export function UsersTable({
           {currentPage > 1 && (
             <Link
               href={buildPageUrl(currentPage - 1)}
-              className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
             >
-              ← Previous
+              â†گ Previous
             </Link>
           )}
 
@@ -599,8 +599,8 @@ export function UsersTable({
                   className={cn(
                     "w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors",
                     p === currentPage
-                      ? "bg-indigo-600 text-white font-bold"
-                      : "bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white"
+                      ? "bg-primary text-white font-bold"
+                      : "bg-card border border-border hover:border-border text-muted-foreground hover:text-white"
                   )}
                 >
                   {p}
@@ -609,8 +609,8 @@ export function UsersTable({
             }
             if (p === currentPage - 2 || p === currentPage + 2) {
               return (
-                <span key={p} className="text-slate-700 text-xs">
-                  …
+                <span key={p} className="text-muted-foreground/70 text-xs">
+                  â€¦
                 </span>
               );
             }
@@ -620,9 +620,9 @@ export function UsersTable({
           {currentPage < totalPages && (
             <Link
               href={buildPageUrl(currentPage + 1)}
-              className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
             >
-              Next →
+              Next â†’
             </Link>
           )}
         </div>
@@ -639,17 +639,17 @@ export function UsersTable({
             }}
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-            <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-5 space-y-4 pointer-events-auto">
+            <div className="w-full max-w-md rounded-2xl bg-card border border-border shadow-2xl p-5 space-y-4 pointer-events-auto">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <XCircle className="w-5 h-5 text-red-400" />
+                  <XCircle className="w-5 h-5 text-destructive" />
                   <h3 className="text-lg font-bold text-white">
                     Suspend account
                   </h3>
                 </div>
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-muted-foreground">
                   Please provide a reason for suspending{" "}
-                  <strong className="text-slate-200">
+                  <strong className="text-foreground">
                     {suspendDialog.userName}
                   </strong>
                   . This reason will be sent to the user by email.
@@ -657,7 +657,7 @@ export function UsersTable({
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
                   Reason (required)
                 </label>
                 <textarea
@@ -670,21 +670,21 @@ export function UsersTable({
                   autoFocus
                   maxLength={500}
                   className={cn(
-                    "w-full bg-slate-950 border rounded-lg px-3 py-2 text-sm text-slate-200 resize-none",
+                    "w-full bg-background border rounded-lg px-3 py-2 text-sm text-foreground resize-none",
                     "focus:outline-none",
                     reasonError
-                      ? "border-red-500"
-                      : "border-slate-700 focus:border-indigo-500"
+                      ? "border-destructive"
+                      : "border-border focus:border-primary"
                   )}
                   placeholder="e.g., Violation of platform terms of service."
                 />
                 {reasonError && (
-                  <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                  <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" />
                     {reasonError}
                   </p>
                 )}
-                <p className="text-xs text-slate-600 mt-1.5">
+                <p className="text-xs text-muted-foreground/70 mt-1.5">
                   {reasonInput.trim().length}/500 characters (minimum 10)
                 </p>
               </div>
@@ -698,7 +698,7 @@ export function UsersTable({
                     setReasonError(null);
                   }}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-accent hover:bg-accent text-foreground text-sm font-semibold transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -706,7 +706,7 @@ export function UsersTable({
                   type="button"
                   onClick={handleConfirmSuspend}
                   disabled={isPending || reasonInput.trim().length < 10}
-                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-destructive hover:bg-destructive text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

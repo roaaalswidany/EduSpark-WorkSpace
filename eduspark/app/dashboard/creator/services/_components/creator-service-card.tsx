@@ -69,7 +69,7 @@ const STATUS_CONFIG: Record<
   ARCHIVED: {
     label: "Archived",
     dot: "bg-slate-500",
-    badge: "bg-slate-700/40 text-slate-400 border-slate-700",
+    badge: "bg-accent/40 text-muted-foreground border-border",
   },
 };
 
@@ -106,15 +106,15 @@ function DeleteDialog({
         className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
         onClick={isPending ? undefined : onCancel}
       />
-      <div className="relative w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden animate-scale-in">
-        <div className="px-6 py-5 border-b border-slate-800">
+      <div className="relative w-full max-w-md rounded-2xl bg-card border border-border shadow-2xl overflow-hidden animate-scale-in">
+        <div className="px-6 py-5 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
-              <Trash2 className="w-4 h-4 text-red-400" />
+            <div className="w-10 h-10 rounded-xl bg-destructive/10 border border-destructive/20 flex items-center justify-center shrink-0">
+              <Trash2 className="w-4 h-4 text-destructive" />
             </div>
             <div>
               <h2 className="text-base font-bold text-white">Delete Service</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 This action cannot be undone.
               </p>
             </div>
@@ -122,26 +122,26 @@ function DeleteDialog({
         </div>
 
         <div className="p-6 space-y-4">
-          <p className="text-sm text-slate-400 leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             Are you sure you want to delete{" "}
             <span className="font-semibold text-white">{serviceTitle}</span>?
             This will permanently remove it from the marketplace.
           </p>
 
           {error && (
-            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-              <p className="text-xs text-red-300">{error}</p>
+            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+              <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+              <p className="text-xs text-destructive">{error}</p>
             </div>
           )}
         </div>
 
-        <div className="px-6 py-4 border-t border-slate-800 flex items-center justify-end gap-2 bg-slate-950/40">
+        <div className="px-6 py-4 border-t border-border flex items-center justify-end gap-2 bg-background/40">
           <button
             type="button"
             onClick={onCancel}
             disabled={isPending}
-            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all disabled:opacity-50"
+            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent transition-all disabled:opacity-50"
           >
             Cancel
           </button>
@@ -149,12 +149,12 @@ function DeleteDialog({
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-red-600 hover:bg-red-500 text-white active:scale-95 transition-all disabled:opacity-50 shadow-lg shadow-red-500/20"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-destructive hover:bg-destructive text-white active:scale-95 transition-all disabled:opacity-50 shadow-lg shadow-red-500/20"
           >
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Deleting…
+                Deletingâ€¦
               </>
             ) : (
               <>
@@ -200,10 +200,10 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
     const previous = status;
     setStatus(newStatus);
 
-    let loadingMessage = "Updating status…";
-    if (newStatus === "PAUSED") loadingMessage = "Pausing service…";
-    if (newStatus === "ACTIVE") loadingMessage = "Activating service…";
-    if (newStatus === "PENDING_REVIEW") loadingMessage = "Submitting for review…";
+    let loadingMessage = "Updating statusâ€¦";
+    if (newStatus === "PAUSED") loadingMessage = "Pausing serviceâ€¦";
+    if (newStatus === "ACTIVE") loadingMessage = "Activating serviceâ€¦";
+    if (newStatus === "PENDING_REVIEW") loadingMessage = "Submitting for reviewâ€¦";
 
     const toastId = toast.loading(loadingMessage);
 
@@ -240,7 +240,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
 
   const handleDelete = useCallback(() => {
     setDeleteError(null);
-    const toastId = toast.loading("Deleting service…");
+    const toastId = toast.loading("Deleting serviceâ€¦");
 
     startDeleteTransition(async () => {
       const result = await deleteServiceAction({ serviceId: service.id });
@@ -274,7 +274,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
 
   return (
     <>
-      <div className="group rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden flex flex-col hover:border-slate-700 transition-all">
+      <div className="group rounded-2xl bg-card border border-border overflow-hidden flex flex-col hover:border-border transition-all">
         <div
           className={cn(
             "relative aspect-video bg-linear-to-br overflow-hidden",
@@ -328,10 +328,10 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 top-full mt-1.5 w-44 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl shadow-black/60 overflow-hidden z-20 animate-slide-down origin-top-right">
+              <div className="absolute right-0 top-full mt-1.5 w-44 rounded-xl bg-card border border-border shadow-2xl shadow-black/60 overflow-hidden z-20 animate-slide-down origin-top-right">
                 <Link
                   href={`/marketplace/services/${service.slug}`}
-                  className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                  className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   <Eye className="w-3.5 h-3.5" />
@@ -339,7 +339,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
                 </Link>
                 <Link
                   href={`/dashboard/creator/services/${service.id}/edit`}
-                  className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                  className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   <Pencil className="w-3.5 h-3.5" />
@@ -350,7 +350,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
                   <button
                     type="button"
                     onClick={() => handleStatusChange("PAUSED")}
-                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-white transition-colors text-left"
                   >
                     <Pause className="w-3.5 h-3.5" /> Pause Service
                   </button>
@@ -376,14 +376,14 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
                   </button>
                 )}
 
-                <div className="h-px bg-slate-800" />
+                <div className="h-px bg-accent" />
                 <button
                   type="button"
                   onClick={() => {
                     setMenuOpen(false);
                     setDeleteOpen(true);
                   }}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors text-left"
+                  className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors text-left"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   Delete Service
@@ -395,19 +395,19 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
 
         <div className="flex flex-col flex-1 p-4 gap-3">
           {service.category && (
-            <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-400">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
               {service.category.name}
             </span>
           )}
 
           <Link
             href={`/marketplace/services/${service.slug}`}
-            className="text-sm font-bold text-slate-200 line-clamp-2 leading-snug hover:text-white transition-colors"
+            className="text-sm font-bold text-foreground line-clamp-2 leading-snug hover:text-white transition-colors"
           >
             {service.title}
           </Link>
 
-          <div className="flex items-center gap-3 text-[11px] text-slate-500 mt-auto pt-2">
+          <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-auto pt-2">
             <span className="flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
               {service._count.orders} orders
@@ -418,13 +418,13 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
             </span>
           </div>
 
-          <div className="flex items-end justify-between pt-3 border-t border-slate-800">
-            <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+          <div className="flex items-end justify-between pt-3 border-t border-border">
+            <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
               <Clock className="w-3 h-3" />
               <span>{service.deliveryDays}d</span>
             </div>
             <div className="text-right">
-              <p className="text-[9px] font-medium text-slate-600 uppercase tracking-wider">
+              <p className="text-[9px] font-medium text-muted-foreground/70 uppercase tracking-wider">
                 From
               </p>
               <p className="text-base font-black text-white leading-none tabular-nums">
@@ -446,7 +446,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
           )}
 
           {statusError && (
-            <div className="flex items-center gap-1.5 text-[10px] text-red-400">
+            <div className="flex items-center gap-1.5 text-[10px] text-destructive">
               <AlertCircle className="w-3 h-3 shrink-0" />
               {statusError}
             </div>

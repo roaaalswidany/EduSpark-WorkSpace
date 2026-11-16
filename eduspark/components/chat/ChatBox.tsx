@@ -59,10 +59,10 @@ const CHAT_TYPE_CONFIG = {
   PROJECT: {
     label: "Project Chat",
     Icon: Briefcase,
-    accent: "text-indigo-400",
-    badge: "bg-indigo-500/10 text-indigo-300 border-indigo-500/20",
-    bubbleOwn: "bg-indigo-600 text-white",
-    bubbleOther: "bg-slate-800 text-slate-100",
+    accent: "text-primary",
+    badge: "bg-primary/10 text-primary border-primary/20",
+    bubbleOwn: "bg-primary text-white",
+    bubbleOther: "bg-accent text-slate-100",
     legal: true,
   },
   EDUCATIONAL: {
@@ -71,7 +71,7 @@ const CHAT_TYPE_CONFIG = {
     accent: "text-amber-400",
     badge: "bg-amber-500/10 text-amber-300 border-amber-500/20",
     bubbleOwn: "bg-amber-600 text-white",
-    bubbleOther: "bg-slate-800 text-slate-100",
+    bubbleOther: "bg-accent text-slate-100",
     legal: false,
   },
   SUPPORT: {
@@ -80,7 +80,7 @@ const CHAT_TYPE_CONFIG = {
     accent: "text-emerald-400",
     badge: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
     bubbleOwn: "bg-emerald-700 text-white",
-    bubbleOther: "bg-slate-800 text-slate-100",
+    bubbleOther: "bg-accent text-slate-100",
     legal: false,
   },
 } as const satisfies Record<
@@ -199,7 +199,7 @@ function groupMessages(
   return result;
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function UserAvatar({
   name,
@@ -261,7 +261,7 @@ function ReadReceipt({ status }: { status: ChatMessage["status"] }) {
     case "seen":
       return <CheckCheck className="w-3 h-3 text-sky-300 shrink-0" />;
     case "failed":
-      return <AlertCircle className="w-3 h-3 text-red-400 shrink-0" />;
+      return <AlertCircle className="w-3 h-3 text-destructive shrink-0" />;
   }
 }
 
@@ -298,7 +298,7 @@ function LinkCard({ url }: { url: string }) {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs text-white/80 truncate group-hover:text-white transition-colors">
-          {url.length > 45 ? url.slice(0, 42) + "…" : url}
+          {url.length > 45 ? url.slice(0, 42) + "â€¦" : url}
         </p>
         <p className="text-[10px] text-white/40 mt-0.5">{hostname}</p>
       </div>
@@ -330,7 +330,7 @@ const MessageContent = memo(function MessageContent({
                 "underline underline-offset-2 hover:opacity-80 transition-opacity",
                 isOwn
                   ? "decoration-white/50"
-                  : "decoration-indigo-400 text-indigo-300"
+                  : "decoration-indigo-400 text-primary"
               )}
               onClick={(e) => e.stopPropagation()}
             >
@@ -408,7 +408,7 @@ const MessageBubble = memo(function MessageBubble({
         <span
           className={cn(
             "text-[10px]",
-            isOwn ? "text-white/40" : "text-slate-500"
+            isOwn ? "text-white/40" : "text-muted-foreground"
           )}
         >
           {formatTime(message.createdAt)}
@@ -419,7 +419,7 @@ const MessageBubble = memo(function MessageBubble({
         {isOwn && message.status === "failed" && (
           <button
             onClick={() => onRetry(message)}
-            className="text-[10px] text-red-400 hover:text-red-300 underline ml-1"
+            className="text-[10px] text-destructive hover:text-destructive underline ml-1"
           >
             Retry
           </button>
@@ -441,7 +441,7 @@ function TypingIndicator({ users }: { users: TypingUser[] }) {
 
   return (
     <div className="flex items-center gap-2.5 px-4 py-2">
-      <div className="flex items-center gap-1 px-3 py-2 rounded-2xl rounded-bl-md bg-slate-800">
+      <div className="flex items-center gap-1 px-3 py-2 rounded-2xl rounded-bl-md bg-accent">
         {[0, 1, 2].map((i) => (
           <span
             key={i}
@@ -453,7 +453,7 @@ function TypingIndicator({ users }: { users: TypingUser[] }) {
           />
         ))}
       </div>
-      <span className="text-[11px] text-slate-500 italic">{label}…</span>
+      <span className="text-[11px] text-muted-foreground italic">{label}â€¦</span>
     </div>
   );
 }
@@ -477,10 +477,10 @@ function ConnectionBanner({
       className={cn(
         "flex items-center justify-between gap-3 px-4 py-2.5 text-xs border-b",
         isReconnecting && "bg-amber-500/10 border-amber-500/20 text-amber-300",
-        isError && "bg-red-500/10 border-red-500/20 text-red-300",
+        isError && "bg-destructive/10 border-destructive/20 text-destructive",
         !isReconnecting &&
           !isError &&
-          "bg-slate-800/60 border-slate-700 text-slate-400"
+          "bg-accent/60 border-border text-muted-foreground"
       )}
     >
       <div className="flex items-center gap-2">
@@ -493,17 +493,17 @@ function ConnectionBanner({
         )}
         <span>
           {isReconnecting
-            ? `Reconnecting… (attempt ${reconnectAttempt})`
+            ? `Reconnectingâ€¦ (attempt ${reconnectAttempt})`
             : isError
             ? "Connection lost."
-            : "Connecting to chat server…"}
+            : "Connecting to chat serverâ€¦"}
         </span>
       </div>
 
       {isError && (
         <button
           onClick={onRetry}
-          className="flex items-center gap-1 text-red-300 hover:text-red-200 font-semibold transition-colors"
+          className="flex items-center gap-1 text-destructive hover:text-red-200 font-semibold transition-colors"
         >
           <RotateCcw className="w-3 h-3" />
           Retry
@@ -513,7 +513,7 @@ function ConnectionBanner({
   );
 }
 
-// ─── Props ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Props â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface ChatBoxProps {
   roomId: string;
@@ -528,7 +528,7 @@ export interface ChatBoxProps {
   showLegalDisclaimer?: boolean;
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function ChatBox({
   roomId,
@@ -559,7 +559,7 @@ export default function ChatBox({
   const [isSendingTyping, setIsSendingTyping] = useState(false);
   const [showOnlineList, setShowOnlineList] = useState(false);
 
-  // ── DEBUG: Log all socket events temporarily ──
+  // â”€â”€ DEBUG: Log all socket events temporarily â”€â”€
 useEffect(() => {
   if (!socket) return;
   const onAny = (event: string, ...args: unknown[]) => {
@@ -1036,12 +1036,12 @@ useEffect(() => {
   return (
     <div
       className={cn(
-        "flex flex-col h-full bg-slate-950 text-slate-100 overflow-hidden",
+        "flex flex-col h-full bg-background text-slate-100 overflow-hidden",
         className
       )}
     >
       {/* Header */}
-      <header className="shrink-0 bg-slate-900 border-b border-slate-800">
+      <header className="shrink-0 bg-card border-b border-border">
         <div className="flex items-center gap-3 px-4 h-14">
           <div
             className={cn(
@@ -1053,7 +1053,7 @@ useEffect(() => {
             <span>{config.label}</span>
           </div>
 
-          <h1 className="flex-1 min-w-0 text-sm font-semibold text-slate-200 truncate">
+          <h1 className="flex-1 min-w-0 text-sm font-semibold text-foreground truncate">
             {roomName}
           </h1>
 
@@ -1063,7 +1063,7 @@ useEffect(() => {
             ) : isConnected ? (
               <Wifi className="w-3.5 h-3.5 text-emerald-500" />
             ) : (
-              <WifiOff className="w-3.5 h-3.5 text-slate-600" />
+              <WifiOff className="w-3.5 h-3.5 text-muted-foreground/70" />
             )}
           </div>
 
@@ -1071,19 +1071,19 @@ useEffect(() => {
             onClick={() => setShowOnlineList((v) => !v)}
             className={cn(
               "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg",
-              "bg-slate-800 hover:bg-slate-700 border border-slate-700",
-              "text-xs text-slate-400 hover:text-slate-200 transition-all"
+              "bg-accent hover:bg-accent border border-border",
+              "text-xs text-muted-foreground hover:text-foreground transition-all"
             )}
           >
             <Users className="w-3.5 h-3.5" />
             <span className="font-semibold">{onlineCount}</span>
-            <span className="hidden sm:inline text-slate-500">online</span>
+            <span className="hidden sm:inline text-muted-foreground">online</span>
           </button>
         </div>
 
         {showOnlineList && (
-          <div className="border-t border-slate-800 px-4 py-3 bg-slate-900/80">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+          <div className="border-t border-border px-4 py-3 bg-card/80">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">
               Online now
             </p>
             <div className="flex flex-wrap gap-2">
@@ -1095,14 +1095,14 @@ useEffect(() => {
                     size={22}
                     isOnline
                   />
-                  <span className="text-xs text-slate-300">{user.name}</span>
+                  <span className="text-xs text-foreground">{user.name}</span>
                   {user.userId === currentUser.id && (
-                    <span className="text-[10px] text-indigo-400">(you)</span>
+                    <span className="text-[10px] text-primary">(you)</span>
                   )}
                 </div>
               ))}
               {onlineUsers.length === 0 && (
-                <span className="text-xs text-slate-600 italic">
+                <span className="text-xs text-muted-foreground/70 italic">
                   No users online
                 </span>
               )}
@@ -1131,15 +1131,15 @@ useEffect(() => {
       )}
 
       {joinError && (
-        <div className="shrink-0 flex items-center gap-2.5 px-4 py-3 bg-red-500/8 border-b border-red-500/15">
-          <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-          <p className="text-sm text-red-300 flex-1">{joinError}</p>
+        <div className="shrink-0 flex items-center gap-2.5 px-4 py-3 bg-destructive/8 border-b border-destructive/15">
+          <AlertCircle className="w-4 h-4 text-destructive shrink-0" />
+          <p className="text-sm text-destructive flex-1">{joinError}</p>
           <button
             onClick={() => {
               setJoinError(null);
               setIsJoined(false);
             }}
-            className="text-xs text-red-400 hover:text-red-300 font-semibold"
+            className="text-xs text-destructive hover:text-destructive font-semibold"
           >
             Retry
           </button>
@@ -1155,8 +1155,8 @@ useEffect(() => {
         {isJoining && (
           <div className="flex justify-center py-12">
             <div className="flex flex-col items-center gap-3">
-              <Loader2 className="w-6 h-6 text-slate-600 animate-spin" />
-              <p className="text-sm text-slate-600">Loading conversation…</p>
+              <Loader2 className="w-6 h-6 text-muted-foreground/70 animate-spin" />
+              <p className="text-sm text-muted-foreground/70">Loading conversationâ€¦</p>
             </div>
           </div>
         )}
@@ -1166,15 +1166,15 @@ useEffect(() => {
             <div
               className={cn(
                 "w-16 h-16 rounded-2xl flex items-center justify-center mb-4",
-                "bg-slate-800 border border-slate-700"
+                "bg-accent border border-border"
               )}
             >
               <config.Icon className={cn("w-7 h-7", config.accent)} />
             </div>
-            <h3 className="text-sm font-semibold text-slate-400 mb-1">
+            <h3 className="text-sm font-semibold text-muted-foreground mb-1">
               No messages yet
             </h3>
-            <p className="text-xs text-slate-600 max-w-xs">
+            <p className="text-xs text-muted-foreground/70 max-w-xs">
               Be the first to send a message in this{" "}
               {config.label.toLowerCase()}.
             </p>
@@ -1188,11 +1188,11 @@ useEffect(() => {
                 key={`date-${entryIdx}`}
                 className="flex items-center gap-3 py-4"
               >
-                <div className="flex-1 h-px bg-slate-800" />
-                <span className="text-[11px] font-medium text-slate-500 px-3 py-1 rounded-full bg-slate-900 border border-slate-800">
+                <div className="flex-1 h-px bg-accent" />
+                <span className="text-[11px] font-medium text-muted-foreground px-3 py-1 rounded-full bg-card border border-border">
                   {formatDateDivider(entry.isoDate)}
                 </span>
-                <div className="flex-1 h-px bg-slate-800" />
+                <div className="flex-1 h-px bg-accent" />
               </div>
             );
           }
@@ -1203,11 +1203,11 @@ useEffect(() => {
                 key={entry.message.id}
                 className="flex items-center gap-3 py-1.5"
               >
-                <div className="flex-1 h-px bg-slate-800/60" />
-                <span className="text-[11px] text-slate-500 italic px-3 max-w-xs text-center">
+                <div className="flex-1 h-px bg-accent/60" />
+                <span className="text-[11px] text-muted-foreground italic px-3 max-w-xs text-center">
                   {entry.message.content}
                 </span>
-                <div className="flex-1 h-px bg-slate-800/60" />
+                <div className="flex-1 h-px bg-accent/60" />
               </div>
             );
           }
@@ -1245,7 +1245,7 @@ useEffect(() => {
               >
                 {!group.isOwn && (
                   <div className="flex items-center gap-2 px-1 mb-0.5">
-                    <span className="text-xs font-semibold text-slate-300">
+                    <span className="text-xs font-semibold text-foreground">
                       {group.senderName}
                     </span>
                     {isUserOnline && (
@@ -1281,7 +1281,7 @@ useEffect(() => {
             onClick={() => scrollToBottom("smooth")}
             className={cn(
               "pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-full",
-              "bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold",
+              "bg-primary hover:bg-primary text-white text-xs font-semibold",
               "shadow-lg shadow-indigo-500/30 transition-all animate-bounce"
             )}
           >
@@ -1292,7 +1292,7 @@ useEffect(() => {
       )}
 
       {/* Input area */}
-      <div className="shrink-0 border-t border-slate-800 bg-slate-900 px-4 py-3">
+      <div className="shrink-0 border-t border-border bg-card px-4 py-3">
         <div className="flex items-end gap-3">
           <div className="flex-1 relative">
             <textarea
@@ -1302,18 +1302,18 @@ useEffect(() => {
               onKeyDown={handleKeyDown}
               placeholder={
                 !isConnected
-                  ? "Connecting…"
+                  ? "Connectingâ€¦"
                   : !isJoined
-                  ? "Joining room…"
-                  : `Message ${roomName}…`
+                  ? "Joining roomâ€¦"
+                  : `Message ${roomName}â€¦`
               }
               disabled={!isConnected || !isJoined}
               rows={1}
               maxLength={MAX_INPUT_CHARS}
               className={cn(
-                "w-full bg-slate-800 border border-slate-700 rounded-xl",
-                "px-4 py-3 text-sm text-slate-200 placeholder:text-slate-600",
-                "resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500",
+                "w-full bg-accent border border-border rounded-xl",
+                "px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70",
+                "resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500",
                 "disabled:opacity-40 disabled:cursor-not-allowed",
                 "transition-all duration-150 leading-relaxed",
                 "min-h-12 max-h-40 overflow-y-auto"
@@ -1334,7 +1334,7 @@ useEffect(() => {
                 className={cn(
                   "absolute bottom-2 right-3 text-[10px] font-semibold",
                   inputValue.length >= MAX_INPUT_CHARS
-                    ? "text-red-400"
+                    ? "text-destructive"
                     : "text-amber-400"
                 )}
               >
@@ -1350,8 +1350,8 @@ useEffect(() => {
               "shrink-0 flex items-center justify-center w-11 h-11 rounded-xl",
               "transition-all duration-150 active:scale-95",
               canSend
-                ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20"
-                : "bg-slate-800 text-slate-600 cursor-not-allowed"
+                ? "bg-primary hover:bg-primary text-white shadow-lg shadow-indigo-500/20"
+                : "bg-accent text-muted-foreground/70 cursor-not-allowed"
             )}
             aria-label="Send message"
           >
@@ -1359,12 +1359,12 @@ useEffect(() => {
           </button>
         </div>
 
-        <p className="text-[10px] text-slate-700 mt-1.5 pl-1">
-          <kbd className="px-1 py-0.5 rounded bg-slate-800 text-slate-600 font-mono text-[9px]">
+        <p className="text-[10px] text-muted-foreground/70 mt-1.5 pl-1">
+          <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground/70 font-mono text-[9px]">
             Enter
           </kbd>{" "}
-          to send ·{" "}
-          <kbd className="px-1 py-0.5 rounded bg-slate-800 text-slate-600 font-mono text-[9px]">
+          to send آ·{" "}
+          <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground/70 font-mono text-[9px]">
             Shift+Enter
           </kbd>{" "}
           for new line

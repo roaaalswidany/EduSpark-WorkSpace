@@ -12,10 +12,10 @@ interface CreatePathDialogProps {
 }
 
 const EXAMPLE_GOALS = [
-  "أريد أن أصبح Full-Stack Developer",
-  "أريد تعلم تحليل البيانات",
-  "أريد أن أصبح UI/UX Designer",
-  "أريد تعلم تطوير تطبيقات الجوال",
+  "ط£ط±ظٹط¯ ط£ظ† ط£طµط¨ط­ Full-Stack Developer",
+  "ط£ط±ظٹط¯ طھط¹ظ„ظ… طھط­ظ„ظٹظ„ ط§ظ„ط¨ظٹط§ظ†ط§طھ",
+  "ط£ط±ظٹط¯ ط£ظ† ط£طµط¨ط­ UI/UX Designer",
+  "ط£ط±ظٹط¯ طھط¹ظ„ظ… طھط·ظˆظٹط± طھط·ط¨ظٹظ‚ط§طھ ط§ظ„ط¬ظˆط§ظ„",
 ];
 
 export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
@@ -41,7 +41,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
     if (!isValid || isPending) return;
     setError(null);
 
-    const toastId = toast.loading("Generating your career path…", {
+    const toastId = toast.loading("Generating your career pathâ€¦", {
       description: "This may take 10-20 seconds.",
     });
 
@@ -69,7 +69,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
         return;
       }
 
-      toast.success("Career path generated! 🎉", {
+      toast.success("Career path generated! ًںژ‰", {
         id: toastId,
         description: "Your personalized path is ready.",
       });
@@ -85,9 +85,9 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
         onClick={handleClose}
       />
 
-      <div className="relative w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden animate-scale-in">
+      <div className="relative w-full max-w-lg rounded-2xl bg-card border border-border shadow-2xl overflow-hidden animate-scale-in">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-800 flex items-start gap-3">
+        <div className="px-6 py-5 border-b border-border flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
@@ -95,14 +95,14 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
             <h2 className="text-base font-bold text-white">
               Create Your Career Path
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Our AI will design a personalized learning journey for you.
             </p>
           </div>
           <button
             type="button"
             onClick={handleClose}
-            className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition-colors"
+            className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -113,7 +113,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
           <div>
             <label
               htmlFor="goal"
-              className="block text-sm font-semibold text-slate-300 mb-2"
+              className="block text-sm font-semibold text-foreground mb-2"
             >
               What is your career goal?
             </label>
@@ -121,20 +121,20 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
               id="goal"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
-              placeholder="e.g. أريد أن أصبح Full-Stack Developer متخصص في Next.js"
+              placeholder="e.g. ط£ط±ظٹط¯ ط£ظ† ط£طµط¨ط­ Full-Stack Developer ظ…طھط®طµطµ ظپظٹ Next.js"
               rows={3}
               maxLength={200}
               disabled={isPending}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:opacity-50"
+              className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 disabled:opacity-50"
             />
-            <p className="text-[10px] text-slate-600 mt-1.5">
+            <p className="text-[10px] text-muted-foreground/70 mt-1.5">
               {goal.length}/200
             </p>
           </div>
 
           {/* Examples */}
           <div className="space-y-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
               Examples
             </p>
             <div className="flex flex-wrap gap-2">
@@ -146,8 +146,8 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
                   disabled={isPending}
                   className={cn(
                     "px-3 py-1.5 rounded-full text-xs",
-                    "bg-slate-800 text-slate-300 border border-slate-700",
-                    "hover:bg-slate-700 hover:text-white transition-colors",
+                    "bg-accent text-foreground border border-border",
+                    "hover:bg-accent hover:text-white transition-colors",
                     "disabled:opacity-50"
                   )}
                 >
@@ -158,19 +158,19 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
           </div>
 
           {error && (
-            <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-              <p className="text-xs text-red-300">{error}</p>
+            <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+              <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+              <p className="text-xs text-destructive">{error}</p>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-800 flex items-center justify-end gap-2 bg-slate-950/40">
+        <div className="px-6 py-4 border-t border-border flex items-center justify-end gap-2 bg-background/40">
           <button
             type="button"
             onClick={handleClose}
-            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
           >
             {isPending ? "Close" : "Cancel"}
           </button>
@@ -181,14 +181,14 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
             className={cn(
               "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
               isValid && !isPending
-                ? "bg-indigo-600 hover:bg-indigo-500 text-white active:scale-95 shadow-lg shadow-indigo-500/20"
-                : "bg-slate-800 text-slate-600 cursor-not-allowed"
+                ? "bg-primary hover:bg-primary text-white active:scale-95 shadow-lg shadow-indigo-500/20"
+                : "bg-accent text-muted-foreground/70 cursor-not-allowed"
             )}
           >
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Generating…
+                Generatingâ€¦
               </>
             ) : (
               <>

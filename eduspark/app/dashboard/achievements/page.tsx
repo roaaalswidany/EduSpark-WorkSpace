@@ -11,7 +11,7 @@ import { BadgesGrid } from "./_components/badges-grid";
 import { Leaderboard } from "./_components/leaderboard";
 
 export const metadata = {
-  title: "Achievements — EduSpark",
+  title: "Achievements â€” EduSpark",
 };
 
 export default async function AchievementsPage() {
@@ -36,7 +36,7 @@ export default async function AchievementsPage() {
         userId: true,
         xp: true,
         level: true,
-        // 👇 تم حذف image: true من هنا
+        // ًں‘‡ طھظ… ط­ط°ظپ image: true ظ…ظ† ظ‡ظ†ط§
         user: { select: { id: true, name: true } }, 
       },
     }),
@@ -61,7 +61,7 @@ export default async function AchievementsPage() {
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
           Your Journey
         </h1>
-        <p className="text-sm text-slate-500 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           Track your progress, unlock badges, and compete on the leaderboard.
         </p>
       </div>
@@ -97,7 +97,7 @@ export default async function AchievementsPage() {
           rank: i + 1,
           userId: u.user.id,
           name: u.user.name,
-          // 👇 تم حذف image: null من هنا
+          // ًں‘‡ طھظ… ط­ط°ظپ image: null ظ…ظ† ظ‡ظ†ط§
           xp: u.xp,
           level: u.level,
           isCurrentUser: u.userId === userId,

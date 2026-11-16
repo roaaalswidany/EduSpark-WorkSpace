@@ -1,7 +1,7 @@
 import { AuthCard } from "@/components/auth/auth-card";
 import { VerifyEmailButton } from "./verify-email-button";
 
-export const metadata = { title: "Confirm email · EduSpark" };
+export const metadata = { title: "Confirm email آ· EduSpark" };
 
 export default async function VerifyEmailPage({
   searchParams,
@@ -15,7 +15,7 @@ export default async function VerifyEmailPage({
       {valid ? (
         <VerifyEmailButton email={email!} token={token!} />
       ) : (
-        <p className="text-sm text-red-400">This confirmation link is incomplete or invalid.</p>
+        <p className="text-sm text-destructive">This confirmation link is incomplete or invalid.</p>
       )}
     </AuthCard>
   );

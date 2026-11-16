@@ -22,7 +22,7 @@ export default function MarketplaceLoading() {
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl border border-slate-800 bg-slate-900/50 overflow-hidden"
+            className="rounded-xl border border-border bg-card/50 overflow-hidden"
           >
             <Skeleton className="aspect-video w-full rounded-none" />
             <div className="p-5 space-y-3">
@@ -32,7 +32,7 @@ export default function MarketplaceLoading() {
               </div>
               <Skeleton className="h-5 w-full" />
               <Skeleton className="h-4 w-5/6" />
-              <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+              <div className="flex items-center justify-between pt-3 border-t border-border">
                 <Skeleton className="h-3 w-24" />
                 <Skeleton className="h-5 w-20" />
               </div>

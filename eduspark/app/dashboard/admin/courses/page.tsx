@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { CoursesTable } from "./_components/courses-table";
 
 export const metadata = {
-  title: "Courses — Admin — EduSpark",
+  title: "Courses â€” Admin â€” EduSpark",
 };
 
 const PAGE_SIZE = 20;
@@ -95,7 +95,7 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
           Courses
         </h1>
-        <p className="text-sm text-slate-500 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           Review submitted courses, publish, or archive courses across the platform.
         </p>
       </div>

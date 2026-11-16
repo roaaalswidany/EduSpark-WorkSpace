@@ -19,7 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { CourseLevel } from "@prisma/client";
 
-// ─── Public Types ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Public Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface CertificateDisplayData {
   id: string;
@@ -42,7 +42,7 @@ export interface CertificateCardProps {
   verifyBaseUrl?: string;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function scoreToGrade(score: number): {
   label: string;
@@ -65,7 +65,7 @@ function formatLevel(level: CourseLevel): string {
   return level.charAt(0) + level.slice(1).toLowerCase();
 }
 
-// ─── Download Utilities ───────────────────────────────────────────────────────
+// â”€â”€â”€ Download Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function downloadJsonMetadata(
   cert: CertificateDisplayData,
@@ -106,7 +106,7 @@ function downloadJsonMetadata(
   URL.revokeObjectURL(url);
 }
 
-// ─── Decorative SVG Seal ─────────────────────────────────────────────────────
+// â”€â”€â”€ Decorative SVG Seal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function CertificateSeal({ score }: { score: number }) {
   return (
@@ -145,7 +145,7 @@ function CertificateSeal({ score }: { score: number }) {
   );
 }
 
-// ─── Score Badge ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ Score Badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function ScoreBadge({ score }: { score: number }) {
   const grade = scoreToGrade(score);
@@ -164,7 +164,7 @@ function ScoreBadge({ score }: { score: number }) {
   );
 }
 
-// ─── Full Variant ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Full Variant â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function FullCard({
   certificate,
@@ -216,17 +216,17 @@ function FullCard({
         <div className="h-1 bg-linear-to-r from-amber-700 via-yellow-400 to-amber-700" />
 
         <div className="relative px-6 sm:px-10 py-8 sm:py-10 space-y-7">
-          {/* ── Header row: logo left / score right ────────────────────── */}
+          {/* â”€â”€ Header row: logo left / score right â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
-                <GraduationCap className="w-5 h-5 text-indigo-400" />
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 border border-primary/20">
+                <GraduationCap className="w-5 h-5 text-primary" />
               </div>
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.25em] text-amber-400">
                   EduSpark
                 </p>
-                <p className="text-[10px] text-slate-600 tracking-wide mt-0.5">
+                <p className="text-[10px] text-muted-foreground/70 tracking-wide mt-0.5">
                   Certificate of Completion
                 </p>
               </div>
@@ -234,26 +234,26 @@ function FullCard({
             <ScoreBadge score={certificate.score} />
           </div>
 
-          {/* ── Central seal + recipient ─────────────────────────────── */}
+          {/* â”€â”€ Central seal + recipient â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="flex flex-col items-center gap-4 text-center">
             <CertificateSeal score={certificate.score} />
 
             <div>
-              <p className="text-[10px] font-medium text-slate-500 uppercase tracking-[0.2em] mb-1.5">
+              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-[0.2em] mb-1.5">
                 This certifies that
               </p>
               <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
                 {certificate.recipientName}
               </h2>
-              <p className="text-[11px] text-slate-500 mt-1">
+              <p className="text-[11px] text-muted-foreground mt-1">
                 has successfully completed
               </p>
             </div>
 
             {/* Course pill */}
-            <div className="inline-flex flex-col items-center gap-1.5 px-5 py-3 rounded-2xl bg-linear-to-br from-indigo-500/10 via-violet-500/8 to-indigo-500/10 border border-indigo-500/20 shadow-inner shadow-indigo-500/5">
+            <div className="inline-flex flex-col items-center gap-1.5 px-5 py-3 rounded-2xl bg-linear-to-br from-indigo-500/10 via-violet-500/8 to-indigo-500/10 border border-primary/20 shadow-inner shadow-indigo-500/5">
               <div className="flex items-center gap-2">
-                <BookOpen className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <BookOpen className="w-3.5 h-3.5 text-primary shrink-0" />
                 <h3 className="text-base sm:text-lg font-bold text-white leading-snug">
                   {certificate.courseTitle}
                 </h3>
@@ -261,78 +261,78 @@ function FullCard({
               <div className="flex items-center gap-2">
                 {certificate.categoryName && (
                   <>
-                    <span className="text-[10px] text-slate-500">
+                    <span className="text-[10px] text-muted-foreground">
                       {certificate.categoryName}
                     </span>
-                    <span className="w-1 h-1 rounded-full bg-slate-700" />
+                    <span className="w-1 h-1 rounded-full bg-accent" />
                   </>
                 )}
-                <span className="text-[10px] text-indigo-400 font-semibold">
+                <span className="text-[10px] text-primary font-semibold">
                   {formatLevel(certificate.courseLevel)} Level
                 </span>
               </div>
             </div>
           </div>
 
-          {/* ── Horizontal rule ──────────────────────────────────────── */}
+          {/* â”€â”€ Horizontal rule â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-linear-to-r from-transparent via-slate-800 to-transparent" />
             <Sparkles className="w-3.5 h-3.5 text-amber-500/40" />
             <div className="flex-1 h-px bg-linear-to-r from-transparent via-slate-800 to-transparent" />
           </div>
 
-          {/* ── Meta grid: date + instructor ─────────────────────────── */}
+          {/* â”€â”€ Meta grid: date + instructor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-slate-800/50 border border-slate-800">
-              <Calendar className="w-4 h-4 text-slate-600 shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-accent/50 border border-border">
+              <Calendar className="w-4 h-4 text-muted-foreground/70 shrink-0" />
               <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase tracking-widest text-slate-600">
+                <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70">
                   Issued
                 </p>
-                <p className="text-xs font-semibold text-slate-300 truncate mt-0.5">
+                <p className="text-xs font-semibold text-foreground truncate mt-0.5">
                   {formatIssueDate(certificate.issuedAt)}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-slate-800/50 border border-slate-800">
-              <Shield className="w-4 h-4 text-slate-600 shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-accent/50 border border-border">
+              <Shield className="w-4 h-4 text-muted-foreground/70 shrink-0" />
               <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase tracking-widest text-slate-600">
+                <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70">
                   Instructor
                 </p>
-                <p className="text-xs font-semibold text-slate-300 truncate mt-0.5">
+                <p className="text-xs font-semibold text-foreground truncate mt-0.5">
                   {certificate.instructorName}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* ── Credential ID row ─────────────────────────────────────── */}
-          <div className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/40">
-            <Hash className="w-4 h-4 text-slate-600 shrink-0" />
+          {/* â”€â”€ Credential ID row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          <div className="flex items-center gap-3 p-3.5 rounded-xl bg-accent/40 border border-border/40">
+            <Hash className="w-4 h-4 text-muted-foreground/70 shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[9px] font-semibold uppercase tracking-widest text-slate-600 mb-0.5">
+              <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-0.5">
                 Credential ID
               </p>
-              <p className="text-xs font-mono text-slate-400 truncate">
+              <p className="text-xs font-mono text-muted-foreground truncate">
                 {certificate.credentialId}
               </p>
             </div>
             <button
               onClick={handleCopyCredential}
               title="Copy Credential ID"
-              className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-700 active:scale-95 transition-all shrink-0"
+              className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent active:scale-95 transition-all shrink-0"
             >
               {credentialCopied ? (
                 <Check className="w-3.5 h-3.5 text-emerald-400" />
               ) : (
-                <Copy className="w-3.5 h-3.5 text-slate-500 hover:text-slate-300 transition-colors" />
+                <Copy className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
               )}
             </button>
           </div>
 
-          {/* ── Action buttons ────────────────────────────────────────── */}
+          {/* â”€â”€ Action buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="grid grid-cols-3 gap-2">
             {/* Download JSON */}
             <button
@@ -356,8 +356,8 @@ function FullCard({
               onClick={handleCopyVerifyUrl}
               className={cn(
                 "flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl text-center",
-                "bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-slate-600",
-                "text-slate-500 hover:text-slate-300",
+                "bg-accent/60 hover:bg-accent border border-border/60 hover:border-border",
+                "text-muted-foreground hover:text-foreground",
                 "active:scale-95 transition-all duration-150"
               )}
               title="Copy verification link"
@@ -379,8 +379,8 @@ function FullCard({
               rel="noopener noreferrer"
               className={cn(
                 "flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl text-center",
-                "bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-slate-600",
-                "text-slate-500 hover:text-slate-300",
+                "bg-accent/60 hover:bg-accent border border-border/60 hover:border-border",
+                "text-muted-foreground hover:text-foreground",
                 "active:scale-95 transition-all duration-150"
               )}
               title="Verify certificate"
@@ -400,7 +400,7 @@ function FullCard({
   );
 }
 
-// ─── Compact Variant (for lists / dashboards) ─────────────────────────────────
+// â”€â”€â”€ Compact Variant (for lists / dashboards) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function CompactCard({
   certificate,
@@ -423,7 +423,7 @@ function CompactCard({
 
   return (
     <div className="relative p-px rounded-xl bg-linear-to-r from-amber-500/25 via-yellow-400/15 to-amber-500/25 group">
-      <div className="relative rounded-xl bg-slate-900 overflow-hidden px-4 py-4 flex items-center gap-4">
+      <div className="relative rounded-xl bg-card overflow-hidden px-4 py-4 flex items-center gap-4">
         {/* Seal */}
         <div className="w-11 h-11 rounded-xl bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center shrink-0 shadow-md shadow-amber-500/20">
           <Award className="w-5 h-5 text-white" />
@@ -435,15 +435,15 @@ function CompactCard({
             {certificate.courseTitle}
           </p>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-[10px] text-slate-500">
+            <span className="text-[10px] text-muted-foreground">
               {formatIssueDate(certificate.issuedAt)}
             </span>
-            <span className="w-1 h-1 rounded-full bg-slate-700" />
+            <span className="w-1 h-1 rounded-full bg-accent" />
             <span className="text-[10px] font-semibold text-amber-400">
               {certificate.score}%
             </span>
           </div>
-          <p className="text-[10px] font-mono text-slate-600 truncate mt-0.5">
+          <p className="text-[10px] font-mono text-muted-foreground/70 truncate mt-0.5">
             {certificate.credentialId}
           </p>
         </div>
@@ -453,29 +453,29 @@ function CompactCard({
           <button
             onClick={handleCopy}
             title="Copy Credential ID"
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-800 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent transition-colors"
           >
             {copied ? (
               <Check className="w-3.5 h-3.5 text-emerald-400" />
             ) : (
-              <Copy className="w-3.5 h-3.5 text-slate-600 hover:text-slate-400 transition-colors" />
+              <Copy className="w-3.5 h-3.5 text-muted-foreground/70 hover:text-muted-foreground transition-colors" />
             )}
           </button>
           <button
             onClick={handleDownload}
             title="Download metadata"
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-800 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent transition-colors"
           >
-            <Download className="w-3.5 h-3.5 text-slate-600 hover:text-amber-400 transition-colors" />
+            <Download className="w-3.5 h-3.5 text-muted-foreground/70 hover:text-amber-400 transition-colors" />
           </button>
           <a
             href={verifyUrl}
             target="_blank"
             rel="noopener noreferrer"
             title="Verify certificate"
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-800 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent transition-colors"
           >
-            <ExternalLink className="w-3.5 h-3.5 text-slate-600 hover:text-slate-400 transition-colors" />
+            <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/70 hover:text-muted-foreground transition-colors" />
           </a>
         </div>
       </div>
@@ -483,7 +483,7 @@ function CompactCard({
   );
 }
 
-// ─── Public Export ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Public Export â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function CertificateCard({
   certificate,

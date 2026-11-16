@@ -28,7 +28,7 @@ export function AiMessageBubble({
         className={cn(
           "shrink-0 w-7 h-7 rounded-full flex items-center justify-center",
           isUser
-            ? "bg-slate-700 text-slate-300"
+            ? "bg-accent text-foreground"
             : "bg-linear-to-br from-indigo-500 to-violet-600 text-white"
         )}
       >
@@ -44,8 +44,8 @@ export function AiMessageBubble({
         className={cn(
           "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
           isUser
-            ? "bg-slate-700 text-slate-100 rounded-tr-sm"
-            : "bg-slate-800 text-slate-200 border border-slate-700 rounded-tl-sm"
+            ? "bg-accent text-slate-100 rounded-tr-sm"
+            : "bg-accent text-foreground border border-border rounded-tl-sm"
         )}
       >
         <div className="whitespace-pre-wrap wrap-break-word">

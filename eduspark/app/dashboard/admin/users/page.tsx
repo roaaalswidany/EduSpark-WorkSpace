@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { UsersTable } from "./_components/users-table";
 
 export const metadata = {
-  title: "Users — Admin — EduSpark",
+  title: "Users â€” Admin â€” EduSpark",
 };
 
 const PAGE_SIZE = 20;
@@ -37,7 +37,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
     }),
   };
 
-  // ── Fetch paginated users + total + role counts in parallel ────
+  // â”€â”€ Fetch paginated users + total + role counts in parallel â”€â”€â”€â”€
   const [users, total, totals] = await Promise.all([
     db.user.findMany({
       where,
@@ -80,14 +80,14 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-xs font-bold text-indigo-400 mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <Users className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Admin</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
           Users
         </h1>
-        <p className="text-sm text-slate-500 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           Manage roles, activate or suspend accounts.
         </p>
       </div>

@@ -93,8 +93,8 @@ export default async function AdminDashboardPage() {
       label: "Total Courses",
       value: totalCourses,
       icon: BookOpen,
-      color: "text-indigo-400",
-      bg: "bg-indigo-500/10",
+      color: "text-primary",
+      bg: "bg-primary/10",
       trend: null,
     },
     {
@@ -120,7 +120,7 @@ export default async function AdminDashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           Platform overview, pending reviews, and administrative controls.
         </p>
       </div>
@@ -135,7 +135,7 @@ export default async function AdminDashboardPage() {
             </p>
             <p className="text-xs text-amber-400/80 mt-1">
               {pendingCourses.length} course
-              {pendingCourses.length !== 1 ? "s" : ""} awaiting review ·{" "}
+              {pendingCourses.length !== 1 ? "s" : ""} awaiting review آ·{" "}
               {pendingServices.length} service
               {pendingServices.length !== 1 ? "s" : ""} awaiting review
             </p>
@@ -150,7 +150,7 @@ export default async function AdminDashboardPage() {
           return (
             <div
               key={s.label}
-              className="p-5 rounded-2xl bg-slate-900 border border-slate-800"
+              className="p-5 rounded-2xl bg-card border border-border"
             >
               <div className="flex items-center justify-between mb-3">
                 <div
@@ -164,7 +164,7 @@ export default async function AdminDashboardPage() {
                   </span>
                 )}
               </div>
-              <p className="text-xs font-medium text-slate-400">{s.label}</p>
+              <p className="text-xs font-medium text-muted-foreground">{s.label}</p>
               <p className="text-2xl font-bold text-white mt-1">{s.value}</p>
             </div>
           );
@@ -174,22 +174,22 @@ export default async function AdminDashboardPage() {
       {/* Pending Reviews + Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pending */}
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div className="rounded-2xl bg-card border border-border overflow-hidden">
+          <div className="px-5 py-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-amber-400" />
               <h2 className="text-sm font-bold text-white">Pending Reviews</h2>
             </div>
             <Link
               href="/dashboard/admin/courses?status=DRAFT"
-              className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+              className="text-xs text-primary hover:text-primary transition-colors"
             >
-              View all →
+              View all â†’
             </Link>
           </div>
           <div className="divide-y divide-slate-800">
             {pendingCourses.length === 0 && pendingServices.length === 0 ? (
-              <div className="px-5 py-8 text-center text-sm text-slate-500">
+              <div className="px-5 py-8 text-center text-sm text-muted-foreground">
                 All caught up! Nothing to review.
               </div>
             ) : (
@@ -197,20 +197,20 @@ export default async function AdminDashboardPage() {
                 {pendingCourses.map((c) => (
                   <div
                     key={c.id}
-                    className="px-5 py-3 flex items-center gap-3 hover:bg-slate-800/30 transition-colors"
+                    className="px-5 py-3 flex items-center gap-3 hover:bg-accent/30 transition-colors"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
-                      <BookOpen className="w-4 h-4 text-indigo-400" />
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <BookOpen className="w-4 h-4 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-white truncate">{c.title}</p>
-                      <p className="text-xs text-slate-500">
-                        by {c.creator.name} · Draft course
+                      <p className="text-xs text-muted-foreground">
+                        by {c.creator.name} آ· Draft course
                       </p>
                     </div>
                     <Link
                       href="/dashboard/admin/courses"
-                      className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold whitespace-nowrap"
+                      className="text-xs text-primary hover:text-primary font-semibold whitespace-nowrap"
                     >
                       Review
                     </Link>
@@ -219,20 +219,20 @@ export default async function AdminDashboardPage() {
                 {pendingServices.map((s) => (
                   <div
                     key={s.id}
-                    className="px-5 py-3 flex items-center gap-3 hover:bg-slate-800/30 transition-colors"
+                    className="px-5 py-3 flex items-center gap-3 hover:bg-accent/30 transition-colors"
                   >
                     <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
                       <ShoppingBag className="w-4 h-4 text-emerald-400" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-white truncate">{s.title}</p>
-                      <p className="text-xs text-slate-500">
-                        by {s.creator.name} · Paused service
+                      <p className="text-xs text-muted-foreground">
+                        by {s.creator.name} آ· Paused service
                       </p>
                     </div>
                     <Link
                       href="/dashboard/admin/services"
-                      className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold whitespace-nowrap"
+                      className="text-xs text-primary hover:text-primary font-semibold whitespace-nowrap"
                     >
                       Review
                     </Link>
@@ -244,14 +244,14 @@ export default async function AdminDashboardPage() {
         </div>
 
         {/* Recent Activity */}
-        <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-800 flex items-center gap-2">
-            <Activity className="w-4 h-4 text-indigo-400" />
+        <div className="rounded-2xl bg-card border border-border overflow-hidden">
+          <div className="px-5 py-4 border-b border-border flex items-center gap-2">
+            <Activity className="w-4 h-4 text-primary" />
             <h2 className="text-sm font-bold text-white">Recent Activity</h2>
           </div>
           <div className="divide-y divide-slate-800">
             {recentLogs.length === 0 ? (
-              <div className="px-5 py-8 text-center text-sm text-slate-500">
+              <div className="px-5 py-8 text-center text-sm text-muted-foreground">
                 No activity yet. Actions will appear here.
               </div>
             ) : (
@@ -267,13 +267,13 @@ export default async function AdminDashboardPage() {
                     }`}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-slate-300">
+                    <p className="text-xs text-foreground">
                       <span className="font-semibold text-white">
                         {log.user?.name ?? "System"}
                       </span>{" "}
                       {log.action.replace(/\./g, " ")}
                     </p>
-                    <p className="text-[10px] text-slate-600 mt-0.5">
+                    <p className="text-[10px] text-muted-foreground/70 mt-0.5">
                       {new Date(log.createdAt).toLocaleString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -292,16 +292,16 @@ export default async function AdminDashboardPage() {
       {/* Broadcast + Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Broadcast */}
-        <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800">
+        <div className="p-6 rounded-2xl bg-card border border-border">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-              <Bell className="w-5 h-5 text-indigo-400" />
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Bell className="w-5 h-5 text-primary" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-white">
                 Broadcast Notification
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-muted-foreground">
                 Send a message to all active users.
               </p>
             </div>
@@ -310,14 +310,14 @@ export default async function AdminDashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800">
+        <div className="p-6 rounded-2xl bg-card border border-border">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
-              <ShieldAlert className="w-5 h-5 text-violet-400" />
+            <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center">
+              <ShieldAlert className="w-5 h-5 text-info" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-white">Quick Actions</h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-muted-foreground">
                 Jump to management sections.
               </p>
             </div>
@@ -325,39 +325,39 @@ export default async function AdminDashboardPage() {
           <div className="space-y-2">
             <Link
               href="/dashboard/admin/users"
-              className="flex items-center justify-between p-3 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 transition-colors group"
+              className="flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border hover:border-border hover:bg-background transition-colors group"
             >
               <div className="flex items-center gap-3">
                 <Users className="w-4 h-4 text-blue-400" />
-                <span className="text-sm font-medium text-slate-300">
+                <span className="text-sm font-medium text-foreground">
                   Manage Users
                 </span>
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all" />
             </Link>
             <Link
               href="/dashboard/admin/courses"
-              className="flex items-center justify-between p-3 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 transition-colors group"
+              className="flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border hover:border-border hover:bg-background transition-colors group"
             >
               <div className="flex items-center gap-3">
-                <BookOpen className="w-4 h-4 text-indigo-400" />
-                <span className="text-sm font-medium text-slate-300">
+                <BookOpen className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-foreground">
                   Manage Courses
                 </span>
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all" />
             </Link>
             <Link
               href="/dashboard/admin/services"
-              className="flex items-center justify-between p-3 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 transition-colors group"
+              className="flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border hover:border-border hover:bg-background transition-colors group"
             >
               <div className="flex items-center gap-3">
                 <ShoppingBag className="w-4 h-4 text-emerald-400" />
-                <span className="text-sm font-medium text-slate-300">
+                <span className="text-sm font-medium text-foreground">
                   Manage Services
                 </span>
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all" />
             </Link>
           </div>
         </div>

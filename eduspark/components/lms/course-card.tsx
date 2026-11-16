@@ -21,7 +21,7 @@ export interface CourseCardData {
     id: string;
     name: string;
     headline: string | null;
-    // 👇 تم حذف image من هنا
+    // ًں‘‡ طھظ… ط­ط°ظپ image ظ…ظ† ظ‡ظ†ط§
   };
   category: { id: string; name: string; slug: string } | null;
   totalLessons: number;
@@ -54,7 +54,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
   const showEnrolled = course.isEnrolled;
   const progress = course.enrollmentProgress ?? 0;
 
-  // 👇 حساب الأحرف الأولى واللون للمدرب
+  // ًں‘‡ ط­ط³ط§ط¨ ط§ظ„ط£ط­ط±ظپ ط§ظ„ط£ظˆظ„ظ‰ ظˆط§ظ„ظ„ظˆظ† ظ„ظ„ظ…ط¯ط±ط¨
   const creatorInitials = course.creator.name
     .split(" ")
     .map((p) => p[0])
@@ -68,13 +68,13 @@ export function CourseCard({ course }: { course: CourseCardData }) {
     <Link
       href={showEnrolled ? `/dashboard/student/courses/${course.id}` : `/courses/${course.slug}`}
       className={cn(
-        "group flex flex-col rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden",
-        "hover:border-indigo-500/40 hover:bg-slate-900/80",
+        "group flex flex-col rounded-2xl bg-card border border-border overflow-hidden",
+        "hover:border-primary/40 hover:bg-card/80",
         "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/5"
       )}
     >
-      {/* ── Thumbnail ─────────────────────────────────────── */}
-      <div className="relative aspect-video bg-slate-950 overflow-hidden">
+      {/* â”€â”€ Thumbnail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div className="relative aspect-video bg-background overflow-hidden">
         {course.thumbnail ? (
           <Image
             src={course.thumbnail}
@@ -85,7 +85,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-indigo-500/10 via-slate-900 to-violet-500/10">
-            <BookOpen className="w-12 h-12 text-slate-700" />
+            <BookOpen className="w-12 h-12 text-muted-foreground/70" />
           </div>
         )}
 
@@ -112,7 +112,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
                 "inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border backdrop-blur-sm",
                 course.isPassed
                   ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
-                  : "bg-indigo-500/15 text-indigo-300 border-indigo-500/30"
+                  : "bg-primary/15 text-primary border-primary/30"
               )}
             >
               {course.isPassed ? (
@@ -129,7 +129,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
 
         {/* Progress bar bottom (if enrolled) */}
         {showEnrolled && (
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-950/60">
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-background/60">
             <div
               className={cn(
                 "h-full transition-all duration-500",
@@ -143,41 +143,41 @@ export function CourseCard({ course }: { course: CourseCardData }) {
         )}
       </div>
 
-      {/* ── Body ──────────────────────────────────────────── */}
+      {/* â”€â”€ Body â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="flex flex-col flex-1 p-4 sm:p-5 gap-3">
         {/* Category */}
         {course.category && (
-          <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-400">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
             {course.category.name}
           </span>
         )}
 
         {/* Title */}
-        <h3 className="text-sm sm:text-base font-bold text-white leading-snug line-clamp-2 group-hover:text-indigo-300 transition-colors">
+        <h3 className="text-sm sm:text-base font-bold text-white leading-snug line-clamp-2 group-hover:text-primary transition-colors">
           {course.title}
         </h3>
 
         {/* Description */}
-        <p className="text-xs sm:text-sm text-slate-500 line-clamp-2 leading-relaxed">
+        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
           {course.description}
         </p>
 
         {/* Creator */}
         <div className="flex items-center gap-2 mt-auto pt-2">
-          {/* 👇 استبدال الصورة بالأحرف الأولى */}
+          {/* ًں‘‡ ط§ط³طھط¨ط¯ط§ظ„ ط§ظ„طµظˆط±ط© ط¨ط§ظ„ط£ط­ط±ظپ ط§ظ„ط£ظˆظ„ظ‰ */}
           <div 
             className="w-6 h-6 rounded-full text-white text-[10px] font-bold flex items-center justify-center ring-1 ring-slate-700 shrink-0"
             style={{ background: `hsl(${creatorHue}, 55%, 42%)` }}
           >
             {creatorInitials}
           </div>
-          <span className="text-xs text-slate-400 truncate">
+          <span className="text-xs text-muted-foreground truncate">
             {course.creator.name}
           </span>
         </div>
 
         {/* Stats row */}
-        <div className="flex items-center gap-3 text-[11px] text-slate-500">
+        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
           <span className="flex items-center gap-1">
             <BookOpen className="w-3 h-3" />
             {course.totalLessons} lessons
@@ -194,20 +194,20 @@ export function CourseCard({ course }: { course: CourseCardData }) {
               <span className="text-amber-300 font-semibold">
                 {course.totalRating.toFixed(1)}
               </span>
-              <span className="text-slate-600">({course.ratingCount})</span>
+              <span className="text-muted-foreground/70">({course.ratingCount})</span>
             </span>
           )}
         </div>
 
         {/* Price / Progress footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+        <div className="flex items-center justify-between pt-3 border-t border-border">
           {showEnrolled ? (
             <>
-              <span className="text-xs text-slate-500">Progress</span>
+              <span className="text-xs text-muted-foreground">Progress</span>
               <span
                 className={cn(
                   "text-sm font-bold tabular-nums",
-                  course.isPassed ? "text-emerald-400" : "text-indigo-400"
+                  course.isPassed ? "text-emerald-400" : "text-primary"
                 )}
               >
                 {progress}%
@@ -215,7 +215,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
             </>
           ) : (
             <>
-              <span className="text-xs text-slate-500">Price</span>
+              <span className="text-xs text-muted-foreground">Price</span>
               {course.price === 0 ? (
                 <span className="text-sm font-bold text-emerald-400">Free</span>
               ) : (
