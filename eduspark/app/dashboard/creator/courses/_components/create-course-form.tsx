@@ -28,7 +28,7 @@ export function CreateCourseForm() {
       });
 
       if (result.success && result.courseId) {
-        toast.success("Course created! ًںژ‰");
+        toast.success("Course created! 🎉");
         setIsOpen(false);
         router.push(`/dashboard/creator/courses/${result.courseId}/edit`);
       } else {

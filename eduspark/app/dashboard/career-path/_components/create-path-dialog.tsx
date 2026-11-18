@@ -6,32 +6,33 @@ import { Sparkles, X, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { generateCareerPathAction } from "@/actions/career-path/generate-path";
+import { useLanguage } from "@/components/providers/language-provider";
 
 interface CreatePathDialogProps {
   onClose: () => void;
 }
 
-const EXAMPLE_GOALS = [
-  "أريد أن أصبح Full-Stack Developer",
-  "أريد تعلم تحليل البيانات",
-  "أريد أن أصبح UI/UX Designer",
-  "أريد تعلم تطوير تطبيقات الجوال",
-];
-
 export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
   const router = useRouter();
+  const { t, locale } = useLanguage();
   const [goal, setGoal] = useState("");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   const isValid = goal.trim().length >= 5;
 
-  // Close immediately. If generation is running, it continues in the
-  // background and the toast will update when it's done.
+
+  const exampleGoals = [
+    t("exFullStack"),
+    t("exDataAnalysis"),
+    t("exUiUx"),
+    t("exMobile"),
+  ];
+
   const handleClose = () => {
     if (isPending) {
-      toast.info("Generation continues in background", {
-        description: "We'll notify you when your path is ready.",
+      toast.info(t("bgGenerationTitle"), {
+        description: t("bgGenerationDesc"),
       });
     }
     onClose();
@@ -41,14 +42,14 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
     if (!isValid || isPending) return;
     setError(null);
 
-    const toastId = toast.loading("Generating your career path...", {
-      description: "This may take 10-20 seconds.",
+    const toastId = toast.loading(t("generatingToast"), {
+      description: t("generatingToastDesc"),
     });
 
     startTransition(async () => {
       const result = await generateCareerPathAction({
         goal: goal.trim(),
-        preferredLanguage: "ar",
+        preferredLanguage: locale,
       });
 
       if (!result.success) {
@@ -59,19 +60,19 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
           INVALID_INPUT: "Please enter a valid goal.",
           AI_ERROR: "Could not generate path. Please try again.",
         };
-        const errorMessage = messages[result.error] ?? "Something went wrong.";
+        const errorMessage = messages[result.error] ?? t("errorPrefix");
 
         setError(errorMessage);
-        toast.error("Generation failed", {
+        toast.error(t("failedToast"), {
           id: toastId,
           description: errorMessage,
         });
         return;
       }
 
-      toast.success("Career path generated!", {
+      toast.success(t("successToast"), {
         id: toastId,
-        description: "Your personalized path is ready.",
+        description: t("successToastDesc"),
       });
       router.refresh();
       onClose();
@@ -89,14 +90,14 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
         {/* Header */}
         <div className="px-6 py-5 border-b border-border flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shrink-0">
-            <Sparkles className="w-5 h-5 text-foreground" />
+            <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
             <h2 className="text-base font-bold text-foreground">
-              Create Your Career Path
+              {t("createPathTitle")}
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Our AI will design a personalized learning journey for you.
+              {t("createPathDesc")}
             </p>
           </div>
           <button
@@ -115,17 +116,17 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
               htmlFor="goal"
               className="block text-sm font-semibold text-foreground mb-2"
             >
-              What is your career goal?
+              {t("careerGoalLabel")}
             </label>
             <textarea
               id="goal"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
-              placeholder="e.g. أريد أن أصبح Full-Stack Developer متخصص في Next.js"
+              placeholder={t("careerGoalPlaceholder")}
               rows={3}
               maxLength={200}
               disabled={isPending}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
+              className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-ring disabled:opacity-50"
             />
             <p className="text-[10px] text-muted-foreground/70 mt-1.5">
               {goal.length}/200
@@ -135,10 +136,10 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
           {/* Examples */}
           <div className="space-y-2">
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
-              Examples
+              {t("examples")}
             </p>
             <div className="flex flex-wrap gap-2">
-              {EXAMPLE_GOALS.map((ex) => (
+              {exampleGoals.map((ex) => (
                 <button
                   key={ex}
                   type="button"
@@ -147,7 +148,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
                   className={cn(
                     "px-3 py-1.5 rounded-full text-xs",
                     "bg-accent text-foreground border border-border",
-                    "hover:bg-accent hover:text-white transition-colors",
+                    "hover:bg-accent hover:text-accent-foreground transition-colors", // تم إصلاح hover:text-white
                     "disabled:opacity-50"
                   )}
                 >
@@ -172,7 +173,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
             onClick={handleClose}
             className="px-4 py-2.5 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
           >
-            {isPending ? "Close" : "Cancel"}
+            {isPending ? t("close") : t("cancel")}
           </button>
           <button
             type="button"
@@ -181,19 +182,19 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
             className={cn(
               "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
               isValid && !isPending
-                ? "bg-primary hover:bg-primary text-primary-foreground active:scale-95 shadow-lg shadow-emerald-500/20"
+                ? "bg-primary hover:bg-primary/90 text-primary-foreground active:scale-95 shadow-lg shadow-primary/20"
                 : "bg-accent text-muted-foreground/70 cursor-not-allowed"
             )}
           >
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Generating...
+                {t("generating")}
               </>
             ) : (
               <>
                 <Sparkles className="w-4 h-4" />
-                Generate Path
+                {t("generatePath")}
               </>
             )}
           </button>

@@ -18,7 +18,7 @@ export function BroadcastForm() {
       const result = await broadcastNotificationAction({ title, body });
       
       if (result.success) {
-        toast.success(`Notification sent to ${result.count} users! ًںژ‰`);
+        toast.success(`Notification sent to ${result.count} users! 🎉`);
         setTitle("");
         setBody("");
       } else {

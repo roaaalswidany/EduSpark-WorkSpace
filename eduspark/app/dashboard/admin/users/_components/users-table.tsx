@@ -368,7 +368,7 @@ export function UsersTable({
           {Math.min(currentPage * 20, total)} of {total}
           {totalPages > 1 && (
             <span className="text-muted-foreground/70 ml-2">
-              آ· Page {currentPage} of {totalPages}
+              · Page {currentPage} of {totalPages}
             </span>
           )}
         </p>
@@ -463,8 +463,8 @@ export function UsersTable({
                       Activity:
                     </span>
                     <span className="truncate">
-                      {u._count.enrollments} courses آ·{" "}
-                      {u._count.certificates} certificates آ·{" "}
+                      {u._count.enrollments} courses ·{" "}
+                      {u._count.certificates} certificates ·{" "}
                       {u._count.services} services
                     </span>
                   </div>

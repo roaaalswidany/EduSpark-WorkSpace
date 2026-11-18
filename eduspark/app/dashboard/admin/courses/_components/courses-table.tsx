@@ -39,10 +39,10 @@ const STATUS_BADGE: Record<CourseStatus, string> = {
 };
 
 const STATUS_TOAST: Record<CourseStatus, { title: string; description: string }> = {
-  PUBLISHED: { title: "Course published ًںڑ€", description: "The course is now visible in the public catalog." },
-  DRAFT: { title: "Moved to draft ًں“Œ", description: "The course is now hidden from students." },
+  PUBLISHED: { title: "Course published 🚀", description: "The course is now visible in the public catalog." },
+  DRAFT: { title: "Moved to draft 📌", description: "The course is now hidden from students." },
   PENDING_REVIEW: { title: "Submitted for review", description: "The course is waiting for an administrator decision." },
-  ARCHIVED: { title: "Course archived ًں—„ï¸ڈ", description: "The course has been archived and is no longer active." },
+  ARCHIVED: { title: "Course archived 🗄️", description: "The course has been archived and is no longer active." },
 };
 
 function CourseThumb({ title, thumbnail, size = 44 }: { title: string; thumbnail: string | null; size?: number }) {
@@ -158,7 +158,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
         router.refresh();
         return;
       }
-      toast.success(decision === "APPROVE" ? "Course approved ًںڑ€" : "Feedback sent ًں“Œ", {
+      toast.success(decision === "APPROVE" ? "Course approved 🚀" : "Feedback sent 📌", {
         id: toastId,
         description: decision === "APPROVE" ? "The course is now public." : "The course is back in draft with your note.",
       });
@@ -211,7 +211,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
         </div>
       </div>
 
-      {total > 0 && <p className="text-xs text-muted-foreground">Showing {courses.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–{Math.min(currentPage * 20, total)} of {total}{totalPages > 1 && <span className="text-muted-foreground/70 ml-2">آ· Page {currentPage} of {totalPages}</span>}</p>}
+      {total > 0 && <p className="text-xs text-muted-foreground">Showing {courses.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–{Math.min(currentPage * 20, total)} of {total}{totalPages > 1 && <span className="text-muted-foreground/70 ml-2">· Page {currentPage} of {totalPages}</span>}</p>}
 
       {actionError && <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20"><AlertCircle className="w-4 h-4 text-destructive shrink-0" /><p className="text-sm text-destructive">{actionError}</p></div>}
 
@@ -240,7 +240,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
                     <CourseThumb title={c.title} thumbnail={c.thumbnail} />
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-foreground truncate">{c.title}</p>
-                      <p className="text-xs text-muted-foreground truncate mt-0.5">{c.category?.name ?? "Uncategorized"} آ· {c.level.toLowerCase()} آ· ${c.price.toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{c.category?.name ?? "Uncategorized"} · {c.level.toLowerCase()} · ${c.price.toFixed(2)}</p>
                     </div>
                   </div>
                   <div className="flex lg:block"><span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center">Creator:</span><Link href={`/profile/${c.creator.id}`} className="text-xs text-muted-foreground hover:text-primary transition-colors">{c.creator.name}</Link></div>

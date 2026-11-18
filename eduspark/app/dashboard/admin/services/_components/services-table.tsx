@@ -80,15 +80,15 @@ const STATUS_TOAST: Record<
     description: "The service is waiting for an administrator decision.",
   },
   ACTIVE: {
-    title: "Service activated â–¶ï¸ڈ",
+    title: "Service activated ▶️",
     description: "The service is now visible in the marketplace.",
   },
   PAUSED: {
-    title: "Service paused âڈ¸ï¸ڈ",
+    title: "Service paused ⏸️",
     description: "The service is now hidden from buyers.",
   },
   ARCHIVED: {
-    title: "Service archived ًں—„ï¸ڈ",
+    title: "Service archived 🗄️",
     description: "The service has been archived and is no longer active.",
   },
 };
@@ -200,7 +200,7 @@ function ServiceDetailsModal({
                 <h1 className="text-xl font-bold text-foreground">{service.title}</h1>
                 <p className="text-sm text-muted-foreground mt-1">
                   By <Link href={`/profile/${service.creator.id}`} className="text-primary hover:underline">{service.creator.name}</Link>
-                  {service.category && <> آ· {service.category.name}</>}
+                  {service.category && <> · {service.category.name}</>}
                 </p>
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
@@ -479,7 +479,7 @@ export function ServicesTable({
         return;
       }
 
-      toast.success(decision === "APPROVE" ? "Service approved ًںڑ€" : "Feedback sent ًں“‌", {
+      toast.success(decision === "APPROVE" ? "Service approved 🚀" : "Feedback sent ًں“‌", {
         id: toastId,
         description:
           decision === "APPROVE"
@@ -601,7 +601,7 @@ export function ServicesTable({
           {Math.min(currentPage * 20, total)} of {total}
           {totalPages > 1 && (
             <span className="text-muted-foreground/70 ml-2">
-              آ· Page {currentPage} of {totalPages}
+              · Page {currentPage} of {totalPages}
             </span>
           )}
         </p>
@@ -666,8 +666,8 @@ export function ServicesTable({
                         {s.title}
                       </p>
                       <p className="text-xs text-muted-foreground truncate mt-0.5">
-                        {s.category?.name ?? "Uncategorized"} آ· $
-                        {s.price.toFixed(2)} آ·{" "}
+                        {s.category?.name ?? "Uncategorized"} · $
+                        {s.price.toFixed(2)} ·{" "}
                         <span className="inline-flex items-center gap-0.5">
                           <Clock className="w-3 h-3" />
                           {s.deliveryDays}d

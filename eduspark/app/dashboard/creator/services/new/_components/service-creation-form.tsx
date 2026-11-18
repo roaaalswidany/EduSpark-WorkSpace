@@ -160,7 +160,7 @@ function TagInput({
         )}
       </div>
       <p className="text-[11px] text-muted-foreground/70">
-        {value.length}/{max} tags added آ· Press{" "}
+        {value.length}/{max} tags added · Press{" "}
         <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground font-mono text-[10px]">
           Enter
         </kbd>{" "}
@@ -422,9 +422,9 @@ export function ServiceCreationForm({
         const sentToReview = "sentToReview" in result && result.sentToReview;
         toast.success(
           !isEdit
-            ? "Service submitted for review ًں“¬"
+            ? "Service submitted for review 📬"
             : sentToReview
-            ? "Changes sent for review ًں“¬"
+            ? "Changes sent for review 📬"
             : "Service updated successfully! âœ¨",
           {
             id: toastId,
@@ -496,7 +496,7 @@ export function ServiceCreationForm({
                     options={certifiedCourses.map((cert) => ({
                       value: cert.courseId,
                       label: cert.courseTitle,
-                      description: `Score ${cert.score}% آ· ${cert.courseLevel}`,
+                      description: `Score ${cert.score}% · ${cert.courseLevel}`,
                       icon: (
                         <BookOpen className="w-3.5 h-3.5 text-primary shrink-0" />
                       ),
@@ -530,7 +530,7 @@ export function ServiceCreationForm({
                   <span className="font-mono text-muted-foreground">
                     {selectedCourse.credentialId}
                   </span>{" "}
-                  آ· Score{" "}
+                  · Score{" "}
                   <span className="text-amber-600 dark:text-amber-400 font-semibold">
                     {selectedCourse.score}%
                   </span>
@@ -634,7 +634,7 @@ export function ServiceCreationForm({
                     />
                   </FormControl>
                   <FormDescription className="text-muted-foreground/70 text-xs">
-                    Min $5 آ· Max $10,000
+                    Min $5 · Max $10,000
                   </FormDescription>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>

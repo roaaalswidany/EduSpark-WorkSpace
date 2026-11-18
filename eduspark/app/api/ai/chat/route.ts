@@ -133,8 +133,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       suggestions = generated.suggestions;
 
       if (geminiResult.error === "RATE_LIMITED") {
-        assistantContent +=
-          "\n\n---\n_ملاحظة: المساعد الذكي مشغول حالياً، أجبتك بالإجابة الأساسية._";
+        const busyMsg = classification.language === "ar" 
+          ? "\n\n---\n_ملاحظة: المساعد الذكي مشغول حالياً، أجبتك بالإجابة الأساسية._"
+          : "\n\n---\n_Note: The AI assistant is currently busy, so I provided a basic answer._";
+        assistantContent += busyMsg;
       }
     }
 

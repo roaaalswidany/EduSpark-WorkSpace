@@ -16,6 +16,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { updateStepStatusAction } from "@/actions/career-path/update-step-status";
+import { useLanguage } from "@/components/providers/language-provider";
 
 interface Step {
   id: string;
@@ -40,13 +41,14 @@ interface PathTimelineProps {
 
 export function PathTimeline({ steps }: PathTimelineProps) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [pendingStepId, setPendingStepId] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
   const handleStatusChange = (step: Step, newStatus: string) => {
     setPendingStepId(step.id);
 
-    const toastId = toast.loading("Updating progress...");
+    const toastId = toast.loading(t("updatingProgress"));
 
     startTransition(async () => {
       const result = await updateStepStatusAction({
@@ -56,14 +58,14 @@ export function PathTimeline({ steps }: PathTimelineProps) {
       setPendingStepId(null);
 
       if (!result.success) {
-        toast.error("Update failed", { id: toastId });
+        toast.error(t("updateFailed"), { id: toastId });
         return;
       }
 
       toast.success(
         newStatus === "COMPLETED"
-          ? "Step completed! ًںژ‰"
-          : "Step started! â–¶ï¸ڈ",
+          ? t("stepCompletedToast")
+          : t("stepStartedToast"),
         { id: toastId }
       );
       router.refresh();
@@ -96,11 +98,11 @@ export function PathTimeline({ steps }: PathTimelineProps) {
                   )}
                 >
                   {isPending ? (
-                    <Loader2 className="w-4 h-4 text-foreground animate-spin" />
+                    <Loader2 className="w-4 h-4 text-white animate-spin" />
                   ) : isCompleted ? (
-                    <CheckCircle2 className="w-5 h-5 text-foreground" />
+                    <CheckCircle2 className="w-5 h-5 text-white" />
                   ) : isInProgress ? (
-                    <Play className="w-4 h-4 text-foreground fill-current" />
+                    <Play className="w-4 h-4 text-primary-foreground fill-current" />
                   ) : (
                     <span className="text-xs font-bold text-muted-foreground">
                       {idx + 1}
@@ -125,14 +127,14 @@ export function PathTimeline({ steps }: PathTimelineProps) {
                   <h3
                     className={cn(
                       "text-sm font-bold",
-                      isCompleted ? "text-emerald-300" : "text-white"
+                      isCompleted ? "text-emerald-600 dark:text-emerald-400" : "text-foreground"
                     )}
                   >
                     {step.title}
                   </h3>
                   <div className="shrink-0 flex items-center gap-1 text-[10px] text-muted-foreground font-semibold">
                     <Clock className="w-3 h-3" />
-                    {step.estimatedWeeks}w
+                    {step.estimatedWeeks}{t("weeksShort")}
                   </div>
                 </div>
 
@@ -181,10 +183,10 @@ export function PathTimeline({ steps }: PathTimelineProps) {
                       type="button"
                       onClick={() => handleStatusChange(step, "IN_PROGRESS")}
                       disabled={isPending}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary text-primary-foreground text-xs font-semibold transition-all active:scale-95 disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold transition-all active:scale-95 disabled:opacity-50"
                     >
                       <Play className="w-3 h-3 fill-current" />
-                      Start
+                      {t("startBtn")}
                     </button>
                   )}
                   {isInProgress && (
@@ -195,12 +197,12 @@ export function PathTimeline({ steps }: PathTimelineProps) {
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-all active:scale-95 disabled:opacity-50"
                     >
                       <CheckCircle2 className="w-3 h-3" />
-                      Mark Complete
+                      {t("markCompleteBtn")}
                     </button>
                   )}
                   {isCompleted && (
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">
-                      âœ“ Completed
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+                      ✓ {t("completedLabel")}
                     </span>
                   )}
                 </div>

@@ -4,6 +4,7 @@ import "@fontsource-variable/cairo";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import { ThemedToaster } from "@/components/providers/themed-toaster";
+import { LanguageProvider } from "../components/providers/language-provider";
 
 export const metadata: Metadata = {
   title: "EduSpark Workspace",
@@ -24,8 +25,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+            <LanguageProvider>
           {children}
           <ThemedToaster />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>
