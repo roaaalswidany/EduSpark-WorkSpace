@@ -88,7 +88,7 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-xs font-bold text-amber-400 mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400 mb-2">
           <GraduationCap className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Admin</span>
         </div>

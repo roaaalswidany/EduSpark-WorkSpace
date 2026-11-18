@@ -107,7 +107,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
       label: "Certificates",
       value: stats.certificates,
       icon: Award,
-      color: "text-amber-400",
+      color: "text-amber-600 dark:text-amber-400",
     },
     {
       label: "Services",

@@ -48,9 +48,9 @@ function scoreToGrade(score: number): {
   label: string;
   colorClass: string;
 } {
-  if (score >= 95) return { label: "With Distinction", colorClass: "text-amber-300" };
-  if (score >= 85) return { label: "With Merit", colorClass: "text-yellow-400" };
-  return { label: "Pass", colorClass: "text-emerald-400" };
+  if (score >= 95) return { label: "With Distinction", colorClass: "text-amber-500" };
+  if (score >= 85) return { label: "With Merit", colorClass: "text-yellow-500" };
+  return { label: "Pass", colorClass: "text-emerald-500" };
 }
 
 function formatIssueDate(raw: Date | string): string {
@@ -111,22 +111,22 @@ function downloadJsonMetadata(
 function CertificateSeal({ score }: { score: number }) {
   return (
     <div className="relative flex items-center justify-center">
-      {/* Outer ring */}
+      {/* Outer spinning ring */}
       <svg
-        width="80"
-        height="80"
-        viewBox="0 0 80 80"
-        className="absolute"
+        width="96"
+        height="96"
+        viewBox="0 0 96 96"
+        className="absolute animate-[spin_15s_linear_infinite]"
         aria-hidden
       >
         <circle
-          cx="40"
-          cy="40"
-          r="36"
+          cx="48"
+          cy="48"
+          r="44"
           fill="none"
           stroke="url(#sealGrad)"
           strokeWidth="1.5"
-          strokeDasharray="4 2"
+          strokeDasharray="4 4"
         />
         <defs>
           <linearGradient id="sealGrad" x1="0" y1="0" x2="1" y2="1">
@@ -137,27 +137,28 @@ function CertificateSeal({ score }: { score: number }) {
         </defs>
       </svg>
 
-      {/* Inner filled circle */}
-      <div className="w-16 h-16 rounded-full bg-linear-to-br from-amber-400 via-yellow-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/40">
-        <Award className="w-8 h-8 text-white drop-shadow" />
+      {/* Inner solid gold circle */}
+      <div className="w-20 h-20 rounded-full bg-linear-to-br from-amber-300 via-amber-400 to-amber-600 flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.4)] border-4 border-[#09090b]">
+        <Award className="w-10 h-10 text-zinc-950 drop-shadow-md" />
       </div>
     </div>
   );
 }
 
-// ─── Score Badge ──────────────────────────────────────────────────────────────
+// ─── Score Badge (FIXED: Solid Gold with Dark Text) ──────────────────────────
 
 function ScoreBadge({ score }: { score: number }) {
   const grade = scoreToGrade(score);
   return (
-    <div className="flex flex-col items-center gap-1">
-      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/25 shadow-inner">
-        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-        <span className="text-lg font-black text-amber-300 tabular-nums leading-none">
+    <div className="flex flex-col items-end gap-2">
+      {/* Solid Gold Pill with Black Text for perfect contrast */}
+      <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-linear-to-r from-amber-400 to-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+        <Star className="w-4 h-4 text-zinc-950 fill-zinc-950" />
+        <span className="text-sm font-black text-zinc-950 tabular-nums leading-none tracking-wide">
           {score}%
         </span>
       </div>
-      <span className={cn("text-[10px] font-bold uppercase tracking-widest", grade.colorClass)}>
+      <span className={cn("text-[10px] font-black uppercase tracking-[0.2em]", grade.colorClass)}>
         {grade.label}
       </span>
     </div>
@@ -193,40 +194,39 @@ function FullCard({
   }, [certificate, verifyUrl]);
 
   return (
-    <div className="relative p-px rounded-2xl bg-linear-to-br from-amber-500/40 via-yellow-400/20 to-amber-500/40">
+    <div className="relative p-1 rounded-4xl bg-linear-to-br from-amber-500/60 via-zinc-800 to-amber-500/60 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
       {/* Card body */}
-      <div className="relative rounded-2xl bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950 overflow-hidden">
+      <div className="relative rounded-[calc(2rem-4px)] bg-[#09090b] overflow-hidden">
+        
         {/* Background dot grid */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.025]"
+          className="pointer-events-none absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage: `radial-gradient(circle, rgb(251 191 36) 1px, transparent 1px)`,
-            backgroundSize: "28px 28px",
+            backgroundSize: "24px 24px",
           }}
         />
 
         {/* Radial glow top-center */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-48 rounded-full bg-amber-500/10 blur-3xl"
+          className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-200 h-100 rounded-full bg-amber-500/10 blur-[120px]"
         />
 
-        {/* Top gold accent bar */}
-        <div className="h-1 bg-linear-to-r from-amber-700 via-yellow-400 to-amber-700" />
-
-        <div className="relative px-6 sm:px-10 py-8 sm:py-10 space-y-7">
+        <div className="relative px-6 sm:px-14 py-10 sm:py-14 space-y-10">
+          
           {/* ── Header row: logo left / score right ────────────────────── */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 border border-primary/20">
-                <GraduationCap className="w-5 h-5 text-primary" />
+              <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 shadow-inner">
+                <GraduationCap className="w-6 h-6 text-emerald-400" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-amber-400">
+                <p className="text-[12px] font-black uppercase tracking-[0.25em] text-emerald-500">
                   EduSpark
                 </p>
-                <p className="text-[10px] text-zinc-300/70 tracking-wide mt-0.5">
+                <p className="text-[10px] text-zinc-400 tracking-wide mt-0.5 font-medium uppercase">
                   Certificate of Completion
                 </p>
               </div>
@@ -235,39 +235,39 @@ function FullCard({
           </div>
 
           {/* ── Central seal + recipient ─────────────────────────────── */}
-          <div className="flex flex-col items-center gap-4 text-center">
+          <div className="flex flex-col items-center gap-6 text-center pt-2">
             <CertificateSeal score={certificate.score} />
 
-            <div>
-              <p className="text-[10px] font-medium text-zinc-300 uppercase tracking-[0.2em] mb-1.5">
+            <div className="space-y-2">
+              <p className="text-[11px] font-bold text-zinc-500 uppercase tracking-[0.3em] mb-3">
                 This certifies that
               </p>
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white drop-shadow-lg">
                 {certificate.recipientName}
               </h2>
-              <p className="text-[11px] text-zinc-300 mt-1">
-                has successfully completed
+              <p className="text-[13px] text-zinc-400 mt-2">
+                has successfully completed the course
               </p>
             </div>
 
-            {/* Course pill */}
-            <div className="inline-flex flex-col items-center gap-1.5 px-5 py-3 rounded-2xl bg-linear-to-br from-emerald-500/10 via-emerald-500/8 to-emerald-500/10 border border-primary/20 shadow-inner shadow-primary/5">
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-3.5 h-3.5 text-primary shrink-0" />
-                <h3 className="text-base sm:text-lg font-bold text-white leading-snug">
+            {/* Course Title Pill - Emerald theme */}
+            <div className="inline-flex flex-col items-center gap-2 px-10 py-5 rounded-3xl bg-linear-to-b from-emerald-500/15 to-emerald-500/5 border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.1)] mt-4">
+              <div className="flex items-center gap-3">
+                <BookOpen className="w-5 h-5 text-emerald-400 shrink-0" />
+                <h3 className="text-xl sm:text-2xl font-bold text-white leading-snug">
                   {certificate.courseTitle}
                 </h3>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mt-1">
                 {certificate.categoryName && (
                   <>
-                    <span className="text-[10px] text-zinc-300">
+                    <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">
                       {certificate.categoryName}
                     </span>
-                    <span className="w-1 h-1 rounded-full bg-accent" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/50" />
                   </>
                 )}
-                <span className="text-[10px] text-primary font-semibold">
+                <span className="text-[11px] text-emerald-400 font-bold uppercase tracking-wider">
                   {formatLevel(certificate.courseLevel)} Level
                 </span>
               </div>
@@ -275,33 +275,37 @@ function FullCard({
           </div>
 
           {/* ── Horizontal rule ──────────────────────────────────────── */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-linear-to-r from-transparent via-zinc-800 to-transparent" />
-            <Sparkles className="w-3.5 h-3.5 text-amber-500/40" />
-            <div className="flex-1 h-px bg-linear-to-r from-transparent via-zinc-800 to-transparent" />
+          <div className="flex items-center gap-4 py-4">
+            <div className="flex-1 h-px bg-linear-to-r from-transparent via-zinc-700 to-transparent" />
+            <Sparkles className="w-4 h-4 text-amber-500/60" />
+            <div className="flex-1 h-px bg-linear-to-r from-transparent via-zinc-700 to-transparent" />
           </div>
 
           {/* ── Meta grid: date + instructor ─────────────────────────── */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-accent/50 border border-zinc-800">
-              <Calendar className="w-4 h-4 text-zinc-300/70 shrink-0" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/3 border border-white/10">
+              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
+                <Calendar className="w-5 h-5 text-zinc-400" />
+              </div>
               <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase tracking-widest text-zinc-300/70">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
                   Issued
                 </p>
-                <p className="text-xs font-semibold text-white truncate mt-0.5">
+                <p className="text-sm font-semibold text-zinc-200 truncate mt-0.5">
                   {formatIssueDate(certificate.issuedAt)}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-accent/50 border border-zinc-800">
-              <Shield className="w-4 h-4 text-zinc-300/70 shrink-0" />
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/3 border border-white/10">
+              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
+                <Shield className="w-5 h-5 text-zinc-400" />
+              </div>
               <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase tracking-widest text-zinc-300/70">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
                   Instructor
                 </p>
-                <p className="text-xs font-semibold text-white truncate mt-0.5">
+                <p className="text-sm font-semibold text-zinc-200 truncate mt-0.5">
                   {certificate.instructorName}
                 </p>
               </div>
@@ -309,56 +313,58 @@ function FullCard({
           </div>
 
           {/* ── Credential ID row ─────────────────────────────────────── */}
-          <div className="flex items-center gap-3 p-3.5 rounded-xl bg-accent/40 border border-zinc-800/40">
-            <Hash className="w-4 h-4 text-zinc-300/70 shrink-0" />
+          <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/3 border border-white/10">
+            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
+              <Hash className="w-5 h-5 text-zinc-400" />
+            </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[9px] font-semibold uppercase tracking-widest text-zinc-300/70 mb-0.5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500 mb-0.5">
                 Credential ID
               </p>
-              <p className="text-xs font-mono text-zinc-300 truncate">
+              <p className="text-xs font-mono text-zinc-300 truncate tracking-wider">
                 {certificate.credentialId}
               </p>
             </div>
             <button
               onClick={handleCopyCredential}
               title="Copy Credential ID"
-              className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent active:scale-95 transition-all shrink-0"
+              className="flex items-center justify-center w-9 h-9 rounded-xl hover:bg-white/10 active:scale-95 transition-all shrink-0 text-zinc-400 hover:text-foreground"
             >
               {credentialCopied ? (
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <Check className="w-4 h-4 text-emerald-400" />
               ) : (
-                <Copy className="w-3.5 h-3.5 text-zinc-300 hover:text-white transition-colors" />
+                <Copy className="w-4 h-4" />
               )}
             </button>
           </div>
 
           {/* ── Action buttons ────────────────────────────────────────── */}
-          <div className="grid grid-cols-3 gap-2">
-            {/* Download JSON */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
+            {/* Download JSON - Solid Gold */}
             <button
               onClick={handleDownload}
               className={cn(
-                "flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl text-center",
-                "bg-amber-500/8 hover:bg-amber-500/15 border border-amber-500/15 hover:border-amber-500/30",
-                "text-amber-400 hover:text-amber-300",
-                "active:scale-95 transition-all duration-150"
+                "flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl",
+                "bg-amber-500 hover:bg-amber-400 text-zinc-950",
+                "shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)]",
+                "active:scale-95 transition-all duration-200"
               )}
               title="Download certificate metadata as JSON"
             >
               <Download className="w-4 h-4" />
-              <span className="text-[10px] font-semibold uppercase tracking-wide">
+              <span className="text-xs font-black uppercase tracking-wider">
                 Download
               </span>
             </button>
 
-            {/* Copy verify link */}
+            {/* Copy verify link - Glass */}
             <button
               onClick={handleCopyVerifyUrl}
               className={cn(
-                "flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl text-center",
-                "bg-accent/60 hover:bg-accent border border-zinc-800/60 hover:border-zinc-800",
+                "flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl",
+                "bg-white/5 hover:bg-white/10 border border-white/10",
                 "text-zinc-300 hover:text-white",
-                "active:scale-95 transition-all duration-150"
+                "active:scale-95 transition-all duration-200"
               )}
               title="Copy verification link"
             >
@@ -367,34 +373,34 @@ function FullCard({
               ) : (
                 <Copy className="w-4 h-4" />
               )}
-              <span className="text-[10px] font-semibold uppercase tracking-wide">
+              <span className="text-xs font-bold uppercase tracking-wider">
                 {urlCopied ? "Copied!" : "Share"}
               </span>
             </button>
 
-            {/* Verify externally */}
+            {/* Verify externally - Glass */}
             <a
               href={verifyUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
-                "flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl text-center",
-                "bg-accent/60 hover:bg-accent border border-zinc-800/60 hover:border-zinc-800",
+                "flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl",
+                "bg-white/5 hover:bg-white/10 border border-white/10",
                 "text-zinc-300 hover:text-white",
-                "active:scale-95 transition-all duration-150"
+                "active:scale-95 transition-all duration-200"
               )}
               title="Verify certificate"
             >
               <ExternalLink className="w-4 h-4" />
-              <span className="text-[10px] font-semibold uppercase tracking-wide">
+              <span className="text-xs font-bold uppercase tracking-wider">
                 Verify
               </span>
             </a>
           </div>
         </div>
 
-        {/* Bottom rule */}
-        <div className="h-px bg-linear-to-r from-transparent via-amber-500/20 to-transparent" />
+        {/* Bottom glow rule */}
+        <div className="h-1 bg-linear-to-r from-transparent via-amber-500/50 to-transparent" />
       </div>
     </div>
   );
@@ -422,60 +428,60 @@ function CompactCard({
   }, [certificate, verifyUrl]);
 
   return (
-    <div className="relative p-px rounded-xl bg-linear-to-r from-amber-500/25 via-yellow-400/15 to-amber-500/25 group">
-      <div className="relative rounded-xl bg-zinc-950 overflow-hidden px-4 py-4 flex items-center gap-4">
+    <div className="relative p-px rounded-xl bg-linear-to-r from-amber-500/30 via-yellow-400/20 to-amber-500/30 group">
+      <div className="relative rounded-xl bg-[#09090b] overflow-hidden px-4 py-4 flex items-center gap-4">
         {/* Seal */}
-        <div className="w-11 h-11 rounded-xl bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center shrink-0 shadow-md shadow-amber-500/20">
-          <Award className="w-5 h-5 text-white" />
+        <div className="w-12 h-12 rounded-xl bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/20">
+          <Award className="w-6 h-6 text-zinc-950" />
         </div>
 
         {/* Info */}
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-bold text-white truncate">
+          <p className="text-sm font-bold text-white truncate">
             {certificate.courseTitle}
           </p>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-[10px] text-zinc-300">
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[11px] text-zinc-400">
               {formatIssueDate(certificate.issuedAt)}
             </span>
-            <span className="w-1 h-1 rounded-full bg-accent" />
-            <span className="text-[10px] font-semibold text-amber-400">
+            <span className="w-1 h-1 rounded-full bg-zinc-600" />
+            <span className="text-[11px] font-bold text-amber-500">
               {certificate.score}%
             </span>
           </div>
-          <p className="text-[10px] font-mono text-zinc-300/70 truncate mt-0.5">
+          <p className="text-[10px] font-mono text-zinc-500 truncate mt-1">
             {certificate.credentialId}
           </p>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={handleCopy}
             title="Copy Credential ID"
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors text-zinc-400 hover:text-foreground"
           >
             {copied ? (
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <Check className="w-4 h-4 text-emerald-400" />
             ) : (
-              <Copy className="w-3.5 h-3.5 text-zinc-300/70 hover:text-zinc-300 transition-colors" />
+              <Copy className="w-4 h-4" />
             )}
           </button>
           <button
             onClick={handleDownload}
             title="Download metadata"
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors text-zinc-400 hover:text-amber-400"
           >
-            <Download className="w-3.5 h-3.5 text-zinc-300/70 hover:text-amber-400 transition-colors" />
+            <Download className="w-4 h-4" />
           </button>
           <a
             href={verifyUrl}
             target="_blank"
             rel="noopener noreferrer"
             title="Verify certificate"
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors text-zinc-400 hover:text-foreground"
           >
-            <ExternalLink className="w-3.5 h-3.5 text-zinc-300/70 hover:text-zinc-300 transition-colors" />
+            <ExternalLink className="w-4 h-4" />
           </a>
         </div>
       </div>

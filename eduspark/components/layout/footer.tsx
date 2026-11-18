@@ -76,7 +76,7 @@ export function Footer() {
             © {new Date().getFullYear()} EduSpark. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground/70">
-            Made for Graduation Project
+            Made with hard for Graduation Project
           </p>
         </div>
       </div>

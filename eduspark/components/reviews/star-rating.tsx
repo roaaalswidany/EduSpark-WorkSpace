@@ -8,7 +8,7 @@ export function StarRating({ value, size = 16 }: { value: number; size?: number 
           key={i}
           width={size}
           height={size}
-          className={i <= Math.round(value) ? "fill-amber-400 text-amber-400" : "text-muted-foreground/70"}
+          className={i <= Math.round(value) ? "fill-amber-400 text-amber-600 dark:text-amber-400" : "text-muted-foreground/70"}
         />
       ))}
     </span>

@@ -78,7 +78,7 @@ export function LevelCard({
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-400" />
+              <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               <span className="text-sm font-bold text-foreground tabular-nums">
                 {xpFormatted} XP
               </span>
@@ -110,7 +110,7 @@ export function LevelCard({
             icon={Trophy}
             label="Badges"
             value={`${badgesEarned}/${badgesTotal}`}
-            color="text-amber-400"
+            color="text-amber-600 dark:text-amber-400"
           />
           <StatBox
             icon={Target}

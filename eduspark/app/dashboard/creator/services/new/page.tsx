@@ -25,8 +25,8 @@ function NoCertificatesGate() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center space-y-6">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-amber-500/10 border border-amber-500/20 mx-auto">
-          <Award className="w-10 h-10 text-amber-400" />
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-amber-600 dark:bg-amber-500/10 border border-amber-600 dark:border-amber-500/20 mx-auto">
+          <Award className="w-10 h-10 text-amber-600 dark:text-amber-400" />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-foreground mb-3">
@@ -140,7 +140,7 @@ export default async function NewServicePage() {
           </h1>
           <p className="text-muted-foreground text-sm mt-1.5">
             You have{" "}
-            <span className="text-amber-400 font-semibold">
+            <span className="text-amber-600 dark:text-amber-400 font-semibold">
               {certifiedCourses.length} certified{" "}
               {certifiedCourses.length === 1 ? "course" : "courses"}
             </span>{" "}
@@ -151,8 +151,8 @@ export default async function NewServicePage() {
 
       {/* Alert: marketplace rule */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/15">
-          <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-600 dark:bg-amber-500/5 border border-amber-600 dark:border-amber-500/15">
+          <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <p className="text-amber-300/80 text-xs leading-relaxed">
             <span className="font-semibold text-amber-300">
               Marketplace Rule:{" "}

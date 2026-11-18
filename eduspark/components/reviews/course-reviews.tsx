@@ -34,7 +34,7 @@ function StarPicker({ value, onChange }: { value: number; onChange: (v: number) 
           <Star
             className={cn(
               "w-6 h-6 transition-colors",
-              n <= value ? "text-amber-400 fill-amber-400" : "text-muted-foreground/70 hover:text-amber-400"
+              n <= value ? "text-amber-600 dark:text-amber-400 fill-amber-400" : "text-muted-foreground/70 hover:text-amber-600 dark:text-amber-400"
             )}
           />
         </button>
@@ -139,7 +139,7 @@ export function CourseReviews({
         <h2 className="text-base font-bold text-foreground">Reviews ({ratingCount})</h2>
         {ratingCount > 0 && (
           <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+            <Star className="w-4 h-4 text-amber-600 dark:text-amber-400 fill-amber-400" />
             <span className="text-sm font-bold text-foreground">{averageRating.toFixed(1)}</span>
             <span className="text-xs text-muted-foreground">/ 5</span>
           </div>
@@ -181,7 +181,7 @@ export function CourseReviews({
                       key={n}
                       className={cn(
                         "w-3.5 h-3.5",
-                        n <= r.rating ? "text-amber-400 fill-amber-400" : "text-muted-foreground/70"
+                        n <= r.rating ? "text-amber-600 dark:text-amber-400 fill-amber-400" : "text-muted-foreground/70"
                       )}
                     />
                   ))}

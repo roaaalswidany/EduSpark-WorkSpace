@@ -29,7 +29,6 @@ export default async function MyOrdersPage() {
       createdAt: true,
       updatedAt: true,
       creator: {
-        // ًں‘‡ طھظ… ط­ط°ظپ image: true ظ…ظ† ظ‡ظ†ط§
         select: { id: true, name: true, headline: true },
       },
       service: {
@@ -55,7 +54,6 @@ export default async function MyOrdersPage() {
     counterpart: p.creator ?? {
       id: "",
       name: "Unassigned",
-      // ًں‘‡ طھظ… ط­ط°ظپ image: null ظ…ظ† ظ‡ظ†ط§
       headline: null,
     },
     service: p.service,

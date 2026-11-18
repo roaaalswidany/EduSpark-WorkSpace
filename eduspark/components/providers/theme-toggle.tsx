@@ -29,7 +29,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <div
-        className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-muted border border-border h-[48px]"
+        className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-muted border border-border h-12"
         aria-hidden
       />
     );

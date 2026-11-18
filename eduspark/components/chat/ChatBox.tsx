@@ -68,9 +68,9 @@ const CHAT_TYPE_CONFIG = {
   EDUCATIONAL: {
     label: "Course Room",
     Icon: GraduationCap,
-    accent: "text-amber-400",
-    badge: "bg-amber-500/10 text-amber-300 border-amber-500/20",
-    bubbleOwn: "bg-amber-600 text-white",
+    accent: "text-amber-600 dark:text-amber-400",
+    badge: "bg-amber-600 dark:bg-amber-500/10 text-amber-300 border-amber-600 dark:border-amber-500/20",
+    bubbleOwn: "bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20",
     bubbleOther: "bg-accent text-foreground",
     legal: false,
   },
@@ -476,7 +476,7 @@ function ConnectionBanner({
     <div
       className={cn(
         "flex items-center justify-between gap-3 px-4 py-2.5 text-xs border-b",
-        isReconnecting && "bg-amber-500/10 border-amber-500/20 text-amber-300",
+        isReconnecting && "bg-amber-600 dark:bg-amber-500/10 border-amber-600 dark:border-amber-500/20 text-amber-300",
         isError && "bg-destructive/10 border-destructive/20 text-destructive",
         !isReconnecting &&
           !isError &&
@@ -1059,7 +1059,7 @@ useEffect(() => {
 
           <div className="flex items-center gap-2 shrink-0">
             {isReconnecting ? (
-              <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 animate-spin" />
             ) : isConnected ? (
               <Wifi className="w-3.5 h-3.5 text-emerald-500" />
             ) : (
@@ -1118,8 +1118,8 @@ useEffect(() => {
       />
 
       {showLegalDisclaimer && config.legal && (
-        <div className="shrink-0 flex items-start gap-2.5 px-4 py-3 bg-amber-500/5 border-b border-amber-500/15">
-          <Scale className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+        <div className="shrink-0 flex items-start gap-2.5 px-4 py-3 bg-amber-600 dark:bg-amber-500/5 border-b border-amber-600 dark:border-amber-500/15">
+          <Scale className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <p className="text-[11px] text-amber-300/80 leading-relaxed">
             <span className="font-semibold text-amber-300">Legal Notice: </span>
             All messages in this project channel are permanently recorded and
@@ -1335,7 +1335,7 @@ useEffect(() => {
                   "absolute bottom-2 right-3 text-[10px] font-semibold",
                   inputValue.length >= MAX_INPUT_CHARS
                     ? "text-destructive"
-                    : "text-amber-400"
+                    : "text-amber-600 dark:text-amber-400"
                 )}
               >
                 {inputValue.length}/{MAX_INPUT_CHARS}

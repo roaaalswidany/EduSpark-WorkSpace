@@ -35,7 +35,7 @@ export function UserMenu({ user }: { user: Session["user"] }) {
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-accent transition-colors"
       >
-        {/* ط¥ظ„ط؛ط§ط، ط§ظ„طµظˆط±ط© ظˆط¹ط±ط¶ ط§ظ„ط£ط­ط±ظپ ط§ظ„ط£ظˆظ„ظ‰ ط¯ط§ط¦ظ…ط§ظ‹ */}
+        
         <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
           {initials}
         </div>

@@ -157,7 +157,7 @@ export function CurriculumEditor({ course, sections }: Props) {
                 course.status === "PUBLISHED"
                   ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                   : course.status === "DRAFT"
-                  ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                  ? "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-500/20"
                   : course.status === "PENDING_REVIEW"
                   ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
                   : "bg-muted-foreground/70/50 text-muted-foreground border-border"
@@ -229,8 +229,8 @@ export function CurriculumEditor({ course, sections }: Props) {
         </div>
       )}
       {course.status === "DRAFT" && course.reviewNote && (
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
-          <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-600 dark:bg-amber-500/10 border border-amber-600 dark:border-amber-500/20">
+          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <p className="text-sm text-amber-200">
             <strong>Changes requested:</strong> {course.reviewNote}
           </p>
@@ -356,7 +356,7 @@ function AddSectionForm({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Section title (e.g., Introduction)"
         disabled={isPending}
-        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:border-primary/100 outline-none"
+        className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:border-primary outline-none"
       />
       {error && (
         <div className="flex items-center gap-2 text-xs text-red-400">
@@ -472,7 +472,7 @@ function SectionCard({
                   setEditTitle(section.title);
                 }
               }}
-              className="flex-1 bg-background border border-primary/100 rounded px-2 py-1 text-sm text-foreground outline-none"
+              className="flex-1 bg-background border border-primary rounded px-2 py-1 text-sm text-foreground outline-none"
             />
             <button
               onClick={handleRename}
@@ -603,7 +603,7 @@ function LessonRow({
     );
   }
 
-   return (
+    return (
     <div className="space-y-2">
       <div className="flex items-start gap-2 p-3 rounded-lg bg-background/50 border border-border/60 hover:border-border700 transition-colors">
         <div className="w-6 h-6 rounded bg-accent flex items-center justify-center text-[10px] font-bold text-foreground0 shrink-0 mt-0.5">
@@ -633,7 +633,7 @@ function LessonRow({
               </span>
             )}
             {!lesson.videoUrl && (
-              <span className="text-amber-500/60">No video</span>
+              <span className="text-amber-600 dark:text-amber-500/60">No video</span>
             )}
           </div>
         </div>
@@ -731,7 +731,7 @@ function LessonForm({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Lesson title"
         disabled={isPending}
-        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary/100 outline-none"
+        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary outline-none"
       />
 
       <textarea
@@ -740,7 +740,7 @@ function LessonForm({
         placeholder="Description (optional)"
         rows={2}
         disabled={isPending}
-        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary/100 outline-none resize-none"
+        className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary outline-none resize-none"
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -750,7 +750,7 @@ function LessonForm({
           onChange={(e) => setVideoUrl(e.target.value)}
           placeholder="Video URL (YouTube/Vimeo or direct MP4)"
           disabled={isPending}
-          className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary/100 outline-none"
+          className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary outline-none"
         />
         <div className="flex items-center gap-2">
           <input
@@ -760,7 +760,7 @@ function LessonForm({
             value={durationMin}
             onChange={(e) => setDurationMin(Number(e.target.value) || 0)}
             disabled={isPending}
-            className="flex-1 bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary/100 outline-none"
+            className="flex-1 bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:border-primary outline-none"
             placeholder="Duration"
           />
           <span className="text-xs text-foreground0 shrink-0">min</span>

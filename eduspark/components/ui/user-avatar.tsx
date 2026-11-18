@@ -14,7 +14,6 @@ export function UserAvatar({ name, size = 36, className }: UserAvatarProps) {
     .join("")
     .toUpperCase();
     
-  // توليد لون ثابت بناءً على الاسم
   const hue = name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
 
   return (

@@ -36,7 +36,6 @@ export default async function AchievementsPage() {
         userId: true,
         xp: true,
         level: true,
-        // ًں‘‡ طھظ… ط­ط°ظپ image: true ظ…ظ† ظ‡ظ†ط§
         user: { select: { id: true, name: true } }, 
       },
     }),
@@ -54,7 +53,7 @@ export default async function AchievementsPage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
       {/* Header */}
       <div>
-        <div className="flex items-center gap-2 text-xs font-bold text-amber-400 mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400 mb-2">
           <Award className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Achievements</span>
         </div>
@@ -97,7 +96,6 @@ export default async function AchievementsPage() {
           rank: i + 1,
           userId: u.user.id,
           name: u.user.name,
-          // ًں‘‡ طھظ… ط­ط°ظپ image: null ظ…ظ† ظ‡ظ†ط§
           xp: u.xp,
           level: u.level,
           isCurrentUser: u.userId === userId,

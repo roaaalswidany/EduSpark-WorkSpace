@@ -44,8 +44,6 @@ export function LoginForm() {
     setIsPending(true);
 
     try {
-      // ظ†ط³طھط®ط¯ظ… signIn ظ…ط¨ط§ط´ط±ط© ظ„ظٹطھط­ظ‚ظ‚ ظ…ظ† ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ظˆظٹطµط¯ط± ط§ظ„ظƒظˆظƒظٹط² ظپظٹ ط®ط·ظˆط© ظˆط§ط­ط¯ط©
-      // ظ‡ط°ط§ ظٹظ…ظ†ط¹ ط§ظ„ط­ط¸ط± ط§ظ„ظ…ط²ط¯ظˆط¬ ظˆظٹط­ظ„ ط§ظ„ظ…ط´ظƒظ„ط©
       const result = await signIn("credentials", {
         email,
         password,
@@ -66,7 +64,6 @@ export function LoginForm() {
         return;
       }
 
-      // ظ†ط¬ط§ط­
       router.push(callbackUrl);
       router.refresh();
     } catch (err) {
@@ -164,8 +161,8 @@ export function LoginForm() {
 
             {/* Rate Limited Error */}
             {error && isRateLimited && (
-              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-amber-500/5 border border-amber-500/20">
-                <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-amber-600 dark:bg-amber-500/5 border border-amber-600 dark:border-amber-500/20">
+                <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-amber-300">{error}</p>
                 </div>

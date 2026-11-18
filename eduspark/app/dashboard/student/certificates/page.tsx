@@ -57,7 +57,7 @@ export default async function MyCertificatesPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-xs font-bold text-amber-400 mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400 mb-2">
           <Award className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">Achievements</span>
         </div>
@@ -74,8 +74,8 @@ export default async function MyCertificatesPage() {
       {/* Empty state */}
       {data.length === 0 ? (
         <div className="rounded-2xl bg-card border border-border p-12 sm:p-16 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-5">
-            <Award className="w-7 h-7 text-amber-400" />
+          <div className="w-16 h-16 rounded-2xl bg-amber-600 dark:bg-amber-500/10 border border-amber-600 dark:border-amber-500/20 flex items-center justify-center mx-auto mb-5">
+            <Award className="w-7 h-7 text-amber-600 dark:text-amber-400" />
           </div>
           <h2 className="text-lg font-bold text-foreground mb-1.5">
             No certificates yet

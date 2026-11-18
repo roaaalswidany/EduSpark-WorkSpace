@@ -24,7 +24,6 @@ export interface OrderCardData {
     id: string;
     name: string;
     headline: string | null;
-    // ًں‘‡ طھظ… ط­ط°ظپ image ظ…ظ† ظ‡ظ†ط§
   };
   service: {
     title: string;
@@ -55,7 +54,7 @@ const STATUS_CONFIG: Record<
   },
   REVIEW_REQUESTED: {
     label: "Under Review",
-    className: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    className: "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-500/20",
   },
   COMPLETED: {
     label: "Completed",
@@ -84,7 +83,6 @@ function getGradient(id: string): string {
   return GRADIENTS[code % GRADIENTS.length];
 }
 
-// ًں‘‡ طھظ… طھظ†ط¸ظٹظپ ط§ظ„ظ…ظƒظˆظ† ظ„ظٹطھط¬ط§ظ‡ظ„ ط§ظ„طµظˆط±
 function CounterpartAvatar({
   name,
   size = 40,
@@ -198,7 +196,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
 
           {/* Counterpart */}
           <div className="flex items-center gap-2 mb-3">
-            {/* ًں‘‡ طھظ… ط¥ط²ط§ظ„ط© طھظ…ط±ظٹط± ط§ظ„طµظˆط±ط© ظ‡ظ†ط§ */}
+            
             <CounterpartAvatar
               name={order.counterpart.name}
               size={28}

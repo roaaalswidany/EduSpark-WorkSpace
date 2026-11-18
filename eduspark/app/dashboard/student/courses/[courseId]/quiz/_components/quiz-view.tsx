@@ -310,7 +310,7 @@ export function QuizView({
               </p>
             </div>
             <div className="rounded-2xl bg-card border border-border p-5 text-center">
-              <Trophy className="w-5 h-5 text-amber-400 mx-auto mb-2" />
+              <Trophy className="w-5 h-5 text-amber-600 dark:text-amber-400 mx-auto mb-2" />
               <p className="text-xl font-black text-foreground tabular-nums">
                 {quiz.passingScore}%
               </p>
@@ -336,13 +336,13 @@ export function QuizView({
                 "rounded-2xl p-4 sm:p-5 mb-6 border flex items-start gap-3",
                 lastAttempt.passed
                   ? "bg-emerald-500/5 border-emerald-500/20"
-                  : "bg-amber-500/5 border-amber-500/20"
+                  : "bg-amber-600 dark:bg-amber-500/5 border-amber-600 dark:border-amber-500/20"
               )}
             >
               {lastAttempt.passed ? (
                 <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
               ) : (
-                <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
               )}
               <div className="flex-1 min-w-0">
                 <p
@@ -495,7 +495,7 @@ export function QuizView({
                     className={cn(
                       "shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center mt-0.5 transition-all",
                       isSelected
-                        ? "border-primary/100 bg-primary/50"
+                        ? "border-primary bg-primary/50"
                         : "border-slate-600"
                     )}
                   >
@@ -663,20 +663,20 @@ export function QuizView({
                 "inline-flex items-center justify-center w-20 h-20 rounded-full mb-5 border-2",
                 passed
                   ? "bg-emerald-500/10 border-emerald-500/30"
-                  : "bg-amber-500/10 border-amber-500/30"
+                  : "bg-amber-600 dark:bg-amber-500/10 border-amber-600 dark:border-amber-500/30"
               )}
             >
               {passed ? (
                 <Trophy className="w-10 h-10 text-emerald-400" />
               ) : (
-                <RotateCcw className="w-10 h-10 text-amber-400" />
+                <RotateCcw className="w-10 h-10 text-amber-600 dark:text-amber-400" />
               )}
             </div>
 
             <h1
               className={cn(
                 "text-2xl sm:text-3xl font-black mb-2",
-                passed ? "text-emerald-400" : "text-amber-400"
+                passed ? "text-emerald-400" : "text-amber-600 dark:text-amber-400"
               )}
             >
               {passed ? "Congratulations! 🎉" : "Keep Learning!"}
@@ -695,7 +695,7 @@ export function QuizView({
               <p
                 className={cn(
                   "text-2xl sm:text-3xl font-black tabular-nums",
-                  passed ? "text-emerald-400" : "text-amber-400"
+                  passed ? "text-emerald-400" : "text-amber-600 dark:text-amber-400"
                 )}
               >
                 {result.score.toFixed(0)}%
@@ -727,10 +727,10 @@ export function QuizView({
 
           {/* Certificate info */}
           {passed && result.certificate && (
-            <div className="rounded-2xl bg-linear-to-br from-amber-500/10 via-yellow-500/5 to-amber-500/10 border border-amber-500/20 p-5 sm:p-6 mb-8">
+            <div className="rounded-2xl bg-linear-to-br from-amber-500/10 via-yellow-500/5 to-amber-500/10 border border-amber-600 dark:border-amber-500/20 p-5 sm:p-6 mb-8">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shrink-0">
-                  <Award className="w-6 h-6 text-amber-400" />
+                <div className="w-12 h-12 rounded-xl bg-amber-600 dark:bg-amber-500/15 border border-amber-600 dark:border-amber-500/25 flex items-center justify-center shrink-0">
+                  <Award className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-amber-300 mb-1">
@@ -744,7 +744,7 @@ export function QuizView({
                   </p>
                   <Link
                     href="/dashboard/student/certificates"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-foreground text-xs font-bold transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-600 dark:bg-amber-500 hover:bg-amber-600 dark:bg-amber-400 text-foreground text-xs font-bold transition-colors"
                   >
                     View Certificate
                     <ArrowRight className="w-3.5 h-3.5" />

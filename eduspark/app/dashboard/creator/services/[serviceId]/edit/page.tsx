@@ -35,7 +35,7 @@ export default async function EditServicePage({ params }: PageProps) {
         title: true,
         slug: true,
         description: true,
-        thumbnail: true, // 👈 إضافة الصورة هنا
+        thumbnail: true, 
         price: true,
         deliveryDays: true,
         revisions: true,
@@ -107,8 +107,8 @@ export default async function EditServicePage({ params }: PageProps) {
           currentThumbnail={service.thumbnail} 
         />
 
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/15">
-          <GraduationCap className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-600 dark:bg-amber-500/5 border border-amber-600 dark:border-amber-500/15">
+          <GraduationCap className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <p className="text-amber-300/80 text-xs leading-relaxed">
             <span className="font-semibold text-amber-300">Note: </span>
             Changes to your service will appear on the marketplace immediately.

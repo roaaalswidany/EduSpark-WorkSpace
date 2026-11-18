@@ -21,7 +21,6 @@ export interface CourseCardData {
     id: string;
     name: string;
     headline: string | null;
-    // ًں‘‡ طھظ… ط­ط°ظپ image ظ…ظ† ظ‡ظ†ط§
   };
   category: { id: string; name: string; slug: string } | null;
   totalLessons: number;
@@ -33,7 +32,7 @@ export interface CourseCardData {
 
 const LEVEL_STYLES: Record<CourseLevel, string> = {
   BEGINNER: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  INTERMEDIATE: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  INTERMEDIATE: "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-500/20",
   ADVANCED: "bg-rose-500/10 text-rose-400 border-rose-500/20",
 };
 
@@ -54,7 +53,6 @@ export function CourseCard({ course }: { course: CourseCardData }) {
   const showEnrolled = course.isEnrolled;
   const progress = course.enrollmentProgress ?? 0;
 
-  // ًں‘‡ ط­ط³ط§ط¨ ط§ظ„ط£ط­ط±ظپ ط§ظ„ط£ظˆظ„ظ‰ ظˆط§ظ„ظ„ظˆظ† ظ„ظ„ظ…ط¯ط±ط¨
   const creatorInitials = course.creator.name
     .split(" ")
     .map((p) => p[0])
@@ -164,7 +162,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
 
         {/* Creator */}
         <div className="flex items-center gap-2 mt-auto pt-2">
-          {/* ًں‘‡ ط§ط³طھط¨ط¯ط§ظ„ ط§ظ„طµظˆط±ط© ط¨ط§ظ„ط£ط­ط±ظپ ط§ظ„ط£ظˆظ„ظ‰ */}
+
           <div 
             className="w-6 h-6 rounded-full text-foreground text-[10px] font-bold flex items-center justify-center ring-1 ring-border shrink-0"
             style={{ background: `hsl(${creatorHue}, 55%, 42%)` }}
@@ -190,7 +188,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
           )}
           {course.ratingCount > 0 && (
             <span className="flex items-center gap-1 ml-auto">
-              <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+              <Star className="w-3 h-3 text-amber-600 dark:text-amber-400 fill-amber-400" />
               <span className="text-amber-300 font-semibold">
                 {course.totalRating.toFixed(1)}
               </span>

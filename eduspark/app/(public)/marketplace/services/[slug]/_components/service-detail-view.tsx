@@ -102,7 +102,7 @@ function CreatorAvatar({
     name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
   return (
     <div
-      className="rounded-full flex items-center justify-center text-foreground font-bold ring-2 ring-border shrink-0"
+      className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -148,7 +148,6 @@ function OrderDialog({
           id: toastId,
           description: "Opening your project workspace…",
         });
-        // Redirect to the project workspace
         router.push(`/dashboard/projects/${result.projectId}`);
         return;
       }
@@ -186,7 +185,7 @@ function OrderDialog({
       <div className="relative w-full max-w-lg rounded-2xl bg-card border border-border shadow-2xl overflow-hidden animate-scale-in">
         {/* Header */}
         <div className="px-6 py-5 border-b border-border">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-1">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-1">
             Place Order
           </p>
           <h2 className="text-lg font-bold text-foreground line-clamp-1">
@@ -197,20 +196,20 @@ function OrderDialog({
         {/* Body */}
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-foreground0">Total</span>
+            <span className="text-muted-foreground">Total</span>
             <span className="text-xl font-black text-foreground tabular-nums">
               ${service.price.toFixed(2)}
             </span>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-foreground0">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>Delivery</span>
             <span className="text-foreground">
               {service.deliveryDays} days
             </span>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-foreground0">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>Revisions</span>
             <span className="text-foreground">
               {service.revisions === 0
@@ -236,7 +235,7 @@ function OrderDialog({
               rows={5}
               maxLength={2000}
               disabled={isPending}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
+              className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50"
             />
             <p className="text-[10px] text-muted-foreground mt-1.5">
               {requirements.length}/2000
@@ -244,9 +243,9 @@ function OrderDialog({
           </div>
 
           {error && (
-            <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-              <p className="text-xs text-red-300">{error}</p>
+            <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+              <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+              <p className="text-xs text-destructive">{error}</p>
             </div>
           )}
         </div>
@@ -257,7 +256,7 @@ function OrderDialog({
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground200 hover:bg-accent transition-all disabled:opacity-50"
+            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent transition-all disabled:opacity-50"
           >
             Cancel
           </button>
@@ -268,7 +267,7 @@ function OrderDialog({
             className={cn(
               "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all",
               isValid && !isPending
-                ? "bg-primary hover:bg-primary/50 text-foreground active:scale-95 shadow-lg shadow-emerald-500/20"
+                ? "bg-primary hover:bg-primary/90 text-primary-foreground active:scale-95 shadow-lg shadow-primary/20"
                 : "bg-accent text-muted-foreground cursor-not-allowed"
             )}
           >
@@ -312,14 +311,15 @@ export function ServiceDetailView({
             {/* Title + tags */}
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold uppercase tracking-wider">
+                {/* تم إصلاح شارة Certified Creator لتصبح شفافة بدلاً من برتقالي مصمت */}
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] font-bold uppercase tracking-wider">
                   <ShieldCheck className="w-3 h-3" />
                   Certified Creator
                 </div>
                 {service.category && (
                   <Link
                     href={`/marketplace?category=${service.category.id}`}
-                    className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 hover:text-primary300 transition-colors"
+                    className="text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary/80 transition-colors"
                   >
                     {service.category.name}
                   </Link>
@@ -360,10 +360,10 @@ export function ServiceDetailView({
             </div>
 
             {/* Stats row */}
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-foreground0">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
               {service.orderCount > 0 && (
                 <div className="flex items-center gap-1.5">
-                  <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                  <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                   <span className="text-foreground font-semibold">
                     {service.orderCount}
                   </span>
@@ -391,7 +391,7 @@ export function ServiceDetailView({
             {/* Description */}
             <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
               <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-400" />
+                <FileText className="w-4 h-4 text-primary" />
                 About This Service
               </h2>
               <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
@@ -422,7 +422,7 @@ export function ServiceDetailView({
             {service.portfolioLinks.length > 0 && (
               <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
                 <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-violet-400" />
+                  <Sparkles className="w-4 h-4 text-primary" />
                   Portfolio
                 </h2>
                 <div className="space-y-2">
@@ -432,17 +432,17 @@ export function ServiceDetailView({
                       href={link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border hover:border-primary/100/40 hover:bg-card transition-all group"
+                      className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border hover:border-primary/40 hover:bg-card transition-all group"
                     >
-                      <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center">
-                        <ExternalLink className="w-3.5 h-3.5 text-indigo-400" />
+                      <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                        <ExternalLink className="w-3.5 h-3.5 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-muted-foreground truncate group-hover:text-foreground200 transition-colors">
+                        <p className="text-xs text-muted-foreground truncate group-hover:text-foreground transition-colors">
                           {link.replace(/^https?:\/\//, "").slice(0, 60)}
                         </p>
                       </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary400 transition-colors shrink-0" />
+                      <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                     </a>
                   ))}
                 </div>
@@ -462,12 +462,12 @@ export function ServiceDetailView({
                 <div className="min-w-0">
                   <Link
                     href={`/profile/${service.creator.id}`}
-                    className="text-sm font-bold text-foreground hover:text-primary400 transition-colors"
+                    className="text-sm font-bold text-foreground hover:text-primary transition-colors"
                   >
                     {service.creator.name}
                   </Link>
                   {service.creator.headline && (
-                    <p className="text-xs text-indigo-400 mt-0.5">
+                    <p className="text-xs text-primary mt-0.5">
                       {service.creator.headline}
                     </p>
                   )}
@@ -494,7 +494,7 @@ export function ServiceDetailView({
 
 {/* CTA */}
 {isAdmin ? (
-  <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium text-center">
+  <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-medium text-center">
     <ShieldCheck className="w-4 h-4 shrink-0" />
     Admins cannot order services.
   </div>
@@ -508,9 +508,9 @@ export function ServiceDetailView({
     onClick={() => setOrderOpen(true)}
     className={cn(
       "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-      "bg-primary hover:bg-primary/50 text-foreground",
+      "bg-primary hover:bg-primary/90 text-primary-foreground",
       "text-sm font-bold transition-all active:scale-[0.98]",
-      "shadow-lg shadow-emerald-500/20"
+      "shadow-lg shadow-primary/20"
     )}
   >
     <Package className="w-4 h-4" />
@@ -521,9 +521,9 @@ export function ServiceDetailView({
     href={`/auth/login?callbackUrl=/marketplace/services/${service.slug}`}
     className={cn(
       "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-      "bg-primary hover:bg-primary/50 text-foreground",
+      "bg-primary hover:bg-primary/90 text-primary-foreground",
       "text-sm font-bold transition-all active:scale-[0.98]",
-      "shadow-lg shadow-emerald-500/20"
+      "shadow-lg shadow-primary/20"
     )}
   >
     Sign in to order
@@ -532,7 +532,7 @@ export function ServiceDetailView({
 
                 {/* Features */}
                 <div className="pt-4 border-t border-border space-y-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-foreground0">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                     What&apos;s included
                   </p>
                   <ul className="space-y-2.5">
@@ -562,7 +562,7 @@ export function ServiceDetailView({
                 {/* Meta */}
                 <div className="pt-4 border-t border-border space-y-2">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-foreground0">Created</span>
+                    <span className="text-muted-foreground">Created</span>
                     <span className="text-muted-foreground">
                       {new Date(service.createdAt).toLocaleDateString("en-US", {
                         month: "short",
@@ -576,13 +576,13 @@ export function ServiceDetailView({
             </div>
 
             {/* Trust badge */}
-            <div className="rounded-2xl bg-primary/50/5 border border-primary/100/20 p-4 flex items-start gap-3">
-              <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+            <div className="rounded-2xl bg-primary/5 border border-primary/20 p-4 flex items-start gap-3">
+              <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-bold text-indigo-300">
+                <p className="text-xs font-bold text-primary">
                   EduSpark Certified
                 </p>
-                <p className="text-[11px] text-foreground0 mt-0.5 leading-relaxed">
+                <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
                   This creator has proven their skills through our rigorous
                   certification program.
                 </p>
@@ -602,7 +602,7 @@ export function ServiceDetailView({
                 <Link
                   key={rs.id}
                   href={`/marketplace/services/${rs.slug}`}
-                  className="group rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/100/40 transition-all hover:-translate-y-0.5"
+                  className="group rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/40 transition-all hover:-translate-y-0.5"
                 >
                   <div
                     className={cn(
@@ -627,11 +627,11 @@ export function ServiceDetailView({
                     )}
                   </div>
                   <div className="p-4">
-                    <p className="text-xs font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-foreground transition-colors mb-2">
+                    <p className="text-xs font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors mb-2">
                       {rs.title}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-foreground0">
+                      <span className="text-xs text-muted-foreground">
                         {rs.creator.name.split(" ")[0]}
                       </span>
                       <span className="text-sm font-bold text-foreground tabular-nums">

@@ -42,11 +42,11 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
 
   return (
     <>
-      <div className="rounded-xl bg-amber-500/10 border border-amber-500/30 p-4 sm:p-5">
+      <div className="rounded-xl bg-amber-600 dark:bg-amber-500/10 border border-amber-600 dark:border-amber-500/30 p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex items-start gap-3 flex-1 min-w-0">
-            <div className="w-9 h-9 rounded-lg bg-amber-500/20 flex items-center justify-center shrink-0">
-              <Lock className="w-4 h-4 text-amber-400" />
+            <div className="w-9 h-9 rounded-lg bg-amber-600 dark:bg-amber-500/20 flex items-center justify-center shrink-0">
+              <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
             </div>
             <div className="min-w-0">
               <h3 className="text-sm font-bold text-amber-300">Quiz is locked</h3>
@@ -61,7 +61,7 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
             type="button"
             onClick={() => setShowDialog(true)}
             disabled={isPending}
-            className="shrink-0 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-foreground transition-colors disabled:opacity-50"
+            className="shrink-0 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-amber-600 dark:bg-amber-500 hover:bg-amber-600 dark:bg-amber-400 text-foreground transition-colors disabled:opacity-50"
           >
             {isPending ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -82,8 +82,8 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
             <div className="w-full max-w-md rounded-2xl bg-card border border-border shadow-2xl p-5 space-y-4 pointer-events-auto">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-                  <AlertTriangle className="w-5 h-5 text-amber-400" />
+                <div className="w-10 h-10 rounded-xl bg-amber-600 dark:bg-amber-500/10 border border-amber-600 dark:border-amber-500/20 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-bold text-foreground">
@@ -110,7 +110,7 @@ export function QuizLockBanner({ courseId, courseStatus }: Props) {
                   type="button"
                   onClick={handleConfirm}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-foreground text-sm font-bold transition-colors disabled:opacity-50 inline-flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-amber-600 dark:bg-amber-500 hover:bg-amber-600 dark:bg-amber-400 text-foreground text-sm font-bold transition-colors disabled:opacity-50 inline-flex items-center gap-2"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

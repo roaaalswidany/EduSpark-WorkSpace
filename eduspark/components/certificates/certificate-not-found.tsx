@@ -14,7 +14,7 @@ export function CertificateNotFound() {
           to share the link again. Only certificates issued by EduSpark can be verified here.
         </p>
         <p className="mt-1 text-sm text-muted-foreground" dir="rtl">
-          ظ„ط§ طھظˆط¬ط¯ ط´ظ‡ط§ط¯ط© ظ…ط·ط§ط¨ظ‚ط© ظ„ظ‡ط°ط§ ط§ظ„ظ…ط¹ط±ظ‘ظپ.
+            لا توجد شهادة مطابقة لهذا المعرّف.
         </p>
         <Link href="/" className="mt-6 inline-block text-sm text-primary hover:text-primary">
           Back to EduSpark

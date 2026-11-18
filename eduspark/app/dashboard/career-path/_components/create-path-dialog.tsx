@@ -12,10 +12,10 @@ interface CreatePathDialogProps {
 }
 
 const EXAMPLE_GOALS = [
-  "ط£ط±ظٹط¯ ط£ظ† ط£طµط¨ط­ Full-Stack Developer",
-  "ط£ط±ظٹط¯ طھط¹ظ„ظ… طھط­ظ„ظٹظ„ ط§ظ„ط¨ظٹط§ظ†ط§طھ",
-  "ط£ط±ظٹط¯ ط£ظ† ط£طµط¨ط­ UI/UX Designer",
-  "ط£ط±ظٹط¯ طھط¹ظ„ظ… طھط·ظˆظٹط± طھط·ط¨ظٹظ‚ط§طھ ط§ظ„ط¬ظˆط§ظ„",
+  "أريد أن أصبح Full-Stack Developer",
+  "أريد تعلم تحليل البيانات",
+  "أريد أن أصبح UI/UX Designer",
+  "أريد تعلم تطوير تطبيقات الجوال",
 ];
 
 export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
@@ -69,7 +69,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
         return;
       }
 
-      toast.success("Career path generated! ًںژ‰", {
+      toast.success("Career path generated!", {
         id: toastId,
         description: "Your personalized path is ready.",
       });
@@ -121,7 +121,7 @@ export function CreatePathDialog({ onClose }: CreatePathDialogProps) {
               id="goal"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
-              placeholder="e.g. ط£ط±ظٹط¯ ط£ظ† ط£طµط¨ط­ Full-Stack Developer ظ…طھط®طµطµ ظپظٹ Next.js"
+              placeholder="e.g. أريد أن أصبح Full-Stack Developer متخصص في Next.js"
               rows={3}
               maxLength={200}
               disabled={isPending}

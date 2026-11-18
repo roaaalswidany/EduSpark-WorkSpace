@@ -23,7 +23,7 @@ export async function CreatorReputationCard({ creatorId }: { creatorId: string }
               <li key={n} className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span className="w-3">{n}</span>
                 <div className="h-2 flex-1 overflow-hidden rounded bg-accent">
-                  <div className="h-full rounded bg-amber-400" style={{ width: `${pct}%` }} />
+                  <div className="h-full rounded bg-amber-600 dark:bg-amber-400" style={{ width: `${pct}%` }} />
                 </div>
                 <span className="w-6 text-right">{rating.distribution[n]}</span>
               </li>

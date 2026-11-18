@@ -47,7 +47,6 @@ export default async function CreatorCoursesPage() {
           </p>
         </div>
         
-        {/* ط²ط± ط¥ظ†ط´ط§ط، ظƒظˆط±ط³ ط¬ط¯ظٹط¯ */}
         <CreateCourseForm />
       </div>
 
@@ -72,7 +71,7 @@ export default async function CreatorCoursesPage() {
                       course.status === "PUBLISHED"
                         ? "bg-emerald-500/10 text-emerald-400"
                         : course.status === "DRAFT"
-                        ? "bg-amber-500/10 text-amber-400"
+                        ? "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"
                         : course.status === "PENDING_REVIEW"
                         ? "bg-sky-500/10 text-sky-400"
                         : "bg-accent/50 text-muted-foreground"

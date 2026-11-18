@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
@@ -84,7 +85,6 @@ export default async function PublicProfilePage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* ملاحظة: تم حذف الهيدر المكرر من هنا عشان يضل بس الهيدر الأساسي للموقع */}
 
       {/* Content */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">

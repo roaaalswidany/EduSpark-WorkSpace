@@ -1,30 +1,42 @@
 const fs = require('fs');
 
-const file = 'eduspark/app/(public)/courses/[slug]/page.tsx';
+const filesToFix = [
+    './eduspark/components/auth/verify-email-banner.tsx',
+    './eduspark/app/dashboard/settings/page.tsx',
+    './eduspark/app/dashboard/achievements/_components/badges-grid.tsx',
+    './eduspark/app/dashboard/career-path/page.tsx',
+    './eduspark/app/dashboard/career-path/_components/career-path-view.tsx'
+];
 
-if (fs.existsSync(file)) {
+let fixedCount = 0;
+
+filesToFix.forEach(file => {
+    if (!fs.existsSync(file)) return;
     let content = fs.readFileSync(file, 'utf8');
+    let original = content;
 
-    // 1. تحويل أي خلفية داكنة إلى خلفية النظام (تصبح بيضاء في اللايت مود)
-    content = content.replaceAll('bg-slate-950', 'bg-background');
-    content = content.replaceAll('bg-zinc-950', 'bg-background');
-    content = content.replaceAll('bg-slate-900', 'bg-background');
-    content = content.replaceAll('bg-zinc-900', 'bg-background');
-    content = content.replaceAll('bg-black', 'bg-background');
+    // 1. إصلاح الشريط البرتقالي (جعله خلفية باهتة ونص داكن)
+    content = content.replace(/bg-(amber|orange|yellow)-500\s+text-white/g, 'bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20');
+    content = content.replace(/bg-(amber|orange|yellow)-600\s+text-white/g, 'bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20');
 
-    // 2. تحويل النصوص البيضاء إلى نص النظام (يصبح أسود في اللايت مود)
-    content = content.replaceAll('text-white', 'text-foreground');
-    content = content.replaceAll('text-slate-50', 'text-foreground');
-    content = content.replaceAll('text-zinc-50', 'text-foreground');
+    // 2. إصلاح الشارة البرتقالية الفارغة في صفحة الإعدادات
+    if (file.includes('settings')) {
+        content = content.replace(/bg-amber-500(?!\/)/g, 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20');
+    }
 
-    // 3. تحويل النصوص الرمادية الفاتحة إلى رمادي مقروء
-    content = content.replaceAll('text-slate-300', 'text-muted-foreground');
-    content = content.replaceAll('text-slate-400', 'text-muted-foreground');
-    content = content.replaceAll('text-zinc-300', 'text-muted-foreground');
-    content = content.replaceAll('text-zinc-400', 'text-muted-foreground');
+    // 3. إصلاح النصوص البيضاء المختفية على الخلفيات البيضاء (الإنجازات والمسار الوظيفي)
+    content = content.replace(/className="([^"]*)"/g, (match, classes) => {
+        if ((classes.includes('bg-card') || classes.includes('bg-white') || classes.includes('bg-background')) && classes.includes('text-white')) {
+            return `className="${classes.replace(/\btext-white\b/g, 'text-foreground')}"`;
+        }
+        return match;
+    });
 
-    fs.writeFileSync(file, content, 'utf8');
-    console.log('✅ تم إصلاح صفحة الكورس بالكامل وبشكل قسري!');
-} else {
-    console.log('❌ لم يتم العثور على الملف');
-}
+    if (content !== original) {
+        fs.writeFileSync(file, content, 'utf8');
+        console.log(`✅ تم إصلاح: ${file}`);
+        fixedCount++;
+    }
+});
+
+console.log(`\n🎉 انتهى! تم إصلاح ${fixedCount} ملفات محددة.`);

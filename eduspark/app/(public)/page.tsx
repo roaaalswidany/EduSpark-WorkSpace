@@ -62,9 +62,6 @@ export default async function HomePage() {
 
   return (
     <div className="overflow-hidden">
-      {/* â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-          HERO
-      â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */}
       <section className="relative">
         {/* Gradient background */}
         <div className="absolute inset-0 bg-linear-to-b from-emerald-100/60 via-background to-background dark:from-emerald-950/40 dark:via-zinc-950 dark:to-zinc-950" />
@@ -75,7 +72,7 @@ export default async function HomePage() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-6">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Powered by AI آ· Certified Marketplace</span>
+              <span>Powered by AI . Certified Marketplace</span>
             </div>
 
             {/* Title */}
@@ -89,7 +86,7 @@ export default async function HomePage() {
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-10">
-              EduSpark combines expert-led courses, verified certificates, and a
+              EduSpark combines expert led courses, verified certificates, and a
               certified marketplace  where proven learners become trusted
               creators.
             </p>
@@ -131,9 +128,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-          STATS
-      â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */}
       <section className="relative border-y border-border/60 bg-background/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -153,7 +147,7 @@ export default async function HomePage() {
               icon={Award}
               value={certificatesCount}
               label="Certificates Issued"
-              color="text-amber-400"
+              color="text-amber-600 dark:text-amber-400"
             />
             <StatCard
               icon={Store}
@@ -165,9 +159,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-          FEATURES
-      â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
@@ -218,9 +209,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-          FEATURED COURSES
-      â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */}
       {featuredCourses.length > 0 && (
         <section className="bg-card/30 border-y border-border/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -280,7 +268,7 @@ export default async function HomePage() {
 
                     <div className="flex items-center justify-between pt-3 border-t border-border">
                       <div className="flex items-center gap-1 text-xs">
-                        <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                        <Star className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 fill-amber-400" />
                         <span className="font-bold text-foreground">
                           {course.totalRating.toFixed(1)}
                         </span>
@@ -300,9 +288,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-          HOW IT WORKS
-      â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
@@ -331,9 +316,9 @@ export default async function HomePage() {
             icon={Award}
             title="Pass & get certified"
             description={`Complete all lessons, pass the ${QUIZ_PASSING_SCORE}% quiz, and receive a verifiable certificate with a unique credential ID.`}
-            color="text-amber-400"
-            bg="bg-amber-500/10"
-            border="border-amber-500/20"
+            color="text-amber-600 dark:text-amber-400"
+            bg="bg-amber-600 dark:bg-amber-500/10"
+            border="border-amber-600 dark:border-amber-500/20"
           />
           <Step
             number={3}
@@ -347,9 +332,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-          EXTRA FEATURES GRID
-      â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */}
       <section className="relative border-y border-border/60 bg-background/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 lg:gap-8">
@@ -387,9 +369,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-          FINAL CTA
-      â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */}
       <section className="relative">
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-emerald-100/30 to-background dark:via-emerald-950/20 dark:to-zinc-950" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -402,7 +381,7 @@ export default async function HomePage() {
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed">
               Join {usersCount.toLocaleString("en-US")}+ learners who are
-              building their careers on EduSpark.
+              building their careers on EduSpark
             </p>
             <Link
               href={primaryCta.href}

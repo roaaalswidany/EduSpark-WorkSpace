@@ -92,7 +92,7 @@ export default async function QuizPage({
                       className={`inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                         q.status === "PUBLISHED"
                           ? "bg-emerald-500/10 text-emerald-400"
-                          : "bg-amber-500/10 text-amber-400"
+                          : "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"
                       }`}
                     >
                       {q.status}

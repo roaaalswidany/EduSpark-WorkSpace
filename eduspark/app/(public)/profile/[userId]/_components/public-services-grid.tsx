@@ -73,7 +73,7 @@ export function PublicServicesGrid({ services }: { services: PublicService[] }) 
                 <span>{service.deliveryDays}d</span>
                 {service._count.orders > 0 && (
                   <span className="flex items-center gap-0.5 ml-2">
-                    <Star className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
+                    <Star className="w-2.5 h-2.5 text-amber-600 dark:text-amber-500 fill-amber-500" />
                     <span className="text-foreground0 font-medium">
                       {service._count.orders}
                     </span>

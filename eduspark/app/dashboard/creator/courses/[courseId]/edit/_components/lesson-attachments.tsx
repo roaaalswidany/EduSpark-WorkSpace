@@ -198,7 +198,7 @@ export function LessonAttachments({ lessonId, attachments }: Props) {
                 <p className="text-[9px] text-muted-foreground">
                   {formatSize(att.fileSizeBytes)}
                   {att.status !== "CONFIRMED" && (
-                    <span className="ml-1 text-amber-500">· {att.status.toLowerCase()}</span>
+                    <span className="ml-1 text-amber-600 dark:text-amber-500">· {att.status.toLowerCase()}</span>
                   )}
                 </p>
               </div>

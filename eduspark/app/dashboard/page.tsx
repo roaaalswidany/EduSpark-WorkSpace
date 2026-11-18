@@ -73,7 +73,7 @@ export default async function DashboardPage() {
           </span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-          Welcome back, {session.user.name?.split(" ")[0] ?? "there"} <Hand className="inline-block w-8 h-8 text-amber-400 ml-2" /> 
+          Welcome back, {session.user.name?.split(" ")[0] ?? "there"} <Hand className="inline-block w-8 h-8 text-amber-600 dark:text-amber-400 ml-2" /> 
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
           {isAdmin
@@ -102,8 +102,8 @@ export default async function DashboardPage() {
               label="Courses"
               value={totalCourses}
               icon={GraduationCap}
-              color="text-amber-400"
-              bg="bg-amber-500/10 border-amber-500/20"
+              color="text-amber-600 dark:text-amber-400"
+              bg="bg-amber-500/10 border border-amber-500/20 dark:bg-amber-500/10 border-amber-600 dark:border-amber-500/20"
             />
             <StatCard
               label="Services"
@@ -175,8 +175,8 @@ export default async function DashboardPage() {
             label="Certificates"
             value={certificatesCount}
             icon={Award}
-            color="text-amber-400"
-            bg="bg-amber-500/10 border-amber-500/20"
+            color="text-amber-600 dark:text-amber-400"
+            bg="bg-amber-500/10 border border-amber-500/20 dark:bg-amber-500/10 border-amber-600 dark:border-amber-500/20"
             href="/dashboard/student/certificates"
           />
           <StatCard
@@ -263,10 +263,10 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Link
             href="/courses"
-            className="group flex items-center gap-4 p-5 rounded-2xl bg-card border border-border hover:border-amber-500/40 transition-all"
+            className="group flex items-center gap-4 p-5 rounded-2xl bg-card border border-border hover:border-amber-600 dark:border-amber-500/40 transition-all"
           >
-            <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-              <GraduationCap className="w-5 h-5 text-amber-400" />
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 dark:bg-amber-500/10 border border-amber-600 dark:border-amber-500/20 flex items-center justify-center shrink-0">
+              <GraduationCap className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground">Browse Courses</p>
@@ -274,7 +274,7 @@ export default async function DashboardPage() {
                 Discover new skills to master
               </p>
             </div>
-            <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-amber-400 transition-colors" />
+            <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-amber-600 dark:text-amber-400 transition-colors" />
           </Link>
 
           <Link

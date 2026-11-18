@@ -36,6 +36,7 @@ const LEVEL_LABELS = {
   ADVANCED: "Advanced",
 } as const;
 
+// تم إصلاح شارة المستوى المتوسط لتكون شفافة (مثل باقي الشارات) بدلاً من برتقالي مصمت
 const LEVEL_STYLES = {
   BEGINNER: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   INTERMEDIATE: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
@@ -204,7 +205,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
       </div>
 
       {/* ── Hero ───────────────────────────────────────── */}
-      {/* تم إصلاح الخلفية هنا لتصبح بيضاء في اللايت مود */}
       <section className="relative bg-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">

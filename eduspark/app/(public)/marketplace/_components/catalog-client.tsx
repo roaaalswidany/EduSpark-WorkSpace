@@ -42,7 +42,6 @@ export interface ServiceCardData {
     id: string;
     name: string;
     headline: string | null;
-    // ًں‘‡ طھظ… ط­ط°ظپ image ظ…ظ† ظ‡ظ†ط§
     /** Category IDs the creator is certified in */
     certifiedCategories: string[];
   };
@@ -89,7 +88,6 @@ function getGradient(id: string): string {
 
 // ─── Creator Avatar ────────────────────────────────────────────────
 
-// ًں‘‡ طھظ… طھظ†ط¸ظٹظپ ط§ظ„ظ…ظƒظˆظ† ظ„ظٹطھط¬ط§ظ‡ظ„ ط§ظ„طµظˆط±
 function CreatorAvatar({
   name,
   size = 28,
@@ -110,7 +108,7 @@ function CreatorAvatar({
 
   return (
     <div
-      className="rounded-full flex items-center justify-center text-foreground font-bold ring-2 ring-border shrink-0"
+      className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -153,7 +151,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
               <span
-                className="font-black text-foreground/20 select-none"
+                className="font-black text-white/20 select-none"
                 style={{ fontSize: "clamp(3rem, 8vw, 5rem)" }}
               >
                 {service.title.charAt(0)}
@@ -164,7 +162,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
           {/* Category badge */}
           {service.category && (
             <div className="absolute bottom-2.5 left-2.5">
-              <span className="px-2 py-1 rounded-lg bg-black/55 backdrop-blur-sm text-foreground text-[10px] font-semibold tracking-wide">
+              <span className="px-2 py-1 rounded-lg bg-black/55 backdrop-blur-sm text-white text-[10px] font-semibold tracking-wide">
                 {service.category.name}
               </span>
             </div>
@@ -194,7 +192,6 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
 
           {/* Creator row */}
           <div className="flex items-center gap-2">
-            {/* ًں‘‡ طھظ… ط¥ط²ط§ظ„ط© طھظ…ط±ظٹط± ط§ظ„طµظˆط±ط© ظ‡ظ†ط§ */}
             <CreatorAvatar
               name={service.creator.name}
               size={26}
@@ -219,7 +216,7 @@ function ServiceCard({ service }: { service: ServiceCardData }) {
           </div>
 
           {/* Title */}
-          <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-foreground transition-colors flex-1">
+          <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors flex-1">
             {service.title}
           </h3>
 
@@ -298,9 +295,9 @@ function SortDropdown({
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium",
-          "bg-card border border-border text-muted-foreground",
-          "hover:border-border hover:text-foreground transition-all"
+          "flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium",
+          "bg-background border border-border text-muted-foreground",
+          "hover:border-ring hover:text-foreground transition-all"
         )}
       >
         <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -464,7 +461,7 @@ export function CatalogClient({
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,0.12), transparent)",
+              "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16,185,129,0.1), transparent)",
           }}
         />
 
@@ -487,26 +484,26 @@ export function CatalogClient({
             program — your work is in trusted hands.
           </p>
 
-          {/* Search bar */}
+          {/* Search bar - MATCHING COURSES PAGE STYLE */}
           <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <input
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search services, skills, or creators..."
               className={cn(
-                "w-full pl-12 pr-12 py-4 rounded-2xl text-sm",
-                "bg-card border border-border text-foreground",
-                "placeholder:text-muted-foreground/70",
-                "focus:outline-none focus:border-primary focus:ring-2 focus:ring-emerald-500/20",
-                "transition-all shadow-xl shadow-black/20"
+                "w-full pl-10 pr-10 h-11 rounded-lg text-sm",
+                "bg-background border border-border text-foreground",
+                "placeholder:text-muted-foreground",
+                "focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring",
+                "transition-all"
               )}
             />
             {searchInput && (
               <button
                 onClick={clearSearch}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -534,7 +531,7 @@ export function CatalogClient({
             </div>
             <div className="w-px h-4 bg-accent" />
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-amber-400" />
+              <ShieldCheck className="w-4 h-4 text-amber-500" />
               <span>
                 <span className="text-foreground font-bold">100%</span> certified
               </span>

@@ -115,9 +115,9 @@ const MILESTONE_STATUS = {
   [MilestoneStatus.REVIEW_REQUESTED]: {
     label: "Under Review",
     icon: Eye,
-    dot: "bg-amber-500 border-amber-400",
+    dot: "bg-amber-600 dark:bg-amber-500 border-amber-600 dark:border-amber-400",
     text: "text-amber-300",
-    badge: "bg-amber-500/10 text-amber-300 border-amber-500/20",
+    badge: "bg-amber-600 dark:bg-amber-500/10 text-amber-300 border-amber-600 dark:border-amber-500/20",
   },
   [MilestoneStatus.APPROVED]: {
     label: "Approved",
@@ -160,8 +160,8 @@ const PROJECT_STATUS = {
   [ProjectStatus.REVIEW_REQUESTED]: {
     label: "Awaiting Approval",
     color: "text-amber-300",
-    bg: "bg-amber-500/10",
-    bar: "bg-amber-500",
+    bg: "bg-amber-600 dark:bg-amber-500/10",
+    bar: "bg-amber-600 dark:bg-amber-500",
     progress: 85,
   },
   [ProjectStatus.COMPLETED]: {
@@ -206,9 +206,9 @@ function dueDateMeta(iso: string | null): {
       className: "text-red-400 font-semibold",
     };
   if (days === 0) return { text: "Due today", className: "text-red-400 font-semibold" };
-  if (days === 1) return { text: "Due tomorrow", className: "text-amber-400" };
+  if (days === 1) return { text: "Due tomorrow", className: "text-amber-600 dark:text-amber-400" };
   if (days <= 3)
-    return { text: `Due in ${days}d`, className: "text-amber-400" };
+    return { text: `Due in ${days}d`, className: "text-amber-600 dark:text-amber-400" };
 
   return {
     text: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
@@ -216,7 +216,7 @@ function dueDateMeta(iso: string | null): {
   };
 }
 
-// 👇 تم تعديل هذا المكون ليعرض الأحرف الأولى فقط بدون صور
+
 function ParticipantAvatar({
   name,
   size = 36,
@@ -274,7 +274,7 @@ function SubmissionForm({
         placeholder="Describe what you've delivered (e.g., 'Final logo files in SVG, PNG, and AI formats. Brand guidelines included.')"
         rows={3}
         maxLength={500}
-        className="w-full bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
+        className="w-full bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 transition-all"
       />
       <div>
         <input
@@ -283,7 +283,7 @@ function SubmissionForm({
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Delivery link (optional) — https://…"
           maxLength={500}
-          className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground600 focus:outline-none focus:border-primary/100 focus:ring-1 focus:ring-emerald-500 transition-all"
+          className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 transition-all"
         />
         {!urlOk && (
           <p className="mt-1 text-[10px] text-red-400">Only https:// links are allowed.</p>
@@ -448,7 +448,7 @@ function MilestoneCard({
           milestone.status === MilestoneStatus.APPROVED
             ? "bg-card/60 border-emerald-500/15"
             : milestone.status === MilestoneStatus.REVIEW_REQUESTED
-            ? "bg-card border-amber-500/20"
+            ? "bg-card border-amber-600 dark:border-amber-500/20"
             : milestone.status === MilestoneStatus.REVISION_NEEDED
             ? "bg-card border-red-500/20"
             : milestone.status === MilestoneStatus.IN_PROGRESS
@@ -594,7 +594,7 @@ function MilestoneCard({
                     disabled={isPending}
                     className={cn(
                       "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
-                      "bg-amber-500 hover:bg-amber-400 text-foreground",
+                      "bg-amber-600 dark:bg-amber-500 hover:bg-amber-600 dark:bg-amber-400 text-foreground",
                       "disabled:opacity-50 disabled:cursor-not-allowed"
                     )}
                   >
@@ -608,7 +608,7 @@ function MilestoneCard({
                 )}
 
                 {milestone.status === MilestoneStatus.REVIEW_REQUESTED && (
-                  <p className="text-xs text-amber-400/80 flex items-center gap-1.5">
+                  <p className="text-xs text-amber-600 dark:text-amber-400/80 flex items-center gap-1.5">
                     <Eye className="w-3.5 h-3.5" />
                     Awaiting client review…
                   </p>
@@ -901,7 +901,7 @@ export function ProjectView({
                   localProjectStatus === ProjectStatus.COMPLETED
                     ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                     : localProjectStatus === ProjectStatus.REVIEW_REQUESTED
-                    ? "bg-amber-500/10 text-amber-300 border-amber-500/20"
+                    ? "bg-amber-600 dark:bg-amber-500/10 text-amber-300 border-amber-600 dark:border-amber-500/20"
                     : localProjectStatus === ProjectStatus.IN_PROGRESS
                     ? "bg-primary/50/10 text-indigo-300 border-primary/100/20"
                     : "bg-accent text-muted-foreground border-border"

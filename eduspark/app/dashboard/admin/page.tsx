@@ -109,8 +109,8 @@ export default async function AdminDashboardPage() {
       label: "Revenue",
       value: `$${revenue.toFixed(0)}`,
       icon: DollarSign,
-      color: "text-amber-400",
-      bg: "bg-amber-500/10",
+      color: "text-amber-600 dark:text-amber-400",
+      bg: "bg-amber-600 dark:bg-amber-500/10",
       trend: null,
     },
   ];
@@ -127,13 +127,13 @@ export default async function AdminDashboardPage() {
 
       {/* Pending Alert */}
       {pendingTotal > 0 && (
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
-          <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-600 dark:bg-amber-500/10 border border-amber-600 dark:border-amber-500/20">
+          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="text-sm font-semibold text-amber-300">
               {pendingTotal} item{pendingTotal > 1 ? "s" : ""} awaiting your review
             </p>
-            <p className="text-xs text-amber-400/80 mt-1">
+            <p className="text-xs text-amber-600 dark:text-amber-400/80 mt-1">
               {pendingCourses.length} course
               {pendingCourses.length !== 1 ? "s" : ""} awaiting review آ·{" "}
               {pendingServices.length} service
@@ -177,7 +177,7 @@ export default async function AdminDashboardPage() {
         <div className="rounded-2xl bg-card border border-border overflow-hidden">
           <div className="px-5 py-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-amber-400" />
+              <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               <h2 className="text-sm font-bold text-foreground">Pending Reviews</h2>
             </div>
             <Link
@@ -262,7 +262,7 @@ export default async function AdminDashboardPage() {
                       log.severity === "CRITICAL"
                         ? "bg-rose-400"
                         : log.severity === "WARNING"
-                        ? "bg-amber-400"
+                        ? "bg-amber-600 dark:bg-amber-400"
                         : "bg-emerald-400"
                     }`}
                   />

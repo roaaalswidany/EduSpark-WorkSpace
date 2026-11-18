@@ -31,8 +31,8 @@ export function CreatorServicesHeader({ stats }: CreatorServicesHeaderProps) {
       label: "Orders",
       value: stats.totalOrders,
       icon: TrendingUp,
-      color: "text-amber-400",
-      bg: "bg-amber-500/10 border-amber-500/20",
+      color: "text-amber-600 dark:text-amber-400",
+      bg: "bg-amber-600 dark:bg-amber-500/10 border-amber-600 dark:border-amber-500/20",
     },
     {
       label: "Projects",

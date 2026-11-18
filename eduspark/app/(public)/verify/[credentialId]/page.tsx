@@ -56,7 +56,7 @@ export default async function VerifyCertificatePage({
         <div className="mb-6 flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-emerald-300 print:hidden">
           <BadgeCheck className="h-5 w-5" />
           <span className="text-sm font-semibold">
-            Verified — this certificate was issued by EduSpark · شهادة موثّقة صادرة عن EduSpark
+            Verified — this certificate was issued by EduSpark · A notarized certificate issued by EduSpark
           </span>
         </div>
 

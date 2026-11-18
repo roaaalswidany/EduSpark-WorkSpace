@@ -51,7 +51,7 @@ export function ReviewForm({ projectId, creatorName }: { projectId: string; crea
             onClick={() => setRating(i)}
             className="p-1 disabled:opacity-50"
           >
-            <Star className={`h-7 w-7 transition-colors ${i <= (hover || rating) ? "fill-amber-400 text-amber-400" : "text-muted-foreground/70"}`} />
+            <Star className={`h-7 w-7 transition-colors ${i <= (hover || rating) ? "fill-amber-400 text-amber-600 dark:text-amber-400" : "text-muted-foreground/70"}`} />
           </button>
         ))}
       </div>

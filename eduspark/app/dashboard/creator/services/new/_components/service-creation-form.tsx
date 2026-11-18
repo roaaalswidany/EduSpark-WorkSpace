@@ -503,8 +503,8 @@ export function ServiceCreationForm({
                     }))}
                     value={field.value}
                     onChange={(v) => field.onChange(v)}
-                    placeholder="••••••••"
-                    searchplaceholder="••••••••"
+                    placeholder="Select a certified course…"
+                    searchPlaceholder="Search courses…"
                     emptyMessage="No matching courses."
                   />
                 </FormControl>
@@ -517,9 +517,9 @@ export function ServiceCreationForm({
           />
 
           {selectedCourse && (
-            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/15">
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-4 h-4 text-amber-400" />
+            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-amber-600 dark:bg-amber-500/5 border border-amber-600 dark:border-amber-500/15">
+              <div className="w-8 h-8 rounded-lg bg-amber-600 dark:bg-amber-500/10 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-amber-300 truncate">
@@ -531,7 +531,7 @@ export function ServiceCreationForm({
                     {selectedCourse.credentialId}
                   </span>{" "}
                   آ· Score{" "}
-                  <span className="text-amber-400 font-semibold">
+                  <span className="text-amber-600 dark:text-amber-400 font-semibold">
                     {selectedCourse.score}%
                   </span>
                 </p>
@@ -565,7 +565,7 @@ export function ServiceCreationForm({
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="••••••••"
+                    placeholder="e.g. I will build a full-stack Next.js web application…"
                     className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-emerald-500 h-10"
                   />
                 </FormControl>
@@ -591,7 +591,7 @@ export function ServiceCreationForm({
                   <Textarea
                     {...field}
                     rows={6}
-                    placeholder="••••••••"
+                    placeholder="Describe exactly what you'll deliver, what's included, your process, and any requirements from the buyer…"
                     className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-emerald-500 resize-none"
                   />
                 </FormControl>

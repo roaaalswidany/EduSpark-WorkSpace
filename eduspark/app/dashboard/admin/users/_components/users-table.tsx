@@ -56,9 +56,9 @@ const ROLE_BADGE: Record<Role, string> = {
 };
 
 const ROLE_LABEL: Record<Role, string> = {
-  ADMIN: "Admin ًں‘‘",
-  CREATOR: "Creator âœ¨",
-  STUDENT: "Student ًںژ“",
+  ADMIN: "Admin",
+  CREATOR: "Creator",
+  STUDENT: "Student",
 };
 
 const ROLE_FILTERS: { value: string; label: string; count: number }[] = [
@@ -317,7 +317,7 @@ export function UsersTable({
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="••••••••"
+            placeholder="Search by name or email…"
             className={cn(
               "w-full h-11 pl-10 pr-10 rounded-xl",
               "bg-card border border-border text-foreground",

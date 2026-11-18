@@ -41,7 +41,6 @@ export default async function MarketplacePage() {
             select: {
               id: true,
               name: true,
-              // 👇 تم حذف image: true من هنا
               headline: true,
               certificates: {
                 select: {
@@ -90,7 +89,6 @@ export default async function MarketplacePage() {
     creator: {
       id: s.creator.id,
       name: s.creator.name,
-      // 👇 تم حذف image: null من هنا
       headline: s.creator.headline,
       certifiedCategories: (s.creator.certificates ?? [])
         .map((c) => c.course.categoryId)

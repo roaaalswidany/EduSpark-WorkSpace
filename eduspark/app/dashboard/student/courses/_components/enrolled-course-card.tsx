@@ -28,7 +28,6 @@ export interface EnrolledCourse {
     id: string;
     name: string;
     headline: string | null;
-    // ًں‘‡ طھظ… ط­ط°ظپ image ظ…ظ† ظ‡ظ†ط§
   };
   totalLessons: number;
   totalDuration: number;
@@ -74,7 +73,7 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
   const isCompleted = course.isPassed;
   const progress = Math.min(100, Math.round(course.progress));
 
-  // ًں‘‡ ط­ط³ط§ط¨ ط§ظ„ط£ط­ط±ظپ ط§ظ„ط£ظˆظ„ظ‰ ظˆط§ظ„ظ„ظˆظ† ظ„ظ„ظ…ط¯ط±ط¨
+
   const creatorInitials = course.creator.name
     .split(" ")
     .map((p) => p[0])
@@ -149,7 +148,7 @@ export function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
 
         {/* Instructor */}
         <div className="flex items-center gap-2">
-          {/* ًں‘‡ ط§ط³طھط¨ط¯ط§ظ„ ط§ظ„طµظˆط±ط© ط¨ط§ظ„ط£ط­ط±ظپ ط§ظ„ط£ظˆظ„ظ‰ */}
+
           <div 
             className="w-5 h-5 rounded-full text-foreground text-[9px] font-bold flex items-center justify-center ring-1 ring-border shrink-0"
             style={{ background: `hsl(${creatorHue}, 55%, 42%)` }}

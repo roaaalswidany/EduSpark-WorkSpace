@@ -40,15 +40,16 @@ const WELCOME_MESSAGE: AiMessageData = {
   id: "welcome",
   role: "assistant",
   content:
-    "ط£ظ‡ظ„ط§ظ‹! ًں‘‹ ط£ظ†ط§ ظ…ط³ط§ط¹ط¯ **EduSpark** ط§ظ„ط°ظƒظٹ.\n\nظƒظٹظپ ظٹظ…ظƒظ†ظ†ظٹ ظ…ط³ط§ط¹ط¯طھظƒطں",
+    "أهلاً! 👋 أنا مساعد EduSpark الذكي.\n\nكيف يمكنني مساعدتك؟",
   createdAt: new Date().toISOString(),
 };
 
+
 const QUICK_PROMPTS = [
-  "ًں“ڑ ط§ظ‚طھط±ط­ ظ„ظٹ ظƒظˆط±ط³ط§طھ",
-  "ًںژ“ ظƒظٹظپ ط£ط­طµظ„ ط¹ظ„ظ‰ ط´ظ‡ط§ط¯ط©طں",
-  "ًں›’ ط§ط´ط±ط­ ظ„ظٹ ط§ظ„ط³ظˆظ‚",
-  "ًںژ¨ ظƒظٹظپ ط£طµط¨ط­ ظ…ظ†ط´ط¦طں",
+  "📚 اقترح لي كورسات",
+  "🎓 كيف أحصل على شهادة؟",
+  "🛒 اشرح لي السوق",
+  "🎨 كيف أصبح منشئ؟",
 ];
 
 export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
@@ -135,12 +136,12 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
         ]);
         setSuggestions(data.suggestions ?? []);
       } catch (err) {
-        setError(
+       setError(
           err instanceof Error
             ? err.message === "UNAUTHORIZED"
-              ? "ط§ظ†طھظ‡طھ ط§ظ„ط¬ظ„ط³ط©. ظٹط±ط¬ظ‰ طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„ ظ…ط¬ط¯ط¯ط§ظ‹."
-              : "ط­ط¯ط« ط®ط·ط£. ظٹط±ط¬ظ‰ ط§ظ„ظ…ط­ط§ظˆظ„ط© ظ…ط±ط© ط£ط®ط±ظ‰."
-            : "ط­ط¯ط« ط®ط·ط£ ط؛ظٹط± ظ…طھظˆظ‚ط¹."
+              ? "انتهت الجلسة. يرجى تسجيل الدخول مجدداً."
+              : "حدث خطأ. يرجى المحاولة مرة أخرى."
+            : "حدث خطأ غير متوقع."
         );
         // Remove optimistic message on error
         setMessages((prev) => prev.filter((m) => m.id !== optimisticUser.id));
@@ -191,7 +192,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
       );
       setSuggestions([]);
     } else {
-      setError("طھط¹ط°ط± طھط­ظ…ظٹظ„ ط§ظ„ظ…ط­ط§ط¯ط«ط©.");
+      setError("تعذر تحميل المحادثة.");
     }
 
     setIsLoading(false);
@@ -216,9 +217,9 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
   const handleSuggestion = (s: Suggestion) => {
     if (s.href.startsWith("#")) {
       // Internal shortcut
-      if (s.href === "#recommend") void sendMessage("ط§ظ‚طھط±ط­ ظ„ظٹ ظƒظˆط±ط³ط§طھ");
+      if (s.href === "#recommend") void sendMessage("اقترح لي كورسات");
       else if (s.href === "#certified")
-        void sendMessage("ظƒظٹظپ ط£ط­طµظ„ ط¹ظ„ظ‰ ط´ظ‡ط§ط¯ط©طں");
+        void sendMessage("كيف أحصل على شهادة؟");
       return;
     }
     router.push(s.href);
@@ -244,9 +245,9 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
           <Sparkles className="w-4 h-4 text-foreground" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-foreground">ظ…ط³ط§ط¹ط¯ EduSpark</p>
+          <p className="text-sm font-bold text-foreground">مساعد EduSpark</p>
           <p className="text-[10px] text-muted-foreground">
-            {showHistory ? "ط§ظ„ظ…ط­ط§ط¯ط«ط§طھ ط§ظ„ط³ط§ط¨ظ‚ط©" : "ظ…ط¯ط¹ظˆظ… ط¨ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ"}
+            {showHistory ? "المحادثات السابقة" : "مدعوم بالذكاء الاصطناعي"}
           </p>
         </div>
 
@@ -285,7 +286,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
             <div className="flex flex-col items-center justify-center h-full text-center px-6">
               <MessageSquare className="w-10 h-10 text-muted-foreground/70 mb-3" />
               <p className="text-sm text-muted-foreground">
-                ظ„ط§ طھظˆط¬ط¯ ظ…ط­ط§ط¯ط«ط§طھ ط³ط§ط¨ظ‚ط©
+                لا توجد محادثات سابقة
               </p>
             </div>
           ) : (
@@ -307,7 +308,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                     {c.title}
                   </p>
                   <p className="text-[10px] text-muted-foreground/70 mt-0.5">
-                    {c.messageCount} ط±ط³ط§ظ„ط©
+                    {c.messageCount} رسالة
                   </p>
                 </div>
                 <button
@@ -395,7 +396,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
             {messages.length === 1 && !isLoading && (
               <div className="space-y-2 pt-2 animate-fade-in">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
-                  ط£ط³ط¦ظ„ط© ط´ط§ط¦ط¹ط©
+                  أسئلة شائعة
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {QUICK_PROMPTS.map((q, i) => (
@@ -431,7 +432,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="••••••••"
+                placeholder="اكتب سؤالك…"
                 rows={1}
                 maxLength={2000}
                 disabled={isLoading}

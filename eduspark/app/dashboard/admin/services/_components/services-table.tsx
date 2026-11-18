@@ -67,7 +67,7 @@ interface ServicesTableProps {
 const STATUS_BADGE: Record<ServiceStatus, string> = {
   PENDING_REVIEW: "bg-sky-500/10 text-sky-400 border-sky-500/20",
   ACTIVE: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  PAUSED: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  PAUSED: "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-500/20",
   ARCHIVED: "bg-accent/50 text-muted-foreground border-border",
 };
 
@@ -278,7 +278,7 @@ function ServiceDetailsModal({
             <>
               <button
                 onClick={onArchive}
-                className="px-4 py-2 rounded-lg text-sm font-bold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 transition-all"
+                className="px-4 py-2 rounded-lg text-sm font-bold text-amber-600 dark:text-amber-400 bg-amber-600 dark:bg-amber-500/10 hover:bg-amber-600 border border-amber-600 dark:border-amber-500/20 transition-all"
               >
                 Request changes
               </button>
@@ -340,7 +340,6 @@ export function ServicesTable({
   const [reasonInput, setReasonInput] = useState("");
   const [reasonError, setReasonError] = useState<string | null>(null);
   
-  // ًں‘‡ ط­ط§ظ„ط© ط§ظ„ظ…ظˆط¯ط§ظ„ ط§ظ„ط¬ط¯ظٹط¯
   const [selectedService, setSelectedService] = useState<ServiceRow | null>(null);
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -551,7 +550,7 @@ export function ServicesTable({
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="••••••••"
+            placeholder="Search by title or description…"
             className={cn(
               "w-full h-11 pl-10 pr-10 rounded-xl",
               "bg-card border border-border text-foreground",
@@ -780,7 +779,7 @@ export function ServicesTable({
                               <button
                                 type="button"
                                 onClick={() => handleRequestChanges(s)}
-                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors"
+                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-600 dark:bg-amber-500/10 hover:text-amber-300 transition-colors"
                               >
                                 Request changes...
                               </button>

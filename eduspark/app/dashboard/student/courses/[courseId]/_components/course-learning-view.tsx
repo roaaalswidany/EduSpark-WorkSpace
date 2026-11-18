@@ -223,7 +223,7 @@ function LessonRow({ lesson, isActive, onSelect }: LessonRowProps) {
         "w-full flex items-start gap-3 py-3 pl-5 pr-4 text-left",
         "border-r-[3px] transition-all duration-150",
         isActive
-          ? "bg-primary/50/10 border-primary/100"
+          ? "bg-primary/50/10 border-primary"
           : "border-transparent hover:bg-accent/50"
       )}
     >

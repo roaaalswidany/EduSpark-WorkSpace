@@ -46,7 +46,8 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
           <div className="rounded-3xl bg-linear-to-br from-emerald-500/5 via-muted to-emerald-500/5 border border-border p-8 sm:p-16 text-center">
             <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-linear-to-br from-emerald-500 to-emerald-600 mb-6 shadow-2xl shadow-emerald-500/20">
-              <Target className="w-10 h-10 text-foreground" />
+              
+              <Target className="w-10 h-10 text-white" />
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-black text-foreground mb-3">
@@ -63,7 +64,8 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
               onClick={() => setDialogOpen(true)}
               className={cn(
                 "inline-flex items-center gap-2 px-6 py-3 rounded-xl",
-                "bg-primary hover:bg-primary text-primary-foreground",
+                
+                "bg-primary hover:bg-primary/90 text-primary-foreground",
                 "text-sm font-bold transition-all active:scale-95",
                 "shadow-lg shadow-emerald-500/30"
               )}
@@ -84,13 +86,13 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
                 icon={TrendingUp}
                 title="Track Progress"
                 desc="Mark steps complete and watch your journey unfold"
-                color="text-emerald-400"
+                color="text-emerald-500 dark:text-emerald-400"
               />
               <Feature
                 icon={Clock}
                 title="Realistic Timeline"
                 desc="Weekly estimates based on industry standards"
-                color="text-amber-400"
+                color="text-amber-600 dark:text-amber-400"
               />
             </div>
           </div>
@@ -111,9 +113,10 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
   const progressPct = Math.round((completedSteps / totalSteps) * 100);
 
   const LEVEL_BADGE: Record<string, string> = {
-    BEGINNER: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    INTERMEDIATE: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-    ADVANCED: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+    BEGINNER: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    
+    INTERMEDIATE: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    ADVANCED: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
   };
 
   const levelClass =
@@ -140,17 +143,17 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
         <div className="flex flex-wrap items-center gap-2 mt-4">
           <span
             className={cn(
-              "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border",
+              "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider",
               levelClass
             )}
           >
             {activePath.level}
           </span>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-accent text-muted-foreground border border-border">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-accent/50 text-muted-foreground border border-border">
             <Clock className="w-2.5 h-2.5" />
             {activePath.estimatedWeeks} weeks
           </span>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-accent text-muted-foreground border border-border">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-accent/50 text-muted-foreground border border-border">
             {totalSteps} steps
           </span>
         </div>
@@ -168,7 +171,7 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
         </div>
         <div className="h-2 rounded-full bg-accent overflow-hidden">
           <div
-            className="h-full bg-linear-to-r from-emerald-500 to-emerald-500 transition-all duration-500"
+            className="h-full bg-emerald-500 transition-all duration-500"
             style={{ width: `${progressPct}%` }}
           />
         </div>
@@ -182,7 +185,11 @@ export function CareerPathView({ activePath }: CareerPathViewProps) {
         <button
           type="button"
           onClick={() => setDialogOpen(true)}
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent hover:bg-accent text-foreground text-xs font-semibold border border-border transition-all active:scale-95"
+          className={cn(
+            "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 border",
+            
+            "bg-primary/10 hover:bg-primary/20 text-primary border-primary/20"
+          )}
         >
           <Plus className="w-3.5 h-3.5" />
           New Path

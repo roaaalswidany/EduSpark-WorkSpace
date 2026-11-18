@@ -33,7 +33,7 @@ interface CoursesTableProps {
 
 const STATUS_BADGE: Record<CourseStatus, string> = {
   PUBLISHED: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  DRAFT: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  DRAFT: "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-500/20",
   PENDING_REVIEW: "bg-sky-500/10 text-sky-400 border-sky-500/20",
   ARCHIVED: "bg-accent/50 text-muted-foreground border-border",
 };
@@ -197,7 +197,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input type="text" value={searchInput} onChange={(e) => handleSearchChange(e.target.value)} placeholder="••••••••" className={cn("w-full h-11 pl-10 pr-10 rounded-xl", "bg-card border border-border text-foreground", "placeholder:text-muted-foreground/70", "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500")} />
+          <input type="text" value={searchInput} onChange={(e) => handleSearchChange(e.target.value)} placeholder="Search by title or description…" className={cn("w-full h-11 pl-10 pr-10 rounded-xl", "bg-card border border-border text-foreground", "placeholder:text-muted-foreground/70", "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500")} />
           {isPending && <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary animate-spin" />}
           {!isPending && searchInput && <button type="button" onClick={() => handleSearchChange("")} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"><X className="w-4 h-4" /></button>}
         </div>
@@ -272,7 +272,7 @@ export function CoursesTable({ courses, statusCounts, initialQuery, initialStatu
                           {c.status === "PENDING_REVIEW" && (
                             <>
                               <button type="button" onClick={() => handleApprove(c)} className="w-full text-left px-3.5 py-2 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors inline-flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" />Approve &amp; publish</button>
-                              <button type="button" onClick={() => handleRequestChanges(c)} className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors">Request changes...</button>
+                              <button type="button" onClick={() => handleRequestChanges(c)} className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-600 dark:bg-amber-500/10 hover:text-amber-300 transition-colors">Request changes...</button>
                               <div className="h-px bg-accent" />
                             </>
                           )}

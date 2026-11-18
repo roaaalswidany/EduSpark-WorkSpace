@@ -105,7 +105,6 @@ export default async function CoursesPage({ searchParams }: PageProps) {
             totalRating: true,
             ratingCount: true,
             creator: {
-              // ًں‘‡ طھظ… ط­ط°ظپ image: true ظ…ظ† ظ‡ظ†ط§
               select: { id: true, name: true, headline: true },
             },
             category: { select: { id: true, name: true, slug: true } },

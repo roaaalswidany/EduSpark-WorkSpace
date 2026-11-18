@@ -27,7 +27,6 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug } = await params;
   
-  // ✅ تم نقل استدعاء الجلسة إلى داخل الدالة
   const session = await getServerSession(authOptions);
   const userRole = session?.user?.role;
 

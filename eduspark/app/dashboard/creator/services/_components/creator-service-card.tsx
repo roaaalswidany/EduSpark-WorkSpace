@@ -63,8 +63,8 @@ const STATUS_CONFIG: Record<
   },
   PAUSED: {
     label: "Paused",
-    dot: "bg-amber-500",
-    badge: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    dot: "bg-amber-600 dark:bg-amber-500",
+    badge: "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-500/20",
   },
   ARCHIVED: {
     label: "Archived",
@@ -360,7 +360,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
                   <button
                     type="button"
                     onClick={() => handleStatusChange("PAUSED")}
-                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-amber-600 dark:text-amber-400 hover:bg-amber-600 dark:bg-amber-500/10 hover:text-amber-300 transition-colors text-left"
                   >
                     <RotateCcw className="w-3.5 h-3.5" /> Withdraw Submission
                   </button>
@@ -437,7 +437,7 @@ export function CreatorServiceCard({ service }: { service: ServiceCardData }) {
           </div>
 
           {status === "PAUSED" && service.reviewNote && (
-            <div className="flex items-start gap-1.5 text-[11px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2">
+            <div className="flex items-start gap-1.5 text-[11px] text-amber-300 bg-amber-600 dark:bg-amber-500/10 border border-amber-600 dark:border-amber-500/20 rounded-lg p-2">
               <AlertCircle className="w-3 h-3 shrink-0 mt-0.5" />
               <span>
                 <strong>Changes requested:</strong> {service.reviewNote}

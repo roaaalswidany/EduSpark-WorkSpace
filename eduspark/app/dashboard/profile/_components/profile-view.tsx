@@ -247,7 +247,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               disabled={isPending}
               maxLength={500}
               rows={5}
-              placeholder="••••••••"
+              placeholder="Tell others about yourself, your expertise, and what you do…"
               className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 resize-none disabled:opacity-50 transition-all"
             />
           </Field>

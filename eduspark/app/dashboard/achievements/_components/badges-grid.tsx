@@ -74,7 +74,7 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
           </p>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-xl">
           {(["all", "earned", "locked"] as const).map((f) => (
             <button
               key={f}
@@ -83,8 +83,8 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
                 filter === f
-                  ? "bg-accent text-white"
-                  : "text-muted-foreground hover:text-foreground hover:bg-card"
+                  ? "bg-background text-foreground shadow-sm border border-border/50"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/50"
               )}
             >
               {f === "all" ? "All" : f === "earned" ? "Earned" : "Locked"}
@@ -118,23 +118,24 @@ function BadgeCard({ badge }: { badge: BadgeData }) {
   return (
     <div
       className={cn(
-        "relative rounded-2xl border p-4 transition-all",
+        "relative rounded-2xl border p-4 transition-all flex flex-col",
         badge.earned
-          ? cn(tier.border, tier.bg, "hover:scale-[1.02]")
-          : "border-border bg-card/50 opacity-60"
+          ? cn(tier.border, tier.bg, "hover:scale-[1.02] shadow-sm")
+          : "border-border bg-card/50 opacity-60 grayscale-50"
       )}
     >
       {/* Icon */}
       <div
         className={cn(
-          "flex items-center justify-center w-12 h-12 rounded-xl mb-3 mx-auto",
+          "flex items-center justify-center w-12 h-12 rounded-xl mb-3 mx-auto shrink-0",
           badge.earned
             ? cn("bg-linear-to-br shadow-lg", tier.gradient)
             : "bg-accent"
         )}
       >
         {badge.earned ? (
-          <Icon className="w-6 h-6 text-foreground" />
+          
+          <Icon className="w-6 h-6 text-white drop-shadow-md" />
         ) : (
           <Lock className="w-5 h-5 text-muted-foreground/70" />
         )}
@@ -143,29 +144,31 @@ function BadgeCard({ badge }: { badge: BadgeData }) {
       {/* Name */}
       <p
         className={cn(
-          "text-sm font-bold text-center mb-1 line-clamp-1",
-          badge.earned ? "text-white" : "text-muted-foreground"
+          "text-sm font-bold text-center mb-1 line-clamp-1 flex-1",
+          
+          badge.earned ? "text-foreground" : "text-muted-foreground"
         )}
       >
         {badge.nameAr}
       </p>
 
       {/* Description */}
-      <p className="text-[10px] text-muted-foreground text-center leading-relaxed line-clamp-2">
+      <p className="text-[10px] text-muted-foreground text-center leading-relaxed line-clamp-2 mb-3">
         {badge.descriptionAr}
       </p>
 
       {/* Tier + XP */}
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/60">
+      <div className="flex items-center justify-between mt-auto pt-3 border-t border-border/60">
         <span
           className={cn(
             "text-[9px] font-bold uppercase tracking-wider",
-            badge.earned ? tier.color : "text-muted-foreground/70"
+            
+            badge.earned ? "text-foreground/70" : "text-muted-foreground/70"
           )}
         >
           {badge.tier}
         </span>
-        <span className="text-[9px] font-bold text-amber-500/70 tabular-nums">
+        <span className="text-[9px] font-bold text-amber-600 dark:text-amber-400 tabular-nums">
           +{badge.xpReward} XP
         </span>
       </div>

@@ -9,7 +9,7 @@ export default function WelcomePage() {
           <GraduationCap className="w-7 h-7 text-emerald-400" />
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-2">
-          Welcome to EduSpark! ًںژ‰
+          Welcome to EduSpark!
         </h1>
         <p className="text-muted-foreground mb-6">
           Your account is ready. Start exploring courses and building your
