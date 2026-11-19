@@ -1,0 +1,167 @@
+export const dictionaries = {
+  en: {
+    // Settings
+    settingsTitle: "Account Settings",
+    settingsSubtitle: "Manage your account information and security.",
+    appearance: "Appearance",
+    theme: "Theme",
+    language: "Language",
+    languageDesc: "Choose your preferred language for the platform.",
+    accountInfo: "Account Information",
+    security: "Security",
+
+    // Navigation
+    dashboard: "Dashboard",
+    courses: "Courses",
+    marketplace: "Marketplace",
+    signIn: "Sign In",
+    signOut: "Sign Out",
+    getStarted: "Get Started",
+
+    // Career Path
+    careerPath: "Career Path",
+    emptyStateTitle: "Build Your Career Path",
+    emptyStateDesc: "Tell us your career goal, and our AI will design a personalized learning journey.",
+    createPathBtn: "Create Your Path",
+
+    // Create Path Dialog
+    createPathTitle: "Create Your Career Path",
+    createPathDesc: "Our AI will design a personalized learning journey for you.",
+    careerGoalLabel: "What is your career goal?",
+    careerGoalPlaceholder: "e.g. I want to become a Full-Stack Developer specialized in Next.js",
+    examples: "Examples",
+    exFullStack: "I want to become a Full-Stack Developer",
+    exDataAnalysis: "I want to learn Data Analysis",
+    exUiUx: "I want to become a UI/UX Designer",
+    exMobile: "I want to learn Mobile App Development",
+    cancel: "Cancel",
+    close: "Close",
+    generatePath: "Generate Path",
+    generating: "Generating...",
+    bgGenerationTitle: "Generation continues in background",
+    bgGenerationDesc: "We'll notify you when your path is ready.",
+    generatingToast: "Generating your career path...",
+    generatingToastDesc: "This may take 10-20 seconds.",
+    successToast: "Career path generated!",
+    successToastDesc: "Your personalized path is ready.",
+    failedToast: "Generation failed",
+    errorPrefix: "Something went wrong.",
+
+    // AI Assistant
+    aiWelcomeMsg: "Hello! 👋 I am the EduSpark AI Assistant.\n\nHow can I help you?",
+    aiPromptCourses: "📚 Suggest courses for me",
+    aiPromptCert: "🎓 How do I get a certificate?",
+    aiPromptMarket: "🛒 Explain the marketplace",
+    aiPromptCreator: "🎨 How do I become a creator?",
+    aiErrSession: "Session expired. Please log in again.",
+    aiErrGeneral: "An error occurred. Please try again.",
+    aiErrUnexpected: "An unexpected error occurred.",
+    aiErrLoad: "Could not load conversation.",
+    aiTitle: "EduSpark Assistant",
+    aiHistory: "Previous conversations",
+    aiPoweredBy: "Powered by AI",
+    aiNoHistory: "No previous conversations",
+    aiMsgs: "messages",
+    aiFaq: "FAQ",
+    aiPlaceholder: "Type your question...",
+
+    // Certificate Not Found
+    certNotFoundTitle: "Certificate not found",
+    certNotFoundDesc: "No certificate matches this credential ID. Check for typing mistakes, or ask the holder to share the link again. Only certificates issued by EduSpark can be verified here.",
+    backToEduSpark: "Back to EduSpark",
+
+    // Path Timeline
+    updatingProgress: "Updating progress...",
+    updateFailed: "Update failed",
+    stepCompletedToast: "Step completed! 🎉",
+    stepStartedToast: "Step started! ▶️",
+    startBtn: "Start",
+    markCompleteBtn: "Mark Complete",
+    completedLabel: "Completed",
+    weeksShort: "w",
+  },
+  ar: {
+    // Settings
+    settingsTitle: "إعدادات الحساب",
+    settingsSubtitle: "إدارة معلومات حسابك والأمان.",
+    appearance: "المظهر",
+    theme: "الوضع",
+    language: "اللغة",
+    languageDesc: "اختر لغتك المفضلة للمنصة.",
+    accountInfo: "معلومات الحساب",
+    security: "الأمان",
+
+    // Navigation
+    dashboard: "لوحة التحكم",
+    courses: "الكورسات",
+    marketplace: "السوق",
+    signIn: "تسجيل الدخول",
+    signOut: "تسجيل الخروج",
+    getStarted: "ابدأ الآن",
+
+    // Career Path
+    careerPath: "المسار الوظيفي",
+    emptyStateTitle: "ابنِ مسارك الوظيفي",
+    emptyStateDesc: "أخبرنا بهدفك الوظيفي، وسيقوم الذكاء الاصطناعي بتصميم رحلة تعلم مخصصة لك.",
+    createPathBtn: "أنشئ مسارك",
+
+    // Create Path Dialog
+    createPathTitle: "أنشئ مسارك الوظيفي",
+    createPathDesc: "سيقوم الذكاء الاصطناعي بتصميم رحلة تعلم مخصصة لك.",
+    careerGoalLabel: "ما هو هدفك الوظيفي؟",
+    careerGoalPlaceholder: "مثال: أريد أن أصبح مطور Full-Stack متخصص في Next.js",
+    examples: "أمثلة",
+    exFullStack: "أريد أن أصبح Full-Stack Developer",
+    exDataAnalysis: "أريد تعلم تحليل البيانات",
+    exUiUx: "أريد أن أصبح UI/UX Designer",
+    exMobile: "أريد تعلم تطوير تطبيقات الجوال",
+    cancel: "إلغاء",
+    close: "إغلاق",
+    generatePath: "إنشاء المسار",
+    generating: "جاري الإنشاء...",
+    bgGenerationTitle: "يستمر الإنشاء في الخلفية",
+    bgGenerationDesc: "سنخبرك عندما يصبح مسارك جاهزاً.",
+    generatingToast: "جاري إنشاء مسارك الوظيفي...",
+    generatingToastDesc: "قد يستغرق هذا من 10 إلى 20 ثانية.",
+    successToast: "تم إنشاء المسار الوظيفي!",
+    successToastDesc: "مسارك المخصص جاهز.",
+    failedToast: "فشل الإنشاء",
+    errorPrefix: "حدث خطأ ما.",
+
+    // AI Assistant
+    aiWelcomeMsg: "أهلاً! 👋 أنا مساعد EduSpark الذكي.\n\nكيف يمكنني مساعدتك؟",
+    aiPromptCourses: "📚 اقترح لي كورسات",
+    aiPromptCert: "🎓 كيف أحصل على شهادة؟",
+    aiPromptMarket: "🛒 اشرح لي السوق",
+    aiPromptCreator: "🎨 كيف أصبح منشئ؟",
+    aiErrSession: "انتهت الجلسة. يرجى تسجيل الدخول مجدداً.",
+    aiErrGeneral: "حدث خطأ. يرجى المحاولة مرة أخرى.",
+    aiErrUnexpected: "حدث خطأ غير متوقع.",
+    aiErrLoad: "تعذر تحميل المحادثة.",
+    aiTitle: "مساعد EduSpark",
+    aiHistory: "المحادثات السابقة",
+    aiPoweredBy: "مدعوم بالذكاء الاصطناعي",
+    aiNoHistory: "لا توجد محادثات سابقة",
+    aiMsgs: "رسالة",
+    aiFaq: "أسئلة شائعة",
+    aiPlaceholder: "اكتب سؤالك…",
+
+    // Certificate Not Found
+    certNotFoundTitle: "الشهادة غير موجودة",
+    certNotFoundDesc: "لا توجد شهادة مطابقة لهذا المعرّف. تحقق من الأخطاء الإملائية، أو اطلب من حامل الشهادة مشاركة الرابط مرة أخرى. يمكن التحقق هنا فقط من الشهادات الصادرة عن EduSpark.",
+    backToEduSpark: "العودة إلى EduSpark",
+
+    // Path Timeline
+    updatingProgress: "جاري تحديث التقدم...",
+    updateFailed: "فشل التحديث",
+    stepCompletedToast: "تم إكمال الخطوة! 🎉",
+    stepStartedToast: "تم بدء الخطوة! ▶️",
+    startBtn: "ابدأ",
+    markCompleteBtn: "تحديد كمكتمل",
+    completedLabel: "مكتمل",
+    weeksShort: "أسبوع",
+  },
+};
+
+export type Locale = "en" | "ar";
+export type DictionaryKey = keyof typeof dictionaries["en"];

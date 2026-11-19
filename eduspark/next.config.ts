@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { resolve } from "path";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
@@ -11,7 +12,6 @@ const securityHeaders = [
   { key: "X-XSS-Protection", value: "1; mode=block" },
 ];
 
-// Where course thumbnails are served from: S3_PUBLIC_URL (production) or local MinIO (development only).
 type RemotePatterns = NonNullable<NonNullable<NextConfig["images"]>["remotePatterns"]>;
 
 function storageImagePatterns(): RemotePatterns {
@@ -26,7 +26,7 @@ function storageImagePatterns(): RemotePatterns {
         ...(u.port ? { port: u.port } : {}),
       });
     } catch {
-      /* ignore a malformed URL: the image host simply is not whitelisted */
+      /* ignore malformed URL */
     }
   }
   if (process.env.NODE_ENV !== "production") {
@@ -65,8 +65,7 @@ const nextConfig: NextConfig = {
     ],
   },
   staticPageGenerationTimeout: 120,
-  
-  // Server Actions body limit (global). Thumbnails are capped at 2MB, so 3MB leaves room for the form overhead.
+
   experimental: {
     serverActions: {
       bodySizeLimit: "3mb",
@@ -74,4 +73,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+export default withNextIntl(nextConfig);

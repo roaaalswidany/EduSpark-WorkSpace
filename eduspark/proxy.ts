@@ -1,30 +1,19 @@
-import { withAuth, type NextRequestWithAuth } from "next-auth/middleware";
-import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { NextResponse, type NextRequest } from "next/server";
+import createMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing";
 import type { Role } from "@prisma/client";
 
-// Route → allowed roles map.
-//
-// NOTE: Admins are RESTRICTED to the administration panel only.
-// They must not participate in student/creator flows (enrolling in courses,
-// ordering services, publishing content, earning XP, etc.) because they are
-// platform operators, not participants.
-//
-// Any route NOT listed here passes through for authenticated users
-// (e.g. /dashboard/chat, /dashboard/notifications, /dashboard/profile,
-//  /dashboard/settings, and the main /dashboard hub).
-// Admin needs to view creator pages when reviewing courses.
-// These specific paths are exempt from the CREATOR-only rule below.
+const intlMiddleware = createMiddleware(routing);
+
 const ADMIN_REVIEW_PATHS = [
   /^\/dashboard\/creator\/courses\/[^/]+\/edit(\/.*)?$/,
   /^\/dashboard\/creator\/courses\/[^/]+\/quiz(\/.*)?$/,
 ];
 
 const ROUTE_ROLES: Array<{ prefix: string; allowed: Role[] }> = [
-  // ── Admin-only ────────────────────────────────────────────────
   { prefix: "/admin", allowed: ["ADMIN"] },
   { prefix: "/dashboard/admin", allowed: ["ADMIN"] },
-
-  // ── Participation-only (admin explicitly excluded) ────────────
   { prefix: "/dashboard/creator", allowed: ["CREATOR"] },
   { prefix: "/dashboard/student", allowed: ["STUDENT", "CREATOR"] },
   { prefix: "/dashboard/orders", allowed: ["STUDENT", "CREATOR"] },
@@ -33,63 +22,68 @@ const ROUTE_ROLES: Array<{ prefix: string; allowed: Role[] }> = [
   { prefix: "/dashboard/achievements", allowed: ["STUDENT", "CREATOR"] },
 ];
 
-function getRedirectUrl(
-  req: NextRequestWithAuth,
-  role: Role | undefined
-): string | null {
-  const { pathname } = req.nextUrl;
-
-  // Admins may view course editing/quiz pages for review purposes.
+function getRedirectPath(pathname: string, role: Role | undefined): string | null {
   if (role === "ADMIN" && ADMIN_REVIEW_PATHS.some((re) => re.test(pathname))) {
     return null;
   }
-
   for (const rule of ROUTE_ROLES) {
     if (!pathname.startsWith(rule.prefix)) continue;
-
     const isAllowed = role !== undefined && rule.allowed.includes(role);
-
     if (!isAllowed) {
-      // Admins who try to access participation pages get bounced
-      // to their own panel (silent, no confusing "Unauthorized" page).
-      if (role === "ADMIN") {
-        return "/dashboard/admin";
-      }
-      // Everyone else (wrong role) → explicit error page.
+      if (role === "ADMIN") return "/dashboard/admin";
       return "/unauthorized";
     }
   }
-
   return null;
 }
 
-export default withAuth(
-  function proxy(req: NextRequestWithAuth) {
-    const role = req.nextauth.token?.role as Role | undefined;
+function detectLocale(pathname: string): "en" | "ar" {
+  const match = pathname.match(/^\/(en|ar)(?=\/|$)/);
+  return (match?.[1] as "en" | "ar") || "en";
+}
 
-    const redirectPath = getRedirectUrl(req, role);
+function localizeHref(path: string, locale: "en" | "ar"): string {
+  // For default locale (en), no prefix; for ar, prefix it
+  return locale === "en" ? path : `/${locale}${path}`;
+}
 
-    if (redirectPath) {
-      const url = req.nextUrl.clone();
-      url.pathname = redirectPath;
-      // Preserve the attempted URL so we can show context if needed.
-      url.searchParams.set("from", req.nextUrl.pathname);
-      return NextResponse.redirect(url);
+export default async function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  const locale = detectLocale(pathname);
+
+  // Strip locale to check protected routes (ignore /en, /ar)
+  const pathNoLocale = pathname.replace(/^\/(en|ar)(?=\/|$)/, "") || "/";
+  const isProtected =
+    pathNoLocale.startsWith("/dashboard") || pathNoLocale.startsWith("/admin");
+
+  // ── Protected routes: verify auth & role ─────────────────────
+  if (isProtected) {
+    const token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+
+    if (!token) {
+      const loginUrl = new URL(localizeHref("/auth/login", locale), req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
     }
 
-    return NextResponse.next();
-  },
-  {
-    callbacks: {
-      // withAuth runs our middleware only when this returns true.
-      // If token is missing, NextAuth redirects to signIn automatically.
-      authorized({ token }) {
-        return token !== null;
-      },
-    },
+    const role = token.role as Role | undefined;
+    const redirectPath = getRedirectPath(pathNoLocale, role);
+
+    if (redirectPath) {
+      const target = localizeHref(redirectPath, locale);
+      const url = new URL(target, req.url);
+      url.searchParams.set("from", pathname);
+      return NextResponse.redirect(url);
+    }
   }
-);
+
+  // ── Apply locale routing (detection, rewrite) ────────────────
+  return intlMiddleware(req);
+}
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*"],
+  matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
 };
