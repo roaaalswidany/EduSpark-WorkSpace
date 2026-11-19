@@ -64,3 +64,4 @@ next-env.d.ts
 backup*.sql
 fix-*.sql
 dump*.sql
+eduspark/app-backup-before-i18n/
