@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   Loader2,
   Sparkles,
@@ -13,22 +14,12 @@ import {
   EyeOff,
 } from "lucide-react";
 
-const ERROR_MESSAGES: Record<string, string> = {
-  NO_ACCOUNT: "No account found with this email.",
-  INVALID_PASSWORD: "Incorrect password. Please try again.",
-  ACCOUNT_DISABLED: "Your account has been disabled. Contact support.",
-  OAUTH_ACCOUNT: "This account uses social login. Please use that instead.",
-  INVALID_INPUT: "Please enter a valid email and password.",
-  VALIDATION_ERROR: "Please enter a valid email and password.",
-  SERVER_ERROR: "Something went wrong. Please try again later.",
-  CredentialsSignin: "Invalid email or password.",
-  RATE_LIMITED: "Too many login attempts. Please try again in 15 minutes.",
-};
-
 export function LoginForm() {
+  const t = useTranslations("auth.signIn");
+  const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
+  const callbackUrl = searchParams.get("callbackUrl") ?? `/${locale}/dashboard`;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,6 +27,21 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [isPending, setIsPending] = useState(false);
+
+  function getErrorMessage(code: string): string {
+    const messages: Record<string, string> = {
+      NO_ACCOUNT: t("errorInvalid"),
+      INVALID_PASSWORD: t("errorInvalid"),
+      ACCOUNT_DISABLED: t("errorAccountDisabled"),
+      OAUTH_ACCOUNT: t("errorOauth"),
+      INVALID_INPUT: t("errorInvalid"),
+      VALIDATION_ERROR: t("errorInvalid"),
+      SERVER_ERROR: t("errorGeneric"),
+      CredentialsSignin: t("errorInvalid"),
+      RATE_LIMITED: t("errorRateLimited"),
+    };
+    return messages[code] ?? t("errorInvalid");
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -53,13 +59,11 @@ export function LoginForm() {
 
       if (result?.error) {
         const code = result.error.split(":").pop() ?? result.error;
-        
+
         if (code === "RATE_LIMITED") {
           setIsRateLimited(true);
-          setError(ERROR_MESSAGES[code]);
-        } else {
-          setError(ERROR_MESSAGES[code] ?? "Invalid email or password.");
         }
+        setError(getErrorMessage(code));
         setIsPending(false);
         return;
       }
@@ -68,7 +72,7 @@ export function LoginForm() {
       router.refresh();
     } catch (err) {
       console.error("[LOGIN_FORM]", err);
-      setError("Something went wrong. Please try again.");
+      setError(t("errorGeneric"));
       setIsPending(false);
     }
   }
@@ -76,19 +80,19 @@ export function LoginForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
+        {/* Logo + Heading */}
         <div className="flex flex-col items-center mb-8">
           <Link href="/" className="flex items-center gap-2.5 mb-7 group">
             <div className="w-10 h-10 rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-5 h-5 text-foreground" />
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-black text-foreground tracking-tight">
               EduSpark
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-foreground">Welcome back</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Sign in to continue to EduSpark
+            {t("subtitle")}
           </p>
         </div>
 
@@ -100,7 +104,7 @@ export function LoginForm() {
                 htmlFor="email"
                 className="block text-sm font-medium text-foreground mb-1.5"
               >
-                Email
+                {t("emailLabel")}
               </label>
               <input
                 id="email"
@@ -110,8 +114,8 @@ export function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isPending}
-                placeholder="you@example.com"
-                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
+                placeholder={t("emailPlaceholder")}
+                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50 transition-all"
               />
             </div>
 
@@ -122,13 +126,13 @@ export function LoginForm() {
                   htmlFor="password"
                   className="block text-sm font-medium text-foreground"
                 >
-                  Password
+                  {t("passwordLabel")}
                 </label>
                 <Link
                   href="/auth/forgot-password"
-                  className="text-xs text-primary hover:text-primary"
+                  className="text-xs text-primary hover:text-primary/80"
                 >
-                  Forgot password?
+                  {t("forgotPassword")}
                 </Link>
               </div>
               <div className="relative">
@@ -140,8 +144,8 @@ export function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isPending}
-                  placeholder="••••••••"
-                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
+                  placeholder={t("passwordPlaceholder")}
+                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50 transition-all"
                 />
                 <button
                   type="button"
@@ -161,10 +165,12 @@ export function LoginForm() {
 
             {/* Rate Limited Error */}
             {error && isRateLimited && (
-              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-amber-600 dark:bg-amber-500/5 border border-amber-600 dark:border-amber-500/20">
+              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
                 <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-amber-300">{error}</p>
+                  <p className="text-sm font-medium text-amber-700 dark:text-amber-300">
+                    {error}
+                  </p>
                 </div>
               </div>
             )}
@@ -180,26 +186,26 @@ export function LoginForm() {
             <button
               type="submit"
               disabled={isPending || !email || !password}
-              className="w-full h-11 rounded-lg bg-primary hover:bg-primary text-primary-foreground font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full h-11 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Signing in...
+                  {t("submittingButton")}
                 </>
               ) : (
-                "Sign in"
+                t("submitButton")
               )}
             </button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
-            Don&apos;t have an account?{" "}
+            {t("noAccount")}{" "}
             <Link
               href="/auth/register"
-              className="text-primary hover:text-primary font-medium"
+              className="text-primary hover:text-primary/80 font-medium"
             >
-              Create one
+              {t("createAccount")}
             </Link>
           </p>
         </div>

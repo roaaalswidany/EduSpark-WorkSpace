@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   Loader2,
   Sparkles,
@@ -15,15 +16,9 @@ import { registerAction, type RegisterInput } from "@/actions/auth/register";
 
 type FieldErrors = Partial<Record<keyof RegisterInput, string[]>>;
 
-const PASSWORD_RULES = [
-  { regex: /.{8,}/, label: "At least 8 characters" },
-  { regex: /[A-Z]/, label: "One uppercase letter" },
-  { regex: /[a-z]/, label: "One lowercase letter" },
-  { regex: /[0-9]/, label: "One number" },
-  { regex: /[^A-Za-z0-9]/, label: "One special character" },
-];
-
 export default function RegisterPage() {
+  const t = useTranslations("auth.register");
+  const locale = useLocale();
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -36,6 +31,15 @@ export default function RegisterPage() {
   const [isPending, setIsPending] = useState(false);
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+
+  // Password rules — defined inside component so they can use t()
+  const PASSWORD_RULES = [
+    { regex: /.{8,}/, label: t("rulesMinLength") },
+    { regex: /[A-Z]/, label: t("rulesUppercase") },
+    { regex: /[a-z]/, label: t("rulesLowercase") },
+    { regex: /[0-9]/, label: t("rulesNumber") },
+    { regex: /[^A-Za-z0-9]/, label: t("rulesSpecial") },
+  ];
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,7 +62,7 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push("/auth/login?registered=1");
+    router.push(`/${locale}/auth/login?registered=1`);
   }
 
   const passwordsMatch =
@@ -67,19 +71,19 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-md">
-        {/* Logo */}
+        {/* Logo + Heading */}
         <div className="flex flex-col items-center mb-8">
           <Link href="/" className="flex items-center gap-2.5 mb-7 group">
             <div className="w-10 h-10 rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-5 h-5 text-foreground" />
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-black text-foreground tracking-tight">
               EduSpark
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-foreground">Create your account</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Join EduSpark and start learning
+            {t("subtitle")}
           </p>
         </div>
 
@@ -91,7 +95,7 @@ export default function RegisterPage() {
                 htmlFor="name"
                 className="block text-sm font-medium text-foreground mb-1.5"
               >
-                Full name
+                {t("nameLabel")}
               </label>
               <input
                 id="name"
@@ -101,8 +105,8 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={isPending}
-                placeholder="John Doe"
-                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
+                placeholder={t("namePlaceholder")}
+                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50 transition-all"
               />
               {fieldErrors.name?.[0] && (
                 <p className="text-xs text-destructive mt-1.5">
@@ -117,7 +121,7 @@ export default function RegisterPage() {
                 htmlFor="email"
                 className="block text-sm font-medium text-foreground mb-1.5"
               >
-                Email
+                {t("emailLabel")}
               </label>
               <input
                 id="email"
@@ -127,8 +131,8 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isPending}
-                placeholder="you@example.com"
-                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
+                placeholder={t("emailPlaceholder")}
+                className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50 transition-all"
               />
               {fieldErrors.email?.[0] && (
                 <p className="text-xs text-destructive mt-1.5">
@@ -137,13 +141,13 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Password — with show/hide toggle */}
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-foreground mb-1.5"
               >
-                Password
+                {t("passwordLabel")}
               </label>
               <div className="relative">
                 <input
@@ -154,14 +158,14 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isPending}
-                  placeholder="••••••••"
-                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
+                  placeholder={t("passwordPlaceholder")}
+                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50 transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   disabled={isPending}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                   className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors disabled:opacity-50"
                 >
                   {showPassword ? (
@@ -181,7 +185,9 @@ export default function RegisterPage() {
                       <li
                         key={i}
                         className={`flex items-center gap-1.5 text-xs ${
-                          passed ? "text-emerald-400" : "text-muted-foreground/70"
+                          passed
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : "text-muted-foreground/70"
                         }`}
                       >
                         <Check
@@ -203,13 +209,13 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Confirm Password — with show/hide toggle */}
+            {/* Confirm Password */}
             <div>
               <label
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-foreground mb-1.5"
               >
-                Confirm password
+                {t("confirmPasswordLabel")}
               </label>
               <div className="relative">
                 <input
@@ -220,15 +226,15 @@ export default function RegisterPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   disabled={isPending}
-                  placeholder="••••••••"
-                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
+                  placeholder={t("confirmPasswordPlaceholder")}
+                  className="w-full h-11 pl-3 pr-11 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50 transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword((v) => !v)}
                   disabled={isPending}
                   aria-label={
-                    showConfirmPassword ? "Hide password" : "Show password"
+                    showConfirmPassword ? t("hidePassword") : t("showPassword")
                   }
                   className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors disabled:opacity-50"
                 >
@@ -241,7 +247,7 @@ export default function RegisterPage() {
               </div>
               {confirmPassword.length > 0 && !passwordsMatch && (
                 <p className="text-xs text-destructive mt-1.5">
-                  Passwords do not match.
+                  {t("errorPasswordsDoNotMatch")}
                 </p>
               )}
               {fieldErrors.confirmPassword?.[0] && (
@@ -252,8 +258,7 @@ export default function RegisterPage() {
             </div>
 
             <p className="text-xs text-muted-foreground">
-              New accounts start as Students. Pass a course certification quiz
-              to unlock Creator access.
+              {t("termsNote")}
             </p>
 
             {/* General error */}
@@ -275,26 +280,26 @@ export default function RegisterPage() {
                 !confirmPassword ||
                 !passwordsMatch
               }
-              className="w-full h-11 rounded-lg bg-primary hover:bg-primary text-primary-foreground font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full h-11 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Creating account...
+                  {t("submittingButton")}
                 </>
               ) : (
-                "Create account"
+                t("submitButton")
               )}
             </button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
-            Already have an account?{" "}
+            {t("hasAccount")}{" "}
             <Link
               href="/auth/login"
-              className="text-primary hover:text-primary font-medium"
+              className="text-primary hover:text-primary/80 font-medium"
             >
-              Sign in
+              {t("signInLink")}
             </Link>
           </p>
         </div>

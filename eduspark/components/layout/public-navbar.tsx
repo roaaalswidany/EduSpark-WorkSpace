@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import {
   GraduationCap,
   Store,
@@ -24,27 +24,27 @@ interface PublicNavbarProps {
 }
 
 const NAV_LINKS = [
-  { href: "/courses", label: "Courses", icon: GraduationCap },
-  { href: "/marketplace", label: "Marketplace", icon: Store },
+  { href: "/courses", labelKey: "courses", icon: GraduationCap },
+  { href: "/marketplace", labelKey: "marketplace", icon: Store },
 ] as const;
 
 export function PublicNavbar({ user }: PublicNavbarProps) {
+  const t = useTranslations("navbar");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Layout: mobile flex justify-between + desktop md:grid */}
         <div className="h-16 flex justify-between md:grid md:grid-cols-3 items-center gap-4 w-full">
-          {/* Left column: Logo */}
+          {/* Left: Logo */}
           <div className="flex justify-start">
             <Link
               href="/"
               className="flex items-center gap-2 shrink-0 group"
             >
               <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-                <Sparkles className="w-4 h-4 text-foreground" />
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
               <span className="text-base font-black text-foreground tracking-tight hidden sm:inline">
                 EduSpark
@@ -52,7 +52,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
             </Link>
           </div>
 
-          {/* Middle column: Links (desktop only) */}
+          {/* Center: Nav links */}
           <nav className="hidden md:flex justify-center items-center gap-2">
             {NAV_LINKS.map((link) => {
               const Icon = link.icon;
@@ -71,15 +71,14 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                   )}
                 >
                   <Icon className="w-4 h-4" />
-                  {link.label}
+                  {t(link.labelKey)}
                 </Link>
               );
             })}
           </nav>
 
-          {/* Right column: Buttons */}
+          {/* Right: Auth buttons */}
           <div className="flex justify-end items-center gap-3">
-            {/* Desktop buttons */}
             <div className="hidden md:flex items-center gap-3">
               {user ? (
                 <Link
@@ -92,7 +91,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                   )}
                 >
                   <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
+                  {t("dashboard")}
                 </Link>
               ) : (
                 <>
@@ -104,7 +103,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                       "text-sm font-semibold transition-all"
                     )}
                   >
-                    Sign In
+                    {t("signIn")}
                   </Link>
 
                   <Link
@@ -116,14 +115,14 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                       "shadow-lg shadow-emerald-500/20"
                     )}
                   >
-                    Get Started
+                    {t("getStarted")}
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </>
               )}
             </div>
 
-            {/* Mobile menu toggle — appears on the right edge */}
+            {/* Mobile toggle */}
             <button
               onClick={() => setMobileOpen((v) => !v)}
               className="md:hidden flex items-center justify-center w-11 h-11 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
@@ -159,7 +158,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                   )}
                 >
                   <Icon className="w-5 h-5" />
-                  {link.label}
+                  {t(link.labelKey)}
                 </Link>
               );
             })}
@@ -172,7 +171,7 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                   className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all"
                 >
                   <LayoutDashboard className="w-5 h-5" />
-                  Go to Dashboard
+                  {t("goToDashboard")}
                 </Link>
               ) : (
                 <>
@@ -182,14 +181,14 @@ export function PublicNavbar({ user }: PublicNavbarProps) {
                     className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-semibold text-foreground bg-accent hover:bg-accent/80 transition-all"
                   >
                     <LogIn className="w-5 h-5" />
-                    Sign In
+                    {t("signIn")}
                   </Link>
                   <Link
                     href="/auth/register"
                     onClick={() => setMobileOpen(false)}
                     className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[15px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all"
                   >
-                    Get Started
+                    {t("getStarted")}
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 </>

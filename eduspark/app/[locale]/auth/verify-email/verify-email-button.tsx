@@ -1,11 +1,19 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { verifyEmailAction } from "@/actions/auth/verify-email";
 import { buttonClass } from "@/components/auth/auth-card";
 
-export function VerifyEmailButton({ email, token }: { email: string; token: string }) {
+export function VerifyEmailButton({
+  email,
+  token,
+}: {
+  email: string;
+  token: string;
+}) {
+  const t = useTranslations("auth.verifyEmail");
   const [state, setState] = useState<"idle" | "ok" | "error">("idle");
   const [message, setMessage] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -13,14 +21,21 @@ export function VerifyEmailButton({ email, token }: { email: string; token: stri
   if (state === "ok") {
     return (
       <div className="space-y-4">
-        <p className="text-sm text-emerald-400">Your email address is confirmed. Thank you!</p>
-        <Link href="/dashboard" className={buttonClass}>Go to dashboard</Link>
+        <p className="text-sm text-emerald-600 dark:text-emerald-400">
+          {t("confirmedMessage")}
+        </p>
+        <Link href="/dashboard" className={buttonClass}>
+          {t("goToDashboard")}
+        </Link>
       </div>
     );
   }
+
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">Confirm that <b className="text-foreground">{email}</b> is your email address.</p>
+      <p className="text-sm text-muted-foreground">
+        {t("confirmEmailFor", { email })}
+      </p>
       {state === "error" && <p className="text-sm text-destructive">{message}</p>}
       <button
         disabled={isPending}
@@ -29,11 +44,14 @@ export function VerifyEmailButton({ email, token }: { email: string; token: stri
           startTransition(async () => {
             const res = await verifyEmailAction({ email, token });
             if (res.success) setState("ok");
-            else { setState("error"); setMessage(res.error); }
+            else {
+              setState("error");
+              setMessage(res.error);
+            }
           })
         }
       >
-        {isPending ? "Confirming..." : "Confirm email"}
+        {isPending ? t("confirmingButton") : t("confirmButton")}
       </button>
     </div>
   );

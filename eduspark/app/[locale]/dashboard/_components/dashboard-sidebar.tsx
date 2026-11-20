@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { signOut } from "next-auth/react";
 import { SidebarXpBadge } from "./sidebar-xp-badge";
 import {
@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
 
 interface NavItem {
-  label: string;
+  labelKey: string; // Changed from label
   href: string;
   icon: LucideIcon;
   exact?: boolean;
@@ -39,59 +39,59 @@ interface NavItem {
 }
 
 interface NavSection {
-  title: string;
+  titleKey: string; // Changed from title
   items: NavItem[];
   roles?: Role[];
 }
 
 const SECTIONS: NavSection[] = [
   {
-    title: "Main",
+    titleKey: "main",
     items: [
-      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
-      { label: "Career Path", href: "/dashboard/career-path", icon: Target, roles: ["STUDENT", "CREATOR"] },
-      { label: "Achievements", href: "/dashboard/achievements", icon: Trophy, roles: ["STUDENT", "CREATOR"] },
-      { label: "Messages", href: "/dashboard/chat", icon: MessageSquare },
-      { label: "Notifications", href: "/dashboard/notifications", icon: Bell },
-      { label: "Settings", href: "/dashboard/settings", icon: Settings },
+      { labelKey: "dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
+      { labelKey: "careerPath", href: "/dashboard/career-path", icon: Target, roles: ["STUDENT", "CREATOR"] },
+      { labelKey: "achievements", href: "/dashboard/achievements", icon: Trophy, roles: ["STUDENT", "CREATOR"] },
+      { labelKey: "messages", href: "/dashboard/chat", icon: MessageSquare },
+      { labelKey: "notifications", href: "/dashboard/notifications", icon: Bell },
+      { labelKey: "settings", href: "/dashboard/settings", icon: Settings },
     ],
   },
   {
-    title: "Learn",
+    titleKey: "learn",
     roles: ["STUDENT", "CREATOR"],
     items: [
-      { label: "My Courses", href: "/dashboard/student/courses", icon: BookOpen },
-      { label: "Certificates", href: "/dashboard/student/certificates", icon: Award },
-      { label: "Browse Courses", href: "/courses", icon: GraduationCap },
+      { labelKey: "myCourses", href: "/dashboard/student/courses", icon: BookOpen },
+      { labelKey: "certificates", href: "/dashboard/student/certificates", icon: Award },
+      { labelKey: "browseCourses", href: "/courses", icon: GraduationCap },
     ],
   },
   {
-    title: "Work",
+    titleKey: "work",
     roles: ["STUDENT", "CREATOR"],
     items: [
-      { label: "Marketplace", href: "/marketplace", icon: Store },
-      { label: "My Orders", href: "/dashboard/orders", icon: ShoppingBag },
-      { label: "My Projects", href: "/dashboard/projects", icon: Briefcase },
+      { labelKey: "marketplace", href: "/marketplace", icon: Store },
+      { labelKey: "myOrders", href: "/dashboard/orders", icon: ShoppingBag },
+      { labelKey: "myProjects", href: "/dashboard/projects", icon: Briefcase },
     ],
   },
   {
-    title: "Creator Studio",
+    titleKey: "creatorStudio",
     roles: ["CREATOR"],
     items: [
-      { label: "My Courses", href: "/dashboard/creator/courses", icon: BookOpen },
-      { label: "My Services", href: "/dashboard/creator/services", icon: Package },
-      { label: "Incoming Orders", href: "/dashboard/creator/orders", icon: Inbox },
-      { label: "New Service", href: "/dashboard/creator/services/new", icon: PlusCircle, exact: true },
+      { labelKey: "myCourses", href: "/dashboard/creator/courses", icon: BookOpen },
+      { labelKey: "myServices", href: "/dashboard/creator/services", icon: Package },
+      { labelKey: "incomingOrders", href: "/dashboard/creator/orders", icon: Inbox },
+      { labelKey: "newService", href: "/dashboard/creator/services/new", icon: PlusCircle, exact: true },
     ],
   },
   {
-    title: "Administration",
+    titleKey: "administration",
     roles: ["ADMIN"],
     items: [
-      { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard, exact: true },
-      { label: "Users", href: "/dashboard/admin/users", icon: Users },
-      { label: "Courses", href: "/dashboard/admin/courses", icon: BookOpen },
-      { label: "Services", href: "/dashboard/admin/services", icon: ShoppingBag },
+      { labelKey: "overview", href: "/dashboard/admin", icon: LayoutDashboard, exact: true },
+      { labelKey: "users", href: "/dashboard/admin/users", icon: Users },
+      { labelKey: "coursesAdmin", href: "/dashboard/admin/courses", icon: BookOpen },
+      { labelKey: "servicesAdmin", href: "/dashboard/admin/services", icon: ShoppingBag },
     ],
   },
 ];
@@ -157,7 +157,9 @@ export function DashboardSidebar({
   gamification,
   onNavigate,
 }: DashboardSidebarProps) {
-  const pathname = usePathname();
+  const t = useTranslations("sidebar");
+  const locale = useLocale();
+  const pathname = usePathname(); // Note: next-intl's usePathname strips the locale prefix automatically
 
   function isActive(item: NavItem): boolean {
     if (item.exact) return pathname === item.href;
@@ -180,7 +182,7 @@ export function DashboardSidebar({
         </Link>
         {isAdmin && (
           <span className="ml-auto text-[9px] font-bold uppercase tracking-wider text-info bg-info/10 border border-info/20 px-1.5 py-0.5 rounded">
-            Admin
+            {t("admin")}
           </span>
         )}
       </div>
@@ -196,9 +198,9 @@ export function DashboardSidebar({
           if (items.length === 0) return null;
 
           return (
-            <div key={section.title}>
+            <div key={section.titleKey}>
               <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                {section.title}
+                {t(section.titleKey)}
               </p>
               <ul className="space-y-0.5">
                 {items.map((item) => {
@@ -222,7 +224,7 @@ export function DashboardSidebar({
                             active ? "text-primary" : "text-muted-foreground"
                           )}
                         />
-                        <span className="truncate">{item.label}</span>
+                        <span className="truncate">{t(item.labelKey)}</span>
                       </Link>
                     </li>
                   );
@@ -281,7 +283,7 @@ export function DashboardSidebar({
         {/* Sign out */}
         <button
           type="button"
-          onClick={() => signOut({ callbackUrl: "/auth/login" })}
+          onClick={() => signOut({ callbackUrl: `/${locale}/auth/login` })}
           className={cn(
             "w-full flex items-center gap-3 px-3 py-2 rounded-lg",
             "text-sm font-medium text-muted-foreground",
@@ -290,7 +292,7 @@ export function DashboardSidebar({
           )}
         >
           <LogOut className="w-4 h-4 shrink-0" />
-          <span>Sign out</span>
+          <span>{t("signOut")}</span>
         </button>
       </div>
     </aside>
