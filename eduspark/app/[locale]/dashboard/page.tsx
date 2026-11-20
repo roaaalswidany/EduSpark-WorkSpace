@@ -1,6 +1,7 @@
-import {getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import {
   BookOpen,
   Award,
@@ -21,25 +22,34 @@ import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
 
-export const metadata = {
-  title: "Dashboard — EduSpark",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "dashboard" });
+  return { title: `${t("title")} — EduSpark` };
+}
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
 
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+
+  const t = await getTranslations("dashboard");
   const userId = session.user.id;
   const role = session.user.role as Role;
 
-  // Fetch stats in parallel
   const [
     enrollmentsCount,
     certificatesCount,
     servicesCount,
     projectsCount,
     ordersAsBuyer,
-    // Admin-only
     totalUsers,
     totalCourses,
     totalServices,
@@ -52,7 +62,6 @@ export default async function DashboardPage() {
       where: { OR: [{ clientId: userId }, { creatorId: userId }] },
     }),
     db.order.count({ where: { buyerId: userId } }),
-    // Admin stats (cheap enough to always compute; harmless for non-admins)
     role === "ADMIN" ? db.user.count() : Promise.resolve(0),
     role === "ADMIN" ? db.course.count() : Promise.resolve(0),
     role === "ADMIN" ? db.service.count() : Promise.resolve(0),
@@ -62,6 +71,13 @@ export default async function DashboardPage() {
   const isAdmin = role === "ADMIN";
   const isCreator = role === "CREATOR" || isAdmin;
 
+  const roleKey = isAdmin ? "admin" : isCreator ? "creator" : "student";
+  const subtitleKey = isAdmin
+    ? "subtitles.admin"
+    : isCreator
+    ? "subtitles.creator"
+    : "subtitles.student";
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       {/* Welcome */}
@@ -69,51 +85,48 @@ export default async function DashboardPage() {
         <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <Sparkles className="w-3.5 h-3.5" />
           <span className="uppercase tracking-widest">
-            {isAdmin ? "Administrator" : isCreator ? "Creator" : "Student"}
+            {t(`roles.${roleKey}`)}
           </span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-          Welcome back, {session.user.name?.split(" ")[0] ?? "there"} <Hand className="inline-block w-8 h-8 text-amber-600 dark:text-amber-400 ml-2" /> 
+          {t("welcome", {
+            name: session.user.name?.split(" ")[0] ?? "there",
+          })}{" "}
+          <Hand className="inline-block w-8 h-8 text-amber-600 dark:text-amber-400 ml-2" />
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">
-          {isAdmin
-            ? "Monitor and manage the entire EduSpark platform."
-            : isCreator
-            ? "Grow your business, manage services, and track your orders."
-            : "Continue learning, earn certificates, and unlock your potential."}
-        </p>
+        <p className="text-sm text-muted-foreground mt-2">{t(subtitleKey)}</p>
       </div>
 
       {/* ADMIN PANEL */}
       {isAdmin && (
         <div className="mb-10">
           <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
-            Platform Overview
+            {t("sections.platformOverview")}
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
-              label="Total Users"
+              label={t("stats.totalUsers")}
               value={totalUsers}
               icon={Users}
               color="text-primary"
               bg="bg-primary/10 border-primary/20"
             />
             <StatCard
-              label="Courses"
+              label={t("stats.courses")}
               value={totalCourses}
               icon={GraduationCap}
               color="text-amber-600 dark:text-amber-400"
-              bg="bg-amber-500/10 border border-amber-500/20 dark:bg-amber-500/10 border-amber-600 dark:border-amber-500/20"
+              bg="bg-amber-500/10 border-amber-500/20"
             />
             <StatCard
-              label="Services"
+              label={t("stats.services")}
               value={totalServices}
               icon={Store}
-              color="text-emerald-400"
+              color="text-emerald-600 dark:text-emerald-400"
               bg="bg-emerald-500/10 border-emerald-500/20"
             />
             <StatCard
-              label="Projects"
+              label={t("stats.projects")}
               value={totalProjects}
               icon={Briefcase}
               color="text-info"
@@ -130,9 +143,11 @@ export default async function DashboardPage() {
                 <ShieldCheck className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-foreground">Admin Panel</p>
+                <p className="text-sm font-bold text-foreground">
+                  {t("adminPanel.title")}
+                </p>
                 <p className="text-xs text-muted-foreground">
-                  Manage users, courses, and services
+                  {t("adminPanel.description")}
                 </p>
               </div>
               <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-primary transition-colors" />
@@ -146,9 +161,11 @@ export default async function DashboardPage() {
                 <TrendingUp className="w-5 h-5 text-info" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-foreground">Conversations</p>
+                <p className="text-sm font-bold text-foreground">
+                  {t("conversations.title")}
+                </p>
                 <p className="text-xs text-muted-foreground">
-                  Monitor platform-wide chats
+                  {t("conversations.description")}
                 </p>
               </div>
               <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-info transition-colors" />
@@ -157,14 +174,14 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* LEARNING (Student + Creator + Admin) */}
+      {/* LEARNING */}
       <div className="mb-10">
         <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
-          Learning
+          {t("sections.learning")}
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
-            label="My Courses"
+            label={t("stats.myCourses")}
             value={enrollmentsCount}
             icon={BookOpen}
             color="text-primary"
@@ -172,23 +189,23 @@ export default async function DashboardPage() {
             href="/dashboard/student/courses"
           />
           <StatCard
-            label="Certificates"
+            label={t("stats.certificates")}
             value={certificatesCount}
             icon={Award}
             color="text-amber-600 dark:text-amber-400"
-            bg="bg-amber-500/10 border border-amber-500/20 dark:bg-amber-500/10 border-amber-600 dark:border-amber-500/20"
+            bg="bg-amber-500/10 border-amber-500/20"
             href="/dashboard/student/certificates"
           />
           <StatCard
-            label="Orders"
+            label={t("stats.orders")}
             value={ordersAsBuyer}
             icon={Package}
-            color="text-emerald-400"
+            color="text-emerald-600 dark:text-emerald-400"
             bg="bg-emerald-500/10 border-emerald-500/20"
             href="/marketplace"
           />
           <StatCard
-            label="Projects"
+            label={t("stats.projects")}
             value={projectsCount}
             icon={Briefcase}
             color="text-info"
@@ -203,19 +220,19 @@ export default async function DashboardPage() {
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Creator Studio
+              {t("sections.creatorStudio")}
             </h2>
             <Link
               href="/dashboard/creator/services/new"
               className={cn(
                 "inline-flex items-center gap-2 px-3 py-1.5 rounded-lg",
-                "bg-primary hover:bg-primary text-primary-foreground",
+                "bg-primary hover:bg-primary/90 text-primary-foreground",
                 "text-xs font-bold transition-all active:scale-95",
                 "shadow-lg shadow-emerald-500/20"
               )}
             >
               <Plus className="w-3.5 h-3.5" />
-              New Service
+              {t("creatorSection.newService")}
             </Link>
           </div>
 
@@ -228,9 +245,11 @@ export default async function DashboardPage() {
                 <Package className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-foreground">My Services</p>
+                <p className="text-sm font-bold text-foreground">
+                  {t("creatorSection.myServices")}
+                </p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {servicesCount} {servicesCount === 1 ? "service" : "services"} published
+                  {t("creatorSection.publishedCount", { count: servicesCount })}
                 </p>
               </div>
               <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-primary transition-colors" />
@@ -241,15 +260,17 @@ export default async function DashboardPage() {
               className="group flex items-center gap-4 p-5 rounded-2xl bg-card border border-border hover:border-emerald-500/40 transition-all"
             >
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-                <Store className="w-5 h-5 text-emerald-400" />
+                <Store className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-foreground">Marketplace</p>
+                <p className="text-sm font-bold text-foreground">
+                  {t("creatorSection.marketplaceTitle")}
+                </p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Browse what other creators offer
+                  {t("creatorSection.marketplaceDesc")}
                 </p>
               </div>
-              <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-emerald-400 transition-colors" />
+              <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors" />
             </Link>
           </div>
         </div>
@@ -258,23 +279,25 @@ export default async function DashboardPage() {
       {/* EXPLORE */}
       <div>
         <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
-          Explore
+          {t("sections.explore")}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Link
             href="/courses"
-            className="group flex items-center gap-4 p-5 rounded-2xl bg-card border border-border hover:border-amber-600 dark:border-amber-500/40 transition-all"
+            className="group flex items-center gap-4 p-5 rounded-2xl bg-card border border-border hover:border-amber-500/40 transition-all"
           >
-            <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 dark:bg-amber-500/10 border border-amber-600 dark:border-amber-500/20 flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
               <GraduationCap className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-foreground">Browse Courses</p>
+              <p className="text-sm font-bold text-foreground">
+                {t("explore.browseCourses")}
+              </p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Discover new skills to master
+                {t("explore.browseCoursesDesc")}
               </p>
             </div>
-            <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-amber-600 dark:text-amber-400 transition-colors" />
+            <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors" />
           </Link>
 
           <Link
@@ -285,9 +308,11 @@ export default async function DashboardPage() {
               <Store className="w-5 h-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-foreground">Browse Services</p>
+              <p className="text-sm font-bold text-foreground">
+                {t("explore.browseServices")}
+              </p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Hire certified experts
+                {t("explore.browseServicesDesc")}
               </p>
             </div>
             <ArrowRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-primary transition-colors" />

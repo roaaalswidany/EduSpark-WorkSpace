@@ -155,5 +155,55 @@
       "defaultError": "An error occurred during sign-in.",
       "loading": "Loading..."
     }
+  },
+    "dashboard": {
+    "title": "Dashboard",
+    "roles": {
+      "admin": "Administrator",
+      "creator": "Creator",
+      "student": "Student"
+    },
+    "welcome": "Welcome back, {name}",
+    "subtitles": {
+      "admin": "Monitor and manage the entire EduSpark platform.",
+      "creator": "Grow your business, manage services, and track your orders.",
+      "student": "Continue learning, earn certificates, and unlock your potential."
+    },
+    "sections": {
+      "platformOverview": "Platform Overview",
+      "learning": "Learning",
+      "creatorStudio": "Creator Studio",
+      "explore": "Explore"
+    },
+    "stats": {
+      "totalUsers": "Total Users",
+      "courses": "Courses",
+      "services": "Services",
+      "projects": "Projects",
+      "myCourses": "My Courses",
+      "certificates": "Certificates",
+      "orders": "Orders"
+    },
+    "adminPanel": {
+      "title": "Admin Panel",
+      "description": "Manage users, courses, and services"
+    },
+    "conversations": {
+      "title": "Conversations",
+      "description": "Monitor platform-wide chats"
+    },
+    "creatorSection": {
+      "newService": "New Service",
+      "myServices": "My Services",
+      "publishedCount": "{count, plural, =0 {No services published} =1 {1 service published} other {# services published}}",
+      "marketplaceTitle": "Marketplace",
+      "marketplaceDesc": "Browse what other creators offer"
+    },
+    "explore": {
+      "browseCourses": "Browse Courses",
+      "browseCoursesDesc": "Discover new skills to master",
+      "browseServices": "Browse Services",
+      "browseServicesDesc": "Hire certified experts"
+    }
   }
 }

@@ -155,5 +155,55 @@
       "defaultError": "حدث خطأ أثناء تسجيل الدخول.",
       "loading": "جارٍ التحميل..."
     }
+  },
+    "dashboard": {
+    "title": "لوحة التحكم",
+    "roles": {
+      "admin": "مدير",
+      "creator": "منشئ",
+      "student": "طالب"
+    },
+    "welcome": "أهلاً بعودتك، {name}",
+    "subtitles": {
+      "admin": "راقب وأدر منصة EduSpark بأكملها.",
+      "creator": "طوّر أعمالك، وأدر خدماتك، وتتبع طلباتك.",
+      "student": "واصل التعلم، واجمع الشهادات، وأطلق إمكانياتك."
+    },
+    "sections": {
+      "platformOverview": "نظرة عامة على المنصة",
+      "learning": "التعلّم",
+      "creatorStudio": "استوديو المنشئ",
+      "explore": "استكشاف"
+    },
+    "stats": {
+      "totalUsers": "إجمالي المستخدمين",
+      "courses": "الكورسات",
+      "services": "الخدمات",
+      "projects": "المشاريع",
+      "myCourses": "كورساتي",
+      "certificates": "الشهادات",
+      "orders": "الطلبات"
+    },
+    "adminPanel": {
+      "title": "لوحة الإدارة",
+      "description": "إدارة المستخدمين والكورسات والخدمات"
+    },
+    "conversations": {
+      "title": "المحادثات",
+      "description": "مراقبة المحادثات على مستوى المنصة"
+    },
+    "creatorSection": {
+      "newService": "خدمة جديدة",
+      "myServices": "خدماتي",
+      "publishedCount": "{count, plural, =0 {لا توجد خدمات منشورة} =1 {خدمة واحدة منشورة} =2 {خدمتان منشورتان} few {# خدمات منشورة} many {# خدمة منشورة} other {# خدمة منشورة}}",
+      "marketplaceTitle": "السوق",
+      "marketplaceDesc": "تصفح ما يقدمه المنشئون الآخرون"
+    },
+    "explore": {
+      "browseCourses": "تصفح الكورسات",
+      "browseCoursesDesc": "اكتشف مهارات جديدة لإتقانها",
+      "browseServices": "تصفح الخدمات",
+      "browseServicesDesc": "استعن بخبراء معتمدين"
+    }
   }
 }
