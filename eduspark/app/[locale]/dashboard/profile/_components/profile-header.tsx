@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Mail,
   Calendar,
@@ -30,16 +33,16 @@ interface ProfileHeaderProps {
   };
 }
 
-const ROLE_LABELS: Record<Role, string> = {
-  STUDENT: "Student",
-  CREATOR: "Verified Creator",
-  ADMIN: "Administrator",
-};
-
 const ROLE_STYLES: Record<Role, string> = {
   STUDENT: "bg-accent/60 text-foreground border-border",
-  CREATOR: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  CREATOR: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   ADMIN: "bg-info/10 text-info border-info/20",
+};
+
+const ROLE_KEYS: Record<Role, "student" | "creator" | "admin"> = {
+  STUDENT: "student",
+  CREATOR: "creator",
+  ADMIN: "admin",
 };
 
 function Avatar({
@@ -75,7 +78,7 @@ function Avatar({
 
   return (
     <div
-      className="rounded-3xl flex items-center justify-center text-foreground font-black ring-2 ring-border shrink-0"
+      className="rounded-3xl flex items-center justify-center text-white font-black ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -91,32 +94,35 @@ function Avatar({
 }
 
 export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
-  const memberSince = new Date(user.createdAt).toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
+  const t = useTranslations("profile.header");
+  const locale = useLocale();
+
+  const memberSince = new Date(user.createdAt).toLocaleDateString(
+    locale === "ar" ? "ar" : "en-US",
+    { month: "long", year: "numeric" }
+  );
 
   const statItems = [
     {
-      label: "Courses",
+      label: t("stats.courses"),
       value: stats.enrollments,
       icon: GraduationCap,
       color: "text-primary",
     },
     {
-      label: "Certificates",
+      label: t("stats.certificates"),
       value: stats.certificates,
       icon: Award,
       color: "text-amber-600 dark:text-amber-400",
     },
     {
-      label: "Services",
+      label: t("stats.services"),
       value: stats.services,
       icon: Package,
-      color: "text-emerald-400",
+      color: "text-emerald-600 dark:text-emerald-400",
     },
     {
-      label: "Projects",
+      label: t("stats.projects"),
       value: stats.projects,
       icon: Briefcase,
       color: "text-info",
@@ -132,7 +138,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
           className="absolute inset-0 opacity-40"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 20% 50%, rgba(99,102,241,0.3), transparent 40%), radial-gradient(circle at 80% 50%, rgba(168,85,247,0.25), transparent 40%)",
+              "radial-gradient(circle at 20% 50%, rgba(16,185,129,0.3), transparent 40%), radial-gradient(circle at 80% 50%, rgba(5,150,105,0.25), transparent 40%)",
           }}
         />
       </div>
@@ -159,7 +165,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
               )}
             >
               <ShieldCheck className="w-3.5 h-3.5" />
-              {ROLE_LABELS[user.role]}
+              {t(`roles.${ROLE_KEYS[user.role]}`)}
             </span>
           </div>
         </div>
@@ -172,7 +178,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
           </div>
           <div className="flex items-center gap-1.5">
             <Calendar className="w-3.5 h-3.5" />
-            <span>Joined {memberSince}</span>
+            <span>{t("joined", { date: memberSince })}</span>
           </div>
           {user.website && (
             <a

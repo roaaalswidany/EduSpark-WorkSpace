@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   Pencil,
   X,
@@ -47,6 +48,7 @@ interface FormState {
 }
 
 export function ProfileView({ user, stats }: ProfileViewProps) {
+  const t = useTranslations("profile.view");
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -73,7 +75,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
   const handleSave = () => {
     setServerError(null);
 
-    const toastId = toast.loading("Saving profile...");
+    const toastId = toast.loading(t("toastSaving"));
 
     startTransition(async () => {
       const result = await updateProfileAction({
@@ -86,15 +88,15 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
       if (!result.success) {
         const errorMessage =
           result.error === "INVALID_INPUT"
-            ? "Please check the fields and try again."
-            : "Something went wrong. Please try again.";
+            ? t("errorInvalid")
+            : t("errorGeneric");
 
         setServerError(errorMessage);
         toast.error(errorMessage, { id: toastId });
         return;
       }
 
-      toast.success("Profile updated successfully! âœ¨", { id: toastId });
+      toast.success(t("toastSuccess"), { id: toastId });
       setIsEditing(false);
       router.refresh();
     });
@@ -109,7 +111,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" />
-          {isEditing ? "Edit Profile" : "About"}
+          {isEditing ? t("editProfile") : t("about")}
         </h2>
 
         {!isEditing ? (
@@ -117,13 +119,13 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
             onClick={() => setIsEditing(true)}
             className={cn(
               "inline-flex items-center gap-2 px-4 py-2 rounded-lg",
-              "bg-accent hover:bg-accent text-foreground",
+              "bg-accent hover:bg-accent/80 text-foreground",
               "text-xs font-semibold border border-border",
               "transition-all active:scale-95"
             )}
           >
             <Pencil className="w-3.5 h-3.5" />
-            Edit Profile
+            {t("editProfile")}
           </button>
         ) : (
           <div className="flex items-center gap-2">
@@ -132,20 +134,20 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               disabled={isPending}
               className={cn(
                 "inline-flex items-center gap-2 px-4 py-2 rounded-lg",
-                "bg-accent hover:bg-accent text-muted-foreground hover:text-foreground",
+                "bg-accent hover:bg-accent/80 text-muted-foreground hover:text-foreground",
                 "text-xs font-semibold border border-border",
                 "transition-all active:scale-95 disabled:opacity-50"
               )}
             >
               <X className="w-3.5 h-3.5" />
-              Cancel
+              {t("cancel")}
             </button>
             <button
               onClick={handleSave}
               disabled={isPending}
               className={cn(
                 "inline-flex items-center gap-2 px-4 py-2 rounded-lg",
-                "bg-primary hover:bg-primary text-primary-foreground",
+                "bg-primary hover:bg-primary/90 text-primary-foreground",
                 "text-xs font-bold",
                 "transition-all active:scale-95 disabled:opacity-50",
                 "shadow-lg shadow-emerald-500/20"
@@ -154,12 +156,12 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               {isPending ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  Saving...
+                  {t("saving")}
                 </>
               ) : (
                 <>
                   <Save className="w-3.5 h-3.5" />
-                  Save Changes
+                  {t("saveChanges")}
                 </>
               )}
             </button>
@@ -170,31 +172,31 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
       {/* View mode */}
       {!isEditing && (
         <div className="space-y-4">
-          <Section title="Bio" icon={FileText}>
+          <Section title={t("bio")} icon={FileText}>
             {user.bio ? (
               <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                 {user.bio}
               </p>
             ) : (
               <p className="text-sm text-muted-foreground/70 italic">
-                No bio added yet. Click &quot;Edit Profile&quot; to add one.
+                {t("noBio")}
               </p>
             )}
           </Section>
 
-          <Section title="Website" icon={Globe}>
+          <Section title={t("website")} icon={Globe}>
             {user.website ? (
               <a
                 href={user.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-primary hover:text-primary transition-colors break-all"
+                className="text-sm text-primary hover:text-primary/80 transition-colors break-all"
               >
                 {user.website}
               </a>
             ) : (
               <p className="text-sm text-muted-foreground/70 italic">
-                No website added yet.
+                {t("noWebsite")}
               </p>
             )}
           </Section>
@@ -205,7 +207,7 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
       {isEditing && (
         <div className="rounded-2xl bg-card border border-border p-6 sm:p-8 space-y-6">
           <Field
-            label="Full Name"
+            label={t("fullName")}
             required
             icon={User}
             hint={`${form.name.length}/60`}
@@ -216,12 +218,12 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               disabled={isPending}
               maxLength={60}
-              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
+              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50 transition-all"
             />
           </Field>
 
           <Field
-            label="Headline"
+            label={t("headline")}
             icon={Sparkles}
             hint={`${form.headline.length}/100`}
           >
@@ -231,13 +233,13 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               onChange={(e) => setForm({ ...form, headline: e.target.value })}
               disabled={isPending}
               maxLength={100}
-              placeholder="e.g. Senior Full-Stack Developer"
-              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
+              placeholder={t("headlinePlaceholder")}
+              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50 transition-all"
             />
           </Field>
 
           <Field
-            label="Bio"
+            label={t("bio")}
             icon={FileText}
             hint={`${form.bio.length}/500`}
           >
@@ -247,19 +249,19 @@ export function ProfileView({ user, stats }: ProfileViewProps) {
               disabled={isPending}
               maxLength={500}
               rows={5}
-              placeholder="Tell others about yourself, your expertise, and what you do…"
-              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 resize-none disabled:opacity-50 transition-all"
+              placeholder={t("bioPlaceholder")}
+              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none disabled:opacity-50 transition-all"
             />
           </Field>
 
-          <Field label="Website" icon={Globe} hint="Optional">
+          <Field label={t("website")} icon={Globe} hint={t("optional")}>
             <input
               type="url"
               value={form.website}
               onChange={(e) => setForm({ ...form, website: e.target.value })}
               disabled={isPending}
-              placeholder="https://your-portfolio.com"
-              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 transition-all"
+              placeholder={t("websitePlaceholder")}
+              className="w-full h-11 px-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50 transition-all"
             />
           </Field>
 

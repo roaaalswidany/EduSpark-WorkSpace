@@ -412,5 +412,45 @@
         "generic": "Something went wrong. Please try again."
       }
     }
+  },
+    "profile": {
+    "view": {
+      "editProfile": "Edit Profile",
+      "about": "About",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "bio": "Bio",
+      "website": "Website",
+      "noBio": "No bio added yet. Click \"Edit Profile\" to add one.",
+      "noWebsite": "No website added yet.",
+      "fullName": "Full Name",
+      "headline": "Headline",
+      "headlinePlaceholder": "e.g. Senior Full-Stack Developer",
+      "bioPlaceholder": "Tell others about yourself, your expertise, and what you do…",
+      "websitePlaceholder": "https://your-portfolio.com",
+      "optional": "Optional",
+      "toastSaving": "Saving profile...",
+      "toastSuccess": "Profile updated successfully! ✨",
+      "errorInvalid": "Please check the fields and try again.",
+      "errorGeneric": "Something went wrong. Please try again."
+    },
+    "header": {
+      "roles": {
+        "student": "Student",
+        "creator": "Verified Creator",
+        "admin": "Administrator"
+      },
+      "joined": "Joined {date}",
+      "stats": {
+        "courses": "Courses",
+        "certificates": "Certificates",
+        "services": "Services",
+        "projects": "Projects"
+      }
+    },
+    "page": {
+      "title": "Profile"
+    }
   }
 }

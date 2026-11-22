@@ -412,5 +412,45 @@
         "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
       }
     }
+  },
+    "profile": {
+    "view": {
+      "editProfile": "تعديل الملف الشخصي",
+      "about": "نبذة",
+      "cancel": "إلغاء",
+      "saveChanges": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ...",
+      "bio": "النبذة",
+      "website": "الموقع الإلكتروني",
+      "noBio": "لم تُضف نبذة بعد. اضغط على \"تعديل الملف الشخصي\" لإضافتها.",
+      "noWebsite": "لم يُضف موقع إلكتروني بعد.",
+      "fullName": "الاسم الكامل",
+      "headline": "العنوان المهني",
+      "headlinePlaceholder": "مثال: مطور Full-Stack أول",
+      "bioPlaceholder": "أخبر الآخرين عن نفسك، خبراتك، وما تفعله…",
+      "websitePlaceholder": "https://your-portfolio.com",
+      "optional": "اختياري",
+      "toastSaving": "جارٍ حفظ الملف الشخصي...",
+      "toastSuccess": "تم تحديث الملف الشخصي بنجاح! ✨",
+      "errorInvalid": "يرجى التحقق من الحقول والمحاولة مرة أخرى.",
+      "errorGeneric": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "header": {
+      "roles": {
+        "student": "طالب",
+        "creator": "منشئ معتمد",
+        "admin": "مدير"
+      },
+      "joined": "انضم في {date}",
+      "stats": {
+        "courses": "الكورسات",
+        "certificates": "الشهادات",
+        "services": "الخدمات",
+        "projects": "المشاريع"
+      }
+    },
+    "page": {
+      "title": "الملف الشخصي"
+    }
   }
 }
