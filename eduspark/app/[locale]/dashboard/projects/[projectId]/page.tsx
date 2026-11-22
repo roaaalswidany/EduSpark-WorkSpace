@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { redirect, notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
+import { getTranslations, getLocale } from "next-intl/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { ProjectView } from "./_components/project-view";
@@ -8,15 +10,31 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import type { SerializedProject } from "./_components/project-view";
 
 interface ProjectPageProps {
-  params: Promise<{ projectId: string }>;
+  params: Promise<{ locale: string; projectId: string }>;
+}
+
+export async function generateMetadata({ params }: ProjectPageProps) {
+  const { projectId, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "projects.view" });
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: { title: true },
+  });
+  return {
+    title: project ? `${project.title} — EduSpark` : `Project — EduSpark`,
+  };
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { projectId } = await params;
-
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
 
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+
+  const tPage = await getTranslations("projects.page.breadcrumb");
   const { id: userId } = session.user;
 
   const project = await db.project.findUnique({
@@ -61,8 +79,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           amount: true,
           completedAt: true,
           revisionNote: true,
-          submissionNote: true, // NEW
-          submissionUrl: true,  // NEW
+          submissionNote: true,
+          submissionUrl: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -78,15 +96,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   if (!project) notFound();
 
-  // Access control: only client and creator may view this project
   const isClient = project.clientId === userId;
   const isCreator = project.creatorId === userId;
 
   if (!isClient && !isCreator) {
-    redirect("/dashboard/projects");
+    redirect(`/${locale}/dashboard/projects`);
   }
 
-  // ── Serialize Prisma Decimal + Date values for the Client Component ─────────
   const serialized: SerializedProject = {
     id: project.id,
     title: project.title,
@@ -101,10 +117,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     client: project.client,
     creator: project.creator,
     service: project.service
-      ? {
-          ...project.service,
-          price: Number(project.service.price),
-        }
+      ? { ...project.service, price: Number(project.service.price) }
       : null,
     milestones: project.milestones.map((m) => ({
       id: m.id,
@@ -116,8 +129,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       amount: m.amount ? Number(m.amount) : null,
       completedAt: m.completedAt?.toISOString() ?? null,
       revisionNote: m.revisionNote,
-      submissionNote: m.submissionNote, // NEW
-      submissionUrl: m.submissionUrl,   // NEW
+      submissionNote: m.submissionNote,
+      submissionUrl: m.submissionUrl,
       createdAt: m.createdAt.toISOString(),
       updatedAt: m.updatedAt.toISOString(),
     })),
@@ -131,13 +144,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <>
-      {/* ── Breadcrumb bar ─────────────────────────── */}
       <div className="border-b border-border bg-background">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3">
           <Breadcrumbs
             items={[
-              { label: "Dashboard", href: "/dashboard" },
-              { label: "Projects", href: "/dashboard/projects" },
+              { label: tPage("dashboard"), href: "/dashboard" },
+              { label: tPage("projects"), href: "/dashboard/projects" },
               { label: project.title, truncate: true },
             ]}
           />

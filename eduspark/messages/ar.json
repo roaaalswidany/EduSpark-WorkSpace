@@ -597,5 +597,117 @@
         "daysAgo": "قبل {count} ي"
       }
     }
+  },
+    "projects": {
+    "page": {
+      "title": "مشاريعي",
+      "workspace": "مساحة العمل",
+      "noProjects": "لا توجد مشاريع بعد. اطلب خدمة أو انتظر قبول المنشئ لمشروعك.",
+      "projectsCount": "{count, plural, =0 {لا توجد مشاريع} =1 {مشروع واحد} =2 {مشروعان} few {# مشاريع} many {# مشروعاً} other {# مشروع}}",
+      "emptyTitle": "لا توجد مشاريع بعد",
+      "emptyDesc": "تُنشأ المشاريع تلقائياً عند طلب خدمة من السوق.",
+      "browseServices": "تصفح الخدمات",
+      "clientLabel": "العميل",
+      "creatorLabel": "المنشئ",
+      "milestonesCount": "{count, plural, =0 {لا توجد مراحل} =1 {مرحلة واحدة} =2 {مرحلتان} few {# مراحل} many {# مرحلة} other {# مرحلة}}",
+      "breadcrumb": {
+        "dashboard": "لوحة التحكم",
+        "projects": "المشاريع"
+      }
+    },
+    "statuses": {
+      "pending": "بانتظار البدء",
+      "open": "مفتوح",
+      "inProgress": "قيد التنفيذ",
+      "reviewRequested": "بانتظار الموافقة",
+      "completed": "مكتمل",
+      "cancelled": "ملغى",
+      "disputed": "متنازع عليه"
+    },
+    "view": {
+      "back": "العودة للمشاريع",
+      "started": "بدأ في {date}",
+      "chat": "محادثة",
+      "milestonesProgress": "{completed} من {total} مراحل معتمدة",
+      "milestonesTitle": "المراحل",
+      "done": "{completed}/{total} مكتمل",
+      "service": "الخدمة",
+      "dayDelivery": "{days, plural, =1 {تسليم خلال يوم} =2 {تسليم خلال يومين} few {تسليم خلال # أيام} many {تسليم خلال # يوماً} other {تسليم خلال # يوم}}",
+      "totalBudget": "الميزانية الإجمالية",
+      "viewService": "عرض الخدمة",
+      "participants": "المشاركون",
+      "client": "العميل",
+      "creator": "المنشئ",
+      "you": "أنت",
+      "noCreator": "لم يُعيَّن منشئ",
+      "details": "التفاصيل",
+      "budget": "الميزانية",
+      "deadline": "الموعد النهائي",
+      "status": "الحالة",
+      "projectChat": "محادثة المشروع",
+      "chatMessages": "{count, plural, =0 {لا توجد رسائل} =1 {رسالة واحدة} =2 {رسالتان} few {# رسائل} many {# رسالة} other {# رسالة}}",
+      "approveTitle": "تم تسليم كل العمل",
+      "approveDesc": "قدّم المنشئ جميع المراحل للمراجعة. الموافقة ستعيّن المشروع كمكتمل وتحرر الدفع.",
+      "approveBtn": "الموافقة وإكمال المشروع",
+      "approving": "جارٍ المعالجة…",
+      "completedTitle": "اكتمل المشروع! 🎉",
+      "completedDesc": "تمت الموافقة على جميع المراحل. تم تسليم هذا المشروع بنجاح.",
+      "errorDismiss": "إغلاق الخطأ"
+    },
+    "milestone": {
+      "label": "المرحلة {number}",
+      "value": "القيمة",
+      "deliveryNote": "ملاحظة التسليم",
+      "viewDeliveryLink": "عرض رابط التسليم",
+      "revisionNote": "ملاحظة المراجعة",
+      "approvedAt": "تمت الموافقة في {date}",
+      "statuses": {
+        "pending": "معلقة",
+        "inProgress": "قيد التنفيذ",
+        "reviewRequested": "قيد المراجعة",
+        "approved": "معتمدة",
+        "revisionNeeded": "تحتاج مراجعة"
+      },
+      "actions": {
+        "start": "ابدأ العمل",
+        "submitForReview": "تقديم للمراجعة",
+        "requestRevision": "طلب مراجعة",
+        "awaitingReview": "بانتظار مراجعة العميل…",
+        "approvedMsg": "المرحلة معتمدة",
+        "creatorWorking": "المنشئ يعمل على هذا…",
+        "notStarted": "لم تبدأ بعد",
+        "youApproved": "اعتمدت هذه المرحلة"
+      }
+    },
+    "dueDate": {
+      "noDeadline": "لا يوجد موعد نهائي",
+      "overdue": "متأخر {days} يوم",
+      "dueToday": "يستحق اليوم",
+      "dueTomorrow": "يستحق غداً",
+      "dueIn": "يستحق خلال {days} يوم"
+    },
+    "submissionForm": {
+      "hint": "أضف تفاصيل التسليم:",
+      "notePlaceholder": "صف ما سلّمته (مثال: 'ملفات الشعار النهائية بصيغ SVG، PNG، AI. دلائل العلامة التجارية مرفقة.')",
+      "urlPlaceholder": "رابط التسليم (اختياري) — https://…",
+      "httpsOnly": "يُسمح فقط بروابط https://.",
+      "cancel": "إلغاء",
+      "submit": "تسليم العمل"
+    },
+    "revisionForm": {
+      "hint": "صف ما يحتاج إلى تغيير:",
+      "notePlaceholder": "كن محدداً — مثال: 'يرجى مراجعة قسم الرأس وتعديل لوحة الألوان لتطابق إرشادات العلامة التجارية المرفقة.'",
+      "cancel": "إلغاء",
+      "submit": "إرسال الطلب"
+    },
+    "chatPage": {
+      "back": "العودة للمشروع",
+      "endToEndEncrypted": "قناة مشفرة من الطرف إلى الطرف",
+      "secure": "آمن",
+      "client": "العميل",
+      "creator": "المنشئ",
+      "you": "(أنت)",
+      "noCreator": "لم يُعيَّن منشئ"
+    }
   }
 }

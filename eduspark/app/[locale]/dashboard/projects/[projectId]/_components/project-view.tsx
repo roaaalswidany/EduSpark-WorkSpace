@@ -1,13 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import {
-  useState,
-  useTransition,
-  useCallback,
-  useMemo,
-} from "react";
-import Link from "next/link";
+import { useState, useTransition, useCallback, useMemo } from "react";
+import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   CheckCircle2,
   Clock,
@@ -18,7 +15,6 @@ import {
   MessageSquare,
   DollarSign,
   CalendarDays,
-  User,
   RotateCcw,
   Flag,
   Play,
@@ -95,105 +91,102 @@ interface ProjectViewProps {
   isCreator: boolean;
 }
 
-// ─── Status Config ────────────────────────────────────────────────────────────
+// ─── Status Config (classes only, labels via t()) ────────────────────────────
 
-const MILESTONE_STATUS = {
+const MILESTONE_STATUS_CLASSES = {
   [MilestoneStatus.PENDING]: {
-    label: "Pending",
     icon: Clock,
-    dot: "bg-muted-foreground/70 border-slate-600",
-    text: "text-muted-foreground",
+    dot: "bg-muted-foreground/70 border-border",
     badge: "bg-accent text-muted-foreground border-border",
   },
   [MilestoneStatus.IN_PROGRESS]: {
-    label: "In Progress",
     icon: Zap,
-    dot: "bg-primary border-primary/100",
-    text: "text-indigo-300",
-    badge: "bg-primary/50/10 text-indigo-300 border-primary/100/20",
+    dot: "bg-primary border-primary",
+    badge: "bg-primary/10 text-primary border-primary/20",
   },
   [MilestoneStatus.REVIEW_REQUESTED]: {
-    label: "Under Review",
     icon: Eye,
-    dot: "bg-amber-600 dark:bg-amber-500 border-amber-600 dark:border-amber-400",
-    text: "text-amber-300",
-    badge: "bg-amber-600 dark:bg-amber-500/10 text-amber-300 border-amber-600 dark:border-amber-500/20",
+    dot: "bg-amber-500 border-amber-500",
+    badge: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20",
   },
   [MilestoneStatus.APPROVED]: {
-    label: "Approved",
     icon: CheckCircle2,
     dot: "bg-emerald-600 border-emerald-500",
-    text: "text-emerald-400",
-    badge: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    badge: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   },
   [MilestoneStatus.REVISION_NEEDED]: {
-    label: "Revision Needed",
     icon: AlertCircle,
-    dot: "bg-red-600 border-red-500",
-    text: "text-red-400",
-    badge: "bg-red-500/10 text-red-400 border-red-500/20",
+    dot: "bg-destructive border-destructive",
+    badge: "bg-destructive/10 text-destructive border-destructive/20",
   },
 } as const;
 
-const PROJECT_STATUS = {
+const MILESTONE_STATUS_KEYS = {
+  [MilestoneStatus.PENDING]: "pending",
+  [MilestoneStatus.IN_PROGRESS]: "inProgress",
+  [MilestoneStatus.REVIEW_REQUESTED]: "reviewRequested",
+  [MilestoneStatus.APPROVED]: "approved",
+  [MilestoneStatus.REVISION_NEEDED]: "revisionNeeded",
+} as const;
+
+const PROJECT_STATUS_CLASSES = {
   [ProjectStatus.PENDING]: {
-    label: "Awaiting Start",
     color: "text-muted-foreground",
-    bg: "bg-muted-foreground/70",
-    bar: "bg-muted/500",
+    bar: "bg-muted-foreground/50",
     progress: 0,
   },
   [ProjectStatus.OPEN]: {
-    label: "Open",
     color: "text-muted-foreground",
-    bg: "bg-muted-foreground/70",
-    bar: "bg-muted/500",
+    bar: "bg-muted-foreground/50",
     progress: 0,
   },
   [ProjectStatus.IN_PROGRESS]: {
-    label: "In Progress",
-    color: "text-indigo-300",
-    bg: "bg-primary/50/10",
-    bar: "bg-primary/50",
+    color: "text-primary",
+    bar: "bg-primary",
     progress: 50,
   },
   [ProjectStatus.REVIEW_REQUESTED]: {
-    label: "Awaiting Approval",
-    color: "text-amber-300",
-    bg: "bg-amber-600 dark:bg-amber-500/10",
-    bar: "bg-amber-600 dark:bg-amber-500",
+    color: "text-amber-700 dark:text-amber-400",
+    bar: "bg-amber-500",
     progress: 85,
   },
   [ProjectStatus.COMPLETED]: {
-    label: "Completed",
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10",
+    color: "text-emerald-600 dark:text-emerald-400",
     bar: "bg-emerald-500",
     progress: 100,
   },
   [ProjectStatus.CANCELLED]: {
-    label: "Cancelled",
-    color: "text-foreground0",
-    bg: "bg-accent",
+    color: "text-muted-foreground",
     bar: "bg-muted-foreground/60",
     progress: 0,
   },
   [ProjectStatus.DISPUTED]: {
-    label: "Disputed",
-    color: "text-orange-400",
-    bg: "bg-orange-500/10",
+    color: "text-orange-700 dark:text-orange-400",
     bar: "bg-orange-500",
     progress: 50,
   },
 } as const;
 
+const PROJECT_STATUS_KEYS = {
+  [ProjectStatus.PENDING]: "pending",
+  [ProjectStatus.OPEN]: "open",
+  [ProjectStatus.IN_PROGRESS]: "inProgress",
+  [ProjectStatus.REVIEW_REQUESTED]: "reviewRequested",
+  [ProjectStatus.COMPLETED]: "completed",
+  [ProjectStatus.CANCELLED]: "cancelled",
+  [ProjectStatus.DISPUTED]: "disputed",
+} as const;
+
 // ─── Utility Helpers ──────────────────────────────────────────────────────────
 
-function dueDateMeta(iso: string | null): {
-  text: string;
-  className: string;
-} {
-  if (!iso) return { text: "No deadline", className: "text-muted-foreground" };
+function getDueDateMeta(
+  iso: string | null,
+  t: (key: string, values?: Record<string, any>) => string,
+  locale: string
+): { text: string; className: string } {
+  if (!iso) {
+    return { text: t("noDeadline"), className: "text-muted-foreground" };
+  }
 
   const date = new Date(iso);
   const days = Math.ceil(
@@ -202,28 +195,32 @@ function dueDateMeta(iso: string | null): {
 
   if (days < 0)
     return {
-      text: `${Math.abs(days)}d overdue`,
-      className: "text-red-400 font-semibold",
+      text: t("overdue", { days: Math.abs(days) }),
+      className: "text-destructive font-semibold",
     };
-  if (days === 0) return { text: "Due today", className: "text-red-400 font-semibold" };
-  if (days === 1) return { text: "Due tomorrow", className: "text-amber-600 dark:text-amber-400" };
+  if (days === 0)
+    return { text: t("dueToday"), className: "text-destructive font-semibold" };
+  if (days === 1)
+    return {
+      text: t("dueTomorrow"),
+      className: "text-amber-600 dark:text-amber-400",
+    };
   if (days <= 3)
-    return { text: `Due in ${days}d`, className: "text-amber-600 dark:text-amber-400" };
+    return {
+      text: t("dueIn", { days }),
+      className: "text-amber-600 dark:text-amber-400",
+    };
 
   return {
-    text: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-    className: "text-foreground0",
+    text: date.toLocaleDateString(locale === "ar" ? "ar" : "en-US", {
+      month: "short",
+      day: "numeric",
+    }),
+    className: "text-muted-foreground",
   };
 }
 
-
-function ParticipantAvatar({
-  name,
-  size = 36,
-}: {
-  name: string;
-  size?: number;
-}) {
+function ParticipantAvatar({ name, size = 36 }: { name: string; size?: number }) {
   const initials = name
     .split(" ")
     .map((p) => p[0])
@@ -234,7 +231,7 @@ function ParticipantAvatar({
 
   return (
     <div
-      className="rounded-full flex items-center justify-center text-foreground font-bold ring-2 ring-border shrink-0"
+      className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -247,7 +244,7 @@ function ParticipantAvatar({
   );
 }
 
-// ─── Submission Form (NEW) ───────────────────────────────────────────────────
+// ─── Submission Form ─────────────────────────────────────────────────────────
 
 function SubmissionForm({
   onSubmit,
@@ -258,46 +255,47 @@ function SubmissionForm({
   onCancel: () => void;
   isPending: boolean;
 }) {
+  const t = useTranslations("projects.submissionForm");
   const [note, setNote] = useState("");
   const [url, setUrl] = useState("");
   const urlOk = url.trim() === "" || isHttpsUrl(url.trim());
   const isValid = note.trim().length >= 10 && urlOk;
 
   return (
-    <div className="mt-4 p-4 rounded-xl bg-accent/70 border border-primary/100/20 space-y-3">
-      <p className="text-xs font-semibold text-indigo-400">
-        Add delivery details:
-      </p>
+    <div className="mt-4 p-4 rounded-xl bg-accent/70 border border-primary/20 space-y-3">
+      <p className="text-xs font-semibold text-primary">{t("hint")}</p>
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value)}
-        placeholder="Describe what you've delivered (e.g., 'Final logo files in SVG, PNG, and AI formats. Brand guidelines included.')"
+        placeholder={t("notePlaceholder")}
         rows={3}
         maxLength={500}
-        className="w-full bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 transition-all"
+        className="w-full bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
       />
       <div>
         <input
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          placeholder="Delivery link (optional) — https://…"
+          placeholder={t("urlPlaceholder")}
           maxLength={500}
-          className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500 transition-all"
+          className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
         />
         {!urlOk && (
-          <p className="mt-1 text-[10px] text-red-400">Only https:// links are allowed.</p>
+          <p className="mt-1 text-[10px] text-destructive">{t("httpsOnly")}</p>
         )}
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-[10px] text-muted-foreground">{note.length}/500</span>
+        <span className="text-[10px] text-muted-foreground">
+          {note.length}/500
+        </span>
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-1.5 rounded-lg text-xs text-foreground0 hover:text-foreground300 hover:bg-muted-foreground/70 transition-all"
+            className="px-3 py-1.5 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-accent/80 transition-all"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             type="button"
@@ -305,12 +303,12 @@ function SubmissionForm({
             disabled={!isValid || isPending}
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all",
-              "bg-primary hover:bg-primary/50 text-white",
+              "bg-primary hover:bg-primary/90 text-primary-foreground",
               "disabled:opacity-40 disabled:cursor-not-allowed"
             )}
           >
             {isPending && <Loader2 className="w-3 h-3 animate-spin" />}
-            Submit Delivery
+            {t("submit")}
           </button>
         </div>
       </div>
@@ -329,21 +327,20 @@ function RevisionForm({
   onCancel: () => void;
   isPending: boolean;
 }) {
+  const t = useTranslations("projects.revisionForm");
   const [note, setNote] = useState("");
   const isValid = note.trim().length >= 10;
 
   return (
-    <div className="mt-4 p-4 rounded-xl bg-accent/70 border border-red-500/20 space-y-3">
-      <p className="text-xs font-semibold text-red-400">
-        Describe what needs to be changed:
-      </p>
+    <div className="mt-4 p-4 rounded-xl bg-accent/70 border border-destructive/20 space-y-3">
+      <p className="text-xs font-semibold text-destructive">{t("hint")}</p>
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value)}
-        placeholder="Be specific — e.g. 'Please revise the header section and adjust the color palette to match the brand guidelines provided.'"
+        placeholder={t("notePlaceholder")}
         rows={3}
         maxLength={500}
-        className="w-full bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground600 resize-none focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+        className="w-full bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 resize-none focus:outline-none focus:border-destructive focus:ring-1 focus:ring-destructive transition-all"
       />
       <div className="flex items-center justify-between">
         <span className="text-[10px] text-muted-foreground">
@@ -353,9 +350,9 @@ function RevisionForm({
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-1.5 rounded-lg text-xs text-foreground0 hover:text-foreground300 hover:bg-muted-foreground/70 transition-all"
+            className="px-3 py-1.5 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-accent/80 transition-all"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             type="button"
@@ -363,12 +360,12 @@ function RevisionForm({
             disabled={!isValid || isPending}
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all",
-              "bg-red-600 hover:bg-red-500 text-white",
+              "bg-destructive hover:bg-destructive/90 text-destructive-foreground",
               "disabled:opacity-40 disabled:cursor-not-allowed"
             )}
           >
             {isPending && <Loader2 className="w-3 h-3 animate-spin" />}
-            Send Request
+            {t("submit")}
           </button>
         </div>
       </div>
@@ -401,24 +398,36 @@ function MilestoneCard({
   onRequestRevision: (id: string, note: string) => void;
   pendingId: string | null;
 }) {
+  const t = useTranslations("projects.milestone");
+  const tDue = useTranslations("projects.dueDate");
+  const locale = useLocale();
+
   const [revisionOpen, setRevisionOpen] = useState(false);
   const [submissionOpen, setSubmissionOpen] = useState(false);
-  
-  const config = MILESTONE_STATUS[milestone.status];
+
+  const config = MILESTONE_STATUS_CLASSES[milestone.status];
+  const statusLabel = t(`statuses.${MILESTONE_STATUS_KEYS[milestone.status]}`);
   const StatusIcon = config.icon;
-  const due = dueDateMeta(milestone.dueDate);
+  const due = getDueDateMeta(milestone.dueDate, tDue, locale);
   const isPending = pendingId === milestone.id;
   const isProjectActive = !(
-  [
-    ProjectStatus.COMPLETED,
-    ProjectStatus.CANCELLED,
-    ProjectStatus.DISPUTED,
-  ] as ProjectStatus[]
-).includes(projectStatus);
+    [
+      ProjectStatus.COMPLETED,
+      ProjectStatus.CANCELLED,
+      ProjectStatus.DISPUTED,
+    ] as ProjectStatus[]
+  ).includes(projectStatus);
+
+  const approvedDate = milestone.completedAt
+    ? new Date(milestone.completedAt).toLocaleDateString(
+        locale === "ar" ? "ar" : "en-US",
+        { month: "short", day: "numeric", year: "numeric" }
+      )
+    : "";
 
   return (
     <div className="flex gap-4 items-start">
-      {/* ── Timeline indicator ─────────────────────────────────────── */}
+      {/* Timeline indicator */}
       <div className="flex flex-col items-center shrink-0">
         <div
           className={cn(
@@ -426,7 +435,7 @@ function MilestoneCard({
             config.dot
           )}
         >
-          <StatusIcon className="w-4 h-4 text-foreground" />
+          <StatusIcon className="w-4 h-4 text-white" />
         </div>
         {!isLast && (
           <div
@@ -441,28 +450,27 @@ function MilestoneCard({
         )}
       </div>
 
-      {/* ── Milestone card ─────────────────────────────────────────── */}
+      {/* Milestone card */}
       <div
         className={cn(
           "flex-1 mb-6 last:mb-0 rounded-2xl border overflow-hidden transition-all",
           milestone.status === MilestoneStatus.APPROVED
             ? "bg-card/60 border-emerald-500/15"
             : milestone.status === MilestoneStatus.REVIEW_REQUESTED
-            ? "bg-card border-amber-600 dark:border-amber-500/20"
+            ? "bg-card border-amber-500/20"
             : milestone.status === MilestoneStatus.REVISION_NEEDED
-            ? "bg-card border-red-500/20"
+            ? "bg-card border-destructive/20"
             : milestone.status === MilestoneStatus.IN_PROGRESS
-            ? "bg-card border-primary/100/20"
+            ? "bg-card border-primary/20"
             : "bg-card border-border"
         )}
       >
-        {/* Card header */}
         <div className="px-5 py-4">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                  Milestone {index + 1}
+                  {t("label", { number: index + 1 })}
                 </span>
                 <span
                   className={cn(
@@ -471,7 +479,7 @@ function MilestoneCard({
                   )}
                 >
                   <StatusIcon className="w-2.5 h-2.5" />
-                  {config.label}
+                  {statusLabel}
                 </span>
               </div>
               <h3 className="text-base font-bold text-foreground leading-snug">
@@ -479,11 +487,10 @@ function MilestoneCard({
               </h3>
             </div>
 
-            {/* Amount */}
             {milestone.amount != null && (
               <div className="shrink-0 text-right">
                 <p className="text-[9px] text-muted-foreground uppercase tracking-wider">
-                  Value
+                  {t("value")}
                 </p>
                 <p className="text-lg font-black text-foreground leading-none">
                   ${milestone.amount}
@@ -492,22 +499,22 @@ function MilestoneCard({
             )}
           </div>
 
-          {/* Description */}
           {milestone.description && (
             <p className="text-sm text-muted-foreground leading-relaxed mb-3">
               {milestone.description}
             </p>
           )}
 
-          {/* Submission Details (NEW) */}
           {milestone.submissionNote && (
-            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-primary/50/5 border border-primary/100/15 mb-3">
-              <FileText className="w-3.5 h-3.5 text-indigo-400 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-primary/5 border border-primary/15 mb-3">
+              <FileText className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
               <div>
-                <p className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wide mb-0.5">
-                  Delivery Note
+                <p className="text-[10px] font-semibold text-primary uppercase tracking-wide mb-0.5">
+                  {t("deliveryNote")}
                 </p>
-                <p className="text-xs text-emerald-200/80">{milestone.submissionNote}</p>
+                <p className="text-xs text-foreground/80">
+                  {milestone.submissionNote}
+                </p>
               </div>
             </div>
           )}
@@ -516,55 +523,46 @@ function MilestoneCard({
               href={milestone.submissionUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-primary300 mb-3 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 mb-3 transition-colors"
             >
               <LinkIcon className="w-3.5 h-3.5" />
-              View Delivery Link
+              {t("viewDeliveryLink")}
             </a>
           )}
 
-          {/* Revision note callout */}
           {milestone.revisionNote &&
             milestone.status === MilestoneStatus.REVISION_NEEDED && (
-              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-500/5 border border-red-500/15 mb-3">
-                <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-destructive/5 border border-destructive/15 mb-3">
+                <AlertCircle className="w-3.5 h-3.5 text-destructive shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-[10px] font-semibold text-red-400 uppercase tracking-wide mb-0.5">
-                    Revision Note
+                  <p className="text-[10px] font-semibold text-destructive uppercase tracking-wide mb-0.5">
+                    {t("revisionNote")}
                   </p>
-                  <p className="text-xs text-red-300/80">
+                  <p className="text-xs text-destructive/90">
                     {milestone.revisionNote}
                   </p>
                 </div>
               </div>
             )}
 
-          {/* Completed at */}
           {milestone.completedAt && (
             <div className="flex items-center gap-1.5 mb-3">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-              <span className="text-xs text-emerald-400">
-                Approved{" "}
-                {new Date(milestone.completedAt).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+              <span className="text-xs text-emerald-600 dark:text-emerald-400">
+                {t("approvedAt", { date: approvedDate })}
               </span>
             </div>
           )}
 
-          {/* Due date */}
           <div className="flex items-center gap-1.5">
             <CalendarDays className="w-3.5 h-3.5 text-muted-foreground" />
             <span className={cn("text-xs", due.className)}>{due.text}</span>
           </div>
         </div>
 
-        {/* ── Action strip ───────────────────────────────────────────── */}
+        {/* Action strip */}
         {isProjectActive && (
           <div className="border-t border-border/80 px-5 py-3 bg-accent/20">
-            {/* Creator actions */}
             {isCreator && (
               <div className="flex items-center gap-2 flex-wrap">
                 {milestone.status === MilestoneStatus.PENDING && (
@@ -573,7 +571,7 @@ function MilestoneCard({
                     disabled={isPending}
                     className={cn(
                       "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
-                      "bg-primary hover:bg-primary/50 text-white",
+                      "bg-primary hover:bg-primary/90 text-primary-foreground",
                       "disabled:opacity-50 disabled:cursor-not-allowed"
                     )}
                   >
@@ -582,48 +580,47 @@ function MilestoneCard({
                     ) : (
                       <Play className="w-3.5 h-3.5 fill-current" />
                     )}
-                    Start Work
+                    {t("actions.start")}
                   </button>
                 )}
 
                 {(milestone.status === MilestoneStatus.IN_PROGRESS ||
                   milestone.status === MilestoneStatus.REVISION_NEEDED) &&
                   !submissionOpen && (
-                  <button
-                    onClick={() => setSubmissionOpen(true)}
-                    disabled={isPending}
-                    className={cn(
-                      "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
-                      "bg-amber-600 dark:bg-amber-500 hover:bg-amber-600 dark:bg-amber-400 text-foreground",
-                      "disabled:opacity-50 disabled:cursor-not-allowed"
-                    )}
-                  >
-                    {isPending ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <Eye className="w-3.5 h-3.5" />
-                    )}
-                    Submit for Review
-                  </button>
-                )}
+                    <button
+                      onClick={() => setSubmissionOpen(true)}
+                      disabled={isPending}
+                      className={cn(
+                        "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
+                        "bg-amber-500 hover:bg-amber-400 text-amber-950",
+                        "disabled:opacity-50 disabled:cursor-not-allowed"
+                      )}
+                    >
+                      {isPending ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Eye className="w-3.5 h-3.5" />
+                      )}
+                      {t("actions.submitForReview")}
+                    </button>
+                  )}
 
                 {milestone.status === MilestoneStatus.REVIEW_REQUESTED && (
-                  <p className="text-xs text-amber-600 dark:text-amber-400/80 flex items-center gap-1.5">
+                  <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
                     <Eye className="w-3.5 h-3.5" />
-                    Awaiting client review…
+                    {t("actions.awaitingReview")}
                   </p>
                 )}
 
                 {milestone.status === MilestoneStatus.APPROVED && (
-                  <p className="text-xs text-emerald-400 flex items-center gap-1.5">
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    Milestone approved
+                    {t("actions.approvedMsg")}
                   </p>
                 )}
               </div>
             )}
 
-            {/* Client actions */}
             {isClient && (
               <div className="flex items-center gap-2 flex-wrap">
                 {milestone.status === MilestoneStatus.REVIEW_REQUESTED &&
@@ -633,8 +630,8 @@ function MilestoneCard({
                       onClick={() => setRevisionOpen(true)}
                       className={cn(
                         "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
-                        "bg-muted-foreground/70 hover:bg-red-500/20 border border-slate-600 hover:border-red-500/30",
-                        "text-muted-foreground hover:text-red-400",
+                        "bg-accent hover:bg-destructive/10 border border-border hover:border-destructive/30",
+                        "text-muted-foreground hover:text-destructive",
                         "disabled:opacity-50 disabled:cursor-not-allowed"
                       )}
                     >
@@ -643,34 +640,33 @@ function MilestoneCard({
                       ) : (
                         <Flag className="w-3.5 h-3.5" />
                       )}
-                      Request Revision
+                      {t("actions.requestRevision")}
                     </button>
                   )}
 
                 {milestone.status === MilestoneStatus.IN_PROGRESS && (
-                  <p className="text-xs text-indigo-400/80 flex items-center gap-1.5">
+                  <p className="text-xs text-primary flex items-center gap-1.5">
                     <Zap className="w-3.5 h-3.5" />
-                    Creator is working on this…
+                    {t("actions.creatorWorking")}
                   </p>
                 )}
 
                 {milestone.status === MilestoneStatus.PENDING && (
-                  <p className="text-xs text-foreground0 flex items-center gap-1.5">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5" />
-                    Not started yet
+                    {t("actions.notStarted")}
                   </p>
                 )}
 
                 {milestone.status === MilestoneStatus.APPROVED && (
-                  <p className="text-xs text-emerald-400 flex items-center gap-1.5">
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    You approved this milestone
+                    {t("actions.youApproved")}
                   </p>
                 )}
               </div>
             )}
 
-            {/* Submission form (creator only) */}
             {isCreator && submissionOpen && (
               <SubmissionForm
                 isPending={isPending}
@@ -682,7 +678,6 @@ function MilestoneCard({
               />
             )}
 
-            {/* Revision form (client only) */}
             {isClient && revisionOpen && (
               <RevisionForm
                 isPending={isPending}
@@ -708,12 +703,16 @@ export function ProjectView({
   isClient,
   isCreator,
 }: ProjectViewProps) {
+  const t = useTranslations("projects.view");
+  const tStatus = useTranslations("projects.statuses");
+  const tDue = useTranslations("projects.dueDate");
+  const locale = useLocale();
+
   const [isPending, startTransition] = useTransition();
   const [pendingMilestoneId, setPendingMilestoneId] = useState<string | null>(null);
   const [pendingProjectAction, setPendingProjectAction] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  // Local optimistic state for milestones and project status
   const [localMilestones, setLocalMilestones] = useState<SerializedMilestone[]>(
     project.milestones
   );
@@ -721,9 +720,10 @@ export function ProjectView({
     project.status
   );
 
-  const statusConfig = PROJECT_STATUS[localProjectStatus];
+  const statusClasses = PROJECT_STATUS_CLASSES[localProjectStatus];
+  const statusLabel = tStatus(PROJECT_STATUS_KEYS[localProjectStatus]);
+  const deadlineDue = getDueDateMeta(project.deadline, tDue, locale);
 
-  // Computed milestone progress
   const completedCount = useMemo(
     () =>
       localMilestones.filter((m) => m.status === MilestoneStatus.APPROVED)
@@ -731,15 +731,12 @@ export function ProjectView({
     [localMilestones]
   );
 
-  // ── Action handlers ─────────────────────────────────────────────────────────
-
   const handleStartMilestone = useCallback(
     (milestoneId: string) => {
       if (isPending) return;
       setActionError(null);
       setPendingMilestoneId(milestoneId);
 
-      // Optimistic update
       setLocalMilestones((prev) =>
         prev.map((m) =>
           m.id === milestoneId
@@ -756,7 +753,6 @@ export function ProjectView({
         setPendingMilestoneId(null);
 
         if (!result.success) {
-          // Rollback
           setLocalMilestones(project.milestones);
           setLocalProjectStatus(project.status);
           setActionError(result.message ?? "Failed to start milestone.");
@@ -772,10 +768,14 @@ export function ProjectView({
       setActionError(null);
       setPendingMilestoneId(milestoneId);
 
-      // Optimistic update
       const updatedMilestones = localMilestones.map((m) =>
         m.id === milestoneId
-          ? { ...m, status: MilestoneStatus.REVIEW_REQUESTED, submissionNote: note, submissionUrl: url }
+          ? {
+              ...m,
+              status: MilestoneStatus.REVIEW_REQUESTED,
+              submissionNote: note,
+              submissionUrl: url,
+            }
           : m
       );
       setLocalMilestones(updatedMilestones);
@@ -809,7 +809,6 @@ export function ProjectView({
       setActionError(null);
       setPendingMilestoneId(milestoneId);
 
-      // Optimistic update
       setLocalMilestones((prev) =>
         prev.map((m) =>
           m.id === milestoneId
@@ -842,11 +841,14 @@ export function ProjectView({
     setActionError(null);
     setPendingProjectAction(true);
 
-    // Optimistic update
     setLocalMilestones((prev) =>
       prev.map((m) =>
         m.status === MilestoneStatus.REVIEW_REQUESTED
-          ? { ...m, status: MilestoneStatus.APPROVED, completedAt: new Date().toISOString() }
+          ? {
+              ...m,
+              status: MilestoneStatus.APPROVED,
+              completedAt: new Date().toISOString(),
+            }
           : m
       )
     );
@@ -864,46 +866,44 @@ export function ProjectView({
     });
   }, [isPending, project.id, project.milestones, project.status]);
 
+  const startedDate = new Date(project.createdAt).toLocaleDateString(
+    locale === "ar" ? "ar" : "en-US",
+    { month: "long", day: "numeric", year: "numeric" }
+  );
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-
-      {/* ── Project Header ─────────────────────────────────────────────────── */}
+      {/* Project Header */}
       <div className="border-b border-border bg-card/60 sticky top-0 z-30 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <Link
                 href="/dashboard/projects"
-                className="text-muted-foreground hover:text-foreground400 transition-colors shrink-0"
+                className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
               >
-                <ChevronRight className="w-4 h-4 rotate-180" />
+                <ChevronRight className="w-4 h-4 rotate-180 rtl:rotate-0" />
               </Link>
               <div className="min-w-0">
                 <h1 className="text-base font-bold text-foreground truncate">
                   {project.title}
                 </h1>
-                <p className="text-xs text-foreground0 mt-0.5">
-                  Started{" "}
-                  {new Date(project.createdAt).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {t("started", { date: startedDate })}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3 shrink-0">
-              {/* Status badge */}
               <span
                 className={cn(
                   "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border",
                   localProjectStatus === ProjectStatus.COMPLETED
-                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                     : localProjectStatus === ProjectStatus.REVIEW_REQUESTED
-                    ? "bg-amber-600 dark:bg-amber-500/10 text-amber-300 border-amber-600 dark:border-amber-500/20"
+                    ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20"
                     : localProjectStatus === ProjectStatus.IN_PROGRESS
-                    ? "bg-primary/50/10 text-indigo-300 border-primary/100/20"
+                    ? "bg-primary/10 text-primary border-primary/20"
                     : "bg-accent text-muted-foreground border-border"
                 )}
               >
@@ -916,19 +916,18 @@ export function ProjectView({
                 {localProjectStatus === ProjectStatus.IN_PROGRESS && (
                   <Zap className="w-3.5 h-3.5" />
                 )}
-                {statusConfig.label}
+                {statusLabel}
               </span>
 
-              {/* Chat button */}
               {project.chatRoom && (
                 <Link
                   href={`/dashboard/chat/${project.chatRoom.id}`}
-                  className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent hover:bg-muted-foreground/70 border border-border text-muted-foreground hover:text-foreground200 text-xs font-semibold transition-all"
+                  className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent hover:bg-accent/80 border border-border text-muted-foreground hover:text-foreground text-xs font-semibold transition-all"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />
-                  <span>Chat</span>
+                  <span>{t("chat")}</span>
                   {project.chatRoom.messageCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary text-white text-[9px] font-bold flex items-center justify-center">
+                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">
                       {project.chatRoom.messageCount > 9
                         ? "9+"
                         : project.chatRoom.messageCount}
@@ -939,39 +938,41 @@ export function ProjectView({
             </div>
           </div>
 
-          {/* Progress bar */}
           <div className="mt-3 space-y-1">
             <div className="flex justify-between text-[10px] text-muted-foreground">
               <span>
-                {completedCount} of {localMilestones.length} milestones
-                approved
+                {t("milestonesProgress", {
+                  completed: completedCount,
+                  total: localMilestones.length,
+                })}
               </span>
-              <span className={statusConfig.color}>
-                {statusConfig.progress}%
+              <span className={statusClasses.color}>
+                {statusClasses.progress}%
               </span>
             </div>
             <div className="h-1.5 bg-accent rounded-full overflow-hidden">
               <div
                 className={cn(
                   "h-full rounded-full transition-all duration-700",
-                  statusConfig.bar
+                  statusClasses.bar
                 )}
-                style={{ width: `${statusConfig.progress}%` }}
+                style={{ width: `${statusClasses.progress}%` }}
               />
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Global error banner ──────────────────────────────────────────────── */}
+      {/* Global error */}
       {actionError && (
         <div className="max-w-6xl mx-auto px-4 sm:px-6 mt-4">
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/20">
-            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-            <p className="flex-1 text-sm text-red-300">{actionError}</p>
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-destructive/5 border border-destructive/20">
+            <AlertCircle className="w-4 h-4 text-destructive shrink-0" />
+            <p className="flex-1 text-sm text-destructive">{actionError}</p>
             <button
               onClick={() => setActionError(null)}
-              className="text-red-500 hover:text-red-300 transition-colors"
+              className="text-destructive hover:text-destructive/80 transition-colors"
+              aria-label={t("errorDismiss")}
             >
               <X className="w-4 h-4" />
             </button>
@@ -979,22 +980,22 @@ export function ProjectView({
         </div>
       )}
 
-      {/* ── Body ─────────────────────────────────────────────────────────────── */}
+      {/* Body */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-
-          {/* ── Main: Milestone Timeline ─────────────────────────────────────── */}
           <main className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
-                Milestones
+                {t("milestonesTitle")}
               </h2>
               <span className="text-xs text-muted-foreground">
-                {completedCount}/{localMilestones.length} done
+                {t("done", {
+                  completed: completedCount,
+                  total: localMilestones.length,
+                })}
               </span>
             </div>
 
-            {/* Vertical Timeline */}
             <div>
               {localMilestones.map((milestone, i) => (
                 <MilestoneCard
@@ -1013,20 +1014,17 @@ export function ProjectView({
               ))}
             </div>
 
-            {/* ── Client: Approve All Completion ────────────────────────────── */}
             {isClient &&
               localProjectStatus === ProjectStatus.REVIEW_REQUESTED && (
-                <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/8 via-teal-500/5 to-emerald-500/8 border border-emerald-500/20 text-center">
+                <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/10 via-teal-500/5 to-emerald-500/10 border border-emerald-500/20 text-center">
                   <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-4">
-                    <ShieldCheck className="w-7 h-7 text-emerald-400" />
+                    <ShieldCheck className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <h3 className="text-base font-bold text-foreground mb-1.5">
-                    All Work Submitted
+                    {t("approveTitle")}
                   </h3>
                   <p className="text-muted-foreground text-sm mb-5 max-w-sm mx-auto">
-                    The creator has submitted all milestones for your review.
-                    Approving this will mark the project as complete and release
-                    payment.
+                    {t("approveDesc")}
                   </p>
                   <button
                     onClick={handleApproveCompletion}
@@ -1045,54 +1043,53 @@ export function ProjectView({
                       <CheckCircle2 className="w-4 h-4" />
                     )}
                     {pendingProjectAction
-                      ? "Processing…"
-                      : "Approve & Complete Project"}
+                      ? t("approving")
+                      : t("approveBtn")}
                   </button>
                 </div>
               )}
 
-            {/* ── Completed state ───────────────────────────────────────────── */}
             {localProjectStatus === ProjectStatus.COMPLETED && (
-              <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/8 via-teal-500/5 to-emerald-500/8 border border-emerald-500/20 text-center">
-                <Award className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
+              <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-emerald-500/10 via-teal-500/5 to-emerald-500/10 border border-emerald-500/20 text-center">
+                <Award className="w-12 h-12 text-emerald-600 dark:text-emerald-400 mx-auto mb-3" />
                 <h3 className="text-lg font-bold text-foreground mb-1.5">
-                  Project Complete! 🎉
+                  {t("completedTitle")}
                 </h3>
                 <p className="text-muted-foreground text-sm">
-                  All milestones approved. This project has been successfully
-                  delivered.
+                  {t("completedDesc")}
                 </p>
               </div>
             )}
           </main>
 
-          {/* ── Sidebar: Project Details ────────────────────────────────────── */}
           <aside className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0">
-
-            {/* Service info */}
             {project.service && (
               <div className="rounded-2xl bg-card border border-border overflow-hidden">
                 <div className="px-4 py-3 border-b border-border bg-accent/40">
-                  <p className="text-[10px] font-bold text-foreground0 uppercase tracking-widest">
-                    Service
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                    {t("service")}
                   </p>
                 </div>
                 <div className="p-4 space-y-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-primary/50/10 flex items-center justify-center shrink-0">
-                      <Package className="w-4 h-4 text-indigo-400" />
+                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                      <Package className="w-4 h-4 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-foreground truncate">
                         {project.service.title}
                       </p>
-                      <p className="text-xs text-foreground0 mt-0.5">
-                        {project.service.deliveryDays} day delivery
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {t("dayDelivery", {
+                          days: project.service.deliveryDays,
+                        })}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-xs text-muted-foreground">Total Budget</span>
+                    <span className="text-xs text-muted-foreground">
+                      {t("totalBudget")}
+                    </span>
                     <span className="text-base font-black text-foreground">
                       ${project.budget ?? project.service.price}
                     </span>
@@ -1100,43 +1097,38 @@ export function ProjectView({
                   <Link
                     href={`/marketplace/services/${project.service.slug}`}
                     target="_blank"
-                    className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-accent hover:bg-muted-foreground/70 text-muted-foreground hover:text-foreground200 text-xs font-medium transition-all border border-border"
+                    className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-accent hover:bg-accent/80 text-muted-foreground hover:text-foreground text-xs font-medium transition-all border border-border"
                   >
                     <ExternalLink className="w-3 h-3" />
-                    View Service
+                    {t("viewService")}
                   </Link>
                 </div>
               </div>
             )}
 
-            {/* Parties */}
             <div className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="px-4 py-3 border-b border-border bg-accent/40">
-                <p className="text-[10px] font-bold text-foreground0 uppercase tracking-widest">
-                  Participants
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  {t("participants")}
                 </p>
               </div>
               <div className="p-4 space-y-4">
-                {/* Client */}
                 <div>
                   <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-                    Client
+                    {t("client")}
                   </p>
                   <div className="flex items-center gap-3">
-                    <ParticipantAvatar
-                      name={project.client.name}
-                      size={36}
-                    />
-                        <div className="flex-1 min-w-0">
+                    <ParticipantAvatar name={project.client.name} size={36} />
+                    <div className="flex-1 min-w-0">
                       <Link
                         href={`/profile/${project.client.id}`}
-                        className="text-sm font-semibold text-foreground truncate hover:text-primary400 transition-colors block"
+                        className="text-sm font-semibold text-foreground truncate hover:text-primary transition-colors block"
                       >
                         {project.client.name}
                       </Link>
                       {isClient && (
-                        <span className="text-[10px] text-indigo-400 font-semibold">
-                          You
+                        <span className="text-[10px] text-primary font-semibold">
+                          {t("you")}
                         </span>
                       )}
                     </div>
@@ -1145,11 +1137,10 @@ export function ProjectView({
 
                 <div className="h-px bg-accent" />
 
-                {/* Creator */}
                 {project.creator ? (
                   <div>
                     <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-                      Creator
+                      {t("creator")}
                     </p>
                     <div className="flex items-center gap-3">
                       <ParticipantAvatar
@@ -1157,44 +1148,45 @@ export function ProjectView({
                         size={36}
                       />
                       <div className="flex-1 min-w-0">
-                  <Link
-  href={`/profile/${project.creator.id}`}
-  className="text-sm font-semibold text-foreground truncate hover:text-primary400 transition-colors block"
->
-  {project.creator.name}
-</Link>
+                        <Link
+                          href={`/profile/${project.creator.id}`}
+                          className="text-sm font-semibold text-foreground truncate hover:text-primary transition-colors block"
+                        >
+                          {project.creator.name}
+                        </Link>
                         {project.creator.headline && (
-                          <p className="text-[10px] text-foreground0 truncate">
+                          <p className="text-[10px] text-muted-foreground truncate">
                             {project.creator.headline}
                           </p>
                         )}
                         {isCreator && (
-                          <span className="text-[10px] text-indigo-400 font-semibold">
-                            You
+                          <span className="text-[10px] text-primary font-semibold">
+                            {t("you")}
                           </span>
                         )}
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground">No creator assigned</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("noCreator")}
+                  </p>
                 )}
               </div>
             </div>
 
-            {/* Budget + Deadline */}
             <div className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="px-4 py-3 border-b border-border bg-accent/40">
-                <p className="text-[10px] font-bold text-foreground0 uppercase tracking-widest">
-                  Details
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  {t("details")}
                 </p>
               </div>
               <div className="p-4 space-y-3">
                 {project.budget != null && (
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-foreground0 text-xs">
+                    <div className="flex items-center gap-2 text-muted-foreground text-xs">
                       <DollarSign className="w-3.5 h-3.5" />
-                      <span>Budget</span>
+                      <span>{t("budget")}</span>
                     </div>
                     <span className="text-sm font-bold text-foreground">
                       ${project.budget}
@@ -1204,56 +1196,58 @@ export function ProjectView({
 
                 {project.deadline && (
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-foreground0 text-xs">
+                    <div className="flex items-center gap-2 text-muted-foreground text-xs">
                       <CalendarDays className="w-3.5 h-3.5" />
-                      <span>Deadline</span>
+                      <span>{t("deadline")}</span>
                     </div>
                     <span
                       className={cn(
                         "text-xs font-semibold",
-                        dueDateMeta(project.deadline).className
+                        deadlineDue.className
                       )}
                     >
-                      {dueDateMeta(project.deadline).text}
+                      {deadlineDue.text}
                     </span>
                   </div>
                 )}
 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-foreground0 text-xs">
+                  <div className="flex items-center gap-2 text-muted-foreground text-xs">
                     <Flag className="w-3.5 h-3.5" />
-                    <span>Status</span>
+                    <span>{t("status")}</span>
                   </div>
-                  <span className={cn("text-xs font-bold", statusConfig.color)}>
-                    {statusConfig.label}
+                  <span
+                    className={cn("text-xs font-bold", statusClasses.color)}
+                  >
+                    {statusLabel}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Chat CTA */}
             {project.chatRoom && (
               <Link
                 href={`/dashboard/chat/${project.chatRoom.id}`}
                 className={cn(
                   "flex items-center gap-3 p-4 rounded-2xl",
-                  "bg-primary/50/8 hover:bg-primary/50/12 border border-primary/100/15 hover:border-primary/100/25",
+                  "bg-primary/5 hover:bg-primary/10 border border-primary/15 hover:border-primary/25",
                   "transition-all group"
                 )}
               >
-                <div className="w-10 h-10 rounded-xl bg-primary/50/10 flex items-center justify-center shrink-0">
-                  <MessageSquare className="w-5 h-5 text-indigo-400" />
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <MessageSquare className="w-5 h-5 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-foreground group-hover:text-foreground transition-colors">
-                    Project Chat
+                  <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                    {t("projectChat")}
                   </p>
-                  <p className="text-xs text-foreground0">
-                    {project.chatRoom.messageCount}{" "}
-                    {project.chatRoom.messageCount === 1 ? "message" : "messages"}
+                  <p className="text-xs text-muted-foreground">
+                    {t("chatMessages", {
+                      count: project.chatRoom.messageCount,
+                    })}
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary400 transition-colors" />
+                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors rtl:rotate-180" />
               </Link>
             )}
           </aside>

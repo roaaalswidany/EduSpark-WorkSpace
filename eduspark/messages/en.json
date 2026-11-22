@@ -597,5 +597,117 @@
         "daysAgo": "{count}d ago"
       }
     }
+  },
+    "projects": {
+    "page": {
+      "title": "My Projects",
+      "workspace": "Workspace",
+      "noProjects": "No projects yet. Order a service or wait for a creator to accept your project.",
+      "projectsCount": "{count, plural, =0 {No projects} =1 {1 project} other {# projects}}",
+      "emptyTitle": "No projects yet",
+      "emptyDesc": "Projects are created automatically when you order a service from the marketplace.",
+      "browseServices": "Browse Services",
+      "clientLabel": "Client",
+      "creatorLabel": "Creator",
+      "milestonesCount": "{count, plural, =0 {No milestones} =1 {1 milestone} other {# milestones}}",
+      "breadcrumb": {
+        "dashboard": "Dashboard",
+        "projects": "Projects"
+      }
+    },
+    "statuses": {
+      "pending": "Awaiting Start",
+      "open": "Open",
+      "inProgress": "In Progress",
+      "reviewRequested": "Awaiting Approval",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "disputed": "Disputed"
+    },
+    "view": {
+      "back": "Back to projects",
+      "started": "Started {date}",
+      "chat": "Chat",
+      "milestonesProgress": "{completed} of {total} milestones approved",
+      "milestonesTitle": "Milestones",
+      "done": "{completed}/{total} done",
+      "service": "Service",
+      "dayDelivery": "{days, plural, =1 {1 day delivery} other {# day delivery}}",
+      "totalBudget": "Total Budget",
+      "viewService": "View Service",
+      "participants": "Participants",
+      "client": "Client",
+      "creator": "Creator",
+      "you": "You",
+      "noCreator": "No creator assigned",
+      "details": "Details",
+      "budget": "Budget",
+      "deadline": "Deadline",
+      "status": "Status",
+      "projectChat": "Project Chat",
+      "chatMessages": "{count, plural, =0 {No messages} =1 {1 message} other {# messages}}",
+      "approveTitle": "All Work Submitted",
+      "approveDesc": "The creator has submitted all milestones for your review. Approving this will mark the project as complete and release payment.",
+      "approveBtn": "Approve & Complete Project",
+      "approving": "Processing…",
+      "completedTitle": "Project Complete! 🎉",
+      "completedDesc": "All milestones approved. This project has been successfully delivered.",
+      "errorDismiss": "Dismiss error"
+    },
+    "milestone": {
+      "label": "Milestone {number}",
+      "value": "Value",
+      "deliveryNote": "Delivery Note",
+      "viewDeliveryLink": "View Delivery Link",
+      "revisionNote": "Revision Note",
+      "approvedAt": "Approved {date}",
+      "statuses": {
+        "pending": "Pending",
+        "inProgress": "In Progress",
+        "reviewRequested": "Under Review",
+        "approved": "Approved",
+        "revisionNeeded": "Revision Needed"
+      },
+      "actions": {
+        "start": "Start Work",
+        "submitForReview": "Submit for Review",
+        "requestRevision": "Request Revision",
+        "awaitingReview": "Awaiting client review…",
+        "approvedMsg": "Milestone approved",
+        "creatorWorking": "Creator is working on this…",
+        "notStarted": "Not started yet",
+        "youApproved": "You approved this milestone"
+      }
+    },
+    "dueDate": {
+      "noDeadline": "No deadline",
+      "overdue": "{days}d overdue",
+      "dueToday": "Due today",
+      "dueTomorrow": "Due tomorrow",
+      "dueIn": "Due in {days}d"
+    },
+    "submissionForm": {
+      "hint": "Add delivery details:",
+      "notePlaceholder": "Describe what you've delivered (e.g., 'Final logo files in SVG, PNG, and AI formats. Brand guidelines included.')",
+      "urlPlaceholder": "Delivery link (optional) — https://…",
+      "httpsOnly": "Only https:// links are allowed.",
+      "cancel": "Cancel",
+      "submit": "Submit Delivery"
+    },
+    "revisionForm": {
+      "hint": "Describe what needs to be changed:",
+      "notePlaceholder": "Be specific — e.g. 'Please revise the header section and adjust the color palette to match the brand guidelines provided.'",
+      "cancel": "Cancel",
+      "submit": "Send Request"
+    },
+    "chatPage": {
+      "back": "Back to Project",
+      "endToEndEncrypted": "End-to-end encrypted channel",
+      "secure": "Secure",
+      "client": "Client",
+      "creator": "Creator",
+      "you": "(you)",
+      "noCreator": "Creator not assigned"
+    }
   }
 }
