@@ -560,5 +560,42 @@
       },
       "sendAria": "Send message"
     }
+  },
+    "orders": {
+    "page": {
+      "title": "My Orders",
+      "buying": "Buying",
+      "noOrders": "No orders yet. Order a service to get started.",
+      "ordersCount": "{count, plural, =0 {No orders} =1 {1 order} other {# orders}}",
+      "emptyTitle": "No orders yet",
+      "emptyDesc": "Browse the marketplace and hire a certified creator to see your orders here.",
+      "browseMarketplace": "Browse Marketplace"
+    },
+    "card": {
+      "orderLabel": "Order",
+      "incomingOrderLabel": "Incoming Order",
+      "creatorLabel": "Creator:",
+      "clientLabel": "Client:",
+      "unassigned": "Unassigned",
+      "updated": "Updated",
+      "milestones": "{completed} of {total} milestones",
+      "openProject": "Open Project",
+      "chat": "Chat",
+      "status": {
+        "pending": "Awaiting Start",
+        "open": "Open",
+        "inProgress": "In Progress",
+        "reviewRequested": "Under Review",
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "disputed": "Disputed"
+      },
+      "time": {
+        "justNow": "just now",
+        "minutesAgo": "{count}m ago",
+        "hoursAgo": "{count}h ago",
+        "daysAgo": "{count}d ago"
+      }
+    }
   }
 }

@@ -1,13 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/purity */
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   Clock,
   DollarSign,
   MessageSquare,
   ArrowRight,
   Flag,
-  User as UserIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ProjectStatus } from "@prisma/client";
@@ -36,38 +38,28 @@ export interface OrderCardData {
   chatRoomId: string | null;
 }
 
-const STATUS_CONFIG: Record<
-  ProjectStatus,
-  { label: string; className: string }
-> = {
-  PENDING: {
-    label: "Awaiting Start",
-    className: "bg-accent/50 text-muted-foreground border-border",
-  },
-  OPEN: {
-    label: "Open",
-    className: "bg-accent/50 text-muted-foreground border-border",
-  },
-  IN_PROGRESS: {
-    label: "In Progress",
-    className: "bg-primary/10 text-primary border-primary/20",
-  },
-  REVIEW_REQUESTED: {
-    label: "Under Review",
-    className: "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-500/20",
-  },
-  COMPLETED: {
-    label: "Completed",
-    className: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  },
-  CANCELLED: {
-    label: "Cancelled",
-    className: "bg-destructive/10 text-destructive border-destructive/20",
-  },
-  DISPUTED: {
-    label: "Disputed",
-    className: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  },
+// Only className here — labels come from t()
+const STATUS_STYLES: Record<ProjectStatus, string> = {
+  PENDING: "bg-accent/50 text-muted-foreground border-border",
+  OPEN: "bg-accent/50 text-muted-foreground border-border",
+  IN_PROGRESS: "bg-primary/10 text-primary border-primary/20",
+  REVIEW_REQUESTED:
+    "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20",
+  COMPLETED:
+    "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
+  CANCELLED: "bg-destructive/10 text-destructive border-destructive/20",
+  DISPUTED:
+    "bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/20",
+};
+
+const STATUS_KEYS: Record<ProjectStatus, string> = {
+  PENDING: "pending",
+  OPEN: "open",
+  IN_PROGRESS: "inProgress",
+  REVIEW_REQUESTED: "reviewRequested",
+  COMPLETED: "completed",
+  CANCELLED: "cancelled",
+  DISPUTED: "disputed",
 };
 
 const GRADIENTS = [
@@ -83,13 +75,7 @@ function getGradient(id: string): string {
   return GRADIENTS[code % GRADIENTS.length];
 }
 
-function CounterpartAvatar({
-  name,
-  size = 40,
-}: {
-  name: string;
-  size?: number;
-}) {
+function CounterpartAvatar({ name, size = 40 }: { name: string; size?: number }) {
   const initials = name
     .split(" ")
     .map((n) => n[0])
@@ -100,7 +86,7 @@ function CounterpartAvatar({
 
   return (
     <div
-      className="rounded-xl flex items-center justify-center text-foreground text-xs font-bold ring-2 ring-border shrink-0"
+      className="rounded-xl flex items-center justify-center text-white text-xs font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -113,21 +99,6 @@ function CounterpartAvatar({
   );
 }
 
-function formatRelative(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const min = Math.floor(diff / 60_000);
-  if (min < 1) return "just now";
-  if (min < 60) return `${min}m ago`;
-  const hours = Math.floor(min / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
-
 interface OrderCardProps {
   order: OrderCardData;
   /** Whether the current user is the buyer (client) */
@@ -135,7 +106,27 @@ interface OrderCardProps {
 }
 
 export function OrderCard({ order, isBuyer }: OrderCardProps) {
-  const status = STATUS_CONFIG[order.status];
+  const t = useTranslations("orders.card");
+  const locale = useLocale();
+
+  // Locale-aware relative time
+  function formatRelative(iso: string): string {
+    const diff = Date.now() - new Date(iso).getTime();
+    const min = Math.floor(diff / 60_000);
+    if (min < 1) return t("time.justNow");
+    if (min < 60) return t("time.minutesAgo", { count: min });
+    const hours = Math.floor(min / 60);
+    if (hours < 24) return t("time.hoursAgo", { count: hours });
+    const days = Math.floor(hours / 24);
+    if (days < 7) return t("time.daysAgo", { count: days });
+    return new Date(iso).toLocaleDateString(locale === "ar" ? "ar" : "en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  }
+
+  const statusStyle = STATUS_STYLES[order.status];
+  const statusLabel = t(`status.${STATUS_KEYS[order.status]}`);
   const gradient = getGradient(order.id);
   const progress =
     order.milestoneStats.total > 0
@@ -145,7 +136,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
       : 0;
 
   return (
-    <div className="rounded-2xl bg-card border border-border overflow-hidden hover:border-border transition-all group">
+    <div className="rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/40 transition-all group">
       {/* Top row: image + main info */}
       <div className="flex flex-col sm:flex-row gap-4 p-4 sm:p-5">
         {/* Thumbnail */}
@@ -165,7 +156,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <span className="text-foreground/30 font-black text-2xl">
+              <span className="text-white/30 font-black text-2xl">
                 {(order.service?.title ?? order.title).charAt(0)}
               </span>
             </div>
@@ -177,7 +168,7 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
           <div className="flex items-start justify-between gap-3 mb-2">
             <div className="min-w-0">
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mb-1">
-                {isBuyer ? "Order" : "Incoming Order"}
+                {isBuyer ? t("orderLabel") : t("incomingOrderLabel")}
               </p>
               <h3 className="text-sm font-bold text-foreground line-clamp-1">
                 {order.service?.title ?? order.title}
@@ -186,27 +177,23 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
             <span
               className={cn(
                 "shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold border",
-                status.className
+                statusStyle
               )}
             >
-              <Flag className="w-2.5 h-2.5 mr-1" />
-              {status.label}
+              <Flag className="w-2.5 h-2.5 mr-1 rtl:ml-1 rtl:mr-0" />
+              {statusLabel}
             </span>
           </div>
 
           {/* Counterpart */}
           <div className="flex items-center gap-2 mb-3">
-            
-            <CounterpartAvatar
-              name={order.counterpart.name}
-              size={28}
-            />
+            <CounterpartAvatar name={order.counterpart.name} size={28} />
             <div className="min-w-0">
               <p className="text-xs text-muted-foreground truncate">
                 <span className="text-muted-foreground/70">
-                  {isBuyer ? "Creator: " : "Client: "}
+                  {isBuyer ? t("creatorLabel") : t("clientLabel")}{" "}
                 </span>
-                {order.counterpart.name}
+                {order.counterpart.name || t("unassigned")}
               </p>
             </div>
           </div>
@@ -224,14 +211,14 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
             {order.deadline && (
               <span className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                {new Date(order.deadline).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })}
+                {new Date(order.deadline).toLocaleDateString(
+                  locale === "ar" ? "ar" : "en-US",
+                  { month: "short", day: "numeric" }
+                )}
               </span>
             )}
             <span className="flex items-center gap-1">
-              <span className="text-muted-foreground/70">Updated</span>
+              <span className="text-muted-foreground/70">{t("updated")}</span>
               {formatRelative(order.updatedAt)}
             </span>
           </div>
@@ -243,13 +230,17 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
         <div className="px-4 sm:px-5 pb-3">
           <div className="flex items-center justify-between text-[10px] font-semibold text-muted-foreground/70 mb-1.5">
             <span>
-              {order.milestoneStats.completed} of {order.milestoneStats.total}{" "}
-              milestones
+              {t("milestones", {
+                completed: order.milestoneStats.completed,
+                total: order.milestoneStats.total,
+              })}
             </span>
             <span
               className={cn(
                 "tabular-nums",
-                progress === 100 ? "text-emerald-400" : "text-primary"
+                progress === 100
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-primary"
               )}
             >
               {progress}%
@@ -275,22 +266,22 @@ export function OrderCard({ order, isBuyer }: OrderCardProps) {
           href={`/dashboard/projects/${order.id}`}
           className={cn(
             "flex-1 flex items-center justify-center gap-1.5 h-9 rounded-lg text-xs font-bold transition-all",
-            "bg-primary hover:bg-primary text-primary-foreground shadow-lg shadow-primary/10 active:scale-95"
+            "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/10 active:scale-95"
           )}
         >
-          <ArrowRight className="w-3.5 h-3.5" />
-          Open Project
+          <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+          {t("openProject")}
         </Link>
         {order.chatRoomId && (
           <Link
             href={`/dashboard/chat/${order.chatRoomId}`}
             className={cn(
               "flex items-center justify-center gap-1.5 px-3.5 h-9 rounded-lg text-xs font-bold transition-all",
-              "bg-accent hover:bg-accent text-foreground border border-border active:scale-95"
+              "bg-accent hover:bg-accent/80 text-foreground border border-border active:scale-95"
             )}
           >
             <MessageSquare className="w-3.5 h-3.5" />
-            Chat
+            {t("chat")}
           </Link>
         )}
       </div>

@@ -560,5 +560,42 @@
       },
       "sendAria": "إرسال الرسالة"
     }
+  },
+    "orders": {
+    "page": {
+      "title": "طلباتي",
+      "buying": "الشراء",
+      "noOrders": "لا توجد طلبات بعد. اطلب خدمة للبدء.",
+      "ordersCount": "{count, plural, =0 {لا توجد طلبات} =1 {طلب واحد} =2 {طلبان} few {# طلبات} many {# طلباً} other {# طلب}}",
+      "emptyTitle": "لا توجد طلبات بعد",
+      "emptyDesc": "تصفح السوق ووظّف منشئاً معتمداً لتظهر طلباتك هنا.",
+      "browseMarketplace": "تصفح السوق"
+    },
+    "card": {
+      "orderLabel": "طلب",
+      "incomingOrderLabel": "طلب وارد",
+      "creatorLabel": "المنشئ:",
+      "clientLabel": "العميل:",
+      "unassigned": "غير معيَّن",
+      "updated": "آخر تحديث",
+      "milestones": "{completed} من {total} مراحل",
+      "openProject": "فتح المشروع",
+      "chat": "محادثة",
+      "status": {
+        "pending": "بانتظار البدء",
+        "open": "مفتوح",
+        "inProgress": "قيد التنفيذ",
+        "reviewRequested": "قيد المراجعة",
+        "completed": "مكتمل",
+        "cancelled": "ملغى",
+        "disputed": "متنازع عليه"
+      },
+      "time": {
+        "justNow": "الآن",
+        "minutesAgo": "قبل {count} د",
+        "hoursAgo": "قبل {count} س",
+        "daysAgo": "قبل {count} ي"
+      }
+    }
   }
 }

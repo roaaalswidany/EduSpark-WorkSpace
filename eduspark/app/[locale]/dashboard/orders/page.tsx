@@ -1,22 +1,33 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getServerSession } from "next-auth";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { ShoppingBag, Search } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { OrderCard, type OrderCardData } from "./_components/order-card";
 
-export const metadata = {
-  title: "My Orders — EduSpark",
-};
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "orders.page" });
+  return { title: `${t("title")} — EduSpark` };
+}
 
 export default async function MyOrdersPage() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
 
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+
+  const t = await getTranslations("orders.page");
   const userId = session.user.id;
 
-  // Orders = Projects where I'm the CLIENT (buyer)
   const projects = await db.project.findMany({
     where: { clientId: userId },
     orderBy: { updatedAt: "desc" },
@@ -53,7 +64,7 @@ export default async function MyOrdersPage() {
     updatedAt: p.updatedAt.toISOString(),
     counterpart: p.creator ?? {
       id: "",
-      name: "Unassigned",
+      name: "",
       headline: null,
     },
     service: p.service,
@@ -70,15 +81,15 @@ export default async function MyOrdersPage() {
       <div className="mb-8">
         <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <ShoppingBag className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-widest">Buying</span>
+          <span className="uppercase tracking-widest">{t("buying")}</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-          My Orders
+          {t("title")}
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
           {orders.length === 0
-            ? "No orders yet. Order a service to get started."
-            : `${orders.length} ${orders.length === 1 ? "order" : "orders"}`}
+            ? t("noOrders")
+            : t("ordersCount", { count: orders.length })}
         </p>
       </div>
 
@@ -88,18 +99,17 @@ export default async function MyOrdersPage() {
             <ShoppingBag className="w-7 h-7 text-primary" />
           </div>
           <h2 className="text-lg font-bold text-foreground mb-1.5">
-            No orders yet
+            {t("emptyTitle")}
           </h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
-            Browse the marketplace and hire a certified creator to see your
-            orders here.
+            {t("emptyDesc")}
           </p>
           <Link
             href="/marketplace"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-primary-foreground text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
           >
             <Search className="w-4 h-4" />
-            Browse Marketplace
+            {t("browseMarketplace")}
           </Link>
         </div>
       ) : (
