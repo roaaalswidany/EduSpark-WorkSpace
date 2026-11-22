@@ -1,9 +1,16 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Loader2, ShoppingCart, Play, AlertCircle, ShieldAlert } from "lucide-react";
+import { useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import {
+  Loader2,
+  ShoppingCart,
+  Play,
+  AlertCircle,
+  ShieldAlert,
+} from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { enrollInCourseAction } from "@/actions/lms/enroll-in-course";
@@ -25,96 +32,92 @@ export function EnrollButton({
   courseSlug,
   userRole,
 }: EnrollButtonProps) {
+  const t = useTranslations("courses.enroll");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // ── Admin: cannot participate ────────────────────────────────
+  // ── Admin ────────────────────────────────────────────────────
   if (userRole === "ADMIN") {
     return (
-      <div className="flex items-start gap-3 p-4 rounded-xl bg-info/50/5 border border-violet-500/20">
-        <ShieldAlert className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
+      <div className="flex items-start gap-3 p-4 rounded-xl bg-info/5 border border-info/20">
+        <ShieldAlert className="w-5 h-5 text-info shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-semibold text-violet-300">
-            Admin Account
-          </p>
-          <p className="text-xs text-violet-400/80 mt-1">
-            Admins manage the platform and cannot enroll in courses.
+          <p className="text-sm font-semibold text-info">{t("adminTitle")}</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {t("adminDescription")}
           </p>
         </div>
       </div>
     );
   }
 
-  // ── Already enrolled: Continue ───────────────────────────────
+  // ── Already enrolled ─────────────────────────────────────────
   if (isEnrolled) {
     return (
       <Link
         href={`/dashboard/student/courses/${courseId}`}
         className={cn(
           "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-          "bg-primary hover:bg-primary/50 text-foreground",
+          "bg-primary hover:bg-primary/90 text-primary-foreground",
           "text-sm font-bold transition-all active:scale-[0.98]",
           "shadow-lg shadow-emerald-500/20"
         )}
       >
         <Play className="w-4 h-4 fill-current" />
-        Continue Learning
+        {t("continue")}
       </Link>
     );
   }
 
-  // ── Not logged in: prompt to sign in ────────────────────────
+  // ── Not logged in ────────────────────────────────────────────
   if (!isLoggedIn) {
     return (
       <Link
         href={`/auth/login?callbackUrl=/courses/${courseSlug}`}
         className={cn(
           "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-          "bg-primary hover:bg-primary/50 text-foreground",
+          "bg-primary hover:bg-primary/90 text-primary-foreground",
           "text-sm font-bold transition-all active:scale-[0.98]",
           "shadow-lg shadow-emerald-500/20"
         )}
       >
-        Sign in to enroll
+        {t("signIn")}
       </Link>
     );
   }
 
-  // ── Logged in: Enroll ────────────────────────────────────────
+  // ── Enroll ───────────────────────────────────────────────────
   function handleEnroll() {
     setError(null);
-
-    const toastId = toast.loading("Enrolling…");
+    const toastId = toast.loading(t("loadingToast"));
 
     startTransition(async () => {
       const result = await enrollInCourseAction({ courseId });
 
       if (result.success) {
-        toast.success("Enrolled successfully! 🎉", {
+        toast.success(t("successToast"), {
           id: toastId,
-          description: "Redirecting to your course…",
+          description: t("successToastDesc"),
         });
         router.push(`/dashboard/student/courses/${courseId}`);
         return;
       }
 
-      const messages: Record<string, string> = {
-        ALREADY_ENROLLED: "You're already enrolled in this course.",
-        CANNOT_ENROLL_OWN_COURSE: "You can't enroll in your own course.",
-        COURSE_NOT_FOUND: "Course not found.",
-        NOT_PUBLISHED: "This course isn't available for enrollment yet.",
-        UNAUTHORIZED: "Please sign in to enroll.",
-        ADMIN_CANNOT_PARTICIPATE:
-          "Admins cannot enroll in courses. Use a student account to participate.",
-        INVALID_INPUT: "Invalid course data. Please refresh and try again.",
-        SERVER_ERROR: "Server error. Please try again in a moment.",
+      const errorMap: Record<string, string> = {
+        ALREADY_ENROLLED: t("errors.alreadyEnrolled"),
+        CANNOT_ENROLL_OWN_COURSE: t("errors.ownCourse"),
+        COURSE_NOT_FOUND: t("errors.courseNotFound"),
+        NOT_PUBLISHED: t("errors.notPublished"),
+        UNAUTHORIZED: t("errors.unauthorized"),
+        ADMIN_CANNOT_PARTICIPATE: t("errors.adminCannotParticipate"),
+        INVALID_INPUT: t("errors.invalidInput"),
+        SERVER_ERROR: t("errors.serverError"),
       };
-      const errorMessage =
-        messages[result.error] ?? "Something went wrong. Please try again.";
+      const errorMessage = errorMap[result.error] ?? t("errors.generic");
 
       setError(errorMessage);
-      toast.error("Enrollment failed", {
+      toast.error(t("errorToast"), {
         id: toastId,
         description: errorMessage,
       });
@@ -128,7 +131,7 @@ export function EnrollButton({
         disabled={isPending}
         className={cn(
           "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-          "bg-primary hover:bg-primary/50 text-foreground",
+          "bg-primary hover:bg-primary/90 text-primary-foreground",
           "text-sm font-bold transition-all active:scale-[0.98]",
           "shadow-lg shadow-emerald-500/20",
           "disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
@@ -140,16 +143,16 @@ export function EnrollButton({
           <ShoppingCart className="w-4 h-4" />
         )}
         {isPending
-          ? "Enrolling…"
+          ? t("enrolling")
           : price === 0
-          ? "Enroll for free"
-          : `Enroll for $${price.toFixed(2)}`}
+          ? t("enrollFree")
+          : t("enrollPaid", { price: price.toFixed(2) })}
       </button>
 
       {error && (
-        <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-          <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-          <p className="text-xs text-red-300">{error}</p>
+        <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
+          <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+          <p className="text-xs text-destructive">{error}</p>
         </div>
       )}
     </div>

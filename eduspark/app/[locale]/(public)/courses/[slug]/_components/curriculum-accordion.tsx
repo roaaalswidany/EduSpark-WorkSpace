@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   ChevronDown,
   Play,
   Lock,
-  CheckCircle2,
   Clock,
   BookOpen,
 } from "lucide-react";
@@ -47,7 +46,7 @@ export function CurriculumAccordion({
   totalDuration,
   isEnrolled,
 }: CurriculumAccordionProps) {
-  // First section open by default, rest closed
+  const t = useTranslations("courses.curriculum");
   const [expanded, setExpanded] = useState<Set<string>>(
     () => new Set(sections[0] ? [sections[0].id] : [])
   );
@@ -64,18 +63,18 @@ export function CurriculumAccordion({
   return (
     <div className="rounded-2xl bg-card border border-border overflow-hidden">
       {/* Header */}
-      <div className="px-5 sm:px-6 py-4 border-b border-border flex items-center justify-between">
+      <div className="px-5 sm:px-6 py-4 border-b border-border flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2">
-          <BookOpen className="w-4 h-4 text-indigo-400" />
-          <h2 className="text-sm font-bold text-foreground">Course Curriculum</h2>
+          <BookOpen className="w-4 h-4 text-primary" />
+          <h2 className="text-sm font-bold text-foreground">{t("title")}</h2>
         </div>
-        <p className="text-xs text-foreground0">
-          {sections.length} sections · {totalLessons} lessons ·{" "}
-          {formatDuration(totalDuration)} total
+        <p className="text-xs text-muted-foreground">
+          {t("sections", { count: sections.length })} ·{" "}
+          {t("lessons", { count: totalLessons })} ·{" "}
+          {t("totalSuffix", { duration: formatDuration(totalDuration) })}
         </p>
       </div>
 
-      {/* Sections */}
       <div>
         {sections.map((section, idx) => {
           const isOpen = expanded.has(section.id);
@@ -89,25 +88,22 @@ export function CurriculumAccordion({
               key={section.id}
               className="border-b border-border/60 last:border-0"
             >
-              {/* Section header */}
               <button
                 onClick={() => toggle(section.id)}
                 className="w-full flex items-center gap-3 px-5 sm:px-6 py-4 hover:bg-accent/30 transition-colors text-left group"
               >
-                {/* Section number */}
-                <div className="w-7 h-7 rounded-lg bg-accent text-muted-foreground text-xs font-bold flex items-center justify-center shrink-0 group-hover:bg-muted-foreground/70 transition-colors">
+                <div className="w-7 h-7 rounded-lg bg-accent text-muted-foreground text-xs font-bold flex items-center justify-center shrink-0 group-hover:bg-muted-foreground/20 transition-colors">
                   {idx + 1}
                 </div>
 
-                {/* Title + meta */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-foreground truncate group-hover:text-foreground transition-colors">
                     {section.title}
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {section.lessons.length}{" "}
-                    {section.lessons.length === 1 ? "lesson" : "lessons"}
-                    {sectionDuration > 0 && ` · ${formatDuration(sectionDuration)}`}
+                    {t("lessons", { count: section.lessons.length })}
+                    {sectionDuration > 0 &&
+                      ` · ${formatDuration(sectionDuration)}`}
                   </p>
                 </div>
 
@@ -119,7 +115,6 @@ export function CurriculumAccordion({
                 />
               </button>
 
-              {/* Lessons */}
               {isOpen && (
                 <div className="pb-2">
                   {section.lessons.map((lesson) => {
@@ -132,31 +127,27 @@ export function CurriculumAccordion({
                           "hover:bg-accent/30 transition-colors"
                         )}
                       >
-                        {/* Icon */}
                         {locked ? (
                           <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                         ) : (
-                          <Play className="w-3.5 h-3.5 text-indigo-400 shrink-0 fill-current" />
+                          <Play className="w-3.5 h-3.5 text-primary shrink-0 fill-current" />
                         )}
 
-                        {/* Title */}
                         <span
                           className={cn(
                             "flex-1 text-xs truncate",
-                            locked ? "text-foreground0" : "text-foreground"
+                            locked ? "text-muted-foreground" : "text-foreground"
                           )}
                         >
                           {lesson.title}
                         </span>
 
-                        {/* Free badge */}
                         {!isEnrolled && lesson.isFree && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded shrink-0">
-                            Free
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded shrink-0">
+                            {t("free")}
                           </span>
                         )}
 
-                        {/* Duration */}
                         {lesson.duration != null && (
                           <span className="flex items-center gap-1 text-[10px] text-muted-foreground shrink-0 tabular-nums">
                             <Clock className="w-3 h-3" />

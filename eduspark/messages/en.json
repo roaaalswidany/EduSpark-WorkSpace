@@ -231,6 +231,73 @@
         "intermediate": "Intermediate",
         "advanced": "Advanced"
       },
+          "detail": {
+      "breadcrumb": "Courses",
+      "createdBy": "Created by",
+      "ratingCount": "{count, plural, =0 {No ratings} =1 {1 rating} other {# ratings}}",
+      "studentsCount": "{count, plural, =0 {No students} =1 {1 student} other {# students}}",
+      "lessonsCount": "{count, plural, =0 {No lessons} =1 {1 lesson} other {# lessons}}",
+      "free": "Free",
+      "includesTitle": "This course includes",
+      "includesLessons": "{count, plural, =0 {No video lessons} =1 {1 video lesson} other {# video lessons}}",
+      "includesCertificate": "Certificate of completion",
+      "includesAccess": "Access on mobile and desktop",
+      "includesLifetime": "Lifetime access",
+      "learningTitle": "What you'll learn",
+      "instructorTitle": "About the instructor",
+      "outcomes": {
+        "master": "Master {title} through hands-on projects",
+        "build": "Build production-ready applications with real-world scenarios",
+        "learnFrom": "Learn from {creator}, an experienced instructor",
+        "certificate": "Earn a verified certificate upon successful completion",
+        "accessLessons": "Access {count} video lessons on any device, anytime",
+        "community": "Join a community of learners and grow your skills"
+      }
+    },
+    "curriculum": {
+      "title": "Course Curriculum",
+      "sections": "{count, plural, =0 {No sections} =1 {1 section} other {# sections}}",
+      "lessons": "{count, plural, =0 {No lessons} =1 {1 lesson} other {# lessons}}",
+      "totalSuffix": "{duration} total",
+      "free": "Free"
+    },
+    "enroll": {
+      "adminTitle": "Admin Account",
+      "adminDescription": "Admins manage the platform and cannot enroll in courses.",
+      "continue": "Continue Learning",
+      "signIn": "Sign in to enroll",
+      "enrolling": "Enrolling...",
+      "enrollFree": "Enroll for free",
+      "enrollPaid": "Enroll for ${price}",
+      "loadingToast": "Enrolling…",
+      "successToast": "Enrolled successfully! 🎉",
+      "successToastDesc": "Redirecting to your course…",
+      "errorToast": "Enrollment failed",
+      "errors": {
+        "alreadyEnrolled": "You're already enrolled in this course.",
+        "ownCourse": "You can't enroll in your own course.",
+        "courseNotFound": "Course not found.",
+        "notPublished": "This course isn't available for enrollment yet.",
+        "unauthorized": "Please sign in to enroll.",
+        "adminCannotParticipate": "Admins cannot enroll in courses. Use a student account to participate.",
+        "invalidInput": "Invalid course data. Please refresh and try again.",
+        "serverError": "Server error. Please try again in a moment.",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "card": {
+      "levels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "enrolled": "Enrolled",
+      "completed": "Completed",
+      "lessons": "{count, plural, =0 {No lessons} =1 {1 lesson} other {# lessons}}",
+      "price": "Price",
+      "free": "Free",
+      "progress": "Progress"
+    },
       "sort": {
         "newest": "Newest",
         "popular": "Most popular",

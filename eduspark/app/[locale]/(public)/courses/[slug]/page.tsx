@@ -1,23 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { COURSE_REVIEW_MIN_PROGRESS } from "@/lib/lms/review-policy";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import {
-  GraduationCap,
   ChevronRight,
   Star,
   BookOpen,
-  Clock,
   Users,
   Globe,
-  Award,
   CheckCircle2,
 } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
-import { CourseStatus, EnrollmentStatus } from "@prisma/client";
+import { CourseStatus } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import {
   CurriculumAccordion,
@@ -27,29 +25,35 @@ import { EnrollButton } from "./_components/enroll-button";
 import { CourseReviews } from "@/components/reviews/course-reviews";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }
 
-const LEVEL_LABELS = {
-  BEGINNER: "Beginner",
-  INTERMEDIATE: "Intermediate",
-  ADVANCED: "Advanced",
-} as const;
-
-// تم إصلاح شارة المستوى المتوسط لتكون شفافة (مثل باقي الشارات) بدلاً من برتقالي مصمت
 const LEVEL_STYLES = {
   BEGINNER: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   INTERMEDIATE: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
   ADVANCED: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
 } as const;
 
+export async function generateMetadata({ params }: PageProps) {
+  const { slug, locale } = await params;
+  const course = await db.course.findUnique({
+    where: { slug },
+    select: { title: true, description: true },
+  });
+  if (!course) return { title: "Course not found — EduSpark" };
+  return {
+    title: `${course.title} — EduSpark`,
+    description: course.description,
+  };
+}
+
 export default async function CourseDetailPage({ params }: PageProps) {
   const { slug } = await params;
+  const t = await getTranslations();
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
   const userRole = session?.user?.role;
 
-  // ── Fetch course ──────────────────────────────────────────
   const course = await db.course.findUnique({
     where: { slug },
     select: {
@@ -67,12 +71,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
       ratingCount: true,
       createdAt: true,
       creator: {
-        select: {
-          id: true,
-          name: true,
-          headline: true,
-          bio: true,
-        },
+        select: { id: true, name: true, headline: true, bio: true },
       },
       category: { select: { id: true, name: true, slug: true } },
       sections: {
@@ -83,25 +82,16 @@ export default async function CourseDetailPage({ params }: PageProps) {
           order: true,
           lessons: {
             orderBy: { order: "asc" },
-            select: {
-              id: true,
-              title: true,
-              duration: true,
-              isFree: true,
-            },
+            select: { id: true, title: true, duration: true, isFree: true },
           },
         },
       },
-      _count: {
-        select: { enrollments: true, reviews: true },
-      },
+      _count: { select: { enrollments: true, reviews: true } },
     },
   });
 
-  // Only show PUBLISHED courses publicly
   if (!course || course.status !== CourseStatus.PUBLISHED) notFound();
 
-  // ── Check enrollment ──────────────────────────────────────
   let enrollment: { id: string; progress: number; isPassed: boolean } | null =
     null;
   if (userId) {
@@ -112,7 +102,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
     enrollment = e;
   }
 
-  // ── Reviews ─────────────────────────────────────────────────────
   const [reviewsData, userReview] = await Promise.all([
     db.review.findMany({
       where: { courseId: course.id },
@@ -134,7 +123,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
       : Promise.resolve(null),
   ]);
 
-  // ── Compute derived data ──────────────────────────────────
   const totalLessons = course.sections.reduce(
     (sum, s) => sum + s.lessons.length,
     0
@@ -161,23 +149,36 @@ export default async function CourseDetailPage({ params }: PageProps) {
   const isEnrolled = !!enrollment;
   const isLoggedIn = !!userId;
 
-  // ── Creator Initials & Color ──
   const creatorInitials = course.creator.name
     .split(" ")
     .map((p) => p[0])
     .slice(0, 2)
     .join("")
     .toUpperCase();
-  const creatorHue = course.creator.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+  const creatorHue =
+    course.creator.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) %
+    360;
 
-  // ── Learning outcomes (extracted from tags/description) ──
+  const levelKey = course.level.toLowerCase() as
+    | "beginner"
+    | "intermediate"
+    | "advanced";
+  const levelLabel = t(`courses.filters.levels.${levelKey}`);
+
   const outcomes = [
-    `Master ${course.title.toLowerCase()} through hands-on projects`,
-    `Build production-ready applications with real-world scenarios`,
-    `Learn from ${course.creator.name}, an experienced instructor`,
-    `Earn a verified certificate upon successful completion`,
-    `Access ${totalLessons} video lessons on any device, anytime`,
-    `Join a community of learners and grow your skills`,
+    t("courses.detail.outcomes.master", { title: course.title.toLowerCase() }),
+    t("courses.detail.outcomes.build"),
+    t("courses.detail.outcomes.learnFrom", { creator: course.creator.name }),
+    t("courses.detail.outcomes.certificate"),
+    t("courses.detail.outcomes.accessLessons", { count: totalLessons }),
+    t("courses.detail.outcomes.community"),
+  ];
+
+  const includesItems = [
+    t("courses.detail.includesLessons", { count: totalLessons }),
+    t("courses.detail.includesCertificate"),
+    t("courses.detail.includesAccess"),
+    t("courses.detail.includesLifetime"),
   ];
 
   return (
@@ -185,8 +186,11 @@ export default async function CourseDetailPage({ params }: PageProps) {
       {/* ── Breadcrumb ─────────────────────────────────── */}
       <div className="border-b border-border bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Link href="/courses" className="hover:text-foreground transition-colors">
-            Courses
+          <Link
+            href="/courses"
+            className="hover:text-foreground transition-colors"
+          >
+            {t("courses.detail.breadcrumb")}
           </Link>
           {course.category && (
             <>
@@ -208,9 +212,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
       <section className="relative bg-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
-            {/* Left: Content */}
             <div className="space-y-5 min-w-0">
-              {/* Badges */}
               <div className="flex flex-wrap items-center gap-2">
                 <span
                   className={cn(
@@ -218,7 +220,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                     LEVEL_STYLES[course.level]
                   )}
                 >
-                  {LEVEL_LABELS[course.level]}
+                  {levelLabel}
                 </span>
                 {course.category && (
                   <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
@@ -227,17 +229,14 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 )}
               </div>
 
-              {/* Title */}
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground leading-tight">
                 {course.title}
               </h1>
 
-              {/* Description */}
               <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-3xl">
                 {course.description}
               </p>
 
-              {/* Meta row */}
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
                 {course.ratingCount > 0 && (
                   <div className="flex items-center gap-1.5">
@@ -245,16 +244,26 @@ export default async function CourseDetailPage({ params }: PageProps) {
                     <span className="text-amber-600 dark:text-amber-400 font-bold">
                       {course.totalRating.toFixed(1)}
                     </span>
-                    <span>({course.ratingCount} ratings)</span>
+                    <span>
+                      {t("courses.detail.ratingCount", {
+                        count: course.ratingCount,
+                      })}
+                    </span>
                   </div>
                 )}
                 <div className="flex items-center gap-1.5">
                   <Users className="w-3.5 h-3.5" />
-                  <span>{course._count.enrollments} students</span>
+                  <span>
+                    {t("courses.detail.studentsCount", {
+                      count: course._count.enrollments,
+                    })}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <BookOpen className="w-3.5 h-3.5" />
-                  <span>{totalLessons} lessons</span>
+                  <span>
+                    {t("courses.detail.lessonsCount", { count: totalLessons })}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Globe className="w-3.5 h-3.5" />
@@ -262,16 +271,17 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 </div>
               </div>
 
-              {/* Instructor row */}
               <div className="flex items-center gap-3 pt-2">
-                <div 
+                <div
                   className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold ring-2 ring-border shrink-0"
                   style={{ background: `hsl(${creatorHue}, 50%, 38%)` }}
                 >
                   {creatorInitials}
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Created by</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("courses.detail.createdBy")}
+                  </p>
                   <Link
                     href={`/profile/${course.creator.id}`}
                     className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
@@ -282,10 +292,9 @@ export default async function CourseDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            {/* Right: Enroll card (desktop) */}
+            {/* Desktop enroll card */}
             <aside className="hidden lg:block">
               <div className="sticky top-20 rounded-2xl bg-card border border-border overflow-hidden">
-                {/* Thumbnail */}
                 <div className="relative aspect-video bg-background">
                   {course.thumbnail ? (
                     <Image
@@ -302,13 +311,11 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   )}
                 </div>
 
-                {/* Card body */}
                 <div className="p-5 space-y-4">
-                  {/* Price */}
                   <div className="flex items-baseline gap-2">
                     {price === 0 ? (
                       <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
-                        Free
+                        {t("courses.detail.free")}
                       </span>
                     ) : (
                       <span className="text-3xl font-black text-foreground tabular-nums">
@@ -317,7 +324,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
                     )}
                   </div>
 
-                  {/* CTA */}
                   <EnrollButton
                     courseId={course.id}
                     price={price}
@@ -327,18 +333,12 @@ export default async function CourseDetailPage({ params }: PageProps) {
                     userRole={userRole}
                   />
 
-                  {/* What's included */}
                   <div className="pt-4 border-t border-border space-y-2.5">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                      This course includes
+                      {t("courses.detail.includesTitle")}
                     </p>
                     <ul className="space-y-2">
-                      {[
-                        `${totalLessons} video lessons`,
-                        "Certificate of completion",
-                        "Access on mobile and desktop",
-                        "Lifetime access",
-                      ].map((item) => (
+                      {includesItems.map((item) => (
                         <li
                           key={item}
                           className="flex items-center gap-2 text-xs text-muted-foreground"
@@ -359,12 +359,10 @@ export default async function CourseDetailPage({ params }: PageProps) {
       {/* ── Main content ───────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12">
-          {/* Main column */}
           <div className="space-y-8 min-w-0">
-            {/* What you'll learn */}
             <section className="rounded-2xl bg-card border border-border p-5 sm:p-6">
               <h2 className="text-base font-bold text-foreground mb-4">
-                What you&apos;ll learn
+                {t("courses.detail.learningTitle")}
               </h2>
               <ul className="grid sm:grid-cols-2 gap-3">
                 {outcomes.map((outcome) => (
@@ -379,7 +377,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
               </ul>
             </section>
 
-            {/* Curriculum */}
             <CurriculumAccordion
               sections={curriculum}
               totalLessons={totalLessons}
@@ -387,7 +384,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
               isEnrolled={isEnrolled}
             />
 
-              <CourseReviews
+            <CourseReviews
               courseId={course.id}
               reviews={reviewsData.map((r) => ({
                 ...r,
@@ -395,18 +392,23 @@ export default async function CourseDetailPage({ params }: PageProps) {
               }))}
               averageRating={course.totalRating}
               ratingCount={course.ratingCount}
-              canReview={isEnrolled && (enrollment?.progress ?? 0) >= COURSE_REVIEW_MIN_PROGRESS}
-              needsProgress={isEnrolled && (enrollment?.progress ?? 0) < COURSE_REVIEW_MIN_PROGRESS}
+              canReview={
+                isEnrolled &&
+                (enrollment?.progress ?? 0) >= COURSE_REVIEW_MIN_PROGRESS
+              }
+              needsProgress={
+                isEnrolled &&
+                (enrollment?.progress ?? 0) < COURSE_REVIEW_MIN_PROGRESS
+              }
               alreadyReviewed={userReview !== null}
             />
 
-            {/* Instructor */}
             <section className="rounded-2xl bg-card border border-border p-5 sm:p-6">
               <h2 className="text-base font-bold text-foreground mb-4">
-                About the instructor
+                {t("courses.detail.instructorTitle")}
               </h2>
               <div className="flex items-start gap-4">
-                <div 
+                <div
                   className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-lg font-bold ring-2 ring-border shrink-0"
                   style={{ background: `hsl(${creatorHue}, 50%, 38%)` }}
                 >
@@ -434,13 +436,13 @@ export default async function CourseDetailPage({ params }: PageProps) {
             </section>
           </div>
 
-          {/* Right column (mobile enroll card) */}
+          {/* Mobile enroll card */}
           <aside className="lg:hidden">
             <div className="rounded-2xl bg-card border border-border p-5 space-y-4">
               <div className="flex items-baseline gap-2">
                 {price === 0 ? (
                   <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
-                    Free
+                    {t("courses.detail.free")}
                   </span>
                 ) : (
                   <span className="text-3xl font-black text-foreground tabular-nums">

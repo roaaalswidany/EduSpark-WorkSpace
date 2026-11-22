@@ -231,6 +231,73 @@
         "intermediate": "متوسط",
         "advanced": "متقدم"
       },
+          "detail": {
+      "breadcrumb": "الكورسات",
+      "createdBy": "أنشأه",
+      "ratingCount": "{count, plural, =0 {لا توجد تقييمات} =1 {تقييم واحد} =2 {تقييمان} few {# تقييمات} many {# تقييماً} other {# تقييم}}",
+      "studentsCount": "{count, plural, =0 {لا يوجد طلاب} =1 {طالب واحد} =2 {طالبان} few {# طلاب} many {# طالباً} other {# طالب}}",
+      "lessonsCount": "{count, plural, =0 {لا توجد دروس} =1 {درس واحد} =2 {درسان} few {# دروس} many {# درساً} other {# درس}}",
+      "free": "مجاني",
+      "includesTitle": "تشمل هذه الدورة",
+      "includesLessons": "{count, plural, =0 {لا توجد دروس فيديو} =1 {درس فيديو واحد} =2 {درسان فيديو} few {# دروس فيديو} many {# درس فيديو} other {# درس فيديو}}",
+      "includesCertificate": "شهادة إتمام",
+      "includesAccess": "الوصول عبر الجوال والحاسوب",
+      "includesLifetime": "وصول مدى الحياة",
+      "learningTitle": "ما ستتعلمه",
+      "instructorTitle": "عن المدرب",
+      "outcomes": {
+        "master": "أتقن {title} من خلال مشاريع تطبيقية",
+        "build": "ابنِ تطبيقات جاهزة للإنتاج بسيناريوهات واقعية",
+        "learnFrom": "تعلّم من {creator}، مدرب ذو خبرة",
+        "certificate": "احصل على شهادة موثقة عند الإتمام بنجاح",
+        "accessLessons": "الوصول إلى {count} دروس فيديو على أي جهاز، في أي وقت",
+        "community": "انضم إلى مجتمع المتعلمين وطوّر مهاراتك"
+      }
+    },
+    "curriculum": {
+      "title": "منهج الدورة",
+      "sections": "{count, plural, =0 {لا توجد أقسام} =1 {قسم واحد} =2 {قسمان} few {# أقسام} many {# قسماً} other {# قسم}}",
+      "lessons": "{count, plural, =0 {لا توجد دروس} =1 {درس واحد} =2 {درسان} few {# دروس} many {# درساً} other {# درس}}",
+      "totalSuffix": "{duration} إجمالي",
+      "free": "مجاني"
+    },
+    "enroll": {
+      "adminTitle": "حساب مدير",
+      "adminDescription": "المديرون يديرون المنصة ولا يمكنهم التسجيل في الكورسات.",
+      "continue": "متابعة التعلم",
+      "signIn": "سجّل الدخول للتسجيل",
+      "enrolling": "جارٍ التسجيل...",
+      "enrollFree": "سجّل مجاناً",
+      "enrollPaid": "سجّل مقابل ${price}",
+      "loadingToast": "جارٍ التسجيل…",
+      "successToast": "تم التسجيل بنجاح! 🎉",
+      "successToastDesc": "جارٍ تحويلك إلى كورسك…",
+      "errorToast": "فشل التسجيل",
+      "errors": {
+        "alreadyEnrolled": "أنت مسجل بالفعل في هذا الكورس.",
+        "ownCourse": "لا يمكنك التسجيل في كورسك الخاص.",
+        "courseNotFound": "الكورس غير موجود.",
+        "notPublished": "هذا الكورس غير متاح للتسجيل بعد.",
+        "unauthorized": "يرجى تسجيل الدخول للتسجيل.",
+        "adminCannotParticipate": "المديرون لا يمكنهم التسجيل في الكورسات. استخدم حساب طالب للمشاركة.",
+        "invalidInput": "بيانات الكورس غير صالحة. يرجى التحديث والمحاولة مرة أخرى.",
+        "serverError": "خطأ في الخادم. يرجى المحاولة بعد قليل.",
+        "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "card": {
+      "levels": {
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "advanced": "متقدم"
+      },
+      "enrolled": "مسجل",
+      "completed": "مكتمل",
+      "lessons": "{count, plural, =0 {لا توجد دروس} =1 {درس واحد} =2 {درسان} few {# دروس} many {# درساً} other {# درس}}",
+      "price": "السعر",
+      "free": "مجاني",
+      "progress": "التقدم"
+    },
       "sort": {
         "newest": "الأحدث",
         "popular": "الأكثر شيوعاً",
