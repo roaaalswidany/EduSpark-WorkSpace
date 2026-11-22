@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { BookOpen, Search } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
@@ -13,6 +14,7 @@ import { cached } from "@/lib/cache";
 import { CacheKeys, CacheTTL } from "@/lib/cache-keys";
 
 interface PageProps {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     q?: string;
     category?: string;
@@ -24,7 +26,21 @@ interface PageProps {
 
 const PAGE_SIZE = 12;
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "courses" });
+  return {
+    title: `${t("hero.title")} ${t("hero.titleHighlight")} — EduSpark`,
+    description: t("hero.description"),
+  };
+}
+
 export default async function CoursesPage({ searchParams }: PageProps) {
+  const t = await getTranslations("courses");
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
 
@@ -73,7 +89,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       break;
   }
 
-  // ── Cache key (unique per filter/page combo) ────────────────────
+  // ── Cache key ───────────────────────────────────────────────────
   const listCacheKey = CacheKeys.coursesList({
     q: sp.q,
     category: sp.category,
@@ -82,9 +98,8 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     page,
   });
 
-  // ── Fetch data in parallel — with caching ───────────────────────
+  // ── Fetch data in parallel ──────────────────────────────────────
   const [{ coursesRaw, total }, categoriesRaw] = await Promise.all([
-    // Cache: courses list + count (60s TTL)
     cached(listCacheKey, CacheTTL.medium, async () => {
       const [courses, count] = await Promise.all([
         db.course.findMany({
@@ -120,7 +135,6 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       return { coursesRaw: courses, total: count };
     }),
 
-    // Cache: categories (5 min TTL — changes rarely)
     cached(CacheKeys.coursesCategories(), CacheTTL.long, () =>
       db.category.findMany({
         where: {
@@ -141,7 +155,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     ),
   ]);
 
-  // ── Enrollments for current user (NOT cached — user-specific) ───
+  // ── Enrollments ─────────────────────────────────────────────────
   let enrollmentMap = new Map<
     string,
     { progress: number; isPassed: boolean }
@@ -212,7 +226,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
     !!sp.level ||
     (sp.sort && sp.sort !== "newest");
 
-  // ── Build pagination URL helper ─────────────────────────────────
+  // ── Build pagination URL ────────────────────────────────────────
   function buildPageUrl(targetPage: number): string {
     const params = new URLSearchParams();
     if (sp.q) params.set("q", sp.q);
@@ -231,17 +245,16 @@ export default async function CoursesPage({ searchParams }: PageProps) {
         <div className="text-center max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-4">
             <BookOpen className="w-3 h-3" />
-            {total} {total === 1 ? "course" : "courses"} available
+            {t("hero.availableBadge", { count: total })}
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight leading-tight">
-            Learn from the best,{" "}
+            {t("hero.title")}{" "}
             <span className="bg-linear-to-r from-emerald-400 to-emerald-400 bg-clip-text text-transparent">
-              at your own pace.
+              {t("hero.titleHighlight")}
             </span>
           </h1>
           <p className="mt-3 text-muted-foreground text-sm sm:text-base leading-relaxed">
-            Discover expert-led courses, earn certificates, and unlock your
-            potential with EduSpark.
+            {t("hero.description")}
           </p>
         </div>
       </section>
@@ -256,12 +269,16 @@ export default async function CoursesPage({ searchParams }: PageProps) {
         <div className="flex items-center justify-between mb-5">
           <p className="text-sm text-muted-foreground">
             {total === 0
-              ? "No courses found"
-              : `Showing ${skip + 1}–${Math.min(skip + PAGE_SIZE, total)} of ${total}`}
+              ? t("results.noCourses")
+              : t("results.showingRange", {
+                  start: skip + 1,
+                  end: Math.min(skip + PAGE_SIZE, total),
+                  total,
+                })}
           </p>
           {totalPages > 1 && (
             <p className="text-xs text-muted-foreground/70">
-              Page {page} of {totalPages}
+              {t("results.pageOf", { page, total: totalPages })}
             </p>
           )}
         </div>
@@ -272,19 +289,17 @@ export default async function CoursesPage({ searchParams }: PageProps) {
               <Search className="w-7 h-7 text-muted-foreground/70" />
             </div>
             <h3 className="text-base font-bold text-foreground mb-1">
-              No courses found
+              {t("results.noCourses")}
             </h3>
             <p className="text-sm text-muted-foreground/70 max-w-sm mb-5">
-              {hasFilters
-                ? "Try adjusting your filters or search query."
-                : "No published courses yet. Check back soon!"}
+              {hasFilters ? t("results.tryAdjusting") : t("results.noPublished")}
             </p>
             {hasFilters && (
               <Link
                 href="/courses"
-                className="px-4 py-2 rounded-lg bg-accent hover:bg-accent text-foreground text-xs font-semibold transition-colors"
+                className="px-4 py-2 rounded-lg bg-accent hover:bg-accent/80 text-foreground text-xs font-semibold transition-colors"
               >
-                Clear filters
+                {t("results.clearFilters")}
               </Link>
             )}
           </div>
@@ -301,9 +316,9 @@ export default async function CoursesPage({ searchParams }: PageProps) {
             {page > 1 && (
               <Link
                 href={buildPageUrl(page - 1)}
-                className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
+                className="px-4 py-2 rounded-lg bg-card border border-border hover:border-primary/40 text-foreground text-xs font-semibold transition-colors"
               >
-                ← Previous
+                ← {t("results.previous")}
               </Link>
             )}
 
@@ -321,7 +336,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
                     className={
                       p === page
                         ? "w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-primary-foreground text-xs font-bold"
-                        : "w-9 h-9 flex items-center justify-center rounded-lg bg-card border border-border hover:border-border text-muted-foreground hover:text-foreground text-xs font-semibold transition-colors"
+                        : "w-9 h-9 flex items-center justify-center rounded-lg bg-card border border-border hover:border-primary/40 text-muted-foreground hover:text-foreground text-xs font-semibold transition-colors"
                     }
                   >
                     {p}
@@ -341,9 +356,9 @@ export default async function CoursesPage({ searchParams }: PageProps) {
             {page < totalPages && (
               <Link
                 href={buildPageUrl(page + 1)}
-                className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
+                className="px-4 py-2 rounded-lg bg-card border border-border hover:border-primary/40 text-foreground text-xs font-semibold transition-colors"
               >
-                Next →
+                {t("results.next")} →
               </Link>
             )}
           </div>

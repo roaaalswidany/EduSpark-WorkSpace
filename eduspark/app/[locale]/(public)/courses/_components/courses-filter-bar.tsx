@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Search, X, SlidersHorizontal, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -17,29 +19,30 @@ export interface CoursesFilterBarProps {
   totalCourses: number;
 }
 
-const LEVEL_OPTIONS = [
-  { value: "", label: "All levels" },
-  { value: "BEGINNER", label: "Beginner" },
-  { value: "INTERMEDIATE", label: "Intermediate" },
-  { value: "ADVANCED", label: "Advanced" },
-];
-
-const SORT_OPTIONS = [
-  { value: "newest", label: "Newest" },
-  { value: "popular", label: "Most popular" },
-  { value: "rating", label: "Highest rated" },
-  { value: "price-low", label: "Price: Low to High" },
-  { value: "price-high", label: "Price: High to Low" },
-];
-
 export function CoursesFilterBar({
   categories,
   totalCourses,
 }: CoursesFilterBarProps) {
+  const t = useTranslations("courses.filters");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+
+  const LEVEL_OPTIONS = [
+    { value: "", label: t("levels.all") },
+    { value: "BEGINNER", label: t("levels.beginner") },
+    { value: "INTERMEDIATE", label: t("levels.intermediate") },
+    { value: "ADVANCED", label: t("levels.advanced") },
+  ];
+
+  const SORT_OPTIONS = [
+    { value: "newest", label: t("sort.newest") },
+    { value: "popular", label: t("sort.popular") },
+    { value: "rating", label: t("sort.rating") },
+    { value: "price-low", label: t("sort.priceLow") },
+    { value: "price-high", label: t("sort.priceHigh") },
+  ];
 
   const [searchInput, setSearchInput] = useState(searchParams.get("q") ?? "");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -100,12 +103,12 @@ export function CoursesFilterBar({
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search courses..."
+            placeholder={t("searchPlaceholder")}
             className={cn(
               "w-full h-11 pl-10 pr-10 rounded-xl",
               "bg-card border border-border text-foreground",
               "placeholder:text-muted-foreground/70",
-              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
+              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary",
               "transition-all"
             )}
           />
@@ -129,7 +132,7 @@ export function CoursesFilterBar({
           className={cn(
             "hidden sm:block h-11 px-4 rounded-xl",
             "bg-card border border-border text-foreground text-sm",
-            "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
+            "focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary",
             "cursor-pointer transition-all"
           )}
         >
@@ -150,11 +153,11 @@ export function CoursesFilterBar({
           )}
         >
           <SlidersHorizontal className="w-4 h-4" />
-          Filters
+          {t("filtersButton")}
         </button>
       </div>
 
-      {/* Category chips (desktop always shown, mobile if toggled) */}
+      {/* Category chips */}
       <div
         className={cn(
           "sm:flex items-center gap-2 flex-wrap",
@@ -167,10 +170,10 @@ export function CoursesFilterBar({
             "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap",
             !activeCategory
               ? "bg-primary/10 text-primary border-primary/30"
-              : "bg-card text-muted-foreground border-border hover:border-border hover:text-foreground"
+              : "bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
           )}
         >
-          All ({totalCourses})
+          {t("allCategories", { count: totalCourses })}
         </button>
         {categories.map((cat) => {
           const isActive = activeCategory === cat.id;
@@ -182,7 +185,7 @@ export function CoursesFilterBar({
                 "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap",
                 isActive
                   ? "bg-primary/10 text-primary border-primary/30"
-                  : "bg-card text-muted-foreground border-border hover:border-border hover:text-foreground"
+                  : "bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
               )}
             >
               {cat.name} ({cat.count})
@@ -198,7 +201,9 @@ export function CoursesFilterBar({
           showMobileFilters ? "flex" : "hidden sm:flex"
         )}
       >
-        <span className="text-xs text-muted-foreground/70 font-medium">Level:</span>
+        <span className="text-xs text-muted-foreground/70 font-medium">
+          {t("levelLabel")}
+        </span>
         {LEVEL_OPTIONS.map((opt) => {
           const isActive = activeLevel === opt.value;
           return (
@@ -209,7 +214,7 @@ export function CoursesFilterBar({
                 "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap",
                 isActive
                   ? "bg-primary/10 text-primary border-primary/30"
-                  : "bg-card text-muted-foreground border-border hover:border-border hover:text-foreground"
+                  : "bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
               )}
             >
               {opt.label}
@@ -241,7 +246,7 @@ export function CoursesFilterBar({
             className="ml-auto sm:ml-2 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="w-3 h-3" />
-            Clear
+            {t("clear")}
           </button>
         )}
       </div>

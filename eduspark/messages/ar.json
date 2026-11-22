@@ -205,5 +205,43 @@
       "browseServices": "تصفح الخدمات",
       "browseServicesDesc": "استعن بخبراء معتمدين"
     }
+  },
+    "courses": {
+    "hero": {
+      "availableBadge": "{count, plural, =0 {لا توجد كورسات متاحة} =1 {كورس واحد متاح} =2 {كورسان متاحان} few {# كورسات متاحة} many {# كورساً متاحاً} other {# كورس متاح}}",
+      "title": "تعلّم من الأفضل،",
+      "titleHighlight": "بالسرعة التي تناسبك.",
+      "description": "اكتشف كورسات يقودها خبراء، واجمع الشهادات، وأطلق إمكانياتك مع EduSpark."
+    },
+    "results": {
+      "showingRange": "عرض {start}–{end} من {total}",
+      "pageOf": "صفحة {page} من {total}",
+      "noCourses": "لا توجد كورسات",
+      "tryAdjusting": "جرب تعديل الفلاتر أو كلمة البحث.",
+      "noPublished": "لا توجد كورسات منشورة بعد. تحقق مرة أخرى قريباً!",
+      "clearFilters": "مسح الفلاتر",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "filters": {
+      "searchPlaceholder": "ابحث عن كورس...",
+      "levels": {
+        "all": "كل المستويات",
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "advanced": "متقدم"
+      },
+      "sort": {
+        "newest": "الأحدث",
+        "popular": "الأكثر شيوعاً",
+        "rating": "الأعلى تقييماً",
+        "priceLow": "السعر: من الأقل للأعلى",
+        "priceHigh": "السعر: من الأعلى للأقل"
+      },
+      "filtersButton": "الفلاتر",
+      "allCategories": "الكل ({count})",
+      "levelLabel": "المستوى:",
+      "clear": "مسح"
+    }
   }
 }

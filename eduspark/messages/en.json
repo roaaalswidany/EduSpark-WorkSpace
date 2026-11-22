@@ -205,5 +205,43 @@
       "browseServices": "Browse Services",
       "browseServicesDesc": "Hire certified experts"
     }
+  },
+    "courses": {
+    "hero": {
+      "availableBadge": "{count, plural, =0 {No courses available} =1 {1 course available} other {# courses available}}",
+      "title": "Learn from the best,",
+      "titleHighlight": "at your own pace.",
+      "description": "Discover expert-led courses, earn certificates, and unlock your potential with EduSpark."
+    },
+    "results": {
+      "showingRange": "Showing {start}–{end} of {total}",
+      "pageOf": "Page {page} of {total}",
+      "noCourses": "No courses found",
+      "tryAdjusting": "Try adjusting your filters or search query.",
+      "noPublished": "No published courses yet. Check back soon!",
+      "clearFilters": "Clear filters",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "filters": {
+      "searchPlaceholder": "Search courses...",
+      "levels": {
+        "all": "All levels",
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "sort": {
+        "newest": "Newest",
+        "popular": "Most popular",
+        "rating": "Highest rated",
+        "priceLow": "Price: Low to High",
+        "priceHigh": "Price: High to Low"
+      },
+      "filtersButton": "Filters",
+      "allCategories": "All ({count})",
+      "levelLabel": "Level:",
+      "clear": "Clear"
+    }
   }
 }
