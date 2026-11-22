@@ -1,4 +1,8 @@
-import Link from "next/link";
+/* eslint-disable react-hooks/purity */
+"use client";
+
+import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   MessageSquare,
   ChevronRight,
@@ -40,21 +44,6 @@ interface ChatRoomListProps {
   currentUserId: string;
 }
 
-function formatRelative(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const min = Math.floor(diff / 60_000);
-  if (min < 1) return "now";
-  if (min < 60) return `${min}m`;
-  const hours = Math.floor(min / 60);
-  if (hours < 24) return `${hours}h`;
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d`;
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
-
 function Avatar({
   name,
   size = 44,
@@ -75,7 +64,7 @@ function Avatar({
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <div
-        className="rounded-full flex items-center justify-center text-foreground font-bold ring-2 ring-border"
+        className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border"
         style={{
           width: size,
           height: size,
@@ -92,36 +81,6 @@ function Avatar({
   );
 }
 
-const TYPE_BADGE: Record<
-  ChatRoomType,
-  { label: string; className: string; icon: typeof MessageSquare }
-> = {
-  PROJECT: {
-    label: "Project",
-    className:
-      "bg-primary/10 text-primary border-primary/20",
-    icon: Sparkles,
-  },
-  COURSE: {
-    label: "Course",
-    className:
-      "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    icon: BookOpen,
-  },
-  DIRECT: {
-    label: "Direct",
-    className:
-      "bg-info/10 text-info border-info/20",
-    icon: MessageSquare,
-  },
-  SUPPORT: {
-    label: "Support",
-    className:
-      "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-500/20",
-    icon: MessageSquare,
-  },
-};
-
 function RoomRow({
   room,
   currentUserId,
@@ -129,28 +88,79 @@ function RoomRow({
   room: RoomData;
   currentUserId: string;
 }) {
+  const t = useTranslations("chat.list");
+  const locale = useLocale();
+
+  // Locale-aware relative time
+  function formatRelative(iso: string): string {
+    const diff = Date.now() - new Date(iso).getTime();
+    const min = Math.floor(diff / 60_000);
+    if (min < 1) return t("time.now");
+    if (min < 60) return t("time.minutes", { count: min });
+    const hours = Math.floor(min / 60);
+    if (hours < 24) return t("time.hours", { count: hours });
+    const days = Math.floor(hours / 24);
+    if (days < 7) return t("time.days", { count: days });
+    return new Date(iso).toLocaleDateString(locale === "ar" ? "ar" : "en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  }
+
   const displayName =
     room.participants.length === 0
-      ? "No other participants"
+      ? t("noOtherParticipants")
       : room.participants.length === 1
       ? room.participants[0]!.name
       : `${room.participants[0]!.name} + ${room.participants.length - 1}`;
 
-  const roomTitle =
-    room.projectTitle ?? room.courseTitle ?? displayName;
+  const roomTitle = room.projectTitle ?? room.courseTitle ?? displayName;
 
   const lastMessage = room.lastMessage;
   const isOwnLast = lastMessage?.senderId === currentUserId;
   const preview = lastMessage
     ? lastMessage.isSystem
       ? lastMessage.content
-      : `${isOwnLast ? "You: " : `${lastMessage.senderName.split(" ")[0]}: `}${lastMessage.content}`
-    : "No messages yet";
+      : `${
+          isOwnLast
+            ? t("youPrefix")
+            : `${lastMessage.senderName.split(" ")[0]}: `
+        }${lastMessage.content}`
+    : t("noMessages");
 
   const truncated =
     preview.length > 60 ? `${preview.slice(0, 60)}...` : preview;
 
-  const badgeConfig = TYPE_BADGE[room.type];
+  // Type badge — labels need t()
+  const typeBadgeMap: Record<
+    ChatRoomType,
+    { label: string; className: string; icon: typeof MessageSquare }
+  > = {
+    PROJECT: {
+      label: t("types.project"),
+      className: "bg-primary/10 text-primary border-primary/20",
+      icon: Sparkles,
+    },
+    COURSE: {
+      label: t("types.course"),
+      className:
+        "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+      icon: BookOpen,
+    },
+    DIRECT: {
+      label: t("types.direct"),
+      className: "bg-info/10 text-info border-info/20",
+      icon: MessageSquare,
+    },
+    SUPPORT: {
+      label: t("types.support"),
+      className:
+        "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+      icon: MessageSquare,
+    },
+  };
+
+  const badgeConfig = typeBadgeMap[room.type];
   const BadgeIcon = badgeConfig.icon;
 
   return (
@@ -165,11 +175,7 @@ function RoomRow({
     >
       <div className="relative shrink-0">
         {room.participants.length >= 1 ? (
-          <Avatar
-            name={room.participants[0]!.name}
-            size={44}
-            badge
-          />
+          <Avatar name={room.participants[0]!.name} size={44} badge />
         ) : (
           <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
             <MessageSquare className="w-5 h-5 text-muted-foreground/70" />
@@ -178,17 +184,16 @@ function RoomRow({
 
         {room.participants.length > 1 && (
           <div className="absolute -bottom-1 -right-1 ring-2 ring-background rounded-full">
-            <Avatar
-              name={room.participants[1]!.name}
-              size={22}
-            />
+            <Avatar name={room.participants[1]!.name} size={22} />
           </div>
         )}
       </div>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <p className="text-sm font-bold text-foreground truncate">{roomTitle}</p>
+          <p className="text-sm font-bold text-foreground truncate">
+            {roomTitle}
+          </p>
           <span
             className={cn(
               "shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border",
@@ -203,7 +208,9 @@ function RoomRow({
         <p
           className={cn(
             "text-xs truncate",
-            lastMessage?.isSystem ? "text-muted-foreground/70 italic" : "text-muted-foreground"
+            lastMessage?.isSystem
+              ? "text-muted-foreground/70 italic"
+              : "text-muted-foreground"
           )}
         >
           {truncated}
@@ -214,7 +221,7 @@ function RoomRow({
         <span className="text-[10px] text-muted-foreground/70 tabular-nums">
           {formatRelative(room.updatedAt)}
         </span>
-        <ChevronRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+        <ChevronRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-primary group-hover:translate-x-0.5 transition-all rtl:group-hover:-translate-x-0.5 rtl:rotate-180" />
       </div>
     </Link>
   );

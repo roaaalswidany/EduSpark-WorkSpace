@@ -1,25 +1,27 @@
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
 import { getServerSession } from "next-auth";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import ChatBox from "@/components/chat/ChatBox";
 
 interface PageProps {
-  params: Promise<{ roomId: string }>;
+  params: Promise<{ locale: string; roomId: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const { roomId } = await params;
+  const { roomId, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "chat.room" });
   const room = await db.chatRoom.findUnique({
     where: { id: roomId },
     select: { project: { select: { title: true } } },
   });
   return {
     title: room?.project?.title
-      ? `${room.project.title} — Chat`
-      : "Chat — EduSpark",
+      ? `${room.project.title} — ${t("chatDefault")}`
+      : `${t("chatDefault")} — EduSpark`,
     robots: { index: false, follow: false },
   };
 }
@@ -27,11 +29,15 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function ChatRoomPage({ params }: PageProps) {
   const { roomId } = await params;
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
 
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+
+  const t = await getTranslations("chat.room");
   const userId = session.user.id;
 
-  // Verify room exists + user is participant
   const room = await db.chatRoom.findUnique({
     where: { id: roomId },
     select: {
@@ -53,12 +59,12 @@ export default async function ChatRoomPage({ params }: PageProps) {
   if (!room) notFound();
 
   const isParticipant = room.participants.some((p) => p.user.id === userId);
-  if (!isParticipant) redirect("/dashboard/chat");
+  if (!isParticipant) {
+    redirect(`/${locale}/dashboard/chat`);
+  }
 
-  // The server expects the "chat:{id}" format
   const chatServerRoomId = `chat:${room.id}`;
-
-  const roomName = room.project?.title ?? "Chat";
+  const roomName = room.project?.title ?? t("chatDefault");
 
   return (
     <div className="flex flex-col h-screen bg-background overflow-hidden">
@@ -66,16 +72,16 @@ export default async function ChatRoomPage({ params }: PageProps) {
       <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-card/70 border-b border-border/80">
         <Link
           href="/dashboard/chat"
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground200 transition-colors group"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
         >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-          <span>All Messages</span>
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform rtl:rotate-180 rtl:group-hover:translate-x-0.5" />
+          <span>{t("allMessages")}</span>
         </Link>
 
-        <div className="flex items-center gap-1.5 text-xs text-foreground0">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-          <span className="hidden sm:inline">End-to-end encrypted channel</span>
-          <span className="sm:hidden">Secure</span>
+          <span className="hidden sm:inline">{t("endToEndEncrypted")}</span>
+          <span className="sm:hidden">{t("secure")}</span>
         </div>
       </div>
 
@@ -85,11 +91,12 @@ export default async function ChatRoomPage({ params }: PageProps) {
           {room.participants.map((p, i) => (
             <div key={p.user.id} className="flex items-center gap-3">
               {i > 0 && (
-                <span className="text-slate-700 text-xs">↔</span>
+                <span className="text-muted-foreground text-xs">↔</span>
               )}
               <ParticipantChip
                 user={p.user}
                 isCurrentUser={p.user.id === userId}
+                youLabel={t("you")}
               />
             </div>
           ))}
@@ -119,9 +126,11 @@ export default async function ChatRoomPage({ params }: PageProps) {
 function ParticipantChip({
   user,
   isCurrentUser,
+  youLabel,
 }: {
   user: { id: string; name: string };
   isCurrentUser: boolean;
+  youLabel: string;
 }) {
   const initials = user.name
     .split(" ")
@@ -129,13 +138,14 @@ function ParticipantChip({
     .slice(0, 2)
     .join("")
     .toUpperCase();
-  const hue = user.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+  const hue =
+    user.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
 
   return (
     <div className="flex items-center gap-2">
       <div className="relative shrink-0 w-6 h-6">
         <div
-          className="w-6 h-6 rounded-full flex items-center justify-center text-foreground text-[9px] font-bold"
+          className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
           style={{ background: `hsl(${hue}, 55%, 42%)` }}
         >
           {initials}
@@ -144,7 +154,7 @@ function ParticipantChip({
       <p className="text-xs font-medium text-foreground leading-none">
         {user.name}
         {isCurrentUser && (
-          <span className="ml-1 text-[10px] text-indigo-400">(you)</span>
+          <span className="ml-1 text-[10px] text-primary">{youLabel}</span>
         )}
       </p>
     </div>

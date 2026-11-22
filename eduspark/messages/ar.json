@@ -475,5 +475,40 @@
       "closeButton": "إغلاق",
       "goToPage": "الذهاب إلى الصفحة"
     }
+  },
+    "chat": {
+    "page": {
+      "title": "الرسائل",
+      "inbox": "الوارد",
+      "noConversations": "لا توجد محادثات بعد. ابدأ مشروعاً لفتح المحادثة.",
+      "conversationsCount": "{count, plural, =0 {لا توجد محادثات} =1 {محادثة واحدة} =2 {محادثتان} few {# محادثات} many {# محادثة} other {# محادثة}}",
+      "emptyTitle": "لا توجد محادثات بعد",
+      "emptyDesc": "تُفتح المحادثات تلقائياً عند طلب خدمة، أو التسجيل في كورس، أو قبول المنشئ لمشروعك.",
+      "browseServices": "تصفح الخدمات"
+    },
+    "list": {
+      "noOtherParticipants": "لا يوجد مشاركون آخرون",
+      "noMessages": "لا توجد رسائل بعد",
+      "youPrefix": "أنت: ",
+      "types": {
+        "project": "مشروع",
+        "course": "كورس",
+        "direct": "مباشر",
+        "support": "دعم"
+      },
+      "time": {
+        "now": "الآن",
+        "minutes": "{count} د",
+        "hours": "{count} س",
+        "days": "{count} ي"
+      }
+    },
+    "room": {
+      "chatDefault": "محادثة",
+      "allMessages": "كل الرسائل",
+      "endToEndEncrypted": "قناة مشفرة من الطرف إلى الطرف",
+      "secure": "آمن",
+      "you": "(أنت)"
+    }
   }
 }

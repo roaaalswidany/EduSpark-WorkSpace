@@ -475,5 +475,40 @@
       "closeButton": "Close",
       "goToPage": "Go to page"
     }
+  },
+    "chat": {
+    "page": {
+      "title": "Messages",
+      "inbox": "Inbox",
+      "noConversations": "No conversations yet. Start a project to unlock chat.",
+      "conversationsCount": "{count, plural, =0 {No conversations} =1 {1 conversation} other {# conversations}}",
+      "emptyTitle": "No conversations yet",
+      "emptyDesc": "Chats unlock automatically when you order a service, enroll in a course, or a creator accepts your project.",
+      "browseServices": "Browse Services"
+    },
+    "list": {
+      "noOtherParticipants": "No other participants",
+      "noMessages": "No messages yet",
+      "youPrefix": "You: ",
+      "types": {
+        "project": "Project",
+        "course": "Course",
+        "direct": "Direct",
+        "support": "Support"
+      },
+      "time": {
+        "now": "now",
+        "minutes": "{count}m",
+        "hours": "{count}h",
+        "days": "{count}d"
+      }
+    },
+    "room": {
+      "chatDefault": "Chat",
+      "allMessages": "All Messages",
+      "endToEndEncrypted": "End-to-end encrypted channel",
+      "secure": "Secure",
+      "you": "(you)"
+    }
   }
 }
