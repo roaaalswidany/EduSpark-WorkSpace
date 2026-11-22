@@ -206,7 +206,7 @@
       "browseServicesDesc": "استعن بخبراء معتمدين"
     }
   },
-    "courses": {
+  "courses": {
     "hero": {
       "availableBadge": "{count, plural, =0 {لا توجد كورسات متاحة} =1 {كورس واحد متاح} =2 {كورسان متاحان} few {# كورسات متاحة} many {# كورساً متاحاً} other {# كورس متاح}}",
       "title": "تعلّم من الأفضل،",
@@ -231,7 +231,19 @@
         "intermediate": "متوسط",
         "advanced": "متقدم"
       },
-          "detail": {
+      "sort": {
+        "newest": "الأحدث",
+        "popular": "الأكثر شيوعاً",
+        "rating": "الأعلى تقييماً",
+        "priceLow": "السعر: من الأقل للأعلى",
+        "priceHigh": "السعر: من الأعلى للأقل"
+      },
+      "filtersButton": "الفلاتر",
+      "allCategories": "الكل ({count})",
+      "levelLabel": "المستوى:",
+      "clear": "مسح"
+    },
+    "detail": {
       "breadcrumb": "الكورسات",
       "createdBy": "أنشأه",
       "ratingCount": "{count, plural, =0 {لا توجد تقييمات} =1 {تقييم واحد} =2 {تقييمان} few {# تقييمات} many {# تقييماً} other {# تقييم}}",
@@ -297,18 +309,6 @@
       "price": "السعر",
       "free": "مجاني",
       "progress": "التقدم"
-    },
-      "sort": {
-        "newest": "الأحدث",
-        "popular": "الأكثر شيوعاً",
-        "rating": "الأعلى تقييماً",
-        "priceLow": "السعر: من الأقل للأعلى",
-        "priceHigh": "السعر: من الأعلى للأقل"
-      },
-      "filtersButton": "الفلاتر",
-      "allCategories": "الكل ({count})",
-      "levelLabel": "المستوى:",
-      "clear": "مسح"
     }
   },
     "marketplace": {
