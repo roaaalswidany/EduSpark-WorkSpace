@@ -11,6 +11,7 @@ import {
   memo,
 } from "react";
 import Image from "next/image";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Send,
   Check,
@@ -55,9 +56,10 @@ const GROUP_WINDOW_MS = 5 * 60 * 1_000;
 const MAX_INPUT_CHARS = 4_000;
 const HISTORY_LIMIT = 50;
 
+// Config stays outside — only `labelKey` needs translation at usage
 const CHAT_TYPE_CONFIG = {
   PROJECT: {
-    label: "Project Chat",
+    labelKey: "project",
     Icon: Briefcase,
     accent: "text-primary",
     badge: "bg-primary/10 text-primary border-primary/20",
@@ -66,19 +68,22 @@ const CHAT_TYPE_CONFIG = {
     legal: true,
   },
   EDUCATIONAL: {
-    label: "Course Room",
+    labelKey: "educational",
     Icon: GraduationCap,
     accent: "text-amber-600 dark:text-amber-400",
-    badge: "bg-amber-600 dark:bg-amber-500/10 text-amber-300 border-amber-600 dark:border-amber-500/20",
-    bubbleOwn: "bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20",
+    badge:
+      "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
+    bubbleOwn:
+      "bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20",
     bubbleOther: "bg-accent text-foreground",
     legal: false,
   },
   SUPPORT: {
-    label: "Support",
+    labelKey: "support",
     Icon: LifeBuoy,
-    accent: "text-emerald-400",
-    badge: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
+    accent: "text-emerald-600 dark:text-emerald-400",
+    badge:
+      "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
     bubbleOwn: "bg-emerald-700 text-white",
     bubbleOther: "bg-accent text-foreground",
     legal: false,
@@ -86,7 +91,7 @@ const CHAT_TYPE_CONFIG = {
 } as const satisfies Record<
   ChatType,
   {
-    label: string;
+    labelKey: "project" | "educational" | "support";
     Icon: React.ComponentType<{ className?: string }>;
     accent: string;
     badge: string;
@@ -96,23 +101,29 @@ const CHAT_TYPE_CONFIG = {
   }
 >;
 
-function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
+// ─── Date formatting (locale-aware) ─────────────────────────────────
+
+function formatTime(iso: string, locale: string): string {
+  return new Date(iso).toLocaleTimeString(
+    locale === "ar" ? "ar-EG" : "en-US",
+    { hour: "numeric", minute: "2-digit", hour12: true }
+  );
 }
 
-function formatDateDivider(iso: string): string {
+function formatDateDivider(
+  iso: string,
+  locale: string,
+  todayLabel: string,
+  yesterdayLabel: string
+): string {
   const d = new Date(iso);
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
 
-  if (d.toDateString() === today.toDateString()) return "Today";
-  if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
-  return d.toLocaleDateString("en-US", {
+  if (d.toDateString() === today.toDateString()) return todayLabel;
+  if (d.toDateString() === yesterday.toDateString()) return yesterdayLabel;
+  return d.toLocaleDateString(locale === "ar" ? "ar-EG" : "en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -232,7 +243,7 @@ function UserAvatar({
         />
       ) : (
         <div
-          className="rounded-full flex items-center justify-center font-bold text-foreground"
+          className="rounded-full flex items-center justify-center font-bold text-white"
           style={{
             width: size,
             height: size,
@@ -253,19 +264,19 @@ function UserAvatar({
 function ReadReceipt({ status }: { status: ChatMessage["status"] }) {
   switch (status) {
     case "sending":
-      return <Clock className="w-3 h-3 text-foreground/40 shrink-0" />;
+      return <Clock className="w-3 h-3 opacity-40 shrink-0" />;
     case "sent":
-      return <Check className="w-3 h-3 text-foreground/50 shrink-0" />;
+      return <Check className="w-3 h-3 opacity-50 shrink-0" />;
     case "delivered":
-      return <CheckCheck className="w-3 h-3 text-foreground/60 shrink-0" />;
+      return <CheckCheck className="w-3 h-3 opacity-60 shrink-0" />;
     case "seen":
-      return <CheckCheck className="w-3 h-3 text-sky-300 shrink-0" />;
+      return <CheckCheck className="w-3 h-3 text-sky-500 dark:text-sky-400 shrink-0" />;
     case "failed":
       return <AlertCircle className="w-3 h-3 text-destructive shrink-0" />;
   }
 }
 
-function LinkCard({ url }: { url: string }) {
+function LinkCard({ url, isOwn }: { url: string; isOwn: boolean }) {
   let hostname = url;
   try {
     hostname = new URL(url).hostname.replace("www.", "");
@@ -285,22 +296,29 @@ function LinkCard({ url }: { url: string }) {
       rel="noopener noreferrer"
       className={cn(
         "group flex items-center gap-2.5 mt-2 px-3 py-2.5 rounded-xl",
-        "bg-white/8 hover:bg-white/12 border border-white/10 hover:border-white/20",
-        "transition-all duration-150 max-w-xs"
+        "transition-all duration-150 max-w-xs border",
+        isOwn
+          ? "bg-white/10 hover:bg-white/15 border-white/15 hover:border-white/25"
+          : "bg-background/40 hover:bg-background/60 border-border hover:border-primary/30"
       )}
     >
-      <div className="shrink-0 w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center">
+      <div
+        className={cn(
+          "shrink-0 w-7 h-7 rounded-lg flex items-center justify-center",
+          isOwn ? "bg-white/10" : "bg-muted"
+        )}
+      >
         {isFile ? (
-          <FileText className="w-3.5 h-3.5 text-foreground/70" />
+          <FileText className="w-3.5 h-3.5 opacity-70" />
         ) : (
-          <ExternalLink className="w-3.5 h-3.5 text-foreground/70" />
+          <ExternalLink className="w-3.5 h-3.5 opacity-70" />
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-foreground/80 truncate group-hover:text-foreground transition-colors">
+        <p className="text-xs opacity-80 group-hover:opacity-100 truncate transition-opacity">
           {url.length > 45 ? url.slice(0, 42) + "..." : url}
         </p>
-        <p className="text-[10px] text-foreground/40 mt-0.5">{hostname}</p>
+        <p className="text-[10px] opacity-50 mt-0.5">{hostname}</p>
       </div>
     </a>
   );
@@ -328,9 +346,7 @@ const MessageContent = memo(function MessageContent({
               rel="noopener noreferrer"
               className={cn(
                 "underline underline-offset-2 hover:opacity-80 transition-opacity",
-                isOwn
-                  ? "decoration-white/50"
-                  : "decoration-primary text-primary"
+                isOwn ? "decoration-current" : "decoration-primary text-primary"
               )}
               onClick={(e) => e.stopPropagation()}
             >
@@ -345,7 +361,7 @@ const MessageContent = memo(function MessageContent({
       {links.length > 0 && (
         <div className="space-y-1.5">
           {links.map((link, i) => (
-            <LinkCard key={i} url={link.value} />
+            <LinkCard key={i} url={link.value} isOwn={isOwn} />
           ))}
         </div>
       )}
@@ -368,6 +384,8 @@ const MessageBubble = memo(function MessageBubble({
   chatType: ChatType;
   onRetry: (msg: ChatMessage) => void;
 }) {
+  const t = useTranslations("chat.box");
+  const locale = useLocale();
   const config = CHAT_TYPE_CONFIG[chatType];
   const bubbleClass = isOwn ? config.bubbleOwn : config.bubbleOther;
 
@@ -408,10 +426,10 @@ const MessageBubble = memo(function MessageBubble({
         <span
           className={cn(
             "text-[10px]",
-            isOwn ? "text-white/40" : "text-muted-foreground"
+            isOwn ? "opacity-60" : "text-muted-foreground"
           )}
         >
-          {formatTime(message.createdAt)}
+          {formatTime(message.createdAt, locale)}
         </span>
 
         {isOwn && <ReadReceipt status={message.status} />}
@@ -419,9 +437,9 @@ const MessageBubble = memo(function MessageBubble({
         {isOwn && message.status === "failed" && (
           <button
             onClick={() => onRetry(message)}
-            className="text-[10px] text-destructive hover:text-destructive underline ml-1"
+            className="text-[10px] text-destructive hover:text-destructive/80 underline ml-1"
           >
-            Retry
+            {t("retry")}
           </button>
         )}
       </div>
@@ -430,14 +448,21 @@ const MessageBubble = memo(function MessageBubble({
 });
 
 function TypingIndicator({ users }: { users: TypingUser[] }) {
+  const t = useTranslations("chat.box");
   if (users.length === 0) return null;
 
   const label =
     users.length === 1
-      ? `${users[0]!.name} is typing`
+      ? t("typing.one", { name: users[0]!.name })
       : users.length === 2
-      ? `${users[0]!.name} and ${users[1]!.name} are typing`
-      : `${users[0]!.name} and ${users.length - 1} others are typing`;
+      ? t("typing.two", {
+          name1: users[0]!.name,
+          name2: users[1]!.name,
+        })
+      : t("typing.many", {
+          name: users[0]!.name,
+          count: users.length - 1,
+        });
 
   return (
     <div className="flex items-center gap-2.5 px-4 py-2">
@@ -445,7 +470,7 @@ function TypingIndicator({ users }: { users: TypingUser[] }) {
         {[0, 1, 2].map((i) => (
           <span
             key={i}
-            className="block w-1.5 h-1.5 rounded-full bg-muted/70 animate-bounce"
+            className="block w-1.5 h-1.5 rounded-full bg-muted-foreground/70 animate-bounce"
             style={{
               animationDelay: `${i * 150}ms`,
               animationDuration: "900ms",
@@ -453,7 +478,7 @@ function TypingIndicator({ users }: { users: TypingUser[] }) {
           />
         ))}
       </div>
-      <span className="text-[11px] text-muted-foreground italic">{label}...</span>
+      <span className="text-[11px] text-muted-foreground italic">{label}</span>
     </div>
   );
 }
@@ -467,6 +492,7 @@ function ConnectionBanner({
   reconnectAttempt: number;
   onRetry: () => void;
 }) {
+  const t = useTranslations("chat.box");
   if (status === "connected") return null;
 
   const isReconnecting = status === "reconnecting";
@@ -476,7 +502,8 @@ function ConnectionBanner({
     <div
       className={cn(
         "flex items-center justify-between gap-3 px-4 py-2.5 text-xs border-b",
-        isReconnecting && "bg-amber-600 dark:bg-amber-500/10 border-amber-600 dark:border-amber-500/20 text-amber-300",
+        isReconnecting &&
+          "bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300",
         isError && "bg-destructive/10 border-destructive/20 text-destructive",
         !isReconnecting &&
           !isError &&
@@ -493,10 +520,10 @@ function ConnectionBanner({
         )}
         <span>
           {isReconnecting
-            ? `Reconnecting... (attempt ${reconnectAttempt})`
+            ? t("connection.reconnecting", { attempt: reconnectAttempt })
             : isError
-            ? "Connection lost."
-            : "Connecting to chat server..."}
+            ? t("connection.lost")
+            : t("connection.connecting")}
         </span>
       </div>
 
@@ -506,7 +533,7 @@ function ConnectionBanner({
           className="flex items-center gap-1 text-destructive hover:text-destructive/80 font-semibold transition-colors"
         >
           <RotateCcw className="w-3 h-3" />
-          Retry
+          {t("retry")}
         </button>
       )}
     </div>
@@ -538,6 +565,8 @@ export default function ChatBox({
   className,
   showLegalDisclaimer = false,
 }: ChatBoxProps) {
+  const t = useTranslations("chat.box");
+
   const {
     socket,
     status,
@@ -560,16 +589,16 @@ export default function ChatBox({
   const [showOnlineList, setShowOnlineList] = useState(false);
 
   // ── DEBUG: Log all socket events temporarily ──
-useEffect(() => {
-  if (!socket) return;
-  const onAny = (event: string, ...args: unknown[]) => {
-    console.log(`[SOCKET] ${event}`, args);
-  };
-  socket.onAny(onAny);
-  return () => {
-    socket.offAny(onAny);
-  };
-}, [socket]);
+  useEffect(() => {
+    if (!socket) return;
+    const onAny = (event: string, ...args: unknown[]) => {
+      console.log(`[SOCKET] ${event}`, args);
+    };
+    socket.onAny(onAny);
+    return () => {
+      socket.offAny(onAny);
+    };
+  }, [socket]);
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -589,6 +618,7 @@ useEffect(() => {
   }, [roomId]);
 
   const config = CHAT_TYPE_CONFIG[chatType];
+  const chatTypeLabel = t(`types.${config.labelKey}`);
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
     messagesEndRef.current?.scrollIntoView({ behavior });
@@ -1033,6 +1063,8 @@ useEffect(() => {
     inputValue.trim().length > 0 &&
     inputValue.length <= MAX_INPUT_CHARS;
 
+  const locale = useLocale();
+
   return (
     <div
       className={cn(
@@ -1050,7 +1082,7 @@ useEffect(() => {
             )}
           >
             <config.Icon className="w-3.5 h-3.5" />
-            <span>{config.label}</span>
+            <span>{chatTypeLabel}</span>
           </div>
 
           <h1 className="flex-1 min-w-0 text-sm font-semibold text-foreground truncate">
@@ -1071,20 +1103,22 @@ useEffect(() => {
             onClick={() => setShowOnlineList((v) => !v)}
             className={cn(
               "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg",
-              "bg-accent hover:bg-accent border border-border",
+              "bg-accent hover:bg-accent/80 border border-border",
               "text-xs text-muted-foreground hover:text-foreground transition-all"
             )}
           >
             <Users className="w-3.5 h-3.5" />
             <span className="font-semibold">{onlineCount}</span>
-            <span className="hidden sm:inline text-muted-foreground">online</span>
+            <span className="hidden sm:inline text-muted-foreground">
+              {t("online.label")}
+            </span>
           </button>
         </div>
 
         {showOnlineList && (
           <div className="border-t border-border px-4 py-3 bg-card/80">
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">
-              Online now
+              {t("online.now")}
             </p>
             <div className="flex flex-wrap gap-2">
               {onlineUsers.map((user) => (
@@ -1097,13 +1131,15 @@ useEffect(() => {
                   />
                   <span className="text-xs text-foreground">{user.name}</span>
                   {user.userId === currentUser.id && (
-                    <span className="text-[10px] text-primary">(you)</span>
+                    <span className="text-[10px] text-primary">
+                      {t("online.you")}
+                    </span>
                   )}
                 </div>
               ))}
               {onlineUsers.length === 0 && (
                 <span className="text-xs text-muted-foreground/70 italic">
-                  No users online
+                  {t("online.noUsers")}
                 </span>
               )}
             </div>
@@ -1118,20 +1154,19 @@ useEffect(() => {
       />
 
       {showLegalDisclaimer && config.legal && (
-        <div className="shrink-0 flex items-start gap-2.5 px-4 py-3 bg-amber-600 dark:bg-amber-500/5 border-b border-amber-600 dark:border-amber-500/15">
+        <div className="shrink-0 flex items-start gap-2.5 px-4 py-3 bg-amber-500/10 dark:bg-amber-500/5 border-b border-amber-500/20">
           <Scale className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-          <p className="text-[11px] text-amber-300/80 leading-relaxed">
-            <span className="font-semibold text-amber-300">Legal Notice: </span>
-            All messages in this project channel are permanently recorded and
-            form part of the legally binding project record. By sending a
-            message, you consent to its retention and potential use in dispute
-            resolution.
+          <p className="text-[11px] text-amber-800/80 dark:text-amber-300/80 leading-relaxed">
+            <span className="font-semibold text-amber-800 dark:text-amber-300">
+              {t("legal.label")}{" "}
+            </span>
+            {t("legal.text")}
           </p>
         </div>
       )}
 
       {joinError && (
-        <div className="shrink-0 flex items-center gap-2.5 px-4 py-3 bg-destructive/8 border-b border-destructive/15">
+        <div className="shrink-0 flex items-center gap-2.5 px-4 py-3 bg-destructive/10 border-b border-destructive/15">
           <AlertCircle className="w-4 h-4 text-destructive shrink-0" />
           <p className="text-sm text-destructive flex-1">{joinError}</p>
           <button
@@ -1139,9 +1174,9 @@ useEffect(() => {
               setJoinError(null);
               setIsJoined(false);
             }}
-            className="text-xs text-destructive hover:text-destructive font-semibold"
+            className="text-xs text-destructive hover:text-destructive/80 font-semibold"
           >
-            Retry
+            {t("retry")}
           </button>
         </div>
       )}
@@ -1156,7 +1191,9 @@ useEffect(() => {
           <div className="flex justify-center py-12">
             <div className="flex flex-col items-center gap-3">
               <Loader2 className="w-6 h-6 text-muted-foreground/70 animate-spin" />
-              <p className="text-sm text-muted-foreground/70">Loading conversation...</p>
+              <p className="text-sm text-muted-foreground/70">
+                {t("loading")}
+              </p>
             </div>
           </div>
         )}
@@ -1172,11 +1209,10 @@ useEffect(() => {
               <config.Icon className={cn("w-7 h-7", config.accent)} />
             </div>
             <h3 className="text-sm font-semibold text-muted-foreground mb-1">
-              No messages yet
+              {t("empty.title")}
             </h3>
             <p className="text-xs text-muted-foreground/70 max-w-xs">
-              Be the first to send a message in this{" "}
-              {config.label.toLowerCase()}.
+              {t("empty.desc")}
             </p>
           </div>
         )}
@@ -1190,7 +1226,12 @@ useEffect(() => {
               >
                 <div className="flex-1 h-px bg-accent" />
                 <span className="text-[11px] font-medium text-muted-foreground px-3 py-1 rounded-full bg-card border border-border">
-                  {formatDateDivider(entry.isoDate)}
+                  {formatDateDivider(
+                    entry.isoDate,
+                    locale,
+                    t("dates.today"),
+                    t("dates.yesterday")
+                  )}
                 </span>
                 <div className="flex-1 h-px bg-accent" />
               </div>
@@ -1281,12 +1322,12 @@ useEffect(() => {
             onClick={() => scrollToBottom("smooth")}
             className={cn(
               "pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-full",
-              "bg-primary hover:bg-primary text-primary-foreground text-xs font-semibold",
+              "bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold",
               "shadow-lg shadow-emerald-500/30 transition-all animate-bounce"
             )}
           >
             <ChevronDown className="w-3.5 h-3.5" />
-            New messages
+            {t("newMessages")}
           </button>
         </div>
       )}
@@ -1302,10 +1343,10 @@ useEffect(() => {
               onKeyDown={handleKeyDown}
               placeholder={
                 !isConnected
-                  ? "Connecting..."
+                  ? t("placeholder.connecting")
                   : !isJoined
-                  ? "Joining room..."
-                  : `Message ${roomName}...`
+                  ? t("placeholder.joining")
+                  : t("placeholder.message", { roomName })
               }
               disabled={!isConnected || !isJoined}
               rows={1}
@@ -1313,7 +1354,7 @@ useEffect(() => {
               className={cn(
                 "w-full bg-accent border border-border rounded-xl",
                 "px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70",
-                "resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
+                "resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary",
                 "disabled:opacity-40 disabled:cursor-not-allowed",
                 "transition-all duration-150 leading-relaxed",
                 "min-h-12 max-h-40 overflow-y-auto"
@@ -1350,10 +1391,10 @@ useEffect(() => {
               "shrink-0 flex items-center justify-center w-11 h-11 rounded-xl",
               "transition-all duration-150 active:scale-95",
               canSend
-                ? "bg-primary hover:bg-primary text-primary-foreground shadow-lg shadow-emerald-500/20"
+                ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-emerald-500/20"
                 : "bg-accent text-muted-foreground/70 cursor-not-allowed"
             )}
-            aria-label="Send message"
+            aria-label={t("sendAria")}
           >
             <Send className="w-4 h-4" />
           </button>
@@ -1361,13 +1402,13 @@ useEffect(() => {
 
         <p className="text-[10px] text-muted-foreground/70 mt-1.5 pl-1">
           <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground/70 font-mono text-[9px]">
-            Enter
+            {t("input.enter")}
           </kbd>{" "}
-          to send آ·{" "}
+          {t("input.toSend")} ·{" "}
           <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground/70 font-mono text-[9px]">
-            Shift+Enter
+            {t("input.shiftEnter")}
           </kbd>{" "}
-          for new line
+          {t("input.forNewLine")}
         </p>
       </div>
     </div>

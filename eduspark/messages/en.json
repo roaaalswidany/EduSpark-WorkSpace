@@ -509,6 +509,56 @@
       "endToEndEncrypted": "End-to-end encrypted channel",
       "secure": "Secure",
       "you": "(you)"
+    },
+        "box": {
+      "types": {
+        "project": "Project Chat",
+        "educational": "Course Room",
+        "support": "Support"
+      },
+      "dates": {
+        "today": "Today",
+        "yesterday": "Yesterday"
+      },
+      "retry": "Retry",
+      "typing": {
+        "one": "{name} is typing...",
+        "two": "{name1} and {name2} are typing...",
+        "many": "{name} and {count} others are typing..."
+      },
+      "connection": {
+        "reconnecting": "Reconnecting... (attempt {attempt})",
+        "lost": "Connection lost.",
+        "connecting": "Connecting to chat server..."
+      },
+      "online": {
+        "label": "online",
+        "now": "Online now",
+        "you": "(you)",
+        "noUsers": "No users online"
+      },
+      "legal": {
+        "label": "Legal Notice:",
+        "text": "All messages in this project channel are permanently recorded and form part of the legally binding project record. By sending a message, you consent to its retention and potential use in dispute resolution."
+      },
+      "loading": "Loading conversation...",
+      "empty": {
+        "title": "No messages yet",
+        "desc": "Start the conversation by sending the first message."
+      },
+      "newMessages": "New messages",
+      "placeholder": {
+        "connecting": "Connecting...",
+        "joining": "Joining room...",
+        "message": "Message {roomName}..."
+      },
+      "input": {
+        "enter": "Enter",
+        "shiftEnter": "Shift+Enter",
+        "toSend": "to send",
+        "forNewLine": "for new line"
+      },
+      "sendAria": "Send message"
     }
   }
 }
