@@ -310,5 +310,107 @@
       "levelLabel": "Level:",
       "clear": "Clear"
     }
+  },
+    "marketplace": {
+    "meta": {
+      "title": "Marketplace",
+      "description": "Hire certified experts who have proven their skills through EduSpark's rigorous course program."
+    },
+    "hero": {
+      "badge": "All creators are EduSpark certified",
+      "titleLine1": "Hire",
+      "titleHighlight": "Certified",
+      "titleLine2": "Experts",
+      "description": "Every creator proved their skills through our rigorous course program — your work is in trusted hands.",
+      "searchPlaceholder": "Search services, skills, or creators..."
+    },
+    "stats": {
+      "services": "{count, plural, =0 {No services} =1 {1 service} other {# services}}",
+      "experts": "{count, plural, =0 {No experts} =1 {1 expert} other {# experts}}",
+      "certified": "100% certified"
+    },
+    "filters": {
+      "allServices": "All Services"
+    },
+    "sort": {
+      "newest": "Newest First",
+      "priceAsc": "Price: Low → High",
+      "priceDesc": "Price: High → Low",
+      "popular": "Most Popular"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No services} =1 {1 service} other {# services}}",
+      "for": "for",
+      "clearAll": "Clear all"
+    },
+    "empty": {
+      "noResultsFor": "No results for \"{query}\"",
+      "noServicesAvailable": "No services available",
+      "tryDifferent": "Try a different search term or browse by category.",
+      "checkBack": "Check back soon — creators are completing certifications daily.",
+      "clearFilters": "Clear all filters"
+    },
+    "card": {
+      "certified": "Certified",
+      "certifiedIn": "Certified in {category}",
+      "delivery": "{days}d delivery",
+      "from": "From"
+    },
+    "detail": {
+      "breadcrumb": "Marketplace",
+      "certifiedCreator": "Certified Creator",
+      "serviceNotFound": "Service not found",
+      "metaSuffix": "EduSpark Marketplace",
+      "orderCount": "{count, plural, =0 {No orders} =1 {1 order} other {# orders}}",
+      "daysDelivery": "{count, plural, =1 {1 day delivery} other {# days delivery}}",
+      "aboutService": "About This Service",
+      "skillsTags": "Skills & Tags",
+      "portfolio": "Portfolio",
+      "aboutCreator": "About the Creator",
+      "whatIncluded": "What's included",
+      "revisions": "{count, plural, =0 {No revisions} =1 {1 revision} other {# revisions}}",
+      "directChat": "Direct chat with creator",
+      "milestoneWorkflow": "Milestone-based workflow",
+      "created": "Created",
+      "edusparkCertified": "EduSpark Certified",
+      "edusparkCertifiedDesc": "This creator has proven their skills through our rigorous certification program.",
+      "orderNow": "Order Now",
+      "signInToOrder": "Sign in to order",
+      "adminCannotOrder": "Admins cannot order services.",
+      "ownService": "This is your own service",
+      "moreFrom": "More from {category}",
+      "moreFromDefault": "More Services",
+      "trustBadgeTitle": "EduSpark Certified",
+      "trustBadgeDesc": "This creator has proven their skills through our rigorous certification program."
+    },
+    "orderDialog": {
+      "placeOrder": "Place Order",
+      "total": "Total",
+      "delivery": "Delivery",
+      "days": "{count, plural, =1 {1 day} other {# days}}",
+      "revisions": "Revisions",
+      "revisionsNone": "None",
+      "revisionsOne": "1 revision",
+      "revisionsMany": "{count} revisions",
+      "yourRequirements": "Your Requirements",
+      "requirementsPlaceholder": "Describe what you need — the more detail, the better. (min 20 characters)",
+      "cancel": "Cancel",
+      "confirmOrder": "Confirm Order",
+      "placingOrder": "Placing Order…",
+      "creatingToast": "Creating your order…",
+      "successToast": "Order created! 🎉",
+      "successToastDesc": "Opening your project workspace…",
+      "errorToast": "Order failed",
+      "errors": {
+        "serviceNotFound": "Service not found.",
+        "serviceInactive": "This service is no longer available.",
+        "selfOrder": "You can't order your own service.",
+        "invalidInput": "Please describe your requirements in more detail.",
+        "unauthorized": "Please sign in to place an order.",
+        "staleSession": "Your session has expired. Please sign out and sign in again.",
+        "serverError": "Something went wrong. Please try again.",
+        "generic": "Something went wrong. Please try again."
+      }
+    }
   }
 }

@@ -310,5 +310,107 @@
       "levelLabel": "المستوى:",
       "clear": "مسح"
     }
+  },
+    "marketplace": {
+    "meta": {
+      "title": "السوق",
+      "description": "وظّف خبراء معتمدين أثبتوا مهاراتهم عبر برنامج الكورسات الصارم في EduSpark."
+    },
+    "hero": {
+      "badge": "جميع المنشئين معتمدون من EduSpark",
+      "titleLine1": "وظّف",
+      "titleHighlight": "خبراء",
+      "titleLine2": "معتمدين",
+      "description": "كل منشئ أثبت مهاراته عبر برنامجنا الصارم — عملك في أيدٍ موثوقة.",
+      "searchPlaceholder": "ابحث عن خدمات، مهارات، أو منشئين..."
+    },
+    "stats": {
+      "services": "{count, plural, =0 {لا توجد خدمات} =1 {خدمة واحدة} =2 {خدمتان} few {# خدمات} many {# خدمة} other {# خدمة}}",
+      "experts": "{count, plural, =0 {لا يوجد خبراء} =1 {خبير واحد} =2 {خبيران} few {# خبراء} many {# خبيراً} other {# خبير}}",
+      "certified": "100% معتمد"
+    },
+    "filters": {
+      "allServices": "كل الخدمات"
+    },
+    "sort": {
+      "newest": "الأحدث أولاً",
+      "priceAsc": "السعر: من الأقل للأعلى",
+      "priceDesc": "السعر: من الأعلى للأقل",
+      "popular": "الأكثر شيوعاً"
+    },
+    "results": {
+      "count": "{count, plural, =0 {لا توجد خدمات} =1 {خدمة واحدة} =2 {خدمتان} few {# خدمات} many {# خدمة} other {# خدمة}}",
+      "for": "لـ",
+      "clearAll": "مسح الكل"
+    },
+    "empty": {
+      "noResultsFor": "لا توجد نتائج لـ \"{query}\"",
+      "noServicesAvailable": "لا توجد خدمات متاحة",
+      "tryDifferent": "جرّب كلمة بحث مختلفة أو تصفح حسب الفئة.",
+      "checkBack": "تحقق قريباً — المنشئون يكملون الشهادات يومياً.",
+      "clearFilters": "مسح كل الفلاتر"
+    },
+    "card": {
+      "certified": "معتمد",
+      "certifiedIn": "معتمد في {category}",
+      "delivery": "تسليم {days}ي",
+      "from": "يبدأ من"
+    },
+    "detail": {
+      "breadcrumb": "السوق",
+      "certifiedCreator": "منشئ معتمد",
+      "serviceNotFound": "الخدمة غير موجودة",
+      "metaSuffix": "سوق EduSpark",
+      "orderCount": "{count, plural, =0 {لا توجد طلبات} =1 {طلب واحد} =2 {طلبان} few {# طلبات} many {# طلباً} other {# طلب}}",
+      "daysDelivery": "{count, plural, =1 {تسليم خلال يوم} =2 {تسليم خلال يومين} few {تسليم خلال # أيام} many {تسليم خلال # يوماً} other {تسليم خلال # يوم}}",
+      "aboutService": "عن هذه الخدمة",
+      "skillsTags": "المهارات والوسوم",
+      "portfolio": "معرض الأعمال",
+      "aboutCreator": "عن المنشئ",
+      "whatIncluded": "ما الذي تشمله",
+      "revisions": "{count, plural, =0 {لا توجد مراجعات} =1 {مراجعة واحدة} =2 {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}}",
+      "directChat": "محادثة مباشرة مع المنشئ",
+      "milestoneWorkflow": "سير عمل قائم على المراحل",
+      "created": "تم الإنشاء",
+      "edusparkCertified": "معتمد من EduSpark",
+      "edusparkCertifiedDesc": "أثبت هذا المنشئ مهاراته عبر برنامج الاعتماد الصارم لدينا.",
+      "orderNow": "اطلب الآن",
+      "signInToOrder": "سجّل الدخول للطلب",
+      "adminCannotOrder": "المديرون لا يمكنهم طلب الخدمات.",
+      "ownService": "هذه خدمتك الخاصة",
+      "moreFrom": "المزيد من {category}",
+      "moreFromDefault": "المزيد من الخدمات",
+      "trustBadgeTitle": "معتمد من EduSpark",
+      "trustBadgeDesc": "أثبت هذا المنشئ مهاراته عبر برنامج الاعتماد الصارم لدينا."
+    },
+    "orderDialog": {
+      "placeOrder": "تقديم طلب",
+      "total": "الإجمالي",
+      "delivery": "التسليم",
+      "days": "{count, plural, =1 {يوم واحد} =2 {يومان} few {# أيام} many {# يوماً} other {# يوم}}",
+      "revisions": "المراجعات",
+      "revisionsNone": "بدون",
+      "revisionsOne": "مراجعة واحدة",
+      "revisionsMany": "{count} مراجعات",
+      "yourRequirements": "متطلباتك",
+      "requirementsPlaceholder": "صف ما تحتاجه — كلما زادت التفاصيل، كان أفضل. (20 حرفاً على الأقل)",
+      "cancel": "إلغاء",
+      "confirmOrder": "تأكيد الطلب",
+      "placingOrder": "جارٍ تقديم الطلب…",
+      "creatingToast": "جارٍ إنشاء طلبك…",
+      "successToast": "تم إنشاء الطلب! 🎉",
+      "successToastDesc": "جارٍ فتح مساحة عملك…",
+      "errorToast": "فشل الطلب",
+      "errors": {
+        "serviceNotFound": "الخدمة غير موجودة.",
+        "serviceInactive": "هذه الخدمة لم تعد متاحة.",
+        "selfOrder": "لا يمكنك طلب خدمتك الخاصة.",
+        "invalidInput": "يرجى وصف متطلباتك بمزيد من التفاصيل.",
+        "unauthorized": "يرجى تسجيل الدخول لتقديم طلب.",
+        "staleSession": "انتهت جلستك. يرجى تسجيل الخروج والدخول مرة أخرى.",
+        "serverError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+        "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+      }
+    }
   }
 }

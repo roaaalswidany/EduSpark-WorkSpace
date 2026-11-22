@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
+import { getTranslations } from "next-intl/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { ServiceStatus } from "@prisma/client";
@@ -8,69 +9,47 @@ import { ServiceReviews } from "@/components/reviews/service-reviews";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "marketplace.detail" });
   const service = await db.service.findUnique({
     where: { slug },
     select: { title: true, description: true },
   });
-  if (!service) return { title: "Service not found" };
+  if (!service) return { title: t("serviceNotFound") };
   return {
-    title: `${service.title} | EduSpark Marketplace`,
+    title: `${service.title} | ${t("metaSuffix")}`,
     description: service.description.slice(0, 160),
   };
 }
 
 export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  
+  const t = await getTranslations("marketplace.detail");
   const session = await getServerSession(authOptions);
   const userRole = session?.user?.role;
 
   const service = await db.service.findUnique({
     where: { slug },
     select: {
-      id: true,
-      title: true,
-      slug: true,
-      description: true,
-      thumbnail: true,
-      price: true,
-      deliveryDays: true,
-      revisions: true,
-      status: true,
-      tags: true,
-      portfolioLinks: true,
-      createdAt: true,
+      id: true, title: true, slug: true, description: true,
+      thumbnail: true, price: true, deliveryDays: true, revisions: true,
+      status: true, tags: true, portfolioLinks: true, createdAt: true,
       creatorId: true,
-      creator: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-          headline: true,
-          bio: true,
-        },
-      },
-      category: {
-        select: { id: true, name: true, slug: true },
-      },
-      _count: {
-        select: { orders: true },
-      },
+      creator: { select: { id: true, name: true, image: true, headline: true, bio: true } },
+      category: { select: { id: true, name: true, slug: true } },
+      _count: { select: { orders: true } },
     },
   });
 
   if (!service || service.status !== ServiceStatus.ACTIVE) notFound();
 
-  // Check ownership
   const isOwnService = session?.user?.id === service.creatorId;
   const isLoggedIn = !!session?.user?.id;
 
-  // Related services: same category, exclude self
   const relatedServices = service.category
     ? await db.service.findMany({
         where: {
@@ -81,12 +60,8 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         take: 4,
         orderBy: { createdAt: "desc" },
         select: {
-          id: true,
-          title: true,
-          slug: true,
-          thumbnail: true,
-          price: true,
-          deliveryDays: true,
+          id: true, title: true, slug: true, thumbnail: true,
+          price: true, deliveryDays: true,
           creator: { select: { name: true, image: true } },
         },
       })
@@ -99,14 +74,9 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           <Breadcrumbs
             showHome
             items={[
-              { label: "Marketplace", href: "/marketplace" },
+              { label: t("breadcrumb"), href: "/marketplace" },
               ...(service.category
-                ? [
-                    {
-                      label: service.category.name,
-                      href: `/marketplace?category=${service.category.id}`,
-                    },
-                  ]
+                ? [{ label: service.category.name, href: `/marketplace?category=${service.category.id}` }]
                 : []),
               { label: service.title, truncate: true },
             ]}
@@ -131,10 +101,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           creator: service.creator,
           category: service.category,
         }}
-        relatedServices={relatedServices.map((s) => ({
-          ...s,
-          price: Number(s.price),
-        }))}
+        relatedServices={relatedServices.map((s) => ({ ...s, price: Number(s.price) }))}
         isLoggedIn={isLoggedIn}
         isOwnService={isOwnService}
         isAdmin={userRole === "ADMIN"}

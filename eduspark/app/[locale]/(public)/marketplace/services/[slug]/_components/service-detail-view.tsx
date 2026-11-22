@@ -1,31 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useTransition, useCallback } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import {
-  ChevronRight,
-  Star,
-  Clock,
-  RotateCcw,
-  ShieldCheck,
-  Package,
-  ExternalLink,
-  AlertCircle,
-  Loader2,
-  CheckCircle2,
-  User,
-  ArrowRight,
-  Sparkles,
-  FileText,
+  Star, Clock, RotateCcw, ShieldCheck, Package,
+  ExternalLink, AlertCircle, Loader2, CheckCircle2,
+  User, ArrowRight, Sparkles, FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { orderServiceAction } from "@/actions/projects/order-service";
-
-// ─── Types ──────────────────────────────────────────────────────────────
 
 interface ServiceDetail {
   id: string;
@@ -40,12 +26,7 @@ interface ServiceDetail {
   portfolioLinks: string[];
   createdAt: string;
   orderCount: number;
-  creator: {
-    id: string;
-    name: string;
-    headline: string | null;
-    bio: string | null;
-  };
+  creator: { id: string; name: string; headline: string | null; bio: string | null };
   category: { id: string; name: string; slug: string } | null;
 }
 
@@ -67,8 +48,6 @@ interface ServiceDetailViewProps {
   isAdmin: boolean;
 }
 
-// ─── Helpers ────────────────────────────────────────────────────────────
-
 const GRADIENTS = [
   "from-emerald-600 to-emerald-700",
   "from-rose-600 to-pink-700",
@@ -85,28 +64,14 @@ function getGradient(id: string): string {
   return GRADIENTS[code % GRADIENTS.length];
 }
 
-function CreatorAvatar({
-  name,
-  size = 40,
-}: {
-  name: string;
-  size?: number;
-}) {
-  const initials = name
-    .split(" ")
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-  const hue =
-    name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
+function CreatorAvatar({ name, size = 40 }: { name: string; size?: number }) {
+  const initials = name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+  const hue = name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
   return (
     <div
       className="rounded-full flex items-center justify-center text-white font-bold ring-2 ring-border shrink-0"
       style={{
-        width: size,
-        height: size,
-        fontSize: size * 0.38,
+        width: size, height: size, fontSize: size * 0.38,
         background: `hsl(${hue}, 55%, 42%)`,
       }}
     >
@@ -115,8 +80,6 @@ function CreatorAvatar({
   );
 }
 
-// ─── Order Dialog ─────────────────────────────────────────────────────────
-
 function OrderDialog({
   service,
   onClose,
@@ -124,6 +87,7 @@ function OrderDialog({
   service: ServiceDetail;
   onClose: () => void;
 }) {
+  const t = useTranslations("marketplace.orderDialog");
   const router = useRouter();
   const [requirements, setRequirements] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -135,7 +99,7 @@ function OrderDialog({
     if (!isValid || isPending) return;
     setError(null);
 
-    const toastId = toast.loading("Creating your order…");
+    const toastId = toast.loading(t("creatingToast"));
 
     startTransition(async () => {
       const result = await orderServiceAction({
@@ -144,102 +108,85 @@ function OrderDialog({
       });
 
       if (result.success) {
-        toast.success("Order created! 🎉", {
+        toast.success(t("successToast"), {
           id: toastId,
-          description: "Opening your project workspace…",
+          description: t("successToastDesc"),
         });
         router.push(`/dashboard/projects/${result.projectId}`);
         return;
       }
 
-      const messages: Record<string, string> = {
-        SERVICE_NOT_FOUND: "Service not found.",
-        SERVICE_INACTIVE: "This service is no longer available.",
-        SELF_ORDER: "You can't order your own service.",
-        INVALID_INPUT: "Please describe your requirements in more detail.",
-        UNAUTHORIZED: "Please sign in to place an order.",
-        STALE_SESSION:
-          "Your session has expired. Please sign out and sign in again.",
-        SERVER_ERROR: "Something went wrong. Please try again.",
+      const errorMap: Record<string, string> = {
+        SERVICE_NOT_FOUND: t("errors.serviceNotFound"),
+        SERVICE_INACTIVE: t("errors.serviceInactive"),
+        SELF_ORDER: t("errors.selfOrder"),
+        INVALID_INPUT: t("errors.invalidInput"),
+        UNAUTHORIZED: t("errors.unauthorized"),
+        STALE_SESSION: t("errors.staleSession"),
+        SERVER_ERROR: t("errors.serverError"),
       };
-      const errorMessage =
-        messages[result.error] ?? "Something went wrong. Please try again.";
+      const errorMessage = errorMap[result.error] ?? t("errors.generic");
 
       setError(errorMessage);
-      toast.error("Order failed", {
+      toast.error(t("errorToast"), {
         id: toastId,
         description: errorMessage,
       });
     });
-  }, [isValid, isPending, service.id, requirements, router]);
+  }, [isValid, isPending, service.id, requirements, router, t]);
+
+  const revisionsText =
+    service.revisions === 0
+      ? t("revisionsNone")
+      : service.revisions === 1
+      ? t("revisionsOne")
+      : t("revisionsMany", { count: service.revisions });
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in" onClick={onClose} />
 
-      {/* Dialog */}
       <div className="relative w-full max-w-lg rounded-2xl bg-card border border-border shadow-2xl overflow-hidden animate-scale-in">
-        {/* Header */}
         <div className="px-6 py-5 border-b border-border">
           <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-1">
-            Place Order
+            {t("placeOrder")}
           </p>
-          <h2 className="text-lg font-bold text-foreground line-clamp-1">
-            {service.title}
-          </h2>
+          <h2 className="text-lg font-bold text-foreground line-clamp-1">{service.title}</h2>
         </div>
 
-        {/* Body */}
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Total</span>
+            <span className="text-muted-foreground">{t("total")}</span>
             <span className="text-xl font-black text-foreground tabular-nums">
               ${service.price.toFixed(2)}
             </span>
           </div>
 
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Delivery</span>
-            <span className="text-foreground">
-              {service.deliveryDays} days
-            </span>
+            <span>{t("delivery")}</span>
+            <span className="text-foreground">{t("days", { count: service.deliveryDays })}</span>
           </div>
 
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Revisions</span>
-            <span className="text-foreground">
-              {service.revisions === 0
-                ? "None"
-                : service.revisions === 1
-                ? "1 revision"
-                : `${service.revisions} revisions`}
-            </span>
+            <span>{t("revisions")}</span>
+            <span className="text-foreground">{revisionsText}</span>
           </div>
 
           <div className="pt-3 border-t border-border">
-            <label
-              htmlFor="requirements"
-              className="block text-sm font-semibold text-foreground mb-2"
-            >
-              Your Requirements
+            <label htmlFor="requirements" className="block text-sm font-semibold text-foreground mb-2">
+              {t("yourRequirements")}
             </label>
             <textarea
               id="requirements"
               value={requirements}
               onChange={(e) => setRequirements(e.target.value)}
-              placeholder="Describe what you need — the more detail, the better. (min 20 characters)"
+              placeholder={t("requirementsPlaceholder")}
               rows={5}
               maxLength={2000}
               disabled={isPending}
               className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50"
             />
-            <p className="text-[10px] text-muted-foreground mt-1.5">
-              {requirements.length}/2000
-            </p>
+            <p className="text-[10px] text-muted-foreground mt-1.5">{requirements.length}/2000</p>
           </div>
 
           {error && (
@@ -250,7 +197,6 @@ function OrderDialog({
           )}
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-4 border-t border-border flex items-center justify-end gap-2 bg-background/40">
           <button
             type="button"
@@ -258,7 +204,7 @@ function OrderDialog({
             disabled={isPending}
             className="px-4 py-2.5 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent transition-all disabled:opacity-50"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             type="button"
@@ -274,11 +220,11 @@ function OrderDialog({
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Placing Order…
+                {t("placingOrder")}
               </>
             ) : (
               <>
-                Confirm Order
+                {t("confirmOrder")}
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -289,32 +235,33 @@ function OrderDialog({
   );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────
-
 export function ServiceDetailView({
   service,
   relatedServices,
   isLoggedIn,
   isOwnService,
-  isAdmin, 
+  isAdmin,
 }: ServiceDetailViewProps) {
+  const t = useTranslations("marketplace.detail");
   const [orderOpen, setOrderOpen] = useState(false);
   const gradient = getGradient(service.id);
 
+  const revisionsText =
+    service.revisions === 0
+      ? t("revisions", { count: 0 })
+      : t("revisions", { count: service.revisions });
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Main content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
-          {/* ── Left column ──────────────────────────────────────── */}
+          {/* Left column */}
           <div className="space-y-6 min-w-0">
-            {/* Title + tags */}
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                {/* تم إصلاح شارة Certified Creator لتصبح شفافة بدلاً من برتقالي مصمت */}
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] font-bold uppercase tracking-wider">
                   <ShieldCheck className="w-3 h-3" />
-                  Certified Creator
+                  {t("certifiedCreator")}
                 </div>
                 {service.category && (
                   <Link
@@ -331,7 +278,6 @@ export function ServiceDetailView({
               </h1>
             </div>
 
-            {/* Hero image */}
             <div
               className={cn(
                 "relative aspect-video rounded-2xl overflow-hidden bg-linear-to-br",
@@ -350,7 +296,7 @@ export function ServiceDetailView({
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span
-                    className="font-black text-foreground/15 select-none"
+                    className="font-black text-white/20 select-none"
                     style={{ fontSize: "clamp(4rem, 15vw, 10rem)" }}
                   >
                     {service.title.charAt(0)}
@@ -359,7 +305,6 @@ export function ServiceDetailView({
               )}
             </div>
 
-            {/* Stats row */}
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
               {service.orderCount > 0 && (
                 <div className="flex items-center gap-1.5">
@@ -367,44 +312,32 @@ export function ServiceDetailView({
                   <span className="text-foreground font-semibold">
                     {service.orderCount}
                   </span>
-                  <span>
-                    {service.orderCount === 1 ? "order" : "orders"}
-                  </span>
+                  <span>{t("orderCount", { count: service.orderCount })}</span>
                 </div>
               )}
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5" />
-                <span>{service.deliveryDays} days delivery</span>
+                <span>{t("daysDelivery", { count: service.deliveryDays })}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>
-                  {service.revisions === 0
-                    ? "No revisions"
-                    : `${service.revisions} ${
-                        service.revisions === 1 ? "revision" : "revisions"
-                      }`}
-                </span>
+                <span>{revisionsText}</span>
               </div>
             </div>
 
-            {/* Description */}
             <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
               <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-primary" />
-                About This Service
+                {t("aboutService")}
               </h2>
               <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                 {service.description}
               </p>
             </div>
 
-            {/* Tags */}
             {service.tags.length > 0 && (
               <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
-                <h2 className="text-base font-bold text-foreground mb-3">
-                  Skills & Tags
-                </h2>
+                <h2 className="text-base font-bold text-foreground mb-3">{t("skillsTags")}</h2>
                 <div className="flex flex-wrap gap-2">
                   {service.tags.map((tag) => (
                     <span
@@ -418,12 +351,11 @@ export function ServiceDetailView({
               </div>
             )}
 
-            {/* Portfolio */}
             {service.portfolioLinks.length > 0 && (
               <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
                 <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-primary" />
-                  Portfolio
+                  {t("portfolio")}
                 </h2>
                 <div className="space-y-2">
                   {service.portfolioLinks.map((link, i) => (
@@ -449,16 +381,10 @@ export function ServiceDetailView({
               </div>
             )}
 
-            {/* About the creator */}
             <div className="rounded-2xl bg-card border border-border p-5 sm:p-6">
-              <h2 className="text-base font-bold text-foreground mb-4">
-                About the Creator
-              </h2>
+              <h2 className="text-base font-bold text-foreground mb-4">{t("aboutCreator")}</h2>
               <div className="flex items-start gap-4">
-                <CreatorAvatar
-                  name={service.creator.name}
-                  size={56}
-                />
+                <CreatorAvatar name={service.creator.name} size={56} />
                 <div className="min-w-0">
                   <Link
                     href={`/profile/${service.creator.id}`}
@@ -467,9 +393,7 @@ export function ServiceDetailView({
                     {service.creator.name}
                   </Link>
                   {service.creator.headline && (
-                    <p className="text-xs text-primary mt-0.5">
-                      {service.creator.headline}
-                    </p>
+                    <p className="text-xs text-primary mt-0.5">{service.creator.headline}</p>
                   )}
                   {service.creator.bio && (
                     <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
@@ -481,9 +405,8 @@ export function ServiceDetailView({
             </div>
           </div>
 
-          {/* ── Right column (sticky sidebar) ───────────────── */}
+          {/* Right column */}
           <aside className="lg:sticky lg:top-20 space-y-4">
-            {/* Pricing card */}
             <div className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="p-5 space-y-4">
                 <div className="flex items-baseline gap-2">
@@ -492,82 +415,73 @@ export function ServiceDetailView({
                   </span>
                 </div>
 
-{/* CTA */}
-{isAdmin ? (
-  <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-medium text-center">
-    <ShieldCheck className="w-4 h-4 shrink-0" />
-    Admins cannot order services.
-  </div>
-) : isOwnService ? (
-  <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-accent text-muted-foreground text-xs font-medium">
-    <User className="w-4 h-4 shrink-0" />
-    This is your own service
-  </div>
-) : isLoggedIn ? (
-  <button
-    onClick={() => setOrderOpen(true)}
-    className={cn(
-      "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-      "bg-primary hover:bg-primary/90 text-primary-foreground",
-      "text-sm font-bold transition-all active:scale-[0.98]",
-      "shadow-lg shadow-primary/20"
-    )}
-  >
-    <Package className="w-4 h-4" />
-    Order Now
-  </button>
-) : (
-  <Link
-    href={`/auth/login?callbackUrl=/marketplace/services/${service.slug}`}
-    className={cn(
-      "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
-      "bg-primary hover:bg-primary/90 text-primary-foreground",
-      "text-sm font-bold transition-all active:scale-[0.98]",
-      "shadow-lg shadow-primary/20"
-    )}
-  >
-    Sign in to order
-  </Link>
-)}
+                {isAdmin ? (
+                  <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-medium text-center">
+                    <ShieldCheck className="w-4 h-4 shrink-0" />
+                    {t("adminCannotOrder")}
+                  </div>
+                ) : isOwnService ? (
+                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-accent text-muted-foreground text-xs font-medium">
+                    <User className="w-4 h-4 shrink-0" />
+                    {t("ownService")}
+                  </div>
+                ) : isLoggedIn ? (
+                  <button
+                    onClick={() => setOrderOpen(true)}
+                    className={cn(
+                      "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
+                      "bg-primary hover:bg-primary/90 text-primary-foreground",
+                      "text-sm font-bold transition-all active:scale-[0.98]",
+                      "shadow-lg shadow-primary/20"
+                    )}
+                  >
+                    <Package className="w-4 h-4" />
+                    {t("orderNow")}
+                  </button>
+                ) : (
+                  <Link
+                    href={`/auth/login?callbackUrl=/marketplace/services/${service.slug}`}
+                    className={cn(
+                      "w-full flex items-center justify-center gap-2 h-12 rounded-xl",
+                      "bg-primary hover:bg-primary/90 text-primary-foreground",
+                      "text-sm font-bold transition-all active:scale-[0.98]",
+                      "shadow-lg shadow-primary/20"
+                    )}
+                  >
+                    {t("signInToOrder")}
+                  </Link>
+                )}
 
-                {/* Features */}
                 <div className="pt-4 border-t border-border space-y-3">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                    What&apos;s included
+                    {t("whatIncluded")}
                   </p>
                   <ul className="space-y-2.5">
                     <li className="flex items-center gap-2 text-xs text-muted-foreground">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                      {service.deliveryDays} days delivery
+                      {t("daysDelivery", { count: service.deliveryDays })}
                     </li>
                     <li className="flex items-center gap-2 text-xs text-muted-foreground">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                      {service.revisions === 0
-                        ? "No revisions"
-                        : service.revisions === 1
-                        ? "1 revision"
-                        : `${service.revisions} revisions`}
+                      {revisionsText}
                     </li>
                     <li className="flex items-center gap-2 text-xs text-muted-foreground">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                      Direct chat with creator
+                      {t("directChat")}
                     </li>
                     <li className="flex items-center gap-2 text-xs text-muted-foreground">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                      Milestone-based workflow
+                      {t("milestoneWorkflow")}
                     </li>
                   </ul>
                 </div>
 
-                {/* Meta */}
                 <div className="pt-4 border-t border-border space-y-2">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-muted-foreground">Created</span>
+                    <span className="text-muted-foreground">{t("created")}</span>
                     <span className="text-muted-foreground">
                       {new Date(service.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
+                        month: "short", day: "numeric", year: "numeric",
                       })}
                     </span>
                   </div>
@@ -575,27 +489,24 @@ export function ServiceDetailView({
               </div>
             </div>
 
-            {/* Trust badge */}
             <div className="rounded-2xl bg-primary/5 border border-primary/20 p-4 flex items-start gap-3">
               <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-bold text-primary">
-                  EduSpark Certified
-                </p>
+                <p className="text-xs font-bold text-primary">{t("trustBadgeTitle")}</p>
                 <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
-                  This creator has proven their skills through our rigorous
-                  certification program.
+                  {t("trustBadgeDesc")}
                 </p>
               </div>
             </div>
           </aside>
         </div>
 
-        {/* ── Related services ────────────────────────── */}
         {relatedServices.length > 0 && (
           <div className="mt-16 pt-8 border-t border-border">
             <h2 className="text-lg font-bold text-foreground mb-5">
-              More from {service.category?.name}
+              {service.category
+                ? t("moreFrom", { category: service.category.name })
+                : t("moreFromDefault")}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {relatedServices.map((rs) => (
@@ -604,12 +515,7 @@ export function ServiceDetailView({
                   href={`/marketplace/services/${rs.slug}`}
                   className="group rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/40 transition-all hover:-translate-y-0.5"
                 >
-                  <div
-                    className={cn(
-                      "relative aspect-video bg-linear-to-br",
-                      getGradient(rs.id)
-                    )}
-                  >
+                  <div className={cn("relative aspect-video bg-linear-to-br", getGradient(rs.id))}>
                     {rs.thumbnail ? (
                       <Image
                         src={rs.thumbnail}
@@ -620,7 +526,7 @@ export function ServiceDetailView({
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="font-black text-foreground/20 text-4xl select-none">
+                        <span className="font-black text-white/20 text-4xl select-none">
                           {rs.title.charAt(0)}
                         </span>
                       </div>
@@ -646,12 +552,8 @@ export function ServiceDetailView({
         )}
       </div>
 
-      {/* ── Order dialog ──────────────────────────────── */}
       {orderOpen && (
-        <OrderDialog
-          service={service}
-          onClose={() => setOrderOpen(false)}
-        />
+        <OrderDialog service={service} onClose={() => setOrderOpen(false)} />
       )}
     </div>
   );
