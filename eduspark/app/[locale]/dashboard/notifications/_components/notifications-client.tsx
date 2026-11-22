@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { toast } from "sonner";
 import {
   Bell,
@@ -38,6 +39,8 @@ export function NotificationsClient({
   notifications,
   unreadCount,
 }: NotificationsClientProps) {
+  const t = useTranslations("notifications.client");
+  const locale = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -48,6 +51,8 @@ export function NotificationsClient({
 
   const isActuallyRead = (n: NotificationRow) =>
     n.isRead || localReadIds.has(n.id);
+
+  const dateLocale = locale === "ar" ? "ar" : "en-US";
 
   const handleOpen = (n: NotificationRow) => {
     setSelectedId(n.id);
@@ -66,11 +71,11 @@ export function NotificationsClient({
     startTransition(async () => {
       const result = await deleteNotificationAction({ id });
       if (result.success) {
-        toast.success("Notification deleted");
+        toast.success(t("deletedToast"));
         if (selectedId === id) setSelectedId(null);
         router.refresh();
       } else {
-        toast.error("Failed to delete notification");
+        toast.error(t("deleteFailedToast"));
       }
       setDeletingId(null);
     });
@@ -80,11 +85,11 @@ export function NotificationsClient({
     startTransition(async () => {
       const result = await markAllNotificationsReadAction();
       if (result.success) {
-        toast.success("All notifications marked as read");
+        toast.success(t("markedAllToast"));
         setLocalReadIds(new Set(notifications.map((n) => n.id)));
         router.refresh();
       } else {
-        toast.error("Failed to mark all as read");
+        toast.error(t("markedAllFailedToast"));
       }
     });
   };
@@ -97,10 +102,10 @@ export function NotificationsClient({
           <button
             onClick={handleMarkAll}
             disabled={isPending}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-accent hover:bg-accent text-foreground transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-accent hover:bg-accent/80 text-foreground transition-colors disabled:opacity-50"
           >
             <CheckCheck className="w-3.5 h-3.5" />
-            Mark all as read
+            {t("markAllAsRead")}
           </button>
         </div>
       )}
@@ -118,7 +123,7 @@ export function NotificationsClient({
               className={cn(
                 "group rounded-2xl border p-4 transition-all cursor-pointer relative",
                 read
-                  ? "bg-card border-border hover:border-border"
+                  ? "bg-card border-border hover:border-primary/40"
                   : "bg-primary/5 border-primary/20 hover:bg-primary/10"
               )}
             >
@@ -133,13 +138,13 @@ export function NotificationsClient({
                     </p>
                     <div className="flex items-center gap-2 shrink-0">
                       {!read && (
-                        <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
                       )}
                       <button
                         onClick={(e) => handleDelete(n.id, e)}
                         disabled={isDeleting || isPending}
                         className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10"
-                        aria-label="Delete notification"
+                        aria-label={t("deleteAria")}
                       >
                         {isDeleting ? (
                           <Loader2 className="w-3.5 h-3.5 text-destructive animate-spin" />
@@ -153,7 +158,7 @@ export function NotificationsClient({
                     {n.body}
                   </p>
                   <p className="text-[10px] text-muted-foreground/70 mt-2">
-                    {new Date(n.createdAt).toLocaleString("en-US", {
+                    {new Date(n.createdAt).toLocaleString(dateLocale, {
                       month: "short",
                       day: "numeric",
                       hour: "2-digit",
@@ -187,7 +192,7 @@ export function NotificationsClient({
                   {selected.title}
                 </h2>
                 <p className="text-[11px] text-muted-foreground mt-1">
-                  {new Date(selected.createdAt).toLocaleString("en-US", {
+                  {new Date(selected.createdAt).toLocaleString(dateLocale, {
                     weekday: "long",
                     month: "long",
                     day: "numeric",
@@ -218,16 +223,16 @@ export function NotificationsClient({
                 onClick={() => setSelectedId(null)}
                 className="px-4 py-2 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
               >
-                Close
+                {t("closeButton")}
               </button>
               {selected.link && (
                 <Link
                   href={selected.link}
                   onClick={() => setSelectedId(null)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-primary hover:bg-primary text-primary-foreground transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-primary hover:bg-primary/90 text-primary-foreground transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  Go to page
+                  {t("goToPage")}
                 </Link>
               )}
             </div>

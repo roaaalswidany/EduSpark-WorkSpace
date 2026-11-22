@@ -1,25 +1,34 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { Bell } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { NotificationsClient } from "./_components/notifications-client";
 
-export const metadata = {
-  title: "Notifications — EduSpark",
-};
-
 const PAGE_SIZE = 20;
 
 interface PageProps {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ page?: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "notifications.page" });
+  return { title: `${t("title")} — EduSpark` };
 }
 
 export default async function NotificationsPage({ searchParams }: PageProps) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
 
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+
+  const t = await getTranslations("notifications.page");
   const sp = await searchParams;
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
@@ -58,22 +67,22 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
       <div className="mb-6">
         <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <Bell className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-widest">Inbox</span>
+          <span className="uppercase tracking-widest">{t("inbox")}</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight">
-          Notifications
+          {t("title")}
         </h1>
         {total > 0 && (
           <p className="text-sm text-muted-foreground mt-2">
-            {total} {total === 1 ? "notification" : "notifications"}
+            {t("count", { count: total })}
             {unreadCount > 0 && (
               <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
-                {unreadCount} unread
+                {t("unread", { count: unreadCount })}
               </span>
             )}
             {totalPages > 1 && (
               <span className="text-xs text-muted-foreground/70 ml-2">
-                آ· Page {page} of {totalPages}
+                · {t("pageOf", { page, total: totalPages })}
               </span>
             )}
           </p>
@@ -85,10 +94,11 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
           <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
             <Bell className="w-7 h-7 text-primary" />
           </div>
-          <h2 className="text-lg font-bold text-foreground mb-1.5">All caught up!</h2>
+          <h2 className="text-lg font-bold text-foreground mb-1.5">
+            {t("emptyTitle")}
+          </h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-            You don&apos;t have any notifications yet. We&apos;ll let you know
-            when something important happens.
+            {t("emptyDesc")}
           </p>
         </div>
       ) : (
@@ -107,9 +117,9 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
               {page > 1 && (
                 <Link
                   href={buildPageUrl(page - 1)}
-                  className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
+                  className="px-4 py-2 rounded-lg bg-card border border-border hover:border-primary/40 text-foreground text-xs font-semibold transition-colors"
                 >
-                  ← Previous
+                  ← {t("previous")}
                 </Link>
               )}
 
@@ -127,7 +137,7 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
                       className={
                         p === page
                           ? "w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-primary-foreground text-xs font-bold"
-                          : "w-9 h-9 flex items-center justify-center rounded-lg bg-card border border-border hover:border-border text-muted-foreground hover:text-foreground text-xs font-semibold transition-colors"
+                          : "w-9 h-9 flex items-center justify-center rounded-lg bg-card border border-border hover:border-primary/40 text-muted-foreground hover:text-foreground text-xs font-semibold transition-colors"
                       }
                     >
                       {p}
@@ -147,9 +157,9 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
               {page < totalPages && (
                 <Link
                   href={buildPageUrl(page + 1)}
-                  className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
+                  className="px-4 py-2 rounded-lg bg-card border border-border hover:border-primary/40 text-foreground text-xs font-semibold transition-colors"
                 >
-                  Next →
+                  {t("next")} →
                 </Link>
               )}
             </div>

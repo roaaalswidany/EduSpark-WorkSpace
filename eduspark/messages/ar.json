@@ -452,5 +452,28 @@
     "page": {
       "title": "الملف الشخصي"
     }
+  },
+    "notifications": {
+    "page": {
+      "title": "الإشعارات",
+      "inbox": "الوارد",
+      "count": "{count, plural, =0 {لا توجد إشعارات} =1 {إشعار واحد} =2 {إشعاران} few {# إشعارات} many {# إشعاراً} other {# إشعار}}",
+      "unread": "{count, plural, =1 {واحد غير مقروء} =2 {اثنان غير مقروءين} few {# غير مقروءة} many {# غير مقروء} other {# غير مقروء}}",
+      "pageOf": "صفحة {page} من {total}",
+      "emptyTitle": "أنت على اطلاع بكل شيء!",
+      "emptyDesc": "ليست لديك أي إشعارات بعد. سنخبرك عند حدوث شيء مهم.",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "client": {
+      "markAllAsRead": "تحديد الكل كمقروء",
+      "deleteAria": "حذف الإشعار",
+      "deletedToast": "تم حذف الإشعار",
+      "deleteFailedToast": "تعذر حذف الإشعار",
+      "markedAllToast": "تم تحديد جميع الإشعارات كمقروءة",
+      "markedAllFailedToast": "تعذر تحديد الكل كمقروء",
+      "closeButton": "إغلاق",
+      "goToPage": "الذهاب إلى الصفحة"
+    }
   }
 }
