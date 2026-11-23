@@ -741,5 +741,43 @@
       "subtitle": "Top 20 learners this season",
       "you": "(you)"
     }
+  },
+    "studentCourses": {
+    "page": {
+      "eyebrow": "My Learning",
+      "title": "My Courses",
+      "noEnrollments": "You haven't enrolled in any course yet.",
+      "statsLine": "{inProgress} in progress · {completed} completed · {total} total",
+      "emptyTitle": "Start your learning journey",
+      "emptyDesc": "Browse our catalog of expert-led courses and enroll in your first course to get started.",
+      "browseCourses": "Browse Courses"
+    },
+    "card": {
+      "levels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "statusCompleted": "Completed",
+      "statusInProgress": "In Progress",
+      "allCompleted": "All lessons completed",
+      "yourProgress": "Your progress",
+      "lessonsCount": "{count, plural, =0 {No lessons} =1 {1 lesson} other {# lessons}}",
+      "reviewCourse": "Review Course",
+      "continueLearning": "Continue Learning",
+      "startLearning": "Start Learning",
+      "viewPublicPage": "View public page with reviews",
+      "time": {
+        "justNow": "Just now",
+        "minutesAgo": "{count}m ago",
+        "hoursAgo": "{count}h ago",
+        "yesterday": "Yesterday",
+        "daysAgo": "{count}d ago"
+      },
+      "durationSeconds": "{count}s",
+      "durationMinutes": "{count}m",
+      "durationHours": "{hours}h",
+      "durationHoursMinutes": "{hours}h {minutes}m"
+    }
   }
 }

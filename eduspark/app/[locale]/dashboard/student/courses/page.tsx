@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { BookOpen, Search, Sparkles } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
@@ -9,11 +10,26 @@ import {
   type EnrolledCourse,
 } from "./_components/enrolled-course-card";
 
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "studentCourses.page" });
+  return { title: `${t("title")} — EduSpark` };
+}
+
 export default async function MyCoursesPage() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
 
-  // ── Fetch enrolled courses ──────────────────────────
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+
+  const t = await getTranslations("studentCourses.page");
+
   const enrollments = await db.enrollment.findMany({
     where: { userId: session.user.id },
     orderBy: { updatedAt: "desc" },
@@ -46,7 +62,6 @@ export default async function MyCoursesPage() {
     },
   });
 
-  // ── Shape data ──────────────────────────────────────
   const courses: EnrolledCourse[] = enrollments.map((e) => {
     const totalLessons = e.course.sections.reduce(
       (sum, s) => sum + s.lessons.length,
@@ -84,58 +99,54 @@ export default async function MyCoursesPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-      {/* ── Header ──────────────────────────────────── */}
+      {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <BookOpen className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-widest">My Learning</span>
+          <span className="uppercase tracking-widest">{t("eyebrow")}</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-          My Courses
+          {t("title")}
         </h1>
         {totalCount > 0 ? (
           <p className="text-sm text-muted-foreground mt-2">
-            <span className="text-primary font-semibold">
-              {inProgressCount}
-            </span>{" "}
-            in progress آ·{" "}
-            <span className="text-emerald-400 font-semibold">
+            <span className="text-primary font-semibold">{inProgressCount}</span>{" "}
+            <span className="text-muted-foreground">قيد التقدم ·</span>{" "}
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
               {completedCount}
             </span>{" "}
-            completed آ·{" "}
+            <span className="text-muted-foreground">مكتملة ·</span>{" "}
             <span className="text-foreground font-semibold">{totalCount}</span>{" "}
-            total
+            <span className="text-muted-foreground">إجمالي</span>
           </p>
         ) : (
           <p className="text-sm text-muted-foreground mt-2">
-            You haven&apos;t enrolled in any course yet.
+            {t("noEnrollments")}
           </p>
         )}
       </div>
 
-      {/* ── Empty state ───────────────────────────────── */}
+      {/* Empty state */}
       {totalCount === 0 ? (
         <div className="rounded-2xl bg-card border border-border p-12 sm:p-16 text-center">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
             <Sparkles className="w-7 h-7 text-primary" />
           </div>
           <h2 className="text-lg font-bold text-foreground mb-1.5">
-            Start your learning journey
+            {t("emptyTitle")}
           </h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
-            Browse our catalog of expert-led courses and enroll in your first
-            course to get started.
+            {t("emptyDesc")}
           </p>
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-primary-foreground text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
           >
             <Search className="w-4 h-4" />
-            Browse Courses
+            {t("browseCourses")}
           </Link>
         </div>
       ) : (
-        /* ── Courses grid ────────────────────────────── */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {courses.map((course) => (
             <EnrolledCourseCard key={course.enrollmentId} course={course} />

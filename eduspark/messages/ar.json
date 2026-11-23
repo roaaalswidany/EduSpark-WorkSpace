@@ -741,5 +741,43 @@
       "subtitle": "أفضل 20 متعلماً هذا الموسم",
       "you": "(أنت)"
     }
+  },
+    "studentCourses": {
+    "page": {
+      "eyebrow": "تعلّمي",
+      "title": "كورساتي",
+      "noEnrollments": "لم تسجل في أي كورس بعد.",
+      "statsLine": "{inProgress} قيد التقدم · {completed} مكتملة · {total} إجمالي",
+      "emptyTitle": "ابدأ رحلة التعلم",
+      "emptyDesc": "تصفح كتالوج كورساتنا المقدمة من خبراء، وسجّل في أول كورس للبدء.",
+      "browseCourses": "تصفح الكورسات"
+    },
+    "card": {
+      "levels": {
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "advanced": "متقدم"
+      },
+      "statusCompleted": "مكتمل",
+      "statusInProgress": "قيد التقدم",
+      "allCompleted": "تم إكمال جميع الدروس",
+      "yourProgress": "تقدمك",
+      "lessonsCount": "{count, plural, =0 {لا توجد دروس} =1 {درس واحد} =2 {درسان} few {# دروس} many {# درساً} other {# درس}}",
+      "reviewCourse": "مراجعة الكورس",
+      "continueLearning": "متابعة التعلم",
+      "startLearning": "ابدأ التعلم",
+      "viewPublicPage": "عرض الصفحة العامة مع التقييمات",
+      "time": {
+        "justNow": "الآن",
+        "minutesAgo": "قبل {count} د",
+        "hoursAgo": "قبل {count} س",
+        "yesterday": "أمس",
+        "daysAgo": "قبل {count} ي"
+      },
+      "durationSeconds": "{count} ث",
+      "durationMinutes": "{count} د",
+      "durationHours": "{hours} س",
+      "durationHoursMinutes": "{hours} س {minutes} د"
+    }
   }
 }
