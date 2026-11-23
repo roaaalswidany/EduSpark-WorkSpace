@@ -779,5 +779,41 @@
       "durationHours": "{hours}h",
       "durationHoursMinutes": "{hours}h {minutes}m"
     }
+  },
+    "learning": {
+    "header": {
+      "backToCourses": "Back to My Courses",
+      "toggleMenu": "Toggle course menu",
+      "completed": "Completed",
+      "viewPublicPage": "View public page (reviews & ratings)"
+    },
+    "video": {
+      "noVideo": "No video for this lesson"
+    },
+    "lesson": {
+      "label": "Lesson {current} of {total}",
+      "completed": "Completed",
+      "saving": "Saving…",
+      "markComplete": "Mark Complete",
+      "previous": "Previous",
+      "next": "Next",
+      "progressTrack": "Lesson progress track",
+      "free": "Free"
+    },
+    "completion": {
+      "title": "Course Complete! 🎉",
+      "descWithQuiz": "You finished {title}. Take the certification quiz to earn your certificate.",
+      "descNoQuiz": "You finished {title}. Certificate is now available in your dashboard.",
+      "takeQuiz": "Take Certification Quiz"
+    },
+    "sidebar": {
+      "lessonsDone": "{completed} of {total} lessons done",
+      "instructor": "Instructor:"
+    },
+    "attachments": {
+      "title": "Lesson Materials ({count})",
+      "downloadError": "Could not generate download link",
+      "rateLimited": "Too many downloads. Please wait a few minutes."
+    }
   }
 }

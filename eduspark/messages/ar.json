@@ -779,5 +779,41 @@
       "durationHours": "{hours} س",
       "durationHoursMinutes": "{hours} س {minutes} د"
     }
+  },
+    "learning": {
+    "header": {
+      "backToCourses": "العودة إلى كورساتي",
+      "toggleMenu": "إظهار/إخفاء قائمة الكورس",
+      "completed": "مكتمل",
+      "viewPublicPage": "عرض الصفحة العامة (تقييمات ومراجعات)"
+    },
+    "video": {
+      "noVideo": "لا يوجد فيديو لهذا الدرس"
+    },
+    "lesson": {
+      "label": "الدرس {current} من {total}",
+      "completed": "مكتمل",
+      "saving": "جارٍ الحفظ…",
+      "markComplete": "تحديد كمكتمل",
+      "previous": "السابق",
+      "next": "التالي",
+      "progressTrack": "مسار تقدم الدروس",
+      "free": "مجاني"
+    },
+    "completion": {
+      "title": "اكتمل الكورس! 🎉",
+      "descWithQuiz": "أكملت {title}. خُذ اختبار الاعتماد للحصول على شهادتك.",
+      "descNoQuiz": "أكملت {title}. الشهادة متاحة الآن في لوحة التحكم.",
+      "takeQuiz": "خُذ اختبار الاعتماد"
+    },
+    "sidebar": {
+      "lessonsDone": "{completed} من {total} دروس مكتملة",
+      "instructor": "المدرب:"
+    },
+    "attachments": {
+      "title": "مواد الدرس ({count})",
+      "downloadError": "تعذر إنشاء رابط التنزيل",
+      "rateLimited": "تنزيلات كثيرة. يرجى الانتظار بضع دقائق."
+    }
   }
 }

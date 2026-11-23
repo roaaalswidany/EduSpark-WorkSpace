@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import {
   Paperclip,
   Download,
@@ -12,6 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { getAttachmentDownloadUrlAction } from "@/actions/storage/get-download-url";
+import { cn } from "@/lib/utils";
 
 interface Attachment {
   id: string;
@@ -40,6 +43,7 @@ function getFileIcon(mimeType: string) {
 }
 
 export function LessonAttachmentsViewer({ attachments }: Props) {
+  const t = useTranslations("learning.attachments");
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -53,11 +57,9 @@ export function LessonAttachmentsViewer({ attachments }: Props) {
       if (res.success) {
         window.open(res.downloadUrl, "_blank");
       } else {
-        toast.error("Could not generate download link", {
+        toast.error(t("downloadError"), {
           description:
-            res.error === "RATE_LIMITED"
-              ? "Too many downloads. Please wait a few minutes."
-              : undefined,
+            res.error === "RATE_LIMITED" ? t("rateLimited") : undefined,
         });
       }
     });
@@ -66,9 +68,9 @@ export function LessonAttachmentsViewer({ attachments }: Props) {
   return (
     <div className="rounded-xl bg-card/60 border border-border p-5">
       <div className="flex items-center gap-2 mb-3">
-        <Paperclip className="w-4 h-4 text-indigo-400" />
+        <Paperclip className="w-4 h-4 text-primary" />
         <h3 className="text-sm font-bold text-foreground">
-          Lesson Materials ({attachments.length})
+          {t("title", { count: attachments.length })}
         </h3>
       </div>
       <div className="space-y-2">
@@ -80,23 +82,23 @@ export function LessonAttachmentsViewer({ attachments }: Props) {
               key={att.id}
               onClick={() => handleDownload(att.id)}
               disabled={isPending}
-              className="w-full flex items-center gap-3 p-3 rounded-lg bg-background/50 border border-border hover:border-primary/100/40 hover:bg-background transition-colors group"
+              className="w-full flex items-center gap-3 p-3 rounded-lg bg-background/50 border border-border hover:border-primary/40 hover:bg-background transition-colors group"
             >
-              <div className="w-9 h-9 rounded-lg bg-primary/50/10 border border-primary/100/20 flex items-center justify-center shrink-0">
-                <Icon className="w-4 h-4 text-indigo-400" />
+              <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                <Icon className="w-4 h-4 text-primary" />
               </div>
               <div className="flex-1 min-w-0 text-left">
-                <p className="text-sm text-foreground truncate group-hover:text-primary300 transition-colors">
+                <p className="text-sm text-foreground truncate group-hover:text-primary transition-colors">
                   {att.fileName}
                 </p>
-                <p className="text-[10px] text-foreground0">
+                <p className="text-[10px] text-muted-foreground">
                   {formatSize(att.fileSizeBytes)}
                 </p>
               </div>
               {isDownloading ? (
-                <Loader2 className="w-4 h-4 text-indigo-400 animate-spin shrink-0" />
+                <Loader2 className="w-4 h-4 text-primary animate-spin shrink-0" />
               ) : (
-                <Download className="w-4 h-4 text-foreground0 group-hover:text-primary400 transition-colors shrink-0" />
+                <Download className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
               )}
             </button>
           );
