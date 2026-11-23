@@ -1,21 +1,36 @@
 import { redirect, notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
+import { getLocale } from "next-intl/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { QuizView } from "./_components/quiz-view";
 
 interface QuizPageProps {
-  params: Promise<{ courseId: string }>;
+  params: Promise<{ locale: string; courseId: string }>;
+}
+
+export async function generateMetadata({ params }: QuizPageProps) {
+  const { courseId } = await params;
+  const course = await db.course.findUnique({
+    where: { id: courseId },
+    select: { title: true },
+  });
+  return {
+    title: course ? `${course.title} — Quiz | EduSpark` : "Quiz — EduSpark",
+  };
 }
 
 export default async function QuizPage({ params }: QuizPageProps) {
   const { courseId } = await params;
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
+
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
 
   const userId = session.user.id;
 
-  // ── Verify enrollment + fetch quiz + course in parallel ────
   const [enrollment, quiz, course] = await Promise.all([
     db.enrollment.findUnique({
       where: { userId_courseId: { userId, courseId } },
@@ -48,10 +63,11 @@ export default async function QuizPage({ params }: QuizPageProps) {
   ]);
 
   if (!course) notFound();
-if (!enrollment) redirect(`/courses/${course.slug}?error=not-enrolled`);
-if (!quiz || quiz.questions.length === 0) notFound();
+  if (!enrollment) {
+    redirect(`/${locale}/courses/${course.slug}?error=not-enrolled`);
+  }
+  if (!quiz || quiz.questions.length === 0) notFound();
 
-  // ── Fetch most recent attempt ──────────────────────────────
   const lastAttempt = await db.quizAttempt.findFirst({
     where: { userId, quizId: quiz.id },
     orderBy: { submittedAt: "desc" },

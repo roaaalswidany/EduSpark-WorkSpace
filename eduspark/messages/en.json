@@ -815,5 +815,78 @@
       "downloadError": "Could not generate download link",
       "rateLimited": "Too many downloads. Please wait a few minutes."
     }
+  },
+    "quiz": {
+    "intro": {
+      "eyebrow": "Certification Quiz",
+      "questions": "Questions",
+      "toPass": "To Pass",
+      "timeLimit": "Time Limit",
+      "noLimit": "No Limit",
+      "lastAttemptPassed": "You already passed this quiz!",
+      "lastAttemptFailed": "Previous attempt did not pass",
+      "scoreLine": "Score: {score}% ({correct}/{total} correct)",
+      "beforeYouBegin": "Before you begin",
+      "rules": {
+        "passingScore": "You need a score of {passingScore}% or higher to pass",
+        "attempts": "You can attempt this quiz up to {maxAttempts} times per {windowHours} hours until you pass",
+        "timerStarts": "The timer starts as soon as you click Start",
+        "noTimeLimit": "There is no time limit — take your time",
+        "feedbackAfterPass": "Detailed answer feedback is unlocked once you pass",
+        "certificateEarned": "You've already earned your certificate for this course",
+        "certificateOnPass": "Passing grants you a verified certificate"
+      },
+      "retakeQuiz": "Retake Quiz",
+      "startQuiz": "Start Quiz"
+    },
+    "inProgress": {
+      "questionOf": "Question {current} of {total}",
+      "previous": "Previous",
+      "next": "Next",
+      "submitQuiz": "Submit Quiz",
+      "submitting": "Submitting…",
+      "optionLabel": "Option {letter}"
+    },
+    "result": {
+      "eyebrow": "Quiz Results",
+      "passedTitle": "Congratulations! 🎉",
+      "failedTitle": "Keep Learning!",
+      "passedDesc": "You passed the quiz. Your certificate has been issued.",
+      "failedDesc": "You need {passingScore}% or higher to pass. Review the feedback below and try again.",
+      "yourScore": "Your Score",
+      "correct": "Correct",
+      "required": "Required",
+      "certificateIssued": "Certificate Issued!",
+      "credentialId": "Credential ID:",
+      "viewCertificate": "View Certificate",
+      "roleUpgradedTitle": "Your account was upgraded!",
+      "roleUpgradedDesc": "You are now a Creator. Head to your dashboard to start offering services.",
+      "answerReview": "Answer Review",
+      "answerReviewDesc": "See how you answered each question",
+      "correctMark": "Correct",
+      "yourAnswerMark": "(Your answer)",
+      "reviewLocked": "Answer review is unlocked once you pass. Revisit the course lessons, then try again.",
+      "backToCourse": "Back to Course",
+      "retakeForPractice": "Retake for Practice",
+      "tryAgain": "Try Again"
+    },
+    "errors": {
+      "notEnrolled": "You are not enrolled in this course.",
+      "courseNotCompleted": "Finish all the lessons of this course before taking the certification quiz.",
+      "quizNotFound": "Quiz not found.",
+      "questionCountMismatch": "Please answer all questions.",
+      "emailNotVerified": "Please confirm your email address first — check your inbox.",
+      "attemptLimitReached": "Attempt limit reached. You can try again after {retryAt}.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "toasts": {
+      "timesUp": "Time's up — submitting…",
+      "submittingQuiz": "Submitting your quiz…",
+      "passed": "🎉 Congratulations! You passed!",
+      "passedDesc": "Scored {score}% · {certificate}",
+      "failed": "Keep trying!",
+      "failedDesc": "Scored {score}% — need {passingScore}% to pass",
+      "submissionFailed": "Submission failed"
+    }
   }
 }

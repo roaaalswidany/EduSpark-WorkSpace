@@ -815,5 +815,78 @@
       "downloadError": "تعذر إنشاء رابط التنزيل",
       "rateLimited": "تنزيلات كثيرة. يرجى الانتظار بضع دقائق."
     }
+  },
+    "quiz": {
+    "intro": {
+      "eyebrow": "اختبار الاعتماد",
+      "questions": "الأسئلة",
+      "toPass": "للنجاح",
+      "timeLimit": "الحد الزمني",
+      "noLimit": "بدون حد",
+      "lastAttemptPassed": "لقد نجحت في هذا الاختبار بالفعل!",
+      "lastAttemptFailed": "المحاولة السابقة لم تنجح",
+      "scoreLine": "النتيجة: {score}% ({correct}/{total} صحيحة)",
+      "beforeYouBegin": "قبل أن تبدأ",
+      "rules": {
+        "passingScore": "تحتاج إلى نتيجة {passingScore}% أو أعلى للنجاح",
+        "attempts": "يمكنك محاولة هذا الاختبار حتى {maxAttempts} مرات كل {windowHours} ساعة حتى تنجح",
+        "timerStarts": "يبدأ المؤقت فور الضغط على بدء",
+        "noTimeLimit": "لا يوجد حد زمني — خذ وقتك",
+        "feedbackAfterPass": "تُفتح المراجعة التفصيلية للإجابات بعد النجاح",
+        "certificateEarned": "لقد حصلت بالفعل على شهادة هذا الكورس",
+        "certificateOnPass": "النجاح يمنحك شهادة موثقة"
+      },
+      "retakeQuiz": "إعادة الاختبار",
+      "startQuiz": "ابدأ الاختبار"
+    },
+    "inProgress": {
+      "questionOf": "السؤال {current} من {total}",
+      "previous": "السابق",
+      "next": "التالي",
+      "submitQuiz": "إرسال الاختبار",
+      "submitting": "جارٍ الإرسال…",
+      "optionLabel": "الخيار {letter}"
+    },
+    "result": {
+      "eyebrow": "نتائج الاختبار",
+      "passedTitle": "تهانينا! 🎉",
+      "failedTitle": "واصل التعلم!",
+      "passedDesc": "لقد نجحت في الاختبار. تم إصدار شهادتك.",
+      "failedDesc": "تحتاج إلى {passingScore}% أو أعلى للنجاح. راجع الملاحظات أدناه وحاول مرة أخرى.",
+      "yourScore": "نتيجتك",
+      "correct": "صحيحة",
+      "required": "المطلوب",
+      "certificateIssued": "تم إصدار الشهادة!",
+      "credentialId": "معرّف الشهادة:",
+      "viewCertificate": "عرض الشهادة",
+      "roleUpgradedTitle": "تمت ترقية حسابك!",
+      "roleUpgradedDesc": "أنت الآن منشئ. توجه إلى لوحة التحكم لبدء تقديم الخدمات.",
+      "answerReview": "مراجعة الإجابات",
+      "answerReviewDesc": "اطلع على كيفية إجابتك لكل سؤال",
+      "correctMark": "صحيحة",
+      "yourAnswerMark": "(إجابتك)",
+      "reviewLocked": "تُفتح مراجعة الإجابات بعد النجاح. راجع دروس الكورس ثم حاول مرة أخرى.",
+      "backToCourse": "العودة إلى الكورس",
+      "retakeForPractice": "إعادة للتمرين",
+      "tryAgain": "حاول مرة أخرى"
+    },
+    "errors": {
+      "notEnrolled": "أنت غير مسجل في هذا الكورس.",
+      "courseNotCompleted": "أكمل جميع دروس هذا الكورس قبل إجراء اختبار الاعتماد.",
+      "quizNotFound": "الاختبار غير موجود.",
+      "questionCountMismatch": "يرجى الإجابة على جميع الأسئلة.",
+      "emailNotVerified": "يرجى تأكيد بريدك الإلكتروني أولاً — تحقق من صندوق الوارد.",
+      "attemptLimitReached": "تم الوصول إلى حد المحاولات. يمكنك المحاولة بعد {retryAt}.",
+      "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "toasts": {
+      "timesUp": "انتهى الوقت — جارٍ الإرسال…",
+      "submittingQuiz": "جارٍ إرسال اختبارك…",
+      "passed": "🎉 تهانينا! لقد نجحت!",
+      "passedDesc": "النتيجة {score}% · {certificate}",
+      "failed": "واصل المحاولة!",
+      "failedDesc": "النتيجة {score}% — تحتاج {passingScore}% للنجاح",
+      "submissionFailed": "فشل الإرسال"
+    }
   }
 }
