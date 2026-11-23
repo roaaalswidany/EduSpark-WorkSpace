@@ -709,5 +709,37 @@
       "you": "(أنت)",
       "noCreator": "لم يُعيَّن منشئ"
     }
+  },
+    "achievements": {
+    "page": {
+      "eyebrow": "الإنجازات",
+      "title": "رحلتك",
+      "subtitle": "تابع تقدمك، افتح الشارات، وتنافس على لوحة الصدارة.",
+      "metadataTitle": "الإنجازات"
+    },
+    "levelCard": {
+      "currentLevel": "المستوى الحالي",
+      "rank": "الترتيب",
+      "xpSuffix": "XP",
+      "toNext": "{xp} إلى {next}",
+      "inLevel": "{xp} / {span} XP في هذا المستوى",
+      "badges": "الشارات",
+      "progress": "التقدم",
+      "nextLevel": "المستوى التالي",
+      "max": "الأقصى"
+    },
+    "badges": {
+      "title": "الشارات",
+      "unlocked": "{earned} من {total} مفتوحة",
+      "filterAll": "الكل",
+      "filterEarned": "المكتسبة",
+      "filterLocked": "المقفلة",
+      "noResults": "لا توجد شارات تطابق هذا الفلتر."
+    },
+    "leaderboard": {
+      "title": "لوحة الصدارة",
+      "subtitle": "أفضل 20 متعلماً هذا الموسم",
+      "you": "(أنت)"
+    }
   }
 }

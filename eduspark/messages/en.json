@@ -709,5 +709,37 @@
       "you": "(you)",
       "noCreator": "Creator not assigned"
     }
+  },
+    "achievements": {
+    "page": {
+      "eyebrow": "Achievements",
+      "title": "Your Journey",
+      "subtitle": "Track your progress, unlock badges, and compete on the leaderboard.",
+      "metadataTitle": "Achievements"
+    },
+    "levelCard": {
+      "currentLevel": "Current Level",
+      "rank": "Rank",
+      "xpSuffix": "XP",
+      "toNext": "{xp} to {next}",
+      "inLevel": "{xp} / {span} XP in this level",
+      "badges": "Badges",
+      "progress": "Progress",
+      "nextLevel": "Next Level",
+      "max": "MAX"
+    },
+    "badges": {
+      "title": "Badges",
+      "unlocked": "{earned} of {total} unlocked",
+      "filterAll": "All",
+      "filterEarned": "Earned",
+      "filterLocked": "Locked",
+      "noResults": "No badges match this filter."
+    },
+    "leaderboard": {
+      "title": "Leaderboard",
+      "subtitle": "Top 20 learners this season",
+      "you": "(you)"
+    }
   }
 }

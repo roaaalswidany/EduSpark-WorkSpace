@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import {
   BookOpen,
   Zap,
@@ -53,6 +54,7 @@ interface BadgesGridProps {
 }
 
 export function BadgesGrid({ badges }: BadgesGridProps) {
+  const t = useTranslations("achievements.badges");
   const [filter, setFilter] = useState<"all" | "earned" | "locked">("all");
 
   const filtered = badges.filter((b) => {
@@ -63,14 +65,19 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
 
   const earned = badges.filter((b) => b.earned).length;
 
+  const filterLabels = {
+    all: t("filterAll"),
+    earned: t("filterEarned"),
+    locked: t("filterLocked"),
+  };
+
   return (
     <div>
-      {/* Header + filters */}
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
-          <h2 className="text-lg font-bold text-foreground">Badges</h2>
+          <h2 className="text-lg font-bold text-foreground">{t("title")}</h2>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {earned} of {badges.length} unlocked
+            {t("unlocked", { earned, total: badges.length })}
           </p>
         </div>
 
@@ -87,13 +94,12 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
                   : "text-muted-foreground hover:text-foreground hover:bg-background/50"
               )}
             >
-              {f === "all" ? "All" : f === "earned" ? "Earned" : "Locked"}
+              {filterLabels[f]}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {filtered.map((badge) => (
           <BadgeCard key={badge.id} badge={badge} />
@@ -102,9 +108,7 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
 
       {filtered.length === 0 && (
         <div className="rounded-2xl bg-card border border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">
-            No badges match this filter.
-          </p>
+          <p className="text-sm text-muted-foreground">{t("noResults")}</p>
         </div>
       )}
     </div>
@@ -112,8 +116,15 @@ export function BadgesGrid({ badges }: BadgesGridProps) {
 }
 
 function BadgeCard({ badge }: { badge: BadgeData }) {
+  const locale = useLocale();
   const Icon = ICON_MAP[badge.icon] ?? Award;
-  const tier = TIER_STYLES[badge.tier as keyof typeof TIER_STYLES] ?? TIER_STYLES.COMMON;
+  const tier =
+    TIER_STYLES[badge.tier as keyof typeof TIER_STYLES] ?? TIER_STYLES.COMMON;
+
+  // Locale-aware name & description from DB
+  const displayName = locale === "ar" ? badge.nameAr : badge.name;
+  const displayDesc =
+    locale === "ar" ? badge.descriptionAr : badge.description;
 
   return (
     <div
@@ -124,7 +135,6 @@ function BadgeCard({ badge }: { badge: BadgeData }) {
           : "border-border bg-card/50 opacity-60 grayscale-50"
       )}
     >
-      {/* Icon */}
       <div
         className={cn(
           "flex items-center justify-center w-12 h-12 rounded-xl mb-3 mx-auto shrink-0",
@@ -134,35 +144,29 @@ function BadgeCard({ badge }: { badge: BadgeData }) {
         )}
       >
         {badge.earned ? (
-          
           <Icon className="w-6 h-6 text-white drop-shadow-md" />
         ) : (
           <Lock className="w-5 h-5 text-muted-foreground/70" />
         )}
       </div>
 
-      {/* Name */}
       <p
         className={cn(
           "text-sm font-bold text-center mb-1 line-clamp-1 flex-1",
-          
           badge.earned ? "text-foreground" : "text-muted-foreground"
         )}
       >
-        {badge.nameAr}
+        {displayName}
       </p>
 
-      {/* Description */}
       <p className="text-[10px] text-muted-foreground text-center leading-relaxed line-clamp-2 mb-3">
-        {badge.descriptionAr}
+        {displayDesc}
       </p>
 
-      {/* Tier + XP */}
       <div className="flex items-center justify-between mt-auto pt-3 border-t border-border/60">
         <span
           className={cn(
             "text-[9px] font-bold uppercase tracking-wider",
-            
             badge.earned ? "text-foreground/70" : "text-muted-foreground/70"
           )}
         >

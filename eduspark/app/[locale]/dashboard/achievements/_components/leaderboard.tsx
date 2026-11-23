@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { Crown, Trophy, Medal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getLevelForXP } from "@/lib/gamification/levels";
@@ -16,28 +17,48 @@ interface LeaderboardProps {
   entries: LeaderboardEntry[];
 }
 
-export function Leaderboard({ entries }: LeaderboardProps) {
+export async function Leaderboard({ entries }: LeaderboardProps) {
+  const t = await getTranslations("achievements.leaderboard");
+  const locale = await getLocale();
+
   return (
     <div>
       <div className="mb-4">
-        <h2 className="text-lg font-bold text-foreground">Leaderboard</h2>
+        <h2 className="text-lg font-bold text-foreground">{t("title")}</h2>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Top 20 learners this season
+          {t("subtitle")}
         </p>
       </div>
 
       <div className="rounded-2xl bg-card border border-border overflow-hidden">
         {entries.length >= 3 && (
           <div className="grid grid-cols-3 gap-2 p-4 bg-linear-to-b from-amber-500/5 to-transparent border-b border-border">
-            <PodiumCard entry={entries[1]} position={2} />
-            <PodiumCard entry={entries[0]} position={1} />
-            <PodiumCard entry={entries[2]} position={3} />
+            <PodiumCard
+              entry={entries[1]}
+              position={2}
+              locale={locale}
+            />
+            <PodiumCard
+              entry={entries[0]}
+              position={1}
+              locale={locale}
+            />
+            <PodiumCard
+              entry={entries[2]}
+              position={3}
+              locale={locale}
+            />
           </div>
         )}
 
         <div className="divide-y divide-border">
           {entries.slice(3).map((entry) => (
-            <LeaderboardRow key={entry.userId} entry={entry} />
+            <LeaderboardRow
+              key={entry.userId}
+              entry={entry}
+              locale={locale}
+              youLabel={t("you")}
+            />
           ))}
         </div>
       </div>
@@ -45,22 +66,30 @@ export function Leaderboard({ entries }: LeaderboardProps) {
   );
 }
 
-function PodiumCard({
+async function PodiumCard({
   entry,
   position,
+  locale,
 }: {
   entry: LeaderboardEntry;
   position: 1 | 2 | 3;
+  locale: string;
 }) {
   if (!entry) return <div />;
 
   const level = getLevelForXP(entry.xp);
-  const xpFormatted = entry.xp.toLocaleString("en-US");
+  const xpFormatted = entry.xp.toLocaleString(
+    locale === "ar" ? "ar" : "en-US"
+  );
+  const levelLabel =
+    locale === "ar" && "labelAr" in level && level.labelAr
+      ? (level.labelAr as string)
+      : level.label;
 
   const config = {
     1: {
       icon: Crown,
-      color: "text-yellow-400",
+      color: "text-yellow-500 dark:text-yellow-400",
       bg: "bg-yellow-400/10",
       border: "border-yellow-400/30",
       size: "w-14 h-14",
@@ -82,14 +111,15 @@ function PodiumCard({
   }[position];
 
   const Icon = config.icon;
-  
+
   const initials = entry.name
     .split(" ")
     .map((n) => n[0])
     .slice(0, 2)
     .join("")
     .toUpperCase();
-  const hue = entry.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+  const hue =
+    entry.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
 
   return (
     <Link
@@ -117,7 +147,13 @@ function PodiumCard({
         <p className="text-xs font-bold text-foreground truncate">
           {entry.name.split(" ")[0]}
         </p>
-        <p className={cn("text-[10px] font-bold tabular-nums", level.color)}>
+        <p
+          className={cn(
+            "text-[10px] font-bold tabular-nums",
+            level.color
+          )}
+          title={levelLabel}
+        >
           {xpFormatted} XP
         </p>
       </div>
@@ -125,17 +161,32 @@ function PodiumCard({
   );
 }
 
-function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
+function LeaderboardRow({
+  entry,
+  locale,
+  youLabel,
+}: {
+  entry: LeaderboardEntry;
+  locale: string;
+  youLabel: string;
+}) {
   const level = getLevelForXP(entry.xp);
-  const xpFormatted = entry.xp.toLocaleString("en-US");
-  
+  const xpFormatted = entry.xp.toLocaleString(
+    locale === "ar" ? "ar" : "en-US"
+  );
+  const levelLabel =
+    locale === "ar" && "labelAr" in level && level.labelAr
+      ? (level.labelAr as string)
+      : level.label;
+
   const initials = entry.name
     .split(" ")
     .map((n) => n[0])
     .slice(0, 2)
     .join("")
     .toUpperCase();
-  const hue = entry.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+  const hue =
+    entry.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
 
   return (
     <Link
@@ -153,8 +204,8 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
         </span>
       </div>
 
-      <div 
-        className="w-9 h-9 rounded-full ring-2 ring-border flex items-center justify-center text-foreground text-xs font-bold shrink-0"
+      <div
+        className="w-9 h-9 rounded-full ring-2 ring-border flex items-center justify-center text-white text-xs font-bold shrink-0"
         style={{ background: `hsl(${hue}, 55%, 42%)` }}
       >
         {initials}
@@ -165,12 +216,12 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
           {entry.name}
           {entry.isCurrentUser && (
             <span className="ml-2 text-[10px] font-bold text-primary">
-              (you)
+              {youLabel}
             </span>
           )}
         </p>
         <p className={cn("text-[10px] font-bold", level.color)}>
-          {level.icon} {level.label}
+          {level.icon} {levelLabel}
         </p>
       </div>
 

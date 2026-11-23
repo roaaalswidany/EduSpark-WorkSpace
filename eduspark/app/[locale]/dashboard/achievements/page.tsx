@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
+import { getTranslations, getLocale } from "next-intl/server";
 import { Award } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
@@ -10,14 +11,25 @@ import { LevelCard } from "./_components/level-card";
 import { BadgesGrid } from "./_components/badges-grid";
 import { Leaderboard } from "./_components/leaderboard";
 
-export const metadata = {
-  title: "Achievements — EduSpark",
-};
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "achievements.page" });
+  return { title: `${t("metadataTitle")} — EduSpark` };
+}
 
 export default async function AchievementsPage() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
 
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+
+  const t = await getTranslations("achievements.page");
   const userId = session.user.id;
 
   const [stats, badges, userBadges, leaderboardData] = await Promise.all([
@@ -36,7 +48,7 @@ export default async function AchievementsPage() {
         userId: true,
         xp: true,
         level: true,
-        user: { select: { id: true, name: true } }, 
+        user: { select: { id: true, name: true } },
       },
     }),
   ]);
@@ -45,7 +57,6 @@ export default async function AchievementsPage() {
   const levelProgress = getLevelProgress(xp);
   const earnedIds = new Set(userBadges.map((ub) => ub.badgeId));
 
-  // Find user's rank
   const userRank =
     leaderboardData.findIndex((u) => u.userId === userId) + 1;
 
@@ -55,13 +66,13 @@ export default async function AchievementsPage() {
       <div>
         <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400 mb-2">
           <Award className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-widest">Achievements</span>
+          <span className="uppercase tracking-widest">{t("eyebrow")}</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-          Your Journey
+          {t("title")}
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
-          Track your progress, unlock badges, and compete on the leaderboard.
+          {t("subtitle")}
         </p>
       </div>
 

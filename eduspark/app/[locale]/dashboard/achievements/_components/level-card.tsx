@@ -1,3 +1,4 @@
+import { getTranslations, getLocale } from "next-intl/server";
 import { Sparkles, Trophy, Target, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LevelProgress } from "@/lib/gamification/levels";
@@ -10,22 +11,39 @@ interface LevelCardProps {
   userRank: number;
 }
 
-export function LevelCard({
+export async function LevelCard({
   xp,
   levelProgress,
   badgesEarned,
   badgesTotal,
   userRank,
 }: LevelCardProps) {
+  const t = await getTranslations("achievements.levelCard");
+  const locale = await getLocale();
+
   const { current, next, progressPct, xpToNext, xpInLevel } = levelProgress;
 
-  // Consistent number formatting to avoid hydration mismatch
-  const xpFormatted = xp.toLocaleString("en-US");
-  const xpToNextFormatted = xpToNext.toLocaleString("en-US");
-  const xpInLevelFormatted = xpInLevel.toLocaleString("en-US");
+  const xpFormatted = xp.toLocaleString(locale === "ar" ? "ar" : "en-US");
+  const xpToNextFormatted = xpToNext.toLocaleString(
+    locale === "ar" ? "ar" : "en-US"
+  );
+  const xpInLevelFormatted = xpInLevel.toLocaleString(
+    locale === "ar" ? "ar" : "en-US"
+  );
   const levelSpanFormatted = next
-    ? (next.minXP - current.minXP).toLocaleString("en-US")
+    ? (next.minXP - current.minXP).toLocaleString(
+        locale === "ar" ? "ar" : "en-US"
+      )
     : "0";
+
+  // Locale-aware level names
+  const currentLabel =
+    locale === "ar" && current.labelAr ? current.labelAr : current.label;
+  const nextLabel = next
+    ? locale === "ar" && next.labelAr
+      ? next.labelAr
+      : next.label
+    : null;
 
   return (
     <div
@@ -56,18 +74,20 @@ export function LevelCard({
             </div>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                Current Level
+                {t("currentLevel")}
               </p>
               <p className={cn("text-2xl font-black", current.color)}>
-                {current.label}
+                {currentLabel}
               </p>
-              <p className="text-xs text-muted-foreground">{current.labelAr}</p>
+              <p className="text-xs text-muted-foreground">
+                {t("xpSuffix")}
+              </p>
             </div>
           </div>
 
           <div className="text-right">
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Rank
+              {t("rank")}
             </p>
             <p className="text-2xl font-black text-foreground tabular-nums">
               #{userRank || "—"}
@@ -80,12 +100,12 @@ export function LevelCard({
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               <span className="text-sm font-bold text-foreground tabular-nums">
-                {xpFormatted} XP
+                {xpFormatted} {t("xpSuffix")}
               </span>
             </div>
-            {next && (
+            {next && nextLabel && (
               <p className="text-xs text-muted-foreground tabular-nums">
-                {xpToNextFormatted} to {next.label}
+                {t("toNext", { xp: xpToNextFormatted, next: nextLabel })}
               </p>
             )}
           </div>
@@ -100,7 +120,10 @@ export function LevelCard({
           </div>
           {next && (
             <p className="text-[10px] text-muted-foreground/70 mt-1.5">
-              {xpInLevelFormatted} / {levelSpanFormatted} XP in this level
+              {t("inLevel", {
+                xp: xpInLevelFormatted,
+                span: levelSpanFormatted,
+              })}
             </p>
           )}
         </div>
@@ -108,20 +131,20 @@ export function LevelCard({
         <div className="grid grid-cols-3 gap-3">
           <StatBox
             icon={Trophy}
-            label="Badges"
+            label={t("badges")}
             value={`${badgesEarned}/${badgesTotal}`}
             color="text-amber-600 dark:text-amber-400"
           />
           <StatBox
             icon={Target}
-            label="Progress"
+            label={t("progress")}
             value={`${progressPct}%`}
-            color="text-emerald-400"
+            color="text-emerald-600 dark:text-emerald-400"
           />
           <StatBox
             icon={TrendingUp}
-            label="Next Level"
-            value={next ? next.label : "MAX"}
+            label={t("nextLevel")}
+            value={nextLabel ?? t("max")}
             color="text-primary"
           />
         </div>
