@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
+import { getTranslations, getLocale } from "next-intl/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 import { ServiceCreationForm } from "./_components/service-creation-form";
 import { GraduationCap, Award, AlertCircle } from "lucide-react";
 import { QUIZ_PASSING_SCORE } from "@/lib/lms/quiz-policy";
-import Link from "next/link";
-
-// ─── Types passed to client ────────────────────────────────────────
+import { Link } from "@/i18n/navigation";
 
 export interface CertifiedCourseOption {
   courseId: string;
@@ -19,39 +18,49 @@ export interface CertifiedCourseOption {
   credentialId: string;
 }
 
-// ─── Empty state ──────────────────────────────────────────────────
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
 
-function NoCertificatesGate() {
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({
+    locale,
+    namespace: "serviceForm.newPage",
+  });
+  return { title: `${t("metadataTitle")} — EduSpark` };
+}
+
+async function NoCertificatesGate() {
+  const t = await getTranslations("serviceForm.noCertificate");
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center space-y-6">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-amber-600 dark:bg-amber-500/10 border border-amber-600 dark:border-amber-500/20 mx-auto">
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-amber-500/10 border border-amber-500/20 mx-auto">
           <Award className="w-10 h-10 text-amber-600 dark:text-amber-400" />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-foreground mb-3">
-            Certificate Required
+            {t("title")}
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            To offer services on EduSpark, you must first complete a course and
-            pass the certification quiz with a score of{" "}
-            <span className="text-foreground font-semibold">{QUIZ_PASSING_SCORE}% or higher</span>.
-            Your certificate proves your expertise to potential clients.
+            {t("desc", { passingScore: QUIZ_PASSING_SCORE })}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href="/courses"
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary text-primary-foreground text-sm font-semibold transition-colors"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold transition-colors"
           >
             <GraduationCap className="w-4 h-4" />
-            Browse Courses
+            {t("browseCourses")}
           </Link>
           <Link
             href="/dashboard/student"
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent text-foreground text-sm font-semibold transition-colors border border-border"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent/80 text-foreground text-sm font-semibold transition-colors border border-border"
           >
-            My Dashboard
+            {t("myDashboard")}
           </Link>
         </div>
       </div>
@@ -59,21 +68,22 @@ function NoCertificatesGate() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────
-
 export default async function NewServicePage() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
 
-  const { id: userId, role } = session.user;
-
-  if (role !== Role.CREATOR && role !== Role.ADMIN) {
-    redirect("/dashboard/student");
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
   }
 
+  const { id: userId, role } = session.user;
+  if (role !== Role.CREATOR && role !== Role.ADMIN) {
+    redirect(`/${locale}/dashboard/student`);
+  }
+
+  const t = await getTranslations("serviceForm.newPage");
   const isAdmin = role === "ADMIN";
 
-  // Fetch in parallel: certified courses + admin-only all published courses
   const [certificates, adminCourses] = await Promise.all([
     db.certificate.findMany({
       where: { userId },
@@ -86,26 +96,19 @@ export default async function NewServicePage() {
       },
       orderBy: { issuedAt: "desc" },
     }),
-    // Admins get ALL published courses to choose from
     isAdmin
       ? db.course.findMany({
           where: { status: "PUBLISHED" },
-          select: {
-            id: true,
-            title: true,
-            level: true,
-          },
+          select: { id: true, title: true, level: true },
           orderBy: { createdAt: "desc" },
         })
       : Promise.resolve([]),
   ]);
 
-  // Admins bypass the certificate requirement (they manage the whole platform)
   if (!isAdmin && certificates.length === 0) {
-    redirect("/unauthorized?from=/dashboard/creator/services/new");
+    redirect(`/${locale}/unauthorized?from=/dashboard/creator/services/new`);
   }
 
-  // Admin sees all published courses; creators see only their certified ones
   const certifiedCourses: CertifiedCourseOption[] = isAdmin
     ? adminCourses.map((c) => ({
         courseId: c.id,
@@ -124,7 +127,6 @@ export default async function NewServicePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Page header */}
       <div className="border-b border-border bg-card/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
           <div className="flex items-center gap-3 mb-1">
@@ -132,39 +134,30 @@ export default async function NewServicePage() {
               <GraduationCap className="w-4 h-4 text-primary" />
             </div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              Creator Studio
+              {t("eyebrow")}
             </p>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-foreground">
-            Create a New Service
+            {t("title")}
           </h1>
           <p className="text-muted-foreground text-sm mt-1.5">
-            You have{" "}
-            <span className="text-amber-600 dark:text-amber-400 font-semibold">
-              {certifiedCourses.length} certified{" "}
-              {certifiedCourses.length === 1 ? "course" : "courses"}
-            </span>{" "}
-            available for service creation.
+            {t("subtitle", { count: certifiedCourses.length })}
           </p>
         </div>
       </div>
 
-      {/* Alert: marketplace rule */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-600 dark:bg-amber-500/5 border border-amber-600 dark:border-amber-500/15">
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
           <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-          <p className="text-amber-300/80 text-xs leading-relaxed">
-            <span className="font-semibold text-amber-300">
-              Marketplace Rule:{" "}
+          <p className="text-amber-800/80 dark:text-amber-300/80 text-xs leading-relaxed">
+            <span className="font-semibold text-amber-800 dark:text-amber-300">
+              {t("marketplaceRule")}{" "}
             </span>
-            Each service must be linked to a course you have officially
-            certified in. The service category is set automatically from your
-            certificate.
+            {t("marketplaceRuleText")}
           </p>
         </div>
       </div>
 
-      {/* Form */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
         <ServiceCreationForm certifiedCourses={certifiedCourses} />
       </div>

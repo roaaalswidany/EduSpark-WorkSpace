@@ -978,5 +978,117 @@
         "forbidden": "You don't have permission to change this image."
       }
     }
+  },
+    "serviceForm": {
+    "editPage": {
+      "back": "Back to My Services",
+      "eyebrow": "Creator Studio",
+      "title": "Edit Service",
+      "note": "Note:",
+      "noteText": "Changes to your service will appear on the marketplace immediately. The category is locked to your certificate.",
+      "metadataTitle": "Edit Service"
+    },
+    "newPage": {
+      "eyebrow": "Creator Studio",
+      "title": "Create a New Service",
+      "subtitle": "You have {count, plural, =0 {No certified courses} =1 {1 certified course} other {# certified courses}} available for service creation.",
+      "marketplaceRule": "Marketplace Rule:",
+      "marketplaceRuleText": "Each service must be linked to a course you have officially certified in. The service category is set automatically from your certificate.",
+      "metadataTitle": "New Service"
+    },
+    "noCertificate": {
+      "title": "Certificate Required",
+      "desc": "To offer services on EduSpark, you must first complete a course and pass the certification quiz with a score of {passingScore}% or higher. Your certificate proves your expertise to potential clients.",
+      "browseCourses": "Browse Courses",
+      "myDashboard": "My Dashboard"
+    },
+    "form": {
+      "sections": {
+        "foundation": {
+          "title": "Service Foundation",
+          "desc": "Link your service to a course you've certified in."
+        },
+        "details": {
+          "title": "Service Details",
+          "desc": "Write a compelling title and description to attract buyers."
+        },
+        "pricing": {
+          "title": "Pricing & Delivery",
+          "desc": "Set competitive rates based on your expertise level."
+        },
+        "tags": {
+          "title": "Tags & Portfolio",
+          "desc": "Help buyers discover your service and see past work."
+        }
+      },
+      "fields": {
+        "certifiedCourse": "Certified Course",
+        "certifiedCourseDesc": "Only courses with a passing certificate are listed.",
+        "certifiedCoursePlaceholder": "Select a certified course…",
+        "certifiedCourseSearch": "Search courses…",
+        "certifiedCourseEmpty": "No matching courses.",
+        "credential": "Credential",
+        "score": "Score",
+        "categoryAuto": "Category is set automatically",
+        "categoryAutoDesc": "from your certificate. You can only offer services in categories you're certified in.",
+        "title": "Service Title",
+        "titlePlaceholder": "e.g. I will build a full-stack Next.js web application…",
+        "description": "Description",
+        "descriptionPlaceholder": "Describe exactly what you'll deliver, what's included, your process, and any requirements from the buyer…",
+        "price": "Price (USD)",
+        "pricePlaceholder": "25.00",
+        "priceHint": "Min $5 · Max $10,000",
+        "deliveryTime": "Delivery Time",
+        "deliveryTimePlaceholder": "3",
+        "deliveryTimeHint": "1–90 calendar days",
+        "deliveryDaysSuffix": "days",
+        "revisions": "Revisions",
+        "revisionsPlaceholder": "1",
+        "revisionsHint": "0 = no revisions",
+        "tags": "Tags",
+        "tagsPlaceholder": "Type a tag, press Enter...",
+        "tagsHint": "{count}/{max} tags added · Press Enter or , to add",
+        "tagsHintBefore": "{count}/{max} tags added · Press",
+        "tagsHintAfter": "to add",
+        "portfolioLinks": "Portfolio Links",
+        "portfolioLinksOptional": "(optional)",
+        "portfolioLinksHint": "Add up to 5 links to showcase your previous work.",
+        "portfolioLinkPlaceholder": "https://your-portfolio.com/project",
+        "addPortfolioLink": "Add portfolio link",
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        "publish": "Publish Service",
+        "saving": "Saving...",
+        "publishing": "Publishing..."
+      },
+      "success": {
+        "createdTitle": "Service Created!",
+        "updatedTitle": "Service Updated!",
+        "redirecting": "Redirecting to your services..."
+      },
+      "toasts": {
+        "savingChanges": "Saving changes...",
+        "publishing": "Publishing service...",
+        "created": "Service submitted for review 📬",
+        "createdDesc": "It will appear in the marketplace once an administrator approves it.",
+        "updated": "Service updated successfully! ✨",
+        "updatedDesc": "Redirecting to your services...",
+        "sentForReview": "Changes sent for review 📬",
+        "sentForReviewDesc": "The service is hidden until an administrator approves your changes.",
+        "updateFailed": "Failed to update service",
+        "publishFailed": "Failed to publish service"
+      },
+      "errors": {
+        "noCertificate": "Your certificate for this course could not be verified. Please ensure you passed the course quiz.",
+        "forbiddenRole": "Your account is not authorized to create services.",
+        "forbidden": "You don't have permission to edit this service.",
+        "notFound": "This service no longer exists.",
+        "maliciousUrl": "One or more portfolio links were flagged as malicious. Please remove them before saving.",
+        "rateLimited": "Too many changes in a short time. Please wait a few minutes and try again.",
+        "conflict": "The service status changed while you were editing (an administrator may have reviewed it). Reload the page and try again.",
+        "serverError": "Something went wrong on our end. Please try again.",
+        "generic": "An unexpected error occurred."
+      }
+    }
   }
 }

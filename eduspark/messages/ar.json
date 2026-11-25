@@ -978,5 +978,117 @@
         "forbidden": "ليس لديك صلاحية تغيير هذه الصورة."
       }
     }
+  },
+    "serviceForm": {
+    "editPage": {
+      "back": "العودة إلى خدماتي",
+      "eyebrow": "استوديو المنشئ",
+      "title": "تعديل الخدمة",
+      "note": "ملاحظة:",
+      "noteText": "ستظهر تغييرات خدمتك في السوق فوراً. الفئة مقفلة على شهادتك.",
+      "metadataTitle": "تعديل الخدمة"
+    },
+    "newPage": {
+      "eyebrow": "استوديو المنشئ",
+      "title": "إنشاء خدمة جديدة",
+      "subtitle": "لديك {count, plural, =0 {لا توجد كورسات معتمدة} =1 {كورس واحد معتمد} =2 {كورسان معتمدان} few {# كورسات معتمدة} many {# كورساً معتمداً} other {# كورس معتمد}} متاحة لإنشاء الخدمات.",
+      "marketplaceRule": "قاعدة السوق:",
+      "marketplaceRuleText": "كل خدمة يجب أن ترتبط بكورس حصلت على شهادته رسمياً. تُعيَّن فئة الخدمة تلقائياً من شهادتك.",
+      "metadataTitle": "خدمة جديدة"
+    },
+    "noCertificate": {
+      "title": "شهادة مطلوبة",
+      "desc": "لتقديم خدمات على EduSpark، يجب أولاً إكمال كورس واجتياز اختبار الاعتماد بنتيجة {passingScore}% أو أعلى. شهادتك تُثبت خبرتك للعملاء المحتملين.",
+      "browseCourses": "تصفح الكورسات",
+      "myDashboard": "لوحة التحكم"
+    },
+    "form": {
+      "sections": {
+        "foundation": {
+          "title": "أساس الخدمة",
+          "desc": "اربط خدمتك بكورس حصلت على شهادته."
+        },
+        "details": {
+          "title": "تفاصيل الخدمة",
+          "desc": "اكتب عنواناً ووصفاً جذاباً لجذب المشترين."
+        },
+        "pricing": {
+          "title": "التسعير والتسليم",
+          "desc": "حدد أسعاراً تنافسية بناءً على مستوى خبرتك."
+        },
+        "tags": {
+          "title": "الوسوم ومعرض الأعمال",
+          "desc": "ساعد المشترين على اكتشاف خدمتك ورؤية أعمالك السابقة."
+        }
+      },
+      "fields": {
+        "certifiedCourse": "الكورس المعتمد",
+        "certifiedCourseDesc": "تُدرج فقط الكورسات التي حصلت على شهادة اجتيازها.",
+        "certifiedCoursePlaceholder": "اختر كورساً معتمداً…",
+        "certifiedCourseSearch": "ابحث في الكورسات…",
+        "certifiedCourseEmpty": "لا توجد كورسات مطابقة.",
+        "credential": "معرّف الشهادة",
+        "score": "النتيجة",
+        "categoryAuto": "الفئة تُعيَّن تلقائياً",
+        "categoryAutoDesc": "من شهادتك. يمكنك فقط تقديم خدمات في الفئات التي أنت معتمد فيها.",
+        "title": "عنوان الخدمة",
+        "titlePlaceholder": "مثال: سأبني تطبيق ويب كامل بـ Next.js…",
+        "description": "الوصف",
+        "descriptionPlaceholder": "صف بالضبط ما ستقدمه، وما يشمله، وعملية عملك، وأي متطلبات من المشتري…",
+        "price": "السعر (USD)",
+        "pricePlaceholder": "25.00",
+        "priceHint": "الحد الأدنى 5$ · الأقصى 10,000$",
+        "deliveryTime": "مدة التسليم",
+        "deliveryTimePlaceholder": "3",
+        "deliveryTimeHint": "1–90 يوماً تقويمياً",
+        "deliveryDaysSuffix": "أيام",
+        "revisions": "المراجعات",
+        "revisionsPlaceholder": "1",
+        "revisionsHint": "0 = بدون مراجعات",
+        "tags": "الوسوم",
+        "tagsPlaceholder": "اكتب وسماً ثم اضغط Enter...",
+        "tagsHint": "{count}/{max} وسوم مضافة · اضغط Enter أو , للإضافة",
+        "tagsHintBefore": "{count}/{max} وسوم مضافة · اضغط",
+        "tagsHintAfter": "للإضافة",
+        "portfolioLinks": "روابط معرض الأعمال",
+        "portfolioLinksOptional": "(اختياري)",
+        "portfolioLinksHint": "أضف حتى 5 روابط لعرض أعمالك السابقة.",
+        "portfolioLinkPlaceholder": "https://your-portfolio.com/project",
+        "addPortfolioLink": "إضافة رابط معرض",
+        "cancel": "إلغاء",
+        "saveChanges": "حفظ التغييرات",
+        "publish": "نشر الخدمة",
+        "saving": "جارٍ الحفظ...",
+        "publishing": "جارٍ النشر..."
+      },
+      "success": {
+        "createdTitle": "تم إنشاء الخدمة!",
+        "updatedTitle": "تم تحديث الخدمة!",
+        "redirecting": "جارٍ تحويلك إلى خدماتك..."
+      },
+      "toasts": {
+        "savingChanges": "جارٍ حفظ التغييرات...",
+        "publishing": "جارٍ نشر الخدمة...",
+        "created": "تم إرسال الخدمة للمراجعة 📬",
+        "createdDesc": "ستظهر في السوق بمجرد موافقة المدير عليها.",
+        "updated": "تم تحديث الخدمة بنجاح! ✨",
+        "updatedDesc": "جارٍ تحويلك إلى خدماتك...",
+        "sentForReview": "تم إرسال التغييرات للمراجعة 📬",
+        "sentForReviewDesc": "الخدمة مخفية حتى يوافق المدير على تغييراتك.",
+        "updateFailed": "فشل تحديث الخدمة",
+        "publishFailed": "فشل نشر الخدمة"
+      },
+      "errors": {
+        "noCertificate": "تعذر التحقق من شهادتك لهذا الكورس. يرجى التأكد من اجتيازك لاختبار الكورس.",
+        "forbiddenRole": "حسابك غير مصرح له بإنشاء الخدمات.",
+        "forbidden": "ليس لديك صلاحية تعديل هذه الخدمة.",
+        "notFound": "هذه الخدمة لم تعد موجودة.",
+        "maliciousUrl": "تم الإبلاغ عن رابط أو أكثر من روابط معرض الأعمال كخبيث. يرجى إزالتها قبل الحفظ.",
+        "rateLimited": "تغييرات كثيرة في وقت قصير. يرجى الانتظار بضع دقائق والمحاولة مرة أخرى.",
+        "conflict": "تغيرت حالة الخدمة أثناء التعديل (قد يكون المدير راجعها). أعد تحميل الصفحة وحاول مرة أخرى.",
+        "serverError": "حدث خطأ من جانبنا. يرجى المحاولة مرة أخرى.",
+        "generic": "حدث خطأ غير متوقع."
+      }
+    }
   }
 }

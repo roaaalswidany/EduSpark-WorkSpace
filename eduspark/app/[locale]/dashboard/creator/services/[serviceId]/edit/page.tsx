@@ -1,31 +1,40 @@
 import { redirect, notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
-import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 import { GraduationCap, ArrowLeft, Pencil } from "lucide-react";
 import { ServiceCreationForm } from "../../new/_components/service-creation-form";
 import type { CertifiedCourseOption } from "../../new/page";
-import { ServiceThumbnailUploader } from "../../_components/service-thumbnail-uploader"; 
+import { ServiceThumbnailUploader } from "../../_components/service-thumbnail-uploader";
 
 interface PageProps {
-  params: Promise<{ serviceId: string }>;
+  params: Promise<{ locale: string; serviceId: string }>;
 }
 
-export const metadata = {
-  title: "Edit Service — EduSpark",
-};
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "serviceForm.editPage" });
+  return { title: `${t("metadataTitle")} — EduSpark` };
+}
 
 export default async function EditServicePage({ params }: PageProps) {
   const { serviceId } = await params;
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
+
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
 
   const { id: userId, role } = session.user;
   if (role !== Role.CREATOR && role !== Role.ADMIN) {
-    redirect("/dashboard/student");
+    redirect(`/${locale}/dashboard/student`);
   }
+
+  const t = await getTranslations("serviceForm.editPage");
 
   const [service, certificates] = await Promise.all([
     db.service.findUnique({
@@ -35,7 +44,7 @@ export default async function EditServicePage({ params }: PageProps) {
         title: true,
         slug: true,
         description: true,
-        thumbnail: true, 
+        thumbnail: true,
         price: true,
         deliveryDays: true,
         revisions: true,
@@ -77,23 +86,23 @@ export default async function EditServicePage({ params }: PageProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
           <Link
             href="/dashboard/creator/services"
-            className="inline-flex items-center gap-1.5 text-xs text-foreground0 hover:text-foreground300 transition-colors mb-3"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-3"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back to My Services
+            <ArrowLeft className="w-3.5 h-3.5 rtl:rotate-180" />
+            {t("back")}
           </Link>
 
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-primary/50/10 flex items-center justify-center">
-              <Pencil className="w-4 h-4 text-indigo-400" />
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Pencil className="w-4 h-4 text-primary" />
             </div>
-            <p className="text-xs font-semibold text-foreground0 uppercase tracking-widest">
-              Creator Studio
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+              {t("eyebrow")}
             </p>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black text-foreground">
-            Edit Service
+            {t("title")}
           </h1>
           <p className="text-muted-foreground text-sm mt-1.5 truncate">
             {service.title}
@@ -102,17 +111,18 @@ export default async function EditServicePage({ params }: PageProps) {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 space-y-6">
-        <ServiceThumbnailUploader 
-          serviceId={service.id} 
-          currentThumbnail={service.thumbnail} 
+        <ServiceThumbnailUploader
+          serviceId={service.id}
+          currentThumbnail={service.thumbnail}
         />
 
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-600 dark:bg-amber-500/5 border border-amber-600 dark:border-amber-500/15">
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
           <GraduationCap className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-          <p className="text-amber-300/80 text-xs leading-relaxed">
-            <span className="font-semibold text-amber-300">Note: </span>
-            Changes to your service will appear on the marketplace immediately.
-            The category is locked to your certificate.
+          <p className="text-amber-800/80 dark:text-amber-300/80 text-xs leading-relaxed">
+            <span className="font-semibold text-amber-800 dark:text-amber-300">
+              {t("note")}{" "}
+            </span>
+            {t("noteText")}
           </p>
         </div>
 

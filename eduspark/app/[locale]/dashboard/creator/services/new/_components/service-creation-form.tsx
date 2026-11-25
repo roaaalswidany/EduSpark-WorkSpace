@@ -9,6 +9,7 @@ import {
   KeyboardEvent,
 } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -85,11 +86,15 @@ function TagInput({
   onChange,
   error,
   max = 5,
+  placeholder,
+  hint,
 }: {
   value: string[];
   onChange: (tags: string[]) => void;
   error?: string;
   max?: number;
+  placeholder: string;
+  hint: React.ReactNode;
 }) {
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -123,7 +128,7 @@ function TagInput({
         className={cn(
           "min-h-11 flex flex-wrap gap-1.5 items-center px-3 py-2 rounded-lg",
           "bg-background border border-border cursor-text",
-          "focus-within:border-primary focus-within:ring-1 focus-within:ring-emerald-500 transition-all"
+          "focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all"
         )}
       >
         {value.map((tag) => (
@@ -140,7 +145,7 @@ function TagInput({
                 e.stopPropagation();
                 removeTag(tag);
               }}
-              className="ml-0.5 hover:text-primary"
+              className="ml-0.5 hover:text-primary/80"
             >
               <X className="w-3 h-3" />
             </button>
@@ -154,22 +159,12 @@ function TagInput({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             onBlur={() => input && addTag(input)}
-            placeholder={value.length === 0 ? "Type a tag, press Enter..." : ""}
+            placeholder={value.length === 0 ? placeholder : ""}
             className="flex-1 min-w-30 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/70 outline-none"
           />
         )}
       </div>
-      <p className="text-[11px] text-muted-foreground/70">
-        {value.length}/{max} tags added · Press{" "}
-        <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground font-mono text-[10px]">
-          Enter
-        </kbd>{" "}
-        or{" "}
-        <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground font-mono text-[10px]">
-          ,
-        </kbd>{" "}
-        to add
-      </p>
+      <p className="text-[11px] text-muted-foreground/70">{hint}</p>
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
@@ -178,9 +173,13 @@ function TagInput({
 function PortfolioLinksInput({
   value,
   onChange,
+  placeholder,
+  addLabel,
 }: {
   value: string[];
   onChange: (links: string[]) => void;
+  placeholder: string;
+  addLabel: string;
 }) {
   const addLink = () => {
     if (value.length < 5) onChange([...value, ""]);
@@ -205,12 +204,12 @@ function PortfolioLinksInput({
               type="url"
               value={link}
               onChange={(e) => updateLink(i, e.target.value)}
-              placeholder="https://your-portfolio.com/project"
+              placeholder={placeholder}
               className={cn(
                 "w-full pl-9 pr-4 py-2.5 rounded-lg text-sm",
                 "bg-background border border-border text-foreground",
                 "placeholder:text-muted-foreground/70",
-                "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
+                "focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary",
                 "transition-all"
               )}
             />
@@ -229,10 +228,10 @@ function PortfolioLinksInput({
         <button
           type="button"
           onClick={addLink}
-          className="flex items-center gap-2 text-xs text-primary hover:text-primary font-medium transition-colors"
+          className="flex items-center gap-2 text-xs text-primary hover:text-primary/80 font-medium transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
-          Add portfolio link {value.length > 0 ? `(${value.length}/5)` : ""}
+          {addLabel} {value.length > 0 ? `(${value.length}/5)` : ""}
         </button>
       )}
     </div>
@@ -325,7 +324,7 @@ function NumberInput({
           "w-full py-2.5 rounded-lg text-sm",
           "bg-background border border-border text-foreground",
           "placeholder:text-muted-foreground/70",
-          "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
+          "focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary",
           "transition-all",
           prefix ? "pl-7" : "pl-3",
           suffix ? "pr-12" : "pr-3"
@@ -340,35 +339,13 @@ function NumberInput({
   );
 }
 
-function getErrorMessage(code: string | undefined): string {
-  switch (code) {
-    case "NO_CERTIFICATE":
-      return "Your certificate for this course could not be verified. Please ensure you passed the course quiz.";
-    case "FORBIDDEN_ROLE":
-      return "Your account is not authorized to create services.";
-    case "FORBIDDEN":
-      return "You don't have permission to edit this service.";
-    case "NOT_FOUND":
-      return "This service no longer exists.";
-    case "MALICIOUS_URL_BLOCKED":
-      return "One or more portfolio links were flagged as malicious. Please remove them before saving.";
-    case "RATE_LIMITED":
-      return "Too many changes in a short time. Please wait a few minutes and try again.";
-    case "CONFLICT":
-      return "The service status changed while you were editing (an administrator may have reviewed it). Reload the page and try again.";
-    case "SERVER_ERROR":
-      return "Something went wrong on our end. Please try again.";
-    default:
-      return "An unexpected error occurred.";
-  }
-}
-
 export function ServiceCreationForm({
   certifiedCourses,
   mode = "create",
   serviceId,
   initialData,
 }: ServiceCreationFormProps) {
+  const t = useTranslations("serviceForm.form");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -404,11 +381,34 @@ export function ServiceCreationForm({
     (c) => c.courseId === selectedCourseId
   );
 
+  function getErrorMessage(code: string | undefined): string {
+    switch (code) {
+      case "NO_CERTIFICATE":
+        return t("errors.noCertificate");
+      case "FORBIDDEN_ROLE":
+        return t("errors.forbiddenRole");
+      case "FORBIDDEN":
+        return t("errors.forbidden");
+      case "NOT_FOUND":
+        return t("errors.notFound");
+      case "MALICIOUS_URL_BLOCKED":
+        return t("errors.maliciousUrl");
+      case "RATE_LIMITED":
+        return t("errors.rateLimited");
+      case "CONFLICT":
+        return t("errors.conflict");
+      case "SERVER_ERROR":
+        return t("errors.serverError");
+      default:
+        return t("errors.generic");
+    }
+  }
+
   const onSubmit = form.handleSubmit((data) => {
     setServerError(null);
 
     const toastId = toast.loading(
-      isEdit ? "Saving changes..." : "Publishing service..."
+      isEdit ? t("toasts.savingChanges") : t("toasts.publishing")
     );
 
     startTransition(async () => {
@@ -422,17 +422,17 @@ export function ServiceCreationForm({
         const sentToReview = "sentToReview" in result && result.sentToReview;
         toast.success(
           !isEdit
-            ? "Service submitted for review 📬"
+            ? t("toasts.created")
             : sentToReview
-            ? "Changes sent for review 📬"
-            : "Service updated successfully! âœ¨",
+            ? t("toasts.sentForReview")
+            : t("toasts.updated"),
           {
             id: toastId,
             description: !isEdit
-              ? "It will appear in the marketplace once an administrator approves it."
+              ? t("toasts.createdDesc")
               : sentToReview
-              ? "The service is hidden until an administrator approves your changes."
-              : "Redirecting to your services...",
+              ? t("toasts.sentForReviewDesc")
+              : t("toasts.updatedDesc"),
           }
         );
         setTimeout(() => router.push("/dashboard/creator/services"), 1200);
@@ -451,7 +451,7 @@ export function ServiceCreationForm({
       const errorMessage = getErrorMessage(result.error);
       setServerError(errorMessage);
       toast.error(
-        isEdit ? "Failed to update service" : "Failed to publish service",
+        isEdit ? t("toasts.updateFailed") : t("toasts.publishFailed"),
         {
           id: toastId,
           description: errorMessage,
@@ -464,13 +464,13 @@ export function ServiceCreationForm({
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
         <div className="w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-5">
-          <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+          <CheckCircle2 className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
         </div>
         <h2 className="text-xl font-bold text-foreground mb-2">
-          {isEdit ? "Service Updated!" : "Service Created!"}
+          {isEdit ? t("success.updatedTitle") : t("success.createdTitle")}
         </h2>
         <p className="text-muted-foreground text-sm">
-          Redirecting to your services...
+          {t("success.redirecting")}
         </p>
       </div>
     );
@@ -480,8 +480,8 @@ export function ServiceCreationForm({
     <Form {...form}>
       <form onSubmit={onSubmit} className="space-y-6 mt-6">
         <FormSection
-          title="Service Foundation"
-          description="Link your service to a course you've certified in."
+          title={t("sections.foundation.title")}
+          description={t("sections.foundation.desc")}
         >
           <FormField
             control={form.control}
@@ -489,7 +489,8 @@ export function ServiceCreationForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-foreground">
-                  Certified Course <span className="text-destructive">*</span>
+                  {t("fields.certifiedCourse")}{" "}
+                  <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <Combobox
@@ -503,13 +504,13 @@ export function ServiceCreationForm({
                     }))}
                     value={field.value}
                     onChange={(v) => field.onChange(v)}
-                    placeholder="Select a certified course…"
-                    searchPlaceholder="Search courses…"
-                    emptyMessage="No matching courses."
+                    placeholder={t("fields.certifiedCoursePlaceholder")}
+                    searchPlaceholder={t("fields.certifiedCourseSearch")}
+                    emptyMessage={t("fields.certifiedCourseEmpty")}
                   />
                 </FormControl>
                 <FormDescription className="text-muted-foreground/70 text-xs">
-                  Only courses with a passing certificate are listed.
+                  {t("fields.certifiedCourseDesc")}
                 </FormDescription>
                 <FormMessage className="text-destructive text-xs" />
               </FormItem>
@@ -517,20 +518,20 @@ export function ServiceCreationForm({
           />
 
           {selectedCourse && (
-            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-amber-600 dark:bg-amber-500/5 border border-amber-600 dark:border-amber-500/15">
-              <div className="w-8 h-8 rounded-lg bg-amber-600 dark:bg-amber-500/10 flex items-center justify-center shrink-0">
+            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0">
                 <CheckCircle2 className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-amber-300 truncate">
+                <p className="text-xs font-semibold text-amber-800 dark:text-amber-300 truncate">
                   {selectedCourse.courseTitle}
                 </p>
                 <p className="text-[10px] text-muted-foreground mt-0.5">
-                  Credential{" "}
+                  {t("fields.credential")}{" "}
                   <span className="font-mono text-muted-foreground">
                     {selectedCourse.credentialId}
                   </span>{" "}
-                  · Score{" "}
+                  · {t("fields.score")}{" "}
                   <span className="text-amber-600 dark:text-amber-400 font-semibold">
                     {selectedCourse.score}%
                   </span>
@@ -539,20 +540,18 @@ export function ServiceCreationForm({
             </div>
           )}
 
-          {/* Category auto-derived notice */}
           <div className="flex items-start gap-2.5 p-3 rounded-lg bg-primary/5 border border-primary/15">
             <Sparkles className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
             <p className="text-[11px] text-primary leading-relaxed">
-              <span className="font-bold">Category is set automatically</span>{" "}
-              from your certificate. You can only offer services in categories
-              you&apos;re certified in.
+              <span className="font-bold">{t("fields.categoryAuto")}</span>{" "}
+              {t("fields.categoryAutoDesc")}
             </p>
           </div>
         </FormSection>
 
         <FormSection
-          title="Service Details"
-          description="Write a compelling title and description to attract buyers."
+          title={t("sections.details.title")}
+          description={t("sections.details.desc")}
         >
           <FormField
             control={form.control}
@@ -560,13 +559,14 @@ export function ServiceCreationForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-foreground">
-                  Service Title <span className="text-destructive">*</span>
+                  {t("fields.title")}{" "}
+                  <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="e.g. I will build a full-stack Next.js web application…"
-                    className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-emerald-500 h-10"
+                    placeholder={t("fields.titlePlaceholder")}
+                    className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-primary h-10"
                   />
                 </FormControl>
                 <div className="flex justify-between items-center">
@@ -585,14 +585,15 @@ export function ServiceCreationForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-foreground">
-                  Description <span className="text-destructive">*</span>
+                  {t("fields.description")}{" "}
+                  <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
                     rows={6}
-                    placeholder="Describe exactly what you'll deliver, what's included, your process, and any requirements from the buyer…"
-                    className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-emerald-500 resize-none"
+                    placeholder={t("fields.descriptionPlaceholder")}
+                    className="bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-primary resize-none"
                   />
                 </FormControl>
                 <div className="flex justify-between items-center">
@@ -607,8 +608,8 @@ export function ServiceCreationForm({
         </FormSection>
 
         <FormSection
-          title="Pricing & Delivery"
-          description="Set competitive rates based on your expertise level."
+          title={t("sections.pricing.title")}
+          description={t("sections.pricing.desc")}
         >
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <FormField
@@ -618,8 +619,9 @@ export function ServiceCreationForm({
                 <FormItem>
                   <FormLabel className="text-foreground">
                     <span className="flex items-center gap-1.5">
-                      <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
-                      Price (USD) <span className="text-destructive">*</span>
+                      <DollarSign className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                      {t("fields.price")}{" "}
+                      <span className="text-destructive">*</span>
                     </span>
                   </FormLabel>
                   <FormControl>
@@ -630,11 +632,11 @@ export function ServiceCreationForm({
                       max={10000}
                       step={0.01}
                       prefix="$"
-                      placeholder="25.00"
+                      placeholder={t("fields.pricePlaceholder")}
                     />
                   </FormControl>
                   <FormDescription className="text-muted-foreground/70 text-xs">
-                    Min $5 · Max $10,000
+                    {t("fields.priceHint")}
                   </FormDescription>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -649,7 +651,8 @@ export function ServiceCreationForm({
                   <FormLabel className="text-foreground">
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5 text-primary" />
-                      Delivery Time <span className="text-destructive">*</span>
+                      {t("fields.deliveryTime")}{" "}
+                      <span className="text-destructive">*</span>
                     </span>
                   </FormLabel>
                   <FormControl>
@@ -658,12 +661,12 @@ export function ServiceCreationForm({
                       onChange={field.onChange}
                       min={1}
                       max={90}
-                      suffix="days"
-                      placeholder="3"
+                      suffix={t("fields.deliveryDaysSuffix")}
+                      placeholder={t("fields.deliveryTimePlaceholder")}
                     />
                   </FormControl>
                   <FormDescription className="text-muted-foreground/70 text-xs">
-                    1–90 calendar days
+                    {t("fields.deliveryTimeHint")}
                   </FormDescription>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -678,7 +681,7 @@ export function ServiceCreationForm({
                   <FormLabel className="text-foreground">
                     <span className="flex items-center gap-1.5">
                       <RotateCcw className="w-3.5 h-3.5 text-info" />
-                      Revisions
+                      {t("fields.revisions")}
                     </span>
                   </FormLabel>
                   <FormControl>
@@ -687,11 +690,11 @@ export function ServiceCreationForm({
                       onChange={field.onChange}
                       min={0}
                       max={20}
-                      placeholder="1"
+                      placeholder={t("fields.revisionsPlaceholder")}
                     />
                   </FormControl>
                   <FormDescription className="text-muted-foreground/70 text-xs">
-                    0 = no revisions
+                    {t("fields.revisionsHint")}
                   </FormDescription>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -701,8 +704,8 @@ export function ServiceCreationForm({
         </FormSection>
 
         <FormSection
-          title="Tags & Portfolio"
-          description="Help buyers discover your service and see past work."
+          title={t("sections.tags.title")}
+          description={t("sections.tags.desc")}
         >
           <FormField
             control={form.control}
@@ -710,7 +713,8 @@ export function ServiceCreationForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-foreground">
-                  Tags <span className="text-destructive">*</span>
+                  {t("fields.tags")}{" "}
+                  <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <TagInput
@@ -720,6 +724,30 @@ export function ServiceCreationForm({
                       form.setValue("tags", newTags, { shouldValidate: true });
                     }}
                     error={form.formState.errors.tags?.message}
+                    placeholder={t("fields.tagsPlaceholder")}
+                    hint={
+                      <>
+                        {t("fields.tagsHint", {
+                          count: tags.length,
+                          max: 5,
+                        })
+                          .replace("{count}/{max}", `${tags.length}/5`)
+                          .split("Enter")[0]}
+                        <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground font-mono text-[10px]">
+                          Enter
+                        </kbd>{" "}
+                        or{" "}
+                        <kbd className="px-1 py-0.5 rounded bg-accent text-muted-foreground font-mono text-[10px]">
+                          ,
+                        </kbd>{" "}
+                        {t("fields.tagsHint", { count: tags.length, max: 5 })
+                          .split("Enter")[1]
+                          ?.replace(",", "")
+                          .replace("to add", "")
+                          .trim() ||
+                          ""}
+                      </>
+                    }
                   />
                 </FormControl>
               </FormItem>
@@ -732,9 +760,9 @@ export function ServiceCreationForm({
             render={() => (
               <FormItem>
                 <FormLabel className="text-foreground">
-                  Portfolio Links{" "}
+                  {t("fields.portfolioLinks")}{" "}
                   <span className="text-muted-foreground/70 font-normal text-xs">
-                    (optional)
+                    {t("fields.portfolioLinksOptional")}
                   </span>
                 </FormLabel>
                 <FormControl>
@@ -745,10 +773,12 @@ export function ServiceCreationForm({
                         shouldValidate: true,
                       })
                     }
+                    placeholder={t("fields.portfolioLinkPlaceholder")}
+                    addLabel={t("fields.addPortfolioLink")}
                   />
                 </FormControl>
                 <FormDescription className="text-muted-foreground/70 text-xs">
-                  Add up to 5 links to showcase your previous work.
+                  {t("fields.portfolioLinksHint")}
                 </FormDescription>
                 <FormMessage className="text-destructive text-xs" />
               </FormItem>
@@ -771,22 +801,22 @@ export function ServiceCreationForm({
             disabled={isPending}
             className="text-muted-foreground hover:text-foreground hover:bg-accent"
           >
-            Cancel
+            {t("fields.cancel")}
           </Button>
           <Button
             type="submit"
             disabled={isPending}
-            className="bg-primary hover:bg-primary text-primary-foreground font-semibold px-8 shadow-lg shadow-emerald-500/20 disabled:opacity-50"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 shadow-lg shadow-emerald-500/20 disabled:opacity-50"
           >
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                {isEdit ? "Saving..." : "Publishing..."}
+                {isEdit ? t("fields.saving") : t("fields.publishing")}
               </>
             ) : isEdit ? (
-              "Save Changes"
+              t("fields.saveChanges")
             ) : (
-              "Publish Service"
+              t("fields.publish")
             )}
           </Button>
         </div>
