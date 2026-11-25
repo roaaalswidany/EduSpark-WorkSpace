@@ -1090,5 +1090,23 @@
         "generic": "An unexpected error occurred."
       }
     }
+  },
+    "creatorOrders": {
+    "page": {
+      "eyebrow": "Creator Studio",
+      "title": "Incoming Orders",
+      "subtitle": "Manage orders from your clients.",
+      "metadataTitle": "Incoming Orders"
+    },
+    "stats": {
+      "new": "New",
+      "active": "In Progress",
+      "completed": "Completed"
+    },
+    "empty": {
+      "title": "No incoming orders",
+      "desc": "When clients order your services, their orders will appear here.",
+      "cta": "View My Services"
+    }
   }
 }

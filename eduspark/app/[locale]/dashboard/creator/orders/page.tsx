@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getServerSession } from "next-auth";
-import { Inbox, Search, ShieldAlert } from "lucide-react";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { Inbox, ShieldAlert } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
@@ -11,22 +11,35 @@ import {
   type OrderCardData,
 } from "../../orders/_components/order-card";
 
-export const metadata = {
-  title: "Incoming Orders — EduSpark",
-};
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({
+    locale,
+    namespace: "creatorOrders.page",
+  });
+  return { title: `${t("metadataTitle")} — EduSpark` };
+}
 
 export default async function CreatorOrdersPage() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
 
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+
+  const t = await getTranslations("creatorOrders");
   const userId = session.user.id;
   const role = session.user.role;
 
   if (role !== Role.CREATOR && role !== Role.ADMIN) {
-    redirect("/dashboard");
+    redirect(`/${locale}/dashboard`);
   }
 
-  // Incoming orders = Projects where I'm the CREATOR (seller)
   const projects = await db.project.findMany({
     where: { creatorId: userId },
     orderBy: { updatedAt: "desc" },
@@ -82,15 +95,17 @@ export default async function CreatorOrdersPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-2">
           <Inbox className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-widest">Creator Studio</span>
+          <span className="uppercase tracking-widest">
+            {t("page.eyebrow")}
+          </span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-          Incoming Orders
+          {t("page.title")}
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
-          Manage orders from your clients.
+          {t("page.subtitle")}
         </p>
       </div>
 
@@ -102,7 +117,7 @@ export default async function CreatorOrdersPage() {
               {newCount}
             </p>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">
-              New
+              {t("stats.new")}
             </p>
           </div>
           <div className="rounded-2xl bg-card border border-border p-4">
@@ -110,7 +125,7 @@ export default async function CreatorOrdersPage() {
               {activeCount}
             </p>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">
-              In Progress
+              {t("stats.active")}
             </p>
           </div>
           <div className="rounded-2xl bg-card border border-border p-4">
@@ -118,7 +133,7 @@ export default async function CreatorOrdersPage() {
               {completedCount}
             </p>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mt-2">
-              Completed
+              {t("stats.completed")}
             </p>
           </div>
         </div>
@@ -127,20 +142,20 @@ export default async function CreatorOrdersPage() {
       {orders.length === 0 ? (
         <div className="rounded-2xl bg-card border border-border p-12 sm:p-16 text-center">
           <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-5">
-            <Inbox className="w-7 h-7 text-emerald-400" />
+            <Inbox className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
           </div>
           <h2 className="text-lg font-bold text-foreground mb-1.5">
-            No incoming orders
+            {t("empty.title")}
           </h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
-            When clients order your services, their orders will appear here.
+            {t("empty.desc")}
           </p>
           <Link
             href="/dashboard/creator/services"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-primary-foreground text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
           >
             <ShieldAlert className="w-4 h-4" />
-            View My Services
+            {t("empty.cta")}
           </Link>
         </div>
       ) : (
