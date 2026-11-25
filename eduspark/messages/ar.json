@@ -888,5 +888,95 @@
       "failedDesc": "النتيجة {score}% — تحتاج {passingScore}% للنجاح",
       "submissionFailed": "فشل الإرسال"
     }
+  },
+    "creatorServices": {
+    "page": {
+      "eyebrow": "استوديو المنشئ",
+      "title": "خدماتي",
+      "subtitle": "أدر عروضك، وتتبّع الطلبات، وطوّر أعمالك.",
+      "metadataTitle": "خدماتي"
+    },
+    "stats": {
+      "total": "إجمالي الخدمات",
+      "active": "نشطة",
+      "orders": "الطلبات",
+      "projects": "المشاريع"
+    },
+    "card": {
+      "newService": "خدمة جديدة",
+      "actionsAria": "إجراءات الخدمة",
+      "viewPublic": "عرض الصفحة العامة",
+      "editService": "تعديل الخدمة",
+      "pauseService": "إيقاف الخدمة",
+      "withdrawSubmission": "سحب الطلب",
+      "submitForReview": "إرسال للمراجعة",
+      "deleteService": "حذف الخدمة",
+      "ordersCount": "{count, plural, =0 {لا توجد طلبات} =1 {طلب واحد} =2 {طلبان} few {# طلبات} many {# طلباً} other {# طلب}}",
+      "projectsCount": "{count, plural, =0 {لا توجد مشاريع} =1 {مشروع واحد} =2 {مشروعان} few {# مشاريع} many {# مشروعاً} other {# مشروع}}",
+      "from": "يبدأ من",
+      "changesRequested": "تغييرات مطلوبة:"
+    },
+    "statuses": {
+      "pendingReview": "قيد المراجعة",
+      "active": "نشطة",
+      "paused": "متوقفة",
+      "archived": "مؤرشفة"
+    },
+    "statusToasts": {
+      "updating": "جارٍ تحديث الحالة...",
+      "pausing": "جارٍ إيقاف الخدمة...",
+      "activating": "جارٍ تنشيط الخدمة...",
+      "submitting": "جارٍ الإرسال للمراجعة...",
+      "success": "تم تحديث الحالة",
+      "successDesc": "تم تحديث حالة خدمتك.",
+      "failed": "فشل تحديث الحالة",
+      "errorInvalidTransition": "هذا التغيير في الحالة غير مسموح. المدير وحده يمكنه تنشيط خدمة.",
+      "errorForbidden": "ليس لديك صلاحية تعديل هذه الخدمة.",
+      "errorGeneric": "فشل تحديث الحالة."
+    },
+    "deleteDialog": {
+      "title": "حذف الخدمة",
+      "subtitle": "لا يمكن التراجع عن هذا الإجراء.",
+      "confirmText": "هل أنت متأكد من حذف {title}؟ سيُزال نهائياً من السوق.",
+      "cancel": "إلغاء",
+      "delete": "حذف",
+      "deleting": "جارٍ الحذف...",
+      "toastLoading": "جارٍ حذف الخدمة...",
+      "toastSuccess": "تم حذف الخدمة",
+      "toastSuccessDesc": "تمت إزالة الخدمة من السوق.",
+      "toastFailed": "فشل الحذف",
+      "errors": {
+        "hasOrders": "هذه الخدمة لها طلبات أو مشاريع. أوقفها بدلاً من حذفها.",
+        "forbidden": "ليس لديك صلاحية حذف هذه الخدمة.",
+        "notFound": "الخدمة غير موجودة.",
+        "generic": "فشل حذف الخدمة."
+      }
+    },
+    "empty": {
+      "title": "لا توجد خدمات بعد",
+      "desc": "أنشئ أول خدمة لك وابدأ بالكسب. كل خدمة يجب أن ترتبط بكورس حصلت على شهادته.",
+      "cta": "أنشئ خدمتك الأولى"
+    },
+    "thumbnail": {
+      "title": "صورة الغلاف",
+      "hint": "الحجم الموصى به: 1280x720 (نسبة أبعاد 16:9).",
+      "replace": "استبدال",
+      "upload": "تحميل",
+      "change": "تغيير",
+      "noImage": "لا توجد صورة",
+      "openNewTab": "فتح في تبويب جديد",
+      "onlyAllowed": "يُسمح فقط بصور PNG أو JPG أو WebP.",
+      "maxSize": "الحد الأقصى لحجم الملف 2 ميغابايت.",
+      "uploading": "جارٍ تحميل الصورة...",
+      "success": "تم تحديث الصورة!",
+      "uploadFailed": "فشل التحميل",
+      "errors": {
+        "invalidType": "الملف ليس صورة PNG أو JPG أو WebP صالحة.",
+        "fileTooLarge": "الحد الأقصى لحجم الملف 2 ميغابايت.",
+        "serviceLocked": "الخدمة قيد المراجعة. اسحبها لتغيير الصورة.",
+        "rateLimited": "تحميلات كثيرة. يرجى المحاولة لاحقاً.",
+        "forbidden": "ليس لديك صلاحية تغيير هذه الصورة."
+      }
+    }
   }
 }

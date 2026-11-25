@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { getTranslations, getLocale } from "next-intl/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
@@ -7,17 +8,27 @@ import { CreatorServicesHeader } from "./_components/creator-services-header";
 import { CreatorServiceCard } from "./_components/creator-service-card";
 import { EmptyServicesState } from "./_components/empty-services-state";
 
-export const metadata = {
-  title: "My Services — EduSpark",
-};
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "creatorServices.page" });
+  return { title: `${t("metadataTitle")} — EduSpark` };
+}
 
 export default async function CreatorServicesPage() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
+  const locale = await getLocale();
+
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
 
   const { id: userId, role } = session.user;
   if (role !== Role.CREATOR && role !== Role.ADMIN) {
-    redirect("/dashboard/student");
+    redirect(`/${locale}/dashboard/student`);
   }
 
   const services = await db.service.findMany({

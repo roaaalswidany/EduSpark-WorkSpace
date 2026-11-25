@@ -888,5 +888,95 @@
       "failedDesc": "Scored {score}% — need {passingScore}% to pass",
       "submissionFailed": "Submission failed"
     }
+  },
+    "creatorServices": {
+    "page": {
+      "eyebrow": "Creator Studio",
+      "title": "My Services",
+      "subtitle": "Manage your offerings, track orders, and grow your business.",
+      "metadataTitle": "My Services"
+    },
+    "stats": {
+      "total": "Total Services",
+      "active": "Active",
+      "orders": "Orders",
+      "projects": "Projects"
+    },
+    "card": {
+      "newService": "New Service",
+      "actionsAria": "Service actions",
+      "viewPublic": "View Public",
+      "editService": "Edit Service",
+      "pauseService": "Pause Service",
+      "withdrawSubmission": "Withdraw Submission",
+      "submitForReview": "Submit for Review",
+      "deleteService": "Delete Service",
+      "ordersCount": "{count, plural, =0 {No orders} =1 {1 order} other {# orders}}",
+      "projectsCount": "{count, plural, =0 {No projects} =1 {1 project} other {# projects}}",
+      "from": "From",
+      "changesRequested": "Changes requested:"
+    },
+    "statuses": {
+      "pendingReview": "Pending Review",
+      "active": "Active",
+      "paused": "Paused",
+      "archived": "Archived"
+    },
+    "statusToasts": {
+      "updating": "Updating status...",
+      "pausing": "Pausing service...",
+      "activating": "Activating service...",
+      "submitting": "Submitting for review...",
+      "success": "Status updated",
+      "successDesc": "Your service status has been updated.",
+      "failed": "Status update failed",
+      "errorInvalidTransition": "That status change is not allowed. Only an administrator can activate a service.",
+      "errorForbidden": "You don't have permission to change this service.",
+      "errorGeneric": "Failed to update status."
+    },
+    "deleteDialog": {
+      "title": "Delete Service",
+      "subtitle": "This action cannot be undone.",
+      "confirmText": "Are you sure you want to delete {title}? This will permanently remove it from the marketplace.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting...",
+      "toastLoading": "Deleting service...",
+      "toastSuccess": "Service deleted",
+      "toastSuccessDesc": "The service has been removed from the marketplace.",
+      "toastFailed": "Deletion failed",
+      "errors": {
+        "hasOrders": "This service has orders or projects. Pause it instead of deleting.",
+        "forbidden": "You don't have permission to delete this service.",
+        "notFound": "Service not found.",
+        "generic": "Failed to delete service."
+      }
+    },
+    "empty": {
+      "title": "No services yet",
+      "desc": "Create your first service and start earning. Every service must be linked to a course you've been certified in.",
+      "cta": "Create Your First Service"
+    },
+    "thumbnail": {
+      "title": "Service Cover Image",
+      "hint": "Recommended size: 1280x720 (16:9 aspect ratio).",
+      "replace": "Replace",
+      "upload": "Upload",
+      "change": "Change",
+      "noImage": "No Image",
+      "openNewTab": "Open in new tab",
+      "onlyAllowed": "Only PNG, JPG, or WebP images are allowed.",
+      "maxSize": "Maximum file size is 2MB.",
+      "uploading": "Uploading thumbnail...",
+      "success": "Thumbnail updated!",
+      "uploadFailed": "Upload failed",
+      "errors": {
+        "invalidType": "The file is not a valid PNG, JPG or WebP image.",
+        "fileTooLarge": "Maximum file size is 2MB.",
+        "serviceLocked": "The service is under review. Withdraw it to change the image.",
+        "rateLimited": "Too many uploads. Please try again later.",
+        "forbidden": "You don't have permission to change this image."
+      }
+    }
   }
 }

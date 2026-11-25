@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { Briefcase, Package, TrendingUp, Layers, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -11,31 +12,33 @@ interface CreatorServicesHeaderProps {
   };
 }
 
-export function CreatorServicesHeader({ stats }: CreatorServicesHeaderProps) {
+export async function CreatorServicesHeader({ stats }: CreatorServicesHeaderProps) {
+  const t = await getTranslations("creatorServices");
+
   const cards = [
     {
-      label: "Total Services",
+      label: t("stats.total"),
       value: stats.total,
       icon: Package,
       color: "text-primary",
       bg: "bg-primary/10 border-primary/20",
     },
     {
-      label: "Active",
+      label: t("stats.active"),
       value: stats.active,
       icon: Layers,
-      color: "text-emerald-400",
+      color: "text-emerald-600 dark:text-emerald-400",
       bg: "bg-emerald-500/10 border-emerald-500/20",
     },
     {
-      label: "Orders",
+      label: t("stats.orders"),
       value: stats.totalOrders,
       icon: TrendingUp,
       color: "text-amber-600 dark:text-amber-400",
-      bg: "bg-amber-600 dark:bg-amber-500/10 border-amber-600 dark:border-amber-500/20",
+      bg: "bg-amber-500/10 border-amber-500/20",
     },
     {
-      label: "Projects",
+      label: t("stats.projects"),
       value: stats.totalProjects,
       icon: Briefcase,
       color: "text-info",
@@ -49,13 +52,15 @@ export function CreatorServicesHeader({ stats }: CreatorServicesHeaderProps) {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
             <Package className="w-3.5 h-3.5" />
-            <span className="uppercase tracking-widest">Creator Studio</span>
+            <span className="uppercase tracking-widest">
+              {t("page.eyebrow")}
+            </span>
           </div>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-            My Services
+            {t("page.title")}
           </h1>
           <p className="text-sm text-muted-foreground mt-2">
-            Manage your offerings, track orders, and grow your business.
+            {t("page.subtitle")}
           </p>
         </div>
 
@@ -63,12 +68,12 @@ export function CreatorServicesHeader({ stats }: CreatorServicesHeaderProps) {
           href="/dashboard/creator/services/new"
           className={cn(
             "inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl shrink-0",
-            "bg-primary hover:bg-primary text-primary-foreground text-sm font-bold",
+            "bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold",
             "transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
           )}
         >
           <Plus className="w-4 h-4" />
-          New Service
+          {t("card.newService")}
         </Link>
       </div>
 
