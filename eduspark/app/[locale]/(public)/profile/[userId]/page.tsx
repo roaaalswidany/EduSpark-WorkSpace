@@ -6,7 +6,7 @@ import { GraduationCap, Award, ArrowLeft, Package } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { ServiceStatus } from "@prisma/client";
-import { ProfileHeader } from "@/app/dashboard/profile/_components/profile-header";
+import { ProfileHeader } from "@/app/[locale]/dashboard/profile/_components/profile-header";
 import { PublicServicesGrid } from "./_components/public-services-grid";
 import { CreatorReputationCard } from "@/components/reviews/creator-reputation-card";
 

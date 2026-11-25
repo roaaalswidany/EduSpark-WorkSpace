@@ -1108,5 +1108,366 @@
       "desc": "When clients order your services, their orders will appear here.",
       "cta": "View My Services"
     }
+  },
+    "admin": {
+    "broadcast": {
+      "titlePlaceholder": "Notification Title",
+      "bodyPlaceholder": "Message body...",
+      "sending": "Sending...",
+      "sendToAll": "Send to All Users",
+      "successToast": "Notification sent to {count} users! 🎉",
+      "failedToast": "Failed to send notification"
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Platform overview, pending reviews, and administrative controls.",
+      "metadataTitle": "Admin Dashboard",
+      "pendingAlert": {
+        "title": "{count, plural, =1 {1 item awaiting your review} other {# items awaiting your review}}",
+        "details": "{courses, plural, =0 {No courses} =1 {1 course} other {# courses}} awaiting review · {services, plural, =0 {No services} =1 {1 service} other {# services}} awaiting review"
+      },
+      "stats": {
+        "activeUsers": "Active Users",
+        "totalCourses": "Total Courses",
+        "totalServices": "Total Services",
+        "revenue": "Revenue",
+        "newThisWeek": "+{count} this week"
+      },
+      "sections": {
+        "pendingReviews": "Pending Reviews",
+        "recentActivity": "Recent Activity",
+        "viewAll": "View all",
+        "broadcast": "Broadcast Notification",
+        "broadcastDesc": "Send a message to all active users.",
+        "quickActions": "Quick Actions",
+        "quickActionsDesc": "Jump to management sections."
+      },
+      "pendingEmpty": "All caught up! Nothing to review.",
+      "byCreator": "by",
+      "draftCourse": "Draft course",
+      "pausedService": "Paused service",
+      "review": "Review",
+      "activityEmpty": "No activity yet. Actions will appear here.",
+      "system": "System",
+      "actions": {
+        "manageUsers": "Manage Users",
+        "manageCourses": "Manage Courses",
+        "manageServices": "Manage Services"
+      }
+    },
+    "courses": {
+      "page": {
+        "eyebrow": "Admin",
+        "title": "Courses",
+        "subtitle": "Review submitted courses, publish, or archive courses across the platform.",
+        "metadataTitle": "Courses — Admin"
+      },
+      "table": {
+        "searchPlaceholder": "Search by title or description…",
+        "filters": {
+          "all": "All",
+          "pendingReview": "Pending review",
+          "published": "Published",
+          "draft": "Draft",
+          "archived": "Archived"
+        },
+        "showingRange": "Showing {start}–{end} of {total}",
+        "pageOf": "Page {page} of {total}",
+        "noCourses": "No courses found",
+        "noCoursesDesc": "Try adjusting your search or filters.",
+        "columns": {
+          "course": "Course",
+          "creator": "Creator",
+          "stats": "Stats",
+          "status": "Status"
+        },
+        "mobileLabels": {
+          "creator": "Creator:",
+          "stats": "Stats:",
+          "status": "Status:"
+        },
+        "uncategorized": "Uncategorized",
+        "levels": {
+          "beginner": "Beginner",
+          "intermediate": "Intermediate",
+          "advanced": "Advanced"
+        },
+        "statuses": {
+          "published": "Published",
+          "draft": "Draft",
+          "pendingReview": "Pending Review",
+          "archived": "Archived"
+        },
+        "actionsAria": "Course actions",
+        "menu": {
+          "reviewHeader": "Review",
+          "reviewContent": "Review Content & Lessons",
+          "reviewQuiz": "Review Quiz ({count, plural, =0 {no sections} =1 {1 section} other {# sections}})",
+          "viewPublic": "View Public",
+          "actionsHeader": "Actions",
+          "approveAndPublish": "Approve & publish",
+          "requestChanges": "Request changes...",
+          "publish": "Publish",
+          "setDraft": "Set as Draft",
+          "archive": "Archive"
+        },
+        "statusToasts": {
+          "publishedTitle": "Course published 🚀",
+          "publishedDesc": "The course is now visible in the public catalog.",
+          "draftTitle": "Moved to draft 📌",
+          "draftDesc": "The course is now hidden from students.",
+          "pendingReviewTitle": "Submitted for review",
+          "pendingReviewDesc": "The course is waiting for an administrator decision.",
+          "archivedTitle": "Course archived 🗄️",
+          "archivedDesc": "The course has been archived and is no longer active."
+        },
+        "toasts": {
+          "updating": "Updating to {status}...",
+          "updateFailed": "Update failed",
+          "reviewFailed": "Review failed",
+          "approving": "Approving...",
+          "sendingFeedback": "Sending feedback...",
+          "approved": "Course approved 🚀",
+          "approvedDesc": "The course is now public.",
+          "feedbackSent": "Feedback sent 📌",
+          "feedbackSentDesc": "The course is back in draft with your note."
+        },
+        "errors": {
+          "forbidden": "Only admins can perform this action.",
+          "forbiddenReview": "Only admins can review courses.",
+          "notFound": "Course not found.",
+          "invalidInput": "A valid reason is required to archive a course.",
+          "invalidInputReview": "A note of at least 10 characters is required.",
+          "invalidState": "This course is no longer waiting for review.",
+          "cannotPublishEmpty": "The course has no lessons yet.",
+          "quizTooShort": "The course quiz is below the minimum number of questions.",
+          "actionFailed": "Action failed."
+        },
+        "archiveDialog": {
+          "rejectTitle": "Request changes",
+          "archiveTitle": "Archive course",
+          "rejectDescBefore": "Tell the creator what must change before",
+          "rejectDescAfter": "can be published.",
+          "archiveDescBefore": "Please provide a reason for archiving",
+          "archiveDescAfter": ". This reason will be sent to the course creator by email.",
+          "reasonLabel": "Reason (required)",
+          "reasonPlaceholder": "e.g., Content violates platform quality guidelines.",
+          "reasonError": "Please provide at least 10 characters explaining the reason.",
+          "reasonCounter": "{count}/500 characters (minimum 10)",
+          "cancel": "Cancel",
+          "sendFeedback": "Send feedback",
+          "archive": "Archive course"
+        },
+        "pagination": {
+          "previous": "Previous",
+          "next": "Next"
+        }
+      }
+    },
+        "services": {
+      "page": {
+        "eyebrow": "Admin",
+        "title": "Services",
+        "subtitle": "Moderate and review all marketplace services.",
+        "metadataTitle": "Services — Admin"
+      },
+      "table": {
+        "searchPlaceholder": "Search by title or description…",
+        "filters": {
+          "all": "All",
+          "pendingReview": "Pending review",
+          "active": "Active",
+          "paused": "Paused",
+          "archived": "Archived"
+        },
+        "showingRange": "Showing {start}–{end} of {total}",
+        "pageOf": "Page {page} of {total}",
+        "noServices": "No services found",
+        "noServicesDesc": "Try adjusting your search or filters.",
+        "columns": {
+          "service": "Service",
+          "creator": "Creator",
+          "stats": "Stats",
+          "status": "Status"
+        },
+        "mobileLabels": {
+          "creator": "Creator:",
+          "stats": "Stats:",
+          "status": "Status:"
+        },
+        "uncategorized": "Uncategorized",
+        "deliveryShort": "{days}d",
+        "statuses": {
+          "pendingReview": "Pending Review",
+          "active": "Active",
+          "paused": "Paused",
+          "archived": "Archived"
+        },
+        "actionsAria": "Service actions",
+        "menu": {
+          "reviewHeader": "Review",
+          "reviewDetails": "Review Details",
+          "approveAndActivate": "Approve & Activate",
+          "requestChanges": "Request changes...",
+          "viewPublic": "View Public",
+          "changeStatus": "Change status",
+          "activate": "Activate",
+          "pause": "Pause",
+          "archive": "Archive"
+        },
+        "statusToasts": {
+          "pendingReviewTitle": "Service submitted for review",
+          "pendingReviewDesc": "The service is waiting for an administrator decision.",
+          "activeTitle": "Service activated ▶️",
+          "activeDesc": "The service is now visible in the marketplace.",
+          "pausedTitle": "Service paused ⏸️",
+          "pausedDesc": "The service is now hidden from buyers.",
+          "archivedTitle": "Service archived 🗄️",
+          "archivedDesc": "The service has been archived and is no longer active."
+        },
+        "toasts": {
+          "updating": "Updating to {status}...",
+          "updateFailed": "Update failed",
+          "reviewFailed": "Review failed",
+          "approving": "Approving...",
+          "sendingFeedback": "Sending feedback...",
+          "approved": "Service approved 🚀",
+          "approvedDesc": "The service is now live in the marketplace.",
+          "feedbackSent": "Feedback sent 📌",
+          "feedbackSentDesc": "The service is paused with your note. The creator can fix it and resubmit."
+        },
+        "errors": {
+          "forbidden": "Only admins can perform this action.",
+          "forbiddenReview": "Only admins can review services.",
+          "notFound": "Service not found.",
+          "invalidInput": "A valid reason is required to archive a service.",
+          "invalidInputReview": "A note of at least 10 characters is required to request changes.",
+          "invalidState": "This service is no longer waiting for review.",
+          "actionFailed": "Action failed."
+        },
+        "archiveDialog": {
+          "rejectTitle": "Request changes",
+          "archiveTitle": "Archive service",
+          "rejectDescBefore": "Tell the creator what must change before",
+          "rejectDescAfter": "can go live. The service is paused and this note is shown to the creator.",
+          "archiveDescBefore": "Please provide a reason for archiving",
+          "archiveDescAfter": ". This reason will be sent to the service creator by email.",
+          "reasonLabel": "Reason (required)",
+          "reasonPlaceholder": "e.g., Service offering violates marketplace policy.",
+          "reasonError": "Please provide at least 10 characters explaining the reason.",
+          "reasonCounter": "{count}/500 characters (minimum 10)",
+          "cancel": "Cancel",
+          "sendFeedback": "Send feedback",
+          "archive": "Archive service"
+        },
+        "pagination": {
+          "previous": "Previous",
+          "next": "Next"
+        },
+        "modal": {
+          "title": "Review Service",
+          "subtitle": "Review all details before making a decision.",
+          "statusLabel": "Status",
+          "by": "By",
+          "deliveryDays": "{count, plural, =1 {1 day delivery} other {# days delivery}}",
+          "revisions": "{count, plural, =0 {No revisions} =1 {1 revision} other {# revisions}}",
+          "orders": "{count, plural, =0 {No orders} =1 {1 order} other {# orders}}",
+          "description": "Description",
+          "tags": "Tags",
+          "portfolio": "Portfolio",
+          "unsafeLink": "Unsafe link not shown: {url}",
+          "close": "Close",
+          "approveActivate": "Approve & Activate",
+          "requestChanges": "Request changes",
+          "archive": "Archive"
+        }
+      }
+    },
+    "users": {
+      "page": {
+        "eyebrow": "Admin",
+        "title": "Users",
+        "subtitle": "Manage roles, activate or suspend accounts.",
+        "metadataTitle": "Users — Admin"
+      },
+      "table": {
+        "searchPlaceholder": "Search by name or email…",
+        "filters": {
+          "all": "All",
+          "students": "Students",
+          "creators": "Creators",
+          "admins": "Admins"
+        },
+        "showingRange": "Showing {start}–{end} of {total}",
+        "pageOf": "Page {page} of {total}",
+        "noUsers": "No users found",
+        "noUsersDesc": "Try adjusting your search or filters.",
+        "columns": {
+          "user": "User",
+          "role": "Role",
+          "activity": "Activity",
+          "status": "Status"
+        },
+        "mobileLabels": {
+          "role": "Role:",
+          "activity": "Activity:",
+          "status": "Status:"
+        },
+        "youBadge": "YOU",
+        "status": {
+          "active": "Active",
+          "suspended": "Suspended"
+        },
+        "actionsAria": "User actions",
+        "menu": {
+          "changeRole": "Change role",
+          "makeStudent": "Make Student",
+          "makeCreator": "Make Creator",
+          "makeAdmin": "Make Admin",
+          "suspendAccount": "Suspend account",
+          "activateAccount": "Activate account"
+        },
+        "toasts": {
+          "suspending": "Suspending account...",
+          "activating": "Activating account...",
+          "actionFailed": "Action failed",
+          "suspended": "Account suspended",
+          "suspendedDesc": "{name}'s account has been suspended.",
+          "activated": "Account activated",
+          "activatedDesc": "{name}'s account has been reactivated.",
+          "updatingRole": "Updating role to {role}...",
+          "roleUpdateFailed": "Role update failed",
+          "roleUpdated": "Role updated to {role}",
+          "roleUpdatedDesc": "{name}'s role has been changed."
+        },
+        "errors": {
+          "cannotModifySelf": "You cannot perform this action on your own account.",
+          "forbidden": "Only admins can perform this action.",
+          "notFound": "User not found.",
+          "invalidInput": "A valid reason is required to suspend an account.",
+          "actionFailed": "Action failed."
+        },
+        "roleLabels": {
+          "student": "Student",
+          "creator": "Creator",
+          "admin": "Admin"
+        },
+        "suspendDialog": {
+          "title": "Suspend account",
+          "descBefore": "Please provide a reason for suspending",
+          "descAfter": ". This reason will be sent to the user by email.",
+          "reasonLabel": "Reason (required)",
+          "reasonPlaceholder": "e.g., Violation of platform terms of service.",
+          "reasonError": "Please provide at least 10 characters explaining the reason.",
+          "reasonCounter": "{count}/500 characters (minimum 10)",
+          "cancel": "Cancel",
+          "suspend": "Suspend account"
+        },
+        "pagination": {
+          "previous": "Previous",
+          "next": "Next"
+        }
+      }
+    }
   }
 }

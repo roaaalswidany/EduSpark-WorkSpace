@@ -1,25 +1,39 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
+import { getTranslations, getLocale } from "next-intl/server";
 import { GraduationCap } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { CoursesTable } from "./_components/courses-table";
 
-export const metadata = {
-  title: "Courses — Admin — EduSpark",
-};
-
 const PAGE_SIZE = 20;
 
 interface PageProps {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ q?: string; status?: string; page?: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({
+    locale,
+    namespace: "admin.courses.page",
+  });
+  return { title: `${t("metadataTitle")} — EduSpark` };
 }
 
 export default async function AdminCoursesPage({ searchParams }: PageProps) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
-  if (session.user.role !== "ADMIN") redirect("/dashboard");
+  const locale = await getLocale();
 
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+  if (session.user.role !== "ADMIN") {
+    redirect(`/${locale}/dashboard`);
+  }
+
+  const t = await getTranslations("admin.courses.page");
   const sp = await searchParams;
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
@@ -32,14 +46,17 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
       ],
     }),
     ...(sp.status && {
-      status: sp.status as "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "ARCHIVED",
+      status: sp.status as
+        | "DRAFT"
+        | "PENDING_REVIEW"
+        | "PUBLISHED"
+        | "ARCHIVED",
     }),
   };
 
   const [courses, total, statusCounts] = await Promise.all([
     db.course.findMany({
       where,
-      // Review queue: oldest submission first.
       orderBy:
         sp.status === "PENDING_REVIEW"
           ? { submittedAt: "asc" as const }
@@ -76,7 +93,8 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
   const counts = {
     DRAFT: statusCounts.find((s) => s.status === "DRAFT")?._count._all ?? 0,
     PENDING_REVIEW:
-      statusCounts.find((s) => s.status === "PENDING_REVIEW")?._count._all ?? 0,
+      statusCounts.find((s) => s.status === "PENDING_REVIEW")?._count._all ??
+      0,
     PUBLISHED:
       statusCounts.find((s) => s.status === "PUBLISHED")?._count._all ?? 0,
     ARCHIVED:
@@ -90,14 +108,14 @@ export default async function AdminCoursesPage({ searchParams }: PageProps) {
       <div className="mb-8">
         <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400 mb-2">
           <GraduationCap className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-widest">Admin</span>
+          <span className="uppercase tracking-widest">
+            {t("eyebrow")}
+          </span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-          Courses
+          {t("title")}
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">
-          Review submitted courses, publish, or archive courses across the platform.
-        </p>
+        <p className="text-sm text-muted-foreground mt-2">{t("subtitle")}</p>
       </div>
 
       <CoursesTable

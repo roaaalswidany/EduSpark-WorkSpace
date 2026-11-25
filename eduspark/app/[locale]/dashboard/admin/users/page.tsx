@@ -1,25 +1,39 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
+import { getTranslations, getLocale } from "next-intl/server";
 import { Users } from "lucide-react";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { UsersTable } from "./_components/users-table";
 
-export const metadata = {
-  title: "Users — Admin — EduSpark",
-};
-
 const PAGE_SIZE = 20;
 
 interface PageProps {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ q?: string; role?: string; page?: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({
+    locale,
+    namespace: "admin.users.page",
+  });
+  return { title: `${t("metadataTitle")} — EduSpark` };
 }
 
 export default async function AdminUsersPage({ searchParams }: PageProps) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/auth/login");
-  if (session.user.role !== "ADMIN") redirect("/dashboard");
+  const locale = await getLocale();
 
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+  if (session.user.role !== "ADMIN") {
+    redirect(`/${locale}/dashboard`);
+  }
+
+  const t = await getTranslations("admin.users.page");
   const sp = await searchParams;
 
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
@@ -37,7 +51,6 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
     }),
   };
 
-  // ── Fetch paginated users + total + role counts in parallel ────
   const [users, total, totals] = await Promise.all([
     db.user.findMany({
       where,
@@ -78,18 +91,15 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-      {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 text-xs font-bold text-primary mb-2">
           <Users className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-widest">Admin</span>
+          <span className="uppercase tracking-widest">{t("eyebrow")}</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-          Users
+          {t("title")}
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">
-          Manage roles, activate or suspend accounts.
-        </p>
+        <p className="text-sm text-muted-foreground mt-2">{t("subtitle")}</p>
       </div>
 
       <UsersTable

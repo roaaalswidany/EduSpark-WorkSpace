@@ -1,9 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useTransition, useCallback, useRef, useEffect } from "react";
+import {
+  useState,
+  useTransition,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -65,32 +72,20 @@ interface ServicesTableProps {
 }
 
 const STATUS_BADGE: Record<ServiceStatus, string> = {
-  PENDING_REVIEW: "bg-sky-500/10 text-sky-400 border-sky-500/20",
-  ACTIVE: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  PAUSED: "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-500/20",
+  PENDING_REVIEW:
+    "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20",
+  ACTIVE:
+    "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+  PAUSED:
+    "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20",
   ARCHIVED: "bg-accent/50 text-muted-foreground border-border",
 };
 
-const STATUS_TOAST: Record<
-  ServiceStatus,
-  { title: string; description: string }
-> = {
-  PENDING_REVIEW: {
-    title: "Service submitted for review",
-    description: "The service is waiting for an administrator decision.",
-  },
-  ACTIVE: {
-    title: "Service activated ▶️",
-    description: "The service is now visible in the marketplace.",
-  },
-  PAUSED: {
-    title: "Service paused ⏸️",
-    description: "The service is now hidden from buyers.",
-  },
-  ARCHIVED: {
-    title: "Service archived 🗄️",
-    description: "The service has been archived and is no longer active.",
-  },
+const STATUS_KEYS: Record<ServiceStatus, string> = {
+  PENDING_REVIEW: "pendingReview",
+  ACTIVE: "active",
+  PAUSED: "paused",
+  ARCHIVED: "archived",
 };
 
 const GRADIENTS = [
@@ -137,14 +132,12 @@ function ServiceThumb({
       )}
       style={{ width: size, height: size }}
     >
-      <span className="text-foreground/60 font-bold" style={{ fontSize: size * 0.4 }}>
+      <span className="text-white font-bold" style={{ fontSize: size * 0.4 }}>
         {title.charAt(0)}
       </span>
     </div>
   );
 }
-
-// ─── Service Details Modal ────────────────────────────────────────
 
 function ServiceDetailsModal({
   service,
@@ -157,6 +150,8 @@ function ServiceDetailsModal({
   onApprove: () => void;
   onArchive: () => void;
 }) {
+  const t = useTranslations("admin.services.table.modal");
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
@@ -164,27 +159,32 @@ function ServiceDetailsModal({
         onClick={onClose}
       />
       <div className="relative w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl bg-card border border-border shadow-2xl overflow-hidden animate-scale-in">
-        {/* Header */}
         <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border">
           <div>
-            <h2 className="text-lg font-bold text-foreground">Review Service</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">Review all details before making a decision.</p>
+            <h2 className="text-lg font-bold text-foreground">{t("title")}</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("subtitle")}
+            </p>
           </div>
           <button
             onClick={onClose}
             className="p-2 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+            aria-label={t("close")}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Thumbnail + Main Info */}
           <div className="flex flex-col sm:flex-row gap-6">
             <div className="w-full sm:w-64 shrink-0">
               <div className="relative aspect-video rounded-xl overflow-hidden bg-background border border-border">
-                <ServiceThumb id={service.id} title={service.title} thumbnail={service.thumbnail} size={256} />
+                <ServiceThumb
+                  id={service.id}
+                  title={service.title}
+                  thumbnail={service.thumbnail}
+                  size={256}
+                />
               </div>
             </div>
             <div className="flex-1 space-y-3">
@@ -195,40 +195,64 @@ function ServiceDetailsModal({
                     STATUS_BADGE[service.status]
                   )}
                 >
-                  {service.status}
+                  {t(`../statuses.${STATUS_KEYS[service.status]}`)}
                 </span>
-                <h1 className="text-xl font-bold text-foreground">{service.title}</h1>
+                <h1 className="text-xl font-bold text-foreground">
+                  {service.title}
+                </h1>
                 <p className="text-sm text-muted-foreground mt-1">
-                  By <Link href={`/profile/${service.creator.id}`} className="text-primary hover:underline">{service.creator.name}</Link>
+                  {t("by")}{" "}
+                  <Link
+                    href={`/profile/${service.creator.id}`}
+                    className="text-primary hover:underline"
+                  >
+                    {service.creator.name}
+                  </Link>
                   {service.category && <> · {service.category.name}</>}
                 </p>
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {service.deliveryDays} days delivery</span>
-                <span className="flex items-center gap-1.5"><RotateCcw className="w-4 h-4" /> {service.revisions} revisions</span>
-                <span className="flex items-center gap-1.5"><ShoppingCart className="w-4 h-4" /> {service._count.orders} orders</span>
+                <span className="flex items-center gap-1.5">
+                  <Clock className="w-4 h-4" />{" "}
+                  {t("deliveryDays", { count: service.deliveryDays })}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <RotateCcw className="w-4 h-4" />{" "}
+                  {t("revisions", { count: service.revisions })}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <ShoppingCart className="w-4 h-4" />{" "}
+                  {t("orders", { count: service._count.orders })}
+                </span>
               </div>
               <div className="pt-2">
-                <p className="text-2xl font-black text-emerald-400">${service.price.toFixed(2)}</p>
+                <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                  ${service.price.toFixed(2)}
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Description */}
           <div>
-            <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2"><FileText className="w-4 h-4 text-primary" /> Description</h3>
+            <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-primary" /> {t("description")}
+            </h3>
             <div className="p-4 rounded-xl bg-background border border-border text-sm text-foreground leading-relaxed whitespace-pre-wrap">
               {service.description}
             </div>
           </div>
 
-          {/* Tags */}
           {service.tags.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2"><Tag className="w-4 h-4 text-primary" /> Tags</h3>
+              <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+                <Tag className="w-4 h-4 text-primary" /> {t("tags")}
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {service.tags.map((tag) => (
-                  <span key={tag} className="px-2.5 py-1 rounded-full bg-accent border border-border text-xs text-foreground">
+                  <span
+                    key={tag}
+                    className="px-2.5 py-1 rounded-full bg-accent border border-border text-xs text-foreground"
+                  >
                     #{tag}
                   </span>
                 ))}
@@ -236,75 +260,81 @@ function ServiceDetailsModal({
             </div>
           )}
 
-          {/* Portfolio Links */}
           {service.portfolioLinks.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2"><LinkIcon className="w-4 h-4 text-primary" /> Portfolio</h3>
+              <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+                <LinkIcon className="w-4 h-4 text-primary" />{" "}
+                {t("portfolio")}
+              </h3>
               <div className="space-y-2">
-                {service.portfolioLinks.map((link, i) => isHttpsUrl(link) ? (
-                  <a
-                    key={i}
-                    href={link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/40 text-sm text-muted-foreground hover:text-primary transition-all"
-                  >
-                    <ExternalLink className="w-4 h-4 shrink-0" />
-                    <span className="truncate">{link}</span>
-                  </a>
-                ) : (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 p-3 rounded-lg bg-background border border-destructive/30 text-sm text-destructive"
-                  >
-                    <span className="truncate">Unsafe link not shown: {link}</span>
-                  </div>
-                ))}
+                {service.portfolioLinks.map((link, i) =>
+                  isHttpsUrl(link) ? (
+                    <a
+                      key={i}
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border hover:border-primary/40 text-sm text-muted-foreground hover:text-primary transition-all"
+                    >
+                      <ExternalLink className="w-4 h-4 shrink-0" />
+                      <span className="truncate">{link}</span>
+                    </a>
+                  ) : (
+                    <div
+                      key={i}
+                      className="flex items-center gap-2 p-3 rounded-lg bg-background border border-destructive/30 text-sm text-destructive"
+                    >
+                      <span className="truncate">
+                        {t("unsafeLink", { url: link })}
+                      </span>
+                    </div>
+                  )
+                )}
               </div>
             </div>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="shrink-0 px-6 py-4 border-t border-border bg-background/40 flex items-center justify-end gap-3">
+        <div className="shrink-0 px-6 py-4 border-t border-border bg-background/40 flex items-center justify-end gap-3 flex-wrap">
           <button
             onClick={onClose}
             className="px-4 py-2 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
           >
-            Close
+            {t("close")}
           </button>
 
           {service.status === "PENDING_REVIEW" && (
             <>
               <button
                 onClick={onArchive}
-                className="px-4 py-2 rounded-lg text-sm font-bold text-amber-600 dark:text-amber-400 bg-amber-600 dark:bg-amber-500/10 hover:bg-amber-600 border border-amber-600 dark:border-amber-500/20 transition-all"
+                className="px-4 py-2 rounded-lg text-sm font-bold text-amber-700 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 transition-all"
               >
-                Request changes
+                {t("requestChanges")}
               </button>
               <button
                 onClick={onApprove}
                 className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 transition-all inline-flex items-center gap-2"
               >
-                <CheckCircle2 className="w-4 h-4" /> Approve & Activate
+                <CheckCircle2 className="w-4 h-4" /> {t("approveActivate")}
               </button>
             </>
           )}
 
-          {service.status !== "ARCHIVED" && service.status !== "PENDING_REVIEW" && (
-            <button
-              onClick={onArchive}
-              className="px-4 py-2 rounded-lg text-sm font-bold text-destructive bg-destructive/10 hover:bg-destructive/20 border border-destructive/20 transition-all"
-            >
-              Archive
-            </button>
-          )}
+          {service.status !== "ARCHIVED" &&
+            service.status !== "PENDING_REVIEW" && (
+              <button
+                onClick={onArchive}
+                className="px-4 py-2 rounded-lg text-sm font-bold text-destructive bg-destructive/10 hover:bg-destructive/20 border border-destructive/20 transition-all"
+              >
+                {t("archive")}
+              </button>
+            )}
           {service.status === "PAUSED" && (
             <button
               onClick={onApprove}
               className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 transition-all inline-flex items-center gap-2"
             >
-              <CheckCircle2 className="w-4 h-4" /> Approve & Activate
+              <CheckCircle2 className="w-4 h-4" /> {t("approveActivate")}
             </button>
           )}
         </div>
@@ -313,17 +343,16 @@ function ServiceDetailsModal({
   );
 }
 
-// ─── Main Table Component ─────────────────────────────────────────
-
 export function ServicesTable({
   services,
   statusCounts,
   initialQuery,
-  initialStatus,
+  initialStatus: _initialStatus,
   total,
   currentPage,
   totalPages,
 }: ServicesTableProps) {
+  const t = useTranslations("admin.services.table");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -339,8 +368,9 @@ export function ServicesTable({
   } | null>(null);
   const [reasonInput, setReasonInput] = useState("");
   const [reasonError, setReasonError] = useState<string | null>(null);
-  
-  const [selectedService, setSelectedService] = useState<ServiceRow | null>(null);
+  const [selectedService, setSelectedService] = useState<ServiceRow | null>(
+    null
+  );
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const activeStatus = searchParams.get("status") ?? "";
@@ -391,8 +421,8 @@ export function ServicesTable({
     reason?: string
   ) => {
     setPendingServiceId(service.id);
-
-    const toastId = toast.loading(`Updating to ${status.toLowerCase()}...`);
+    const statusLabel = t(`statuses.${STATUS_KEYS[status]}`);
+    const toastId = toast.loading(t("toasts.updating", { status: statusLabel }));
 
     startTransition(async () => {
       const result = await updateServiceAction({
@@ -404,15 +434,15 @@ export function ServicesTable({
       setPendingServiceId(null);
 
       if (!result.success) {
-        const messages: Record<string, string> = {
-          FORBIDDEN: "Only admins can perform this action.",
-          NOT_FOUND: "Service not found.",
-          INVALID_INPUT: "A valid reason is required to archive a service.",
+        const errorMap: Record<string, string> = {
+          FORBIDDEN: t("errors.forbidden"),
+          NOT_FOUND: t("errors.notFound"),
+          INVALID_INPUT: t("errors.invalidInput"),
         };
-        const errorMessage = messages[result.error] ?? "Action failed.";
+        const errorMessage = errorMap[result.error] ?? t("errors.actionFailed");
 
         setActionError(errorMessage);
-        toast.error("Update failed", {
+        toast.error(t("toasts.updateFailed"), {
           id: toastId,
           description: errorMessage,
         });
@@ -420,20 +450,17 @@ export function ServicesTable({
         return;
       }
 
-      const toastConfig = STATUS_TOAST[status];
-      toast.success(toastConfig.title, {
+      const statusKey = STATUS_KEYS[status];
+      toast.success(t(`statusToasts.${statusKey}Title`), {
         id: toastId,
-        description: toastConfig.description,
+        description: t(`statusToasts.${statusKey}Desc`),
       });
-      setSelectedService(null); 
+      setSelectedService(null);
       router.refresh();
     });
   };
 
-  const handleChangeStatus = (
-    service: ServiceRow,
-    status: ServiceStatus
-  ) => {
+  const handleChangeStatus = (service: ServiceRow, status: ServiceStatus) => {
     setOpenMenuId(null);
     setActionError(null);
 
@@ -451,41 +478,52 @@ export function ServicesTable({
     executeChangeStatus(service, status);
   };
 
-  // Review decision (admin gate): approve → ACTIVE; reject → PAUSED with a note the creator sees.
   const runReview = (
     service: ServiceRow,
     decision: "APPROVE" | "REJECT",
     note?: string
   ) => {
     setPendingServiceId(service.id);
-    const toastId = toast.loading(decision === "APPROVE" ? "Approving..." : "Sending feedback...");
+    const toastId = toast.loading(
+      decision === "APPROVE" ? t("toasts.approving") : t("toasts.sendingFeedback")
+    );
 
     startTransition(async () => {
-      const result = await reviewServiceAction({ serviceId: service.id, decision, note });
+      const result = await reviewServiceAction({
+        serviceId: service.id,
+        decision,
+        note,
+      });
       setPendingServiceId(null);
 
       if (!result.success) {
-        const messages: Record<string, string> = {
-          FORBIDDEN: "Only admins can review services.",
-          INVALID_STATE: "This service is no longer waiting for review.",
-          INVALID_INPUT: "A note of at least 10 characters is required to request changes.",
-          NOT_FOUND: "Service not found.",
+        const errorMap: Record<string, string> = {
+          FORBIDDEN: t("errors.forbiddenReview"),
+          INVALID_STATE: t("errors.invalidState"),
+          INVALID_INPUT: t("errors.invalidInputReview"),
+          NOT_FOUND: t("errors.notFound"),
         };
-        const errorMessage = messages[result.error] ?? "Action failed.";
+        const errorMessage = errorMap[result.error] ?? t("errors.actionFailed");
         setActionError(errorMessage);
-        toast.error("Review failed", { id: toastId, description: errorMessage });
+        toast.error(t("toasts.reviewFailed"), {
+          id: toastId,
+          description: errorMessage,
+        });
         setTimeout(() => setActionError(null), 4000);
         router.refresh();
         return;
       }
 
-      toast.success(decision === "APPROVE" ? "Service approved 🚀" : "Feedback sent ًں“‌", {
-        id: toastId,
-        description:
-          decision === "APPROVE"
-            ? "The service is now live in the marketplace."
-            : "The service is paused with your note. The creator can fix it and resubmit.",
-      });
+      toast.success(
+        decision === "APPROVE" ? t("toasts.approved") : t("toasts.feedbackSent"),
+        {
+          id: toastId,
+          description:
+            decision === "APPROVE"
+              ? t("toasts.approvedDesc")
+              : t("toasts.feedbackSentDesc"),
+        }
+      );
       setSelectedService(null);
       router.refresh();
     });
@@ -500,7 +538,11 @@ export function ServicesTable({
   const handleRequestChanges = (service: ServiceRow) => {
     setOpenMenuId(null);
     setActionError(null);
-    setArchiveDialog({ serviceId: service.id, serviceTitle: service.title, mode: "REJECT" });
+    setArchiveDialog({
+      serviceId: service.id,
+      serviceTitle: service.title,
+      mode: "REJECT",
+    });
     setReasonInput("");
     setReasonError(null);
   };
@@ -510,7 +552,7 @@ export function ServicesTable({
 
     const trimmed = reasonInput.trim();
     if (trimmed.length < 10) {
-      setReasonError("Please provide at least 10 characters explaining the reason.");
+      setReasonError(t("archiveDialog.reasonError"));
       return;
     }
 
@@ -530,19 +572,25 @@ export function ServicesTable({
   const filters = [
     {
       value: "",
-      label: "All",
-      count:
-        statusCounts.ACTIVE + statusCounts.PAUSED + statusCounts.ARCHIVED,
+      label: t("filters.all"),
+      count: statusCounts.ACTIVE + statusCounts.PAUSED + statusCounts.ARCHIVED,
     },
-    { value: "PENDING_REVIEW", label: "Pending review", count: statusCounts.PENDING_REVIEW }, 
-    { value: "ACTIVE", label: "Active", count: statusCounts.ACTIVE },
-    { value: "PAUSED", label: "Paused", count: statusCounts.PAUSED },
-    { value: "ARCHIVED", label: "Archived", count: statusCounts.ARCHIVED },
+    {
+      value: "PENDING_REVIEW",
+      label: t("filters.pendingReview"),
+      count: statusCounts.PENDING_REVIEW,
+    },
+    { value: "ACTIVE", label: t("filters.active"), count: statusCounts.ACTIVE },
+    { value: "PAUSED", label: t("filters.paused"), count: statusCounts.PAUSED },
+    {
+      value: "ARCHIVED",
+      label: t("filters.archived"),
+      count: statusCounts.ARCHIVED,
+    },
   ];
 
   return (
     <div className="space-y-4">
-      {/* Search + Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -550,12 +598,12 @@ export function ServicesTable({
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Search by title or description…"
+            placeholder={t("searchPlaceholder")}
             className={cn(
               "w-full h-11 pl-10 pr-10 rounded-xl",
               "bg-card border border-border text-foreground",
               "placeholder:text-muted-foreground/70",
-              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500"
+              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             )}
           />
           {isPending && (
@@ -584,7 +632,7 @@ export function ServicesTable({
                   "shrink-0 px-3.5 py-2 rounded-full text-xs font-bold border transition-all",
                   active
                     ? "bg-primary/10 text-primary border-primary/30"
-                    : "bg-card text-muted-foreground border-border hover:border-border hover:text-foreground"
+                    : "bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
                 )}
               >
                 {f.label} ({f.count})
@@ -594,14 +642,16 @@ export function ServicesTable({
         </div>
       </div>
 
-      {/* Results count */}
       {total > 0 && (
         <p className="text-xs text-muted-foreground">
-          Showing {services.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–
-          {Math.min(currentPage * 20, total)} of {total}
+          {t("showingRange", {
+            start: services.length > 0 ? (currentPage - 1) * 20 + 1 : 0,
+            end: Math.min(currentPage * 20, total),
+            total,
+          })}
           {totalPages > 1 && (
             <span className="text-muted-foreground/70 ml-2">
-              · Page {currentPage} of {totalPages}
+              · {t("pageOf", { page: currentPage, total: totalPages })}
             </span>
           )}
         </p>
@@ -620,26 +670,26 @@ export function ServicesTable({
             <Store className="w-7 h-7 text-muted-foreground/70" />
           </div>
           <h2 className="text-lg font-bold text-foreground mb-1.5">
-            No services found
+            {t("noServices")}
           </h2>
           <p className="text-sm text-muted-foreground">
-            Try adjusting your search or filters.
+            {t("noServicesDesc")}
           </p>
         </div>
       ) : (
         <div className="rounded-2xl bg-card border border-border overflow-visible">
           <div className="hidden lg:grid grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-4 px-5 py-3 border-b border-border bg-card/60 rounded-t-2xl">
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Service
+              {t("columns.service")}
             </span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Creator
+              {t("columns.creator")}
             </span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Stats
+              {t("columns.stats")}
             </span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Status
+              {t("columns.status")}
             </span>
             <span className="w-8" />
           </div>
@@ -654,32 +704,26 @@ export function ServicesTable({
                   key={s.id}
                   className="relative grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr_1fr_0.7fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-accent/40 transition-colors"
                 >
-                  {/* Service */}
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
-                    <ServiceThumb
-                      id={s.id}
-                      title={s.title}
-                      thumbnail={s.thumbnail}
-                    />
+                    <ServiceThumb id={s.id} title={s.title} thumbnail={s.thumbnail} />
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-foreground truncate">
                         {s.title}
                       </p>
                       <p className="text-xs text-muted-foreground truncate mt-0.5">
-                        {s.category?.name ?? "Uncategorized"} · $
+                        {s.category?.name ?? t("uncategorized")} · $
                         {s.price.toFixed(2)} ·{" "}
                         <span className="inline-flex items-center gap-0.5">
                           <Clock className="w-3 h-3" />
-                          {s.deliveryDays}d
+                          {t("deliveryShort", { days: s.deliveryDays })}
                         </span>
                       </p>
                     </div>
                   </div>
 
-                  {/* Creator */}
                   <div className="flex lg:block">
                     <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center">
-                      Creator:
+                      {t("mobileLabels.creator")}
                     </span>
                     <Link
                       href={`/profile/${s.creator.id}`}
@@ -689,10 +733,9 @@ export function ServicesTable({
                     </Link>
                   </div>
 
-                  {/* Stats */}
                   <div className="flex lg:block gap-3 text-xs text-muted-foreground">
                     <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center">
-                      Stats:
+                      {t("mobileLabels.stats")}
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <ShoppingCart className="w-3 h-3" />
@@ -704,10 +747,9 @@ export function ServicesTable({
                     </span>
                   </div>
 
-                  {/* Status */}
                   <div className="flex lg:block">
                     <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center">
-                      Status:
+                      {t("mobileLabels.status")}
                     </span>
                     <span
                       className={cn(
@@ -715,12 +757,11 @@ export function ServicesTable({
                         STATUS_BADGE[s.status]
                       )}
                     >
-                      {s.status}
+                      {t(`statuses.${STATUS_KEYS[s.status]}`)}
                     </span>
                   </div>
 
-                  {/* Menu */}
-                  <div className="absolute top-4 right-4 lg:static lg:justify-self-end">
+                  <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 lg:static lg:justify-self-end">
                     {isPendingService ? (
                       <Loader2 className="w-4 h-4 text-primary animate-spin" />
                     ) : (
@@ -730,7 +771,7 @@ export function ServicesTable({
                           setOpenMenuId(openMenuId === s.id ? null : s.id)
                         }
                         className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label="Service actions"
+                        aria-label={t("actionsAria")}
                       >
                         <MoreVertical className="w-4 h-4" />
                       </button>
@@ -744,18 +785,19 @@ export function ServicesTable({
                         />
                         <div
                           className={cn(
-                            "absolute right-0 w-56 rounded-xl bg-card border border-border shadow-2xl shadow-black/60 overflow-hidden z-20",
+                            "absolute right-0 rtl:right-auto rtl:left-0 w-56 rounded-xl bg-card border border-border shadow-2xl shadow-black/60 overflow-hidden z-20",
                             "animate-slide-down",
                             isLastRow
-                              ? "bottom-full mb-1 origin-bottom-right"
-                              : "top-full mt-1 origin-top-right"
+                              ? "bottom-full mb-1 origin-bottom-right rtl:origin-bottom-left"
+                              : "top-full mt-1 origin-top-right rtl:origin-top-left"
                           )}
                         >
-
-                    {s.status === "PENDING_REVIEW" && (
+                          {s.status === "PENDING_REVIEW" && (
                             <>
                               <div className="px-3 py-2 border-b border-border">
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Review</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
+                                  {t("menu.reviewHeader")}
+                                </p>
                               </div>
                               <button
                                 type="button"
@@ -763,68 +805,71 @@ export function ServicesTable({
                                   setSelectedService(s);
                                   setOpenMenuId(null);
                                 }}
-                                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-primary hover:bg-primary/10 hover:text-primary transition-colors"
+                                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-primary hover:bg-primary/10 transition-colors text-left"
                               >
                                 <Eye className="w-3.5 h-3.5" />
-                                Review Details
+                                {t("menu.reviewDetails")}
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleApprove(s)}
-                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors inline-flex items-center gap-2"
+                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 transition-colors inline-flex items-center gap-2"
                               >
                                 <CheckCircle2 className="w-3.5 h-3.5" />
-                                Approve & Activate
+                                {t("menu.approveAndActivate")}
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleRequestChanges(s)}
-                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-600 dark:bg-amber-500/10 hover:text-amber-300 transition-colors"
+                                className="w-full text-left px-3.5 py-2 text-xs font-semibold text-amber-700 dark:text-amber-400 hover:bg-amber-500/10 transition-colors"
                               >
-                                Request changes...
+                                {t("menu.requestChanges")}
                               </button>
                               <div className="h-px bg-accent" />
                             </>
                           )}
-                          
+
                           <a
                             href={`/marketplace/services/${s.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors"
+                            className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-foreground hover:bg-accent transition-colors"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
-                            View Public
+                            {t("menu.viewPublic")}
                           </a>
                           <div className="h-px bg-accent" />
                           <div className="px-3 py-2 border-b border-border">
                             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
-                              Change status
+                              {t("menu.changeStatus")}
                             </p>
                           </div>
                           <button
                             type="button"
                             onClick={() => handleChangeStatus(s, "ACTIVE")}
-                            disabled={s.status === "ACTIVE" || s.status === "PENDING_REVIEW"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            disabled={
+                              s.status === "ACTIVE" ||
+                              s.status === "PENDING_REVIEW"
+                            }
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
-                            Activate
+                            {t("menu.activate")}
                           </button>
                           <button
                             type="button"
                             onClick={() => handleChangeStatus(s, "PAUSED")}
                             disabled={s.status === "PAUSED"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
-                            Pause
+                            {t("menu.pause")}
                           </button>
                           <button
                             type="button"
                             onClick={() => handleChangeStatus(s, "ARCHIVED")}
                             disabled={s.status === "ARCHIVED"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
-                            Archive
+                            {t("menu.archive")}
                           </button>
                         </div>
                       </>
@@ -837,15 +882,14 @@ export function ServicesTable({
         </div>
       )}
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 pt-2">
           {currentPage > 1 && (
             <Link
               href={buildPageUrl(currentPage - 1)}
-              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-primary/40 text-foreground text-xs font-semibold transition-colors"
             >
-              ← Previous
+              ← {t("pagination.previous")}
             </Link>
           )}
 
@@ -864,7 +908,7 @@ export function ServicesTable({
                     "w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors",
                     p === currentPage
                       ? "bg-primary text-primary-foreground font-bold"
-                      : "bg-card border border-border hover:border-border text-muted-foreground hover:text-foreground"
+                      : "bg-card border border-border hover:border-primary/40 text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {p}
@@ -884,15 +928,14 @@ export function ServicesTable({
           {currentPage < totalPages && (
             <Link
               href={buildPageUrl(currentPage + 1)}
-              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-primary/40 text-foreground text-xs font-semibold transition-colors"
             >
-              Next →
+              {t("pagination.next")} →
             </Link>
           )}
         </div>
       )}
 
-      {/* Archive reason dialog */}
       {archiveDialog && (
         <>
           <div
@@ -909,25 +952,27 @@ export function ServicesTable({
                 <div className="flex items-center gap-2 mb-1">
                   <XCircle className="w-5 h-5 text-destructive" />
                   <h3 className="text-lg font-bold text-foreground">
-                    {archiveDialog.mode === "REJECT" ? "Request changes" : "Archive service"}
+                    {archiveDialog.mode === "REJECT"
+                      ? t("archiveDialog.rejectTitle")
+                      : t("archiveDialog.archiveTitle")}
                   </h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
                   {archiveDialog.mode === "REJECT"
-                    ? "Tell the creator what must change before"
-                    : "Please provide a reason for archiving"}{" "}
+                    ? t("archiveDialog.rejectDescBefore")
+                    : t("archiveDialog.archiveDescBefore")}{" "}
                   <strong className="text-foreground">
                     &quot;{archiveDialog.serviceTitle}&quot;
                   </strong>
                   {archiveDialog.mode === "REJECT"
-                    ? " can go live. The service is paused and this note is shown to the creator."
-                    : ". This reason will be sent to the service creator by email."}
+                    ? ` ${t("archiveDialog.rejectDescAfter")}`
+                    : ` ${t("archiveDialog.archiveDescAfter")}`}
                 </p>
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
-                  Reason (required)
+                  {t("archiveDialog.reasonLabel")}
                 </label>
                 <textarea
                   value={reasonInput}
@@ -945,7 +990,7 @@ export function ServicesTable({
                       ? "border-destructive"
                       : "border-border focus:border-primary"
                   )}
-                  placeholder="e.g., Service offering violates marketplace policy."
+                  placeholder={t("archiveDialog.reasonPlaceholder")}
                 />
                 {reasonError && (
                   <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
@@ -954,7 +999,9 @@ export function ServicesTable({
                   </p>
                 )}
                 <p className="text-xs text-muted-foreground/70 mt-1.5">
-                  {reasonInput.trim().length}/500 characters (minimum 10)
+                  {t("archiveDialog.reasonCounter", {
+                    count: reasonInput.trim().length,
+                  })}
                 </p>
               </div>
 
@@ -967,22 +1014,24 @@ export function ServicesTable({
                     setReasonError(null);
                   }}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-accent hover:bg-accent text-foreground text-sm font-semibold transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-accent hover:bg-accent/80 text-foreground text-sm font-semibold transition-colors disabled:opacity-50"
                 >
-                  Cancel
+                  {t("archiveDialog.cancel")}
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmArchive}
                   disabled={isPending || reasonInput.trim().length < 10}
-                  className="px-4 py-2 rounded-lg bg-destructive hover:bg-destructive text-destructive-foreground text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-destructive hover:bg-destructive/90 text-destructive-foreground text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <XCircle className="w-4 h-4" />
                   )}
-                  {archiveDialog.mode === "REJECT" ? "Send feedback" : "Archive service"}
+                  {archiveDialog.mode === "REJECT"
+                    ? t("archiveDialog.sendFeedback")
+                    : t("archiveDialog.archive")}
                 </button>
               </div>
             </div>
@@ -1004,7 +1053,10 @@ export function ServicesTable({
             setArchiveDialog({
               serviceId: selectedService.id,
               serviceTitle: selectedService.title,
-              mode: selectedService.status === "PENDING_REVIEW" ? "REJECT" : "ARCHIVE",
+              mode:
+                selectedService.status === "PENDING_REVIEW"
+                  ? "REJECT"
+                  : "ARCHIVE",
             });
             setReasonInput("");
             setReasonError(null);

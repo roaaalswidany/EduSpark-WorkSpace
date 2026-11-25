@@ -1108,5 +1108,366 @@
       "desc": "عندما يطلب العملاء خدماتك، ستظهر طلباتهم هنا.",
       "cta": "عرض خدماتي"
     }
+  },
+    "admin": {
+    "broadcast": {
+      "titlePlaceholder": "عنوان الإشعار",
+      "bodyPlaceholder": "نص الرسالة...",
+      "sending": "جارٍ الإرسال...",
+      "sendToAll": "إرسال لجميع المستخدمين",
+      "successToast": "تم إرسال الإشعار إلى {count} مستخدمين! 🎉",
+      "failedToast": "فشل إرسال الإشعار"
+    },
+    "dashboard": {
+      "title": "لوحة الإدارة",
+      "subtitle": "نظرة عامة على المنصة، والمراجعات المعلقة، وأدوات الإدارة.",
+      "metadataTitle": "لوحة الإدارة",
+      "pendingAlert": {
+        "title": "{count, plural, =0 {لا توجد عناصر بانتظار مراجعتك} =1 {عنصر واحد بانتظار مراجعتك} =2 {عنصران بانتظار مراجعتك} few {# عناصر بانتظار مراجعتك} many {# عنصراً بانتظار مراجعتك} other {# عنصر بانتظار مراجعتك}}",
+        "details": "{courses, plural, =0 {لا توجد كورسات} =1 {كورس واحد} =2 {كورسان} few {# كورسات} many {# كورساً} other {# كورس}} بانتظار المراجعة · {services, plural, =0 {لا توجد خدمات} =1 {خدمة واحدة} =2 {خدمتان} few {# خدمات} many {# خدمة} other {# خدمة}} بانتظار المراجعة"
+      },
+      "stats": {
+        "activeUsers": "المستخدمون النشطون",
+        "totalCourses": "إجمالي الكورسات",
+        "totalServices": "إجمالي الخدمات",
+        "revenue": "الإيرادات",
+        "newThisWeek": "+{count} هذا الأسبوع"
+      },
+      "sections": {
+        "pendingReviews": "مراجعات معلقة",
+        "recentActivity": "النشاط الأخير",
+        "viewAll": "عرض الكل",
+        "broadcast": "بث إشعار",
+        "broadcastDesc": "إرسال رسالة إلى جميع المستخدمين النشطين.",
+        "quickActions": "إجراءات سريعة",
+        "quickActionsDesc": "الانتقال إلى أقسام الإدارة."
+      },
+      "pendingEmpty": "أنت على اطلاع بكل شيء! لا يوجد ما يستحق المراجعة.",
+      "byCreator": "بواسطة",
+      "draftCourse": "كورس مسودة",
+      "pausedService": "خدمة موقوفة",
+      "review": "مراجعة",
+      "activityEmpty": "لا يوجد نشاط بعد. ستظهر الإجراءات هنا.",
+      "system": "النظام",
+      "actions": {
+        "manageUsers": "إدارة المستخدمين",
+        "manageCourses": "إدارة الكورسات",
+        "manageServices": "إدارة الخدمات"
+      }
+    },
+    "courses": {
+      "page": {
+        "eyebrow": "الإدارة",
+        "title": "الكورسات",
+        "subtitle": "راجع الكورسات المقدمة، وانشرها، أو أرشفها عبر المنصة.",
+        "metadataTitle": "الكورسات — الإدارة"
+      },
+      "table": {
+        "searchPlaceholder": "ابحث بالعنوان أو الوصف…",
+        "filters": {
+          "all": "الكل",
+          "pendingReview": "قيد المراجعة",
+          "published": "منشورة",
+          "draft": "مسودة",
+          "archived": "مؤرشفة"
+        },
+        "showingRange": "عرض {start}–{end} من {total}",
+        "pageOf": "صفحة {page} من {total}",
+        "noCourses": "لا توجد كورسات",
+        "noCoursesDesc": "جرب تعديل البحث أو الفلاتر.",
+        "columns": {
+          "course": "الكورس",
+          "creator": "المنشئ",
+          "stats": "الإحصائيات",
+          "status": "الحالة"
+        },
+        "mobileLabels": {
+          "creator": "المنشئ:",
+          "stats": "الإحصائيات:",
+          "status": "الحالة:"
+        },
+        "uncategorized": "غير مصنف",
+        "levels": {
+          "beginner": "مبتدئ",
+          "intermediate": "متوسط",
+          "advanced": "متقدم"
+        },
+        "statuses": {
+          "published": "منشور",
+          "draft": "مسودة",
+          "pendingReview": "قيد المراجعة",
+          "archived": "مؤرشف"
+        },
+        "actionsAria": "إجراءات الكورس",
+        "menu": {
+          "reviewHeader": "مراجعة",
+          "reviewContent": "مراجعة المحتوى والدروس",
+          "reviewQuiz": "مراجعة الاختبار ({count, plural, =0 {لا توجد أقسام} =1 {قسم واحد} =2 {قسمان} few {# أقسام} many {# قسماً} other {# قسم}})",
+          "viewPublic": "عرض الصفحة العامة",
+          "actionsHeader": "الإجراءات",
+          "approveAndPublish": "موافقة ونشر",
+          "requestChanges": "طلب تغييرات...",
+          "publish": "نشر",
+          "setDraft": "تعيين كمسودة",
+          "archive": "أرشفة"
+        },
+        "statusToasts": {
+          "publishedTitle": "تم نشر الكورس 🚀",
+          "publishedDesc": "الكورس الآن مرئي في الكتالوج العام.",
+          "draftTitle": "تم النقل إلى المسودات 📌",
+          "draftDesc": "الكورس الآن مخفي عن الطلاب.",
+          "pendingReviewTitle": "تم الإرسال للمراجعة",
+          "pendingReviewDesc": "الكورس بانتظار قرار المدير.",
+          "archivedTitle": "تم أرشفة الكورس 🗄️",
+          "archivedDesc": "تم أرشفة الكورس ولم يعد نشطاً."
+        },
+        "toasts": {
+          "updating": "جارٍ التحديث إلى {status}...",
+          "updateFailed": "فشل التحديث",
+          "reviewFailed": "فشلت المراجعة",
+          "approving": "جارٍ الموافقة...",
+          "sendingFeedback": "جارٍ إرسال الملاحظات...",
+          "approved": "تمت الموافقة على الكورس 🚀",
+          "approvedDesc": "الكورس الآن منشور.",
+          "feedbackSent": "تم إرسال الملاحظات 📌",
+          "feedbackSentDesc": "عاد الكورس إلى المسودات مع ملاحظتك."
+        },
+        "errors": {
+          "forbidden": "المديرون فقط يمكنهم تنفيذ هذا الإجراء.",
+          "forbiddenReview": "المديرون فقط يمكنهم مراجعة الكورسات.",
+          "notFound": "الكورس غير موجود.",
+          "invalidInput": "مطلوب سبب صالح لأرشفة الكورس.",
+          "invalidInputReview": "مطلوب ملاحظة من 10 أحرف على الأقل.",
+          "invalidState": "هذا الكورس لم يعد بانتظار المراجعة.",
+          "cannotPublishEmpty": "الكورس لا يحتوي على دروس بعد.",
+          "quizTooShort": "اختبار الكورس أقل من الحد الأدنى لعدد الأسئلة.",
+          "actionFailed": "فشل الإجراء."
+        },
+        "archiveDialog": {
+          "rejectTitle": "طلب تغييرات",
+          "archiveTitle": "أرشفة الكورس",
+          "rejectDescBefore": "أخبر المنشئ بما يجب تغييره قبل أن",
+          "rejectDescAfter": "يُمكن النشر.",
+          "archiveDescBefore": "يرجى تقديم سبب لأرشفة",
+          "archiveDescAfter": ". سيُرسل هذا السبب إلى منشئ الكورس بالبريد الإلكتروني.",
+          "reasonLabel": "السبب (مطلوب)",
+          "reasonPlaceholder": "مثال: المحتوى يخالف إرشادات جودة المنصة.",
+          "reasonError": "يرجى تقديم 10 أحرف على الأقل لشرح السبب.",
+          "reasonCounter": "{count}/500 حرف (الحد الأدنى 10)",
+          "cancel": "إلغاء",
+          "sendFeedback": "إرسال الملاحظات",
+          "archive": "أرشفة الكورس"
+        },
+        "pagination": {
+          "previous": "السابق",
+          "next": "التالي"
+        }
+      }
+    },
+        "services": {
+      "page": {
+        "eyebrow": "الإدارة",
+        "title": "الخدمات",
+        "subtitle": "أدر وراجع جميع خدمات السوق.",
+        "metadataTitle": "الخدمات — الإدارة"
+      },
+      "table": {
+        "searchPlaceholder": "ابحث بالعنوان أو الوصف…",
+        "filters": {
+          "all": "الكل",
+          "pendingReview": "قيد المراجعة",
+          "active": "نشطة",
+          "paused": "متوقفة",
+          "archived": "مؤرشفة"
+        },
+        "showingRange": "عرض {start}–{end} من {total}",
+        "pageOf": "صفحة {page} من {total}",
+        "noServices": "لا توجد خدمات",
+        "noServicesDesc": "جرب تعديل البحث أو الفلاتر.",
+        "columns": {
+          "service": "الخدمة",
+          "creator": "المنشئ",
+          "stats": "الإحصائيات",
+          "status": "الحالة"
+        },
+        "mobileLabels": {
+          "creator": "المنشئ:",
+          "stats": "الإحصائيات:",
+          "status": "الحالة:"
+        },
+        "uncategorized": "غير مصنف",
+        "deliveryShort": "{days}ي",
+        "statuses": {
+          "pendingReview": "قيد المراجعة",
+          "active": "نشطة",
+          "paused": "متوقفة",
+          "archived": "مؤرشفة"
+        },
+        "actionsAria": "إجراءات الخدمة",
+        "menu": {
+          "reviewHeader": "مراجعة",
+          "reviewDetails": "مراجعة التفاصيل",
+          "approveAndActivate": "موافقة وتنشيط",
+          "requestChanges": "طلب تغييرات...",
+          "viewPublic": "عرض الصفحة العامة",
+          "changeStatus": "تغيير الحالة",
+          "activate": "تنشيط",
+          "pause": "إيقاف",
+          "archive": "أرشفة"
+        },
+        "statusToasts": {
+          "pendingReviewTitle": "تم إرسال الخدمة للمراجعة",
+          "pendingReviewDesc": "الخدمة بانتظار قرار المدير.",
+          "activeTitle": "تم تنشيط الخدمة ▶️",
+          "activeDesc": "الخدمة الآن مرئية في السوق.",
+          "pausedTitle": "تم إيقاف الخدمة ⏸️",
+          "pausedDesc": "الخدمة الآن مخفية عن المشترين.",
+          "archivedTitle": "تم أرشفة الخدمة 🗄️",
+          "archivedDesc": "تم أرشفة الخدمة ولم تعد نشطة."
+        },
+        "toasts": {
+          "updating": "جارٍ التحديث إلى {status}...",
+          "updateFailed": "فشل التحديث",
+          "reviewFailed": "فشلت المراجعة",
+          "approving": "جارٍ الموافقة...",
+          "sendingFeedback": "جارٍ إرسال الملاحظات...",
+          "approved": "تمت الموافقة على الخدمة 🚀",
+          "approvedDesc": "الخدمة الآن مباشرة في السوق.",
+          "feedbackSent": "تم إرسال الملاحظات 📌",
+          "feedbackSentDesc": "الخدمة موقوفة مع ملاحظتك. يمكن للمنشئ إصلاحها وإعادة إرسالها."
+        },
+        "errors": {
+          "forbidden": "المديرون فقط يمكنهم تنفيذ هذا الإجراء.",
+          "forbiddenReview": "المديرون فقط يمكنهم مراجعة الخدمات.",
+          "notFound": "الخدمة غير موجودة.",
+          "invalidInput": "مطلوب سبب صالح لأرشفة الخدمة.",
+          "invalidInputReview": "مطلوب ملاحظة من 10 أحرف على الأقل لطلب التغييرات.",
+          "invalidState": "هذه الخدمة لم تعد بانتظار المراجعة.",
+          "actionFailed": "فشل الإجراء."
+        },
+        "archiveDialog": {
+          "rejectTitle": "طلب تغييرات",
+          "archiveTitle": "أرشفة الخدمة",
+          "rejectDescBefore": "أخبر المنشئ بما يجب تغييره قبل أن",
+          "rejectDescAfter": "تصبح مباشرة. الخدمة موقوفة وهذه الملاحظة تظهر للمنشئ.",
+          "archiveDescBefore": "يرجى تقديم سبب لأرشفة",
+          "archiveDescAfter": ". سيُرسل هذا السبب إلى منشئ الخدمة بالبريد الإلكتروني.",
+          "reasonLabel": "السبب (مطلوب)",
+          "reasonPlaceholder": "مثال: عرض الخدمة يخالف سياسة السوق.",
+          "reasonError": "يرجى تقديم 10 أحرف على الأقل لشرح السبب.",
+          "reasonCounter": "{count}/500 حرف (الحد الأدنى 10)",
+          "cancel": "إلغاء",
+          "sendFeedback": "إرسال الملاحظات",
+          "archive": "أرشفة الخدمة"
+        },
+        "pagination": {
+          "previous": "السابق",
+          "next": "التالي"
+        },
+        "modal": {
+          "title": "مراجعة الخدمة",
+          "subtitle": "راجع جميع التفاصيل قبل اتخاذ القرار.",
+          "statusLabel": "الحالة",
+          "by": "بواسطة",
+          "deliveryDays": "{count, plural, =1 {تسليم خلال يوم} =2 {تسليم خلال يومين} few {تسليم خلال # أيام} many {تسليم خلال # يوماً} other {تسليم خلال # يوم}}",
+          "revisions": "{count, plural, =0 {لا توجد مراجعات} =1 {مراجعة واحدة} =2 {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}}",
+          "orders": "{count, plural, =0 {لا توجد طلبات} =1 {طلب واحد} =2 {طلبان} few {# طلبات} many {# طلباً} other {# طلب}}",
+          "description": "الوصف",
+          "tags": "الوسوم",
+          "portfolio": "معرض الأعمال",
+          "unsafeLink": "رابط غير آمن لم يُعرَض: {url}",
+          "close": "إغلاق",
+          "approveActivate": "موافقة وتنشيط",
+          "requestChanges": "طلب تغييرات",
+          "archive": "أرشفة"
+        }
+      }
+    },
+    "users": {
+      "page": {
+        "eyebrow": "الإدارة",
+        "title": "المستخدمون",
+        "subtitle": "أدر الأدوار، وفعّل أو أوقف الحسابات.",
+        "metadataTitle": "المستخدمون — الإدارة"
+      },
+      "table": {
+        "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني…",
+        "filters": {
+          "all": "الكل",
+          "students": "الطلاب",
+          "creators": "المنشئون",
+          "admins": "المديرون"
+        },
+        "showingRange": "عرض {start}–{end} من {total}",
+        "pageOf": "صفحة {page} من {total}",
+        "noUsers": "لا يوجد مستخدمون",
+        "noUsersDesc": "جرب تعديل البحث أو الفلاتر.",
+        "columns": {
+          "user": "المستخدم",
+          "role": "الدور",
+          "activity": "النشاط",
+          "status": "الحالة"
+        },
+        "mobileLabels": {
+          "role": "الدور:",
+          "activity": "النشاط:",
+          "status": "الحالة:"
+        },
+        "youBadge": "أنت",
+        "status": {
+          "active": "نشط",
+          "suspended": "موقوف"
+        },
+        "actionsAria": "إجراءات المستخدم",
+        "menu": {
+          "changeRole": "تغيير الدور",
+          "makeStudent": "تعيين كطالب",
+          "makeCreator": "تعيين كمنشئ",
+          "makeAdmin": "تعيين كمدير",
+          "suspendAccount": "إيقاف الحساب",
+          "activateAccount": "تنشيط الحساب"
+        },
+        "toasts": {
+          "suspending": "جارٍ إيقاف الحساب...",
+          "activating": "جارٍ تنشيط الحساب...",
+          "actionFailed": "فشل الإجراء",
+          "suspended": "تم إيقاف الحساب",
+          "suspendedDesc": "تم إيقاف حساب {name}.",
+          "activated": "تم تنشيط الحساب",
+          "activatedDesc": "تمت إعادة تنشيط حساب {name}.",
+          "updatingRole": "جارٍ تحديث الدور إلى {role}...",
+          "roleUpdateFailed": "فشل تحديث الدور",
+          "roleUpdated": "تم تحديث الدور إلى {role}",
+          "roleUpdatedDesc": "تم تغيير دور {name}."
+        },
+        "errors": {
+          "cannotModifySelf": "لا يمكنك تنفيذ هذا الإجراء على حسابك الخاص.",
+          "forbidden": "المديرون فقط يمكنهم تنفيذ هذا الإجراء.",
+          "notFound": "المستخدم غير موجود.",
+          "invalidInput": "مطلوب سبب صالح لإيقاف الحساب.",
+          "actionFailed": "فشل الإجراء."
+        },
+        "roleLabels": {
+          "student": "طالب",
+          "creator": "منشئ",
+          "admin": "مدير"
+        },
+        "suspendDialog": {
+          "title": "إيقاف الحساب",
+          "descBefore": "يرجى تقديم سبب لإيقاف",
+          "descAfter": ". سيُرسل هذا السبب إلى المستخدم بالبريد الإلكتروني.",
+          "reasonLabel": "السبب (مطلوب)",
+          "reasonPlaceholder": "مثال: انتهاك شروط خدمة المنصة.",
+          "reasonError": "يرجى تقديم 10 أحرف على الأقل لشرح السبب.",
+          "reasonCounter": "{count}/500 حرف (الحد الأدنى 10)",
+          "cancel": "إلغاء",
+          "suspend": "إيقاف الحساب"
+        },
+        "pagination": {
+          "previous": "السابق",
+          "next": "التالي"
+        }
+      }
+    }
   }
 }

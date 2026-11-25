@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { ChangePasswordForm } from "./_components/change-password-form";
 import { ThemeToggle } from "@/components/providers/theme-toggle";
-import { LanguageToggle } from "../../../components/providers/language-toggle";
+import { LanguageToggle } from "@/components/providers/language-toggle";
 import { LanguageSettingsSection } from "./_components/language-settings-section";
 
 export const metadata = { title: "Settings — EduSpark" };

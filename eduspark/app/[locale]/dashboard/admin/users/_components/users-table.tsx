@@ -1,8 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useTransition, useCallback, useRef, useEffect } from "react";
-import Link from "next/link";
+import {
+  useState,
+  useTransition,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -51,22 +58,23 @@ interface UsersTableProps {
 
 const ROLE_BADGE: Record<Role, string> = {
   ADMIN: "bg-info/10 text-info border-info/20",
-  CREATOR: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  CREATOR:
+    "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   STUDENT: "bg-accent/50 text-muted-foreground border-border",
 };
 
-const ROLE_LABEL: Record<Role, string> = {
-  ADMIN: "Admin",
-  CREATOR: "Creator",
-  STUDENT: "Student",
+const ROLE_KEYS: Record<Role, "student" | "creator" | "admin"> = {
+  ADMIN: "admin",
+  CREATOR: "creator",
+  STUDENT: "student",
 };
 
-const ROLE_FILTERS: { value: string; label: string; count: number }[] = [
-  { value: "", label: "All", count: 0 },
-  { value: "STUDENT", label: "Students", count: 0 },
-  { value: "CREATOR", label: "Creators", count: 0 },
-  { value: "ADMIN", label: "Admins", count: 0 },
-];
+const FILTER_KEYS: Record<string, string> = {
+  "": "all",
+  STUDENT: "students",
+  CREATOR: "creators",
+  ADMIN: "admins",
+};
 
 function Avatar({ name, size = 36 }: { name: string; size?: number }) {
   const initials = name
@@ -79,7 +87,7 @@ function Avatar({ name, size = 36 }: { name: string; size?: number }) {
 
   return (
     <div
-      className="rounded-xl flex items-center justify-center text-foreground text-xs font-bold ring-2 ring-border shrink-0"
+      className="rounded-xl flex items-center justify-center text-white text-xs font-bold ring-2 ring-border shrink-0"
       style={{
         width: size,
         height: size,
@@ -97,11 +105,12 @@ export function UsersTable({
   currentUserId,
   roleCounts,
   initialQuery,
-  initialRole,
+  initialRole: _initialRole,
   total,
   currentPage,
   totalPages,
 }: UsersTableProps) {
+  const t = useTranslations("admin.users.table");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -109,7 +118,7 @@ export function UsersTable({
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-    const [pendingUserId, setPendingUserId] = useState<string | null>(null);
+  const [pendingUserId, setPendingUserId] = useState<string | null>(null);
   const [suspendDialog, setSuspendDialog] = useState<{
     userId: string;
     userName: string;
@@ -117,9 +126,7 @@ export function UsersTable({
   const [reasonInput, setReasonInput] = useState("");
   const [reasonError, setReasonError] = useState<string | null>(null);
 
-  // Proper debounce using useRef to avoid memory leaks
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
-
   const activeRole = searchParams.get("role") ?? "";
 
   const updateURL = useCallback(
@@ -129,7 +136,6 @@ export function UsersTable({
         if (value === null || value === "") params.delete(key);
         else params.set(key, value);
       }
-      // Reset to page 1 when changing filters/search
       if (!("page" in updates)) params.delete("page");
       startTransition(() => {
         router.replace(`${pathname}?${params.toString()}`, { scroll: false });
@@ -152,13 +158,11 @@ export function UsersTable({
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    
     debounceRef.current = setTimeout(() => {
       updateURL({ q: value });
     }, 350);
   };
 
-  // Clear timeout on unmount
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -169,13 +173,12 @@ export function UsersTable({
     updateURL({ role });
   };
 
-  // Low-level executor — runs the actual action and shows toasts.
   const executeToggle = (user: UserRow, reason?: string) => {
     setPendingUserId(user.id);
 
     const isSuspending = user.isActive;
     const toastId = toast.loading(
-      isSuspending ? "Suspending account..." : "Activating account..."
+      isSuspending ? t("toasts.suspending") : t("toasts.activating")
     );
 
     startTransition(async () => {
@@ -187,16 +190,16 @@ export function UsersTable({
       setPendingUserId(null);
 
       if (!result.success) {
-        const messages: Record<string, string> = {
-          CANNOT_MODIFY_SELF: "You cannot deactivate your own account.",
-          FORBIDDEN: "Only admins can perform this action.",
-          NOT_FOUND: "User not found.",
-          INVALID_INPUT: "A valid reason is required to suspend an account.",
+        const errorMap: Record<string, string> = {
+          CANNOT_MODIFY_SELF: t("errors.cannotModifySelf"),
+          FORBIDDEN: t("errors.forbidden"),
+          NOT_FOUND: t("errors.notFound"),
+          INVALID_INPUT: t("errors.invalidInput"),
         };
-        const errorMessage = messages[result.error] ?? "Action failed.";
+        const errorMessage = errorMap[result.error] ?? t("errors.actionFailed");
 
         setActionError(errorMessage);
-        toast.error("Action failed", {
+        toast.error(t("toasts.actionFailed"), {
           id: toastId,
           description: errorMessage,
         });
@@ -205,44 +208,38 @@ export function UsersTable({
       }
 
       toast.success(
-        isSuspending ? "Account suspended" : "Account activated",
+        isSuspending ? t("toasts.suspended") : t("toasts.activated"),
         {
           id: toastId,
-          description: `${user.name}'s account has been ${
-            isSuspending ? "suspended" : "reactivated"
-          }.`,
+          description: isSuspending
+            ? t("toasts.suspendedDesc", { name: user.name })
+            : t("toasts.activatedDesc", { name: user.name }),
         }
       );
       router.refresh();
     });
   };
 
-  // User-facing handler — opens the reason dialog when suspending.
   const handleToggleActive = (user: UserRow) => {
     setOpenMenuId(null);
     setActionError(null);
 
-    // Reactivation — no reason needed, execute immediately.
     if (!user.isActive) {
       executeToggle(user, undefined);
       return;
     }
 
-    // Suspension — require a reason first.
     setSuspendDialog({ userId: user.id, userName: user.name });
     setReasonInput("");
     setReasonError(null);
   };
 
-  // Dialog submit — validates the reason, then executes.
   const handleConfirmSuspend = () => {
     if (!suspendDialog) return;
 
     const trimmed = reasonInput.trim();
     if (trimmed.length < 10) {
-      setReasonError(
-        "Please provide at least 10 characters explaining the reason."
-      );
+      setReasonError(t("suspendDialog.reasonError"));
       return;
     }
 
@@ -260,7 +257,8 @@ export function UsersTable({
     setActionError(null);
     setPendingUserId(user.id);
 
-    const toastId = toast.loading(`Updating role to ${role}...`);
+    const roleLabel = t(`roleLabels.${ROLE_KEYS[role]}`);
+    const toastId = toast.loading(t("toasts.updatingRole", { role: roleLabel }));
 
     startTransition(async () => {
       const result = await updateUserAction({
@@ -271,15 +269,15 @@ export function UsersTable({
       setPendingUserId(null);
 
       if (!result.success) {
-        const messages: Record<string, string> = {
-          CANNOT_MODIFY_SELF: "You cannot change your own role.",
-          FORBIDDEN: "Only admins can perform this action.",
-          NOT_FOUND: "User not found.",
+        const errorMap: Record<string, string> = {
+          CANNOT_MODIFY_SELF: t("errors.cannotModifySelf"),
+          FORBIDDEN: t("errors.forbidden"),
+          NOT_FOUND: t("errors.notFound"),
         };
-        const errorMessage = messages[result.error] ?? "Action failed.";
+        const errorMessage = errorMap[result.error] ?? t("errors.actionFailed");
 
         setActionError(errorMessage);
-        toast.error("Role update failed", {
+        toast.error(t("toasts.roleUpdateFailed"), {
           id: toastId,
           description: errorMessage,
         });
@@ -287,29 +285,35 @@ export function UsersTable({
         return;
       }
 
-      toast.success(`Role updated to ${ROLE_LABEL[role]}`, {
+      toast.success(t("toasts.roleUpdated", { role: roleLabel }), {
         id: toastId,
-        description: `${user.name}'s role has been changed.`,
+        description: t("toasts.roleUpdatedDesc", { name: user.name }),
       });
       router.refresh();
     });
   };
 
-  const filters = ROLE_FILTERS.map((f) =>
-    f.value === ""
-      ? {
-          ...f,
-          count: roleCounts.STUDENT + roleCounts.CREATOR + roleCounts.ADMIN,
-        }
-      : {
-          ...f,
-          count: roleCounts[f.value as "STUDENT" | "CREATOR" | "ADMIN"],
-        }
-  );
+  const filters = [
+    {
+      value: "",
+      label: t(`filters.${FILTER_KEYS[""]}`),
+      count: roleCounts.STUDENT + roleCounts.CREATOR + roleCounts.ADMIN,
+    },
+    {
+      value: "STUDENT",
+      label: t("filters.students"),
+      count: roleCounts.STUDENT,
+    },
+    {
+      value: "CREATOR",
+      label: t("filters.creators"),
+      count: roleCounts.CREATOR,
+    },
+    { value: "ADMIN", label: t("filters.admins"), count: roleCounts.ADMIN },
+  ];
 
   return (
     <div className="space-y-4">
-      {/* Search + Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -317,12 +321,12 @@ export function UsersTable({
             type="text"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Search by name or email…"
+            placeholder={t("searchPlaceholder")}
             className={cn(
               "w-full h-11 pl-10 pr-10 rounded-xl",
               "bg-card border border-border text-foreground",
               "placeholder:text-muted-foreground/70",
-              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500"
+              "focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             )}
           />
           {isPending && (
@@ -351,7 +355,7 @@ export function UsersTable({
                   "shrink-0 px-3.5 py-2 rounded-full text-xs font-bold border transition-all",
                   active
                     ? "bg-primary/10 text-primary border-primary/30"
-                    : "bg-card text-muted-foreground border-border hover:border-border hover:text-foreground"
+                    : "bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
                 )}
               >
                 {f.label} ({f.count})
@@ -361,20 +365,21 @@ export function UsersTable({
         </div>
       </div>
 
-      {/* Results count */}
       {total > 0 && (
         <p className="text-xs text-muted-foreground">
-          Showing {users.length > 0 ? (currentPage - 1) * 20 + 1 : 0}–
-          {Math.min(currentPage * 20, total)} of {total}
+          {t("showingRange", {
+            start: users.length > 0 ? (currentPage - 1) * 20 + 1 : 0,
+            end: Math.min(currentPage * 20, total),
+            total,
+          })}
           {totalPages > 1 && (
             <span className="text-muted-foreground/70 ml-2">
-              · Page {currentPage} of {totalPages}
+              · {t("pageOf", { page: currentPage, total: totalPages })}
             </span>
           )}
         </p>
       )}
 
-      {/* Action Error */}
       {actionError && (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
           <AlertCircle className="w-4 h-4 text-destructive shrink-0" />
@@ -382,32 +387,32 @@ export function UsersTable({
         </div>
       )}
 
-      {/* Table */}
       {users.length === 0 ? (
         <div className="rounded-2xl bg-card border border-border p-12 text-center">
           <div className="w-16 h-16 rounded-2xl bg-accent border border-border flex items-center justify-center mx-auto mb-5">
             <Search className="w-7 h-7 text-muted-foreground/70" />
           </div>
-          <h2 className="text-lg font-bold text-foreground mb-1.5">No users found</h2>
+          <h2 className="text-lg font-bold text-foreground mb-1.5">
+            {t("noUsers")}
+          </h2>
           <p className="text-sm text-muted-foreground">
-            Try adjusting your search or filters.
+            {t("noUsersDesc")}
           </p>
         </div>
       ) : (
         <div className="rounded-2xl bg-card border border-border overflow-visible">
-          {/* Desktop header */}
           <div className="hidden lg:grid grid-cols-[1.5fr_0.8fr_1.7fr_0.6fr_auto] gap-4 px-5 py-3 border-b border-border bg-card/60 rounded-t-2xl">
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              User
+              {t("columns.user")}
             </span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Role
+              {t("columns.role")}
             </span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Activity
+              {t("columns.activity")}
             </span>
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Status
+              {t("columns.status")}
             </span>
             <span className="w-8" />
           </div>
@@ -423,7 +428,6 @@ export function UsersTable({
                   key={u.id}
                   className="relative grid grid-cols-1 lg:grid-cols-[1.5fr_0.8fr_1.7fr_0.6fr_auto] gap-3 lg:gap-4 px-5 py-4 lg:items-center hover:bg-accent/40 transition-colors"
                 >
-                  {/* User */}
                   <div className="flex items-center gap-3 min-w-0 pr-12 lg:pr-0">
                     <Avatar name={u.name} size={36} />
                     <div className="min-w-0">
@@ -431,7 +435,7 @@ export function UsersTable({
                         {u.name}
                         {isSelf && (
                           <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-                            YOU
+                            {t("youBadge")}
                           </span>
                         )}
                       </p>
@@ -441,10 +445,9 @@ export function UsersTable({
                     </div>
                   </div>
 
-                  {/* Role */}
                   <div className="flex lg:block min-w-0">
                     <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center">
-                      Role:
+                      {t("mobileLabels.role")}
                     </span>
                     <span
                       className={cn(
@@ -453,42 +456,38 @@ export function UsersTable({
                       )}
                     >
                       <Shield className="w-2.5 h-2.5" />
-                      {u.role}
+                      {t(`roleLabels.${ROLE_KEYS[u.role]}`)}
                     </span>
                   </div>
 
-                  {/* Activity */}
                   <div className="flex lg:block gap-3 text-xs text-muted-foreground min-w-0">
                     <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center shrink-0">
-                      Activity:
+                      {t("mobileLabels.activity")}
                     </span>
                     <span className="truncate">
-                      {u._count.enrollments} courses ·{" "}
-                      {u._count.certificates} certificates ·{" "}
-                      {u._count.services} services
+                      {u._count.enrollments} · {u._count.certificates} ·{" "}
+                      {u._count.services}
                     </span>
                   </div>
 
-                  {/* Status */}
                   <div className="flex lg:block min-w-0">
                     <span className="lg:hidden text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mr-2 self-center shrink-0">
-                      Status:
+                      {t("mobileLabels.status")}
                     </span>
                     {u.isActive ? (
-                      <span className="inline-flex items-center gap-1 text-xs text-emerald-400 font-semibold whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-semibold whitespace-nowrap">
                         <CheckCircle2 className="w-3.5 h-3.5" />
-                        Active
+                        {t("status.active")}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-xs text-destructive font-semibold whitespace-nowrap">
                         <XCircle className="w-3.5 h-3.5" />
-                        Suspended
+                        {t("status.suspended")}
                       </span>
                     )}
                   </div>
 
-                  {/* Menu */}
-                  <div className="absolute top-4 right-4 lg:static lg:justify-self-end">
+                  <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 lg:static lg:justify-self-end">
                     {isPendingUser ? (
                       <Loader2 className="w-4 h-4 text-primary animate-spin" />
                     ) : (
@@ -499,7 +498,7 @@ export function UsersTable({
                         }
                         disabled={isSelf}
                         className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                        aria-label="User actions"
+                        aria-label={t("actionsAria")}
                       >
                         <MoreVertical className="w-4 h-4" />
                       </button>
@@ -513,41 +512,41 @@ export function UsersTable({
                         />
                         <div
                           className={cn(
-                            "absolute right-0 w-52 rounded-xl bg-card border border-border shadow-2xl shadow-black/60 overflow-hidden z-20",
+                            "absolute right-0 rtl:right-auto rtl:left-0 w-52 rounded-xl bg-card border border-border shadow-2xl shadow-black/60 overflow-hidden z-20",
                             "animate-slide-down",
                             isLastRow
-                              ? "bottom-full mb-1 origin-bottom-right"
-                              : "top-full mt-1 origin-top-right"
+                              ? "bottom-full mb-1 origin-bottom-right rtl:origin-bottom-left"
+                              : "top-full mt-1 origin-top-right rtl:origin-top-left"
                           )}
                         >
                           <div className="px-3 py-2 border-b border-border">
                             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
-                              Change role
+                              {t("menu.changeRole")}
                             </p>
                           </div>
                           <button
                             type="button"
                             onClick={() => handleChangeRole(u, "STUDENT")}
                             disabled={u.role === "STUDENT"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
-                            Make Student
+                            {t("menu.makeStudent")}
                           </button>
                           <button
                             type="button"
                             onClick={() => handleChangeRole(u, "CREATOR")}
                             disabled={u.role === "CREATOR"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
-                            Make Creator
+                            {t("menu.makeCreator")}
                           </button>
                           <button
                             type="button"
                             onClick={() => handleChangeRole(u, "ADMIN")}
                             disabled={u.role === "ADMIN"}
-                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full text-left px-3.5 py-2 text-xs text-foreground hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           >
-                            Make Admin
+                            {t("menu.makeAdmin")}
                           </button>
                           <div className="h-px bg-accent" />
                           <button
@@ -556,11 +555,13 @@ export function UsersTable({
                             className={cn(
                               "w-full text-left px-3.5 py-2 text-xs transition-colors",
                               u.isActive
-                                ? "text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                : "text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300"
+                                ? "text-destructive hover:bg-destructive/10"
+                                : "text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
                             )}
                           >
-                            {u.isActive ? "Suspend account" : "Activate account"}
+                            {u.isActive
+                              ? t("menu.suspendAccount")
+                              : t("menu.activateAccount")}
                           </button>
                         </div>
                       </>
@@ -573,15 +574,14 @@ export function UsersTable({
         </div>
       )}
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 pt-2">
           {currentPage > 1 && (
             <Link
               href={buildPageUrl(currentPage - 1)}
-              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-primary/40 text-foreground text-xs font-semibold transition-colors"
             >
-              ← Previous
+              ← {t("pagination.previous")}
             </Link>
           )}
 
@@ -600,7 +600,7 @@ export function UsersTable({
                     "w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors",
                     p === currentPage
                       ? "bg-primary text-primary-foreground font-bold"
-                      : "bg-card border border-border hover:border-border text-muted-foreground hover:text-foreground"
+                      : "bg-card border border-border hover:border-primary/40 text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {p}
@@ -620,14 +620,14 @@ export function UsersTable({
           {currentPage < totalPages && (
             <Link
               href={buildPageUrl(currentPage + 1)}
-              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-border text-foreground text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-lg bg-card border border-border hover:border-primary/40 text-foreground text-xs font-semibold transition-colors"
             >
-              Next →
+              {t("pagination.next")} →
             </Link>
           )}
         </div>
       )}
-            {/* Suspend reason dialog */}
+
       {suspendDialog && (
         <>
           <div
@@ -644,21 +644,21 @@ export function UsersTable({
                 <div className="flex items-center gap-2 mb-1">
                   <XCircle className="w-5 h-5 text-destructive" />
                   <h3 className="text-lg font-bold text-foreground">
-                    Suspend account
+                    {t("suspendDialog.title")}
                   </h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Please provide a reason for suspending{" "}
+                  {t("suspendDialog.descBefore")}{" "}
                   <strong className="text-foreground">
                     {suspendDialog.userName}
                   </strong>
-                  . This reason will be sent to the user by email.
+                  {t("suspendDialog.descAfter")}
                 </p>
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
-                  Reason (required)
+                  {t("suspendDialog.reasonLabel")}
                 </label>
                 <textarea
                   value={reasonInput}
@@ -676,7 +676,7 @@ export function UsersTable({
                       ? "border-destructive"
                       : "border-border focus:border-primary"
                   )}
-                  placeholder="e.g., Violation of platform terms of service."
+                  placeholder={t("suspendDialog.reasonPlaceholder")}
                 />
                 {reasonError && (
                   <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
@@ -685,7 +685,9 @@ export function UsersTable({
                   </p>
                 )}
                 <p className="text-xs text-muted-foreground/70 mt-1.5">
-                  {reasonInput.trim().length}/500 characters (minimum 10)
+                  {t("suspendDialog.reasonCounter", {
+                    count: reasonInput.trim().length,
+                  })}
                 </p>
               </div>
 
@@ -698,22 +700,22 @@ export function UsersTable({
                     setReasonError(null);
                   }}
                   disabled={isPending}
-                  className="px-4 py-2 rounded-lg bg-accent hover:bg-accent text-foreground text-sm font-semibold transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-accent hover:bg-accent/80 text-foreground text-sm font-semibold transition-colors disabled:opacity-50"
                 >
-                  Cancel
+                  {t("suspendDialog.cancel")}
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmSuspend}
                   disabled={isPending || reasonInput.trim().length < 10}
-                  className="px-4 py-2 rounded-lg bg-destructive hover:bg-destructive text-destructive-foreground text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-destructive hover:bg-destructive/90 text-destructive-foreground text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <XCircle className="w-4 h-4" />
                   )}
-                  Suspend account
+                  {t("suspendDialog.suspend")}
                 </button>
               </div>
             </div>
