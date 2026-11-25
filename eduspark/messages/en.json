@@ -1469,5 +1469,62 @@
         }
       }
     }
+  },
+    "reviews": {
+    "starRating": {
+      "aria": "{value} out of 5 stars"
+    },
+    "course": {
+      "title": "Reviews ({count})",
+      "leaveReview": "Leave a review",
+      "writeReview": "Write a review",
+      "alreadyReviewed": "You have already reviewed this course.",
+      "needsProgress": "You can review this course after completing a part of it.",
+      "noReviews": "No reviews yet.",
+      "form": {
+        "chooseRating": "Please choose a rating.",
+        "commentPlaceholder": "Share your experience (optional)",
+        "cancel": "Cancel",
+        "submit": "Submit",
+        "submittingToast": "Submitting review...",
+        "failedToast": "Failed",
+        "successToast": "Review submitted! ⭐",
+        "errors": {
+          "alreadyReviewed": "You already reviewed this course.",
+          "notEnrolled": "You must be enrolled to review.",
+          "notEnoughProgress": "Complete a bit more of the course before reviewing it.",
+          "rateLimited": "Too many reviews in a short time. Please try again later.",
+          "ownCourse": "You cannot review your own course.",
+          "generic": "Could not submit review."
+        }
+      }
+    },
+    "project": {
+      "question": "How was working with {creatorName}?",
+      "subtitle": "Your review is public and cannot be edited afterwards.",
+      "commentPlaceholder": "Share details that help other clients (optional)",
+      "submitting": "Submitting...",
+      "submit": "Submit review",
+      "clientReview": "Client review",
+      "ratingAria": "Rating",
+      "starAria": "{count, plural, =1 {1 star} other {# stars}}",
+      "errors": {
+        "alreadyReviewed": "You have already reviewed this project.",
+        "notCompleted": "You can review a project once it is completed.",
+        "forbidden": "Only the client of this project can review it.",
+        "rateLimited": "Too many attempts. Please try again later.",
+        "emailNotVerified": "Please confirm your email address first.",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "service": {
+      "title": "Client reviews",
+      "noReviews": "No reviews yet. Reviews appear after a client completes a project."
+    },
+    "reputation": {
+      "title": "Reputation",
+      "reviewsCount": "{count, plural, =0 {No reviews} =1 {1 review} other {# reviews}}",
+      "projectsCount": "{count, plural, =0 {No completed projects} =1 {1 completed project} other {# completed projects}}"
+    }
   }
 }
