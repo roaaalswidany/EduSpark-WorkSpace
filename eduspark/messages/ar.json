@@ -1526,5 +1526,41 @@
       "reviewsCount": "{count, plural, =0 {لا توجد مراجعات} =1 {مراجعة واحدة} =2 {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}}",
       "projectsCount": "{count, plural, =0 {لا توجد مشاريع مكتملة} =1 {مشروع مكتمل واحد} =2 {مشروعان مكتملان} few {# مشاريع مكتملة} many {# مشروعاً مكتملاً} other {# مشروع مكتمل}}"
     }
+  },
+    "userMenu": {
+    "dashboard": "لوحة التحكم",
+    "profile": "الملف الشخصي",
+    "signOut": "تسجيل الخروج"
+  },
+  "ui": {
+    "combobox": {
+      "defaultPlaceholder": "اختر خياراً...",
+      "defaultEmpty": "لا توجد نتائج مطابقة.",
+      "defaultSearch": "بحث..."
+    }
+  },
+  "certificate": {
+    "brand": "EduSpark",
+    "type": "شهادة إتمام",
+    "thisCertifies": "تشهد هذه الوثيقة أن",
+    "hasCompleted": "قد أكمل بنجاح دورة",
+    "levelFormat": "مستوى {level}",
+    "issued": "تاريخ الإصدار",
+    "instructor": "المدرب",
+    "credentialId": "معرّف الشهادة",
+    "copyCredentialId": "نسخ معرّف الشهادة",
+    "download": "تحميل",
+    "downloadTitle": "تحميل بيانات الشهادة بصيغة JSON",
+    "share": "مشاركة",
+    "copied": "تم النسخ!",
+    "copyVerifyLink": "نسخ رابط التحقق",
+    "verify": "تحقق",
+    "verifyTitle": "التحقق من الشهادة",
+    "downloadMetadata": "تحميل البيانات الوصفية",
+    "grades": {
+      "distinction": "بامتياز",
+      "merit": "بجدارة",
+      "pass": "ناجح"
+    }
   }
 }

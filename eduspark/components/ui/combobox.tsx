@@ -7,6 +7,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
+import { useTranslations } from "next-intl";
 import { Check, ChevronDown, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,13 +35,18 @@ export function Combobox({
   options,
   value,
   onChange,
-  placeholder = "Select an option...",
-  emptyMessage = "No matches found.",
-  searchPlaceholder = "Search...",
+  placeholder,
+  emptyMessage,
+  searchPlaceholder,
   className,
   disabled = false,
   clearable = false,
 }: ComboboxProps) {
+  const t = useTranslations("ui.combobox");
+  const placeholderText = placeholder ?? t("defaultPlaceholder");
+  const emptyText = emptyMessage ?? t("defaultEmpty");
+  const searchText = searchPlaceholder ?? t("defaultSearch");
+
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [highlighted, setHighlighted] = useState(0);
@@ -60,7 +66,6 @@ export function Combobox({
       })
     : options;
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
@@ -77,7 +82,6 @@ export function Combobox({
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
-  // Focus input when opening
   useEffect(() => {
     if (open) {
       const timer = setTimeout(() => inputRef.current?.focus(), 0);
@@ -85,7 +89,6 @@ export function Combobox({
     }
   }, [open]);
 
-  // Scroll highlighted into view
   useEffect(() => {
     if (!open || !listRef.current) return;
     const el = listRef.current.querySelector(
@@ -153,7 +156,7 @@ export function Combobox({
         className={cn(
           "w-full h-10 flex items-center justify-between gap-2 px-3 rounded-lg",
           "bg-background border border-border text-left text-sm",
-          "focus:outline-none focus:border-primary focus:ring-1 focus:ring-emerald-500",
+          "focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary",
           "transition-all",
           disabled && "opacity-50 cursor-not-allowed"
         )}
@@ -166,7 +169,7 @@ export function Combobox({
         >
           {selected?.icon}
           <span className="truncate">
-            {selected ? selected.label : placeholder}
+            {selected ? selected.label : placeholderText}
           </span>
         </span>
 
@@ -205,7 +208,7 @@ export function Combobox({
                 setHighlighted(0);
               }}
               onKeyDown={handleKeyDown}
-              placeholder={searchPlaceholder}
+              placeholder={searchText}
               className="w-full h-10 pl-9 pr-3 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
             />
           </div>
@@ -214,7 +217,7 @@ export function Combobox({
           <div ref={listRef} className="max-h-64 overflow-y-auto py-1">
             {filtered.length === 0 ? (
               <div className="px-3 py-6 text-center text-xs text-muted-foreground">
-                {emptyMessage}
+                {emptyText}
               </div>
             ) : (
               filtered.map((opt, idx) => {

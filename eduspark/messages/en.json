@@ -1526,5 +1526,41 @@
       "reviewsCount": "{count, plural, =0 {No reviews} =1 {1 review} other {# reviews}}",
       "projectsCount": "{count, plural, =0 {No completed projects} =1 {1 completed project} other {# completed projects}}"
     }
+  },
+    "userMenu": {
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "signOut": "Sign out"
+  },
+  "ui": {
+    "combobox": {
+      "defaultPlaceholder": "Select an option...",
+      "defaultEmpty": "No matches found.",
+      "defaultSearch": "Search..."
+    }
+  },
+  "certificate": {
+    "brand": "EduSpark",
+    "type": "Certificate of Completion",
+    "thisCertifies": "This certifies that",
+    "hasCompleted": "has successfully completed the course",
+    "levelFormat": "{level} Level",
+    "issued": "Issued",
+    "instructor": "Instructor",
+    "credentialId": "Credential ID",
+    "copyCredentialId": "Copy Credential ID",
+    "download": "Download",
+    "downloadTitle": "Download certificate metadata as JSON",
+    "share": "Share",
+    "copied": "Copied!",
+    "copyVerifyLink": "Copy verification link",
+    "verify": "Verify",
+    "verifyTitle": "Verify certificate",
+    "downloadMetadata": "Download metadata",
+    "grades": {
+      "distinction": "With Distinction",
+      "merit": "With Merit",
+      "pass": "Pass"
+    }
   }
 }
