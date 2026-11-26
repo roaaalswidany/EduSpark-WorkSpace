@@ -64,6 +64,8 @@ export const dictionaries = {
     aiMsgs: "messages",
     aiFaq: "FAQ",
     aiPlaceholder: "Type your question...",
+    aiNewChat: "New chat",
+    aiClose: "Close",
 
     // Certificate Not Found
     certNotFoundTitle: "Certificate not found",
@@ -145,7 +147,8 @@ export const dictionaries = {
     aiMsgs: "رسالة",
     aiFaq: "أسئلة شائعة",
     aiPlaceholder: "اكتب سؤالك…",
-
+    aiNewChat: "محادثة جديدة",
+    aiClose: "إغلاق",
     // Certificate Not Found
     certNotFoundTitle: "الشهادة غير موجودة",
     certNotFoundDesc: "لا توجد شهادة مطابقة لهذا المعرّف. تحقق من الأخطاء الإملائية، أو اطلب من حامل الشهادة مشاركة الرابط مرة أخرى. يمكن التحقق هنا فقط من الشهادات الصادرة عن EduSpark.",

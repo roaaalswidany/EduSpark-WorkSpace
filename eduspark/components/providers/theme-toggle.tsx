@@ -3,29 +3,23 @@
 
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { Sun, Moon, Monitor } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const OPTIONS = [
-  { value: "light", label: "Light", icon: Sun },
-  { value: "dark", label: "Dark", icon: Moon },
-  { value: "system", label: "System", icon: Monitor },
-] as const;
-
-/**
- * Segmented theme switcher (Light / Dark / System).
- *
- * - Renders a fixed-size placeholder until mounted to prevent hydration mismatch.
- * - Reads from next-themes (already wired in app/layout.tsx).
- * - Designed for use in /dashboard/settings only (per project requirements).
- */
 export function ThemeToggle() {
+  const t = useTranslations("themeToggle");
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
-  // SSR / pre-hydration placeholder — same dimensions as the real control
+  const OPTIONS = [
+    { value: "light", label: t("light"), icon: Sun },
+    { value: "dark", label: t("dark"), icon: Moon },
+    { value: "system", label: t("system"), icon: Monitor },
+  ] as const;
+
   if (!mounted) {
     return (
       <div
@@ -38,7 +32,7 @@ export function ThemeToggle() {
   return (
     <div
       role="radiogroup"
-      aria-label="Color theme"
+      aria-label={t("group")}
       className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-muted border border-border"
     >
       {OPTIONS.map((opt) => {

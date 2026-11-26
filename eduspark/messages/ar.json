@@ -2,7 +2,18 @@
   "nav": {
     "dashboard": "لوحة التحكم",
     "courses": "الكورسات",
-    "marketplace": "السوق"
+    "marketplace": "السوق",
+    "toggleMenu": "إظهار/إخفاء القائمة"
+  },
+    "breadcrumbs": {
+    "aria": "مسار التنقل",
+    "home": "الرئيسية"
+  },
+    "themeToggle": {
+    "group": "وضع الألوان",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
   },
   "sidebar": {
     "main": "الرئيسية",
@@ -474,6 +485,11 @@
       "markedAllFailedToast": "تعذر تحديد الكل كمقروء",
       "closeButton": "إغلاق",
       "goToPage": "الذهاب إلى الصفحة"
+    },
+      "bell": {
+      "aria": "الإشعارات",
+      "connected": "التحديث الفوري مفعّل",
+      "connecting": "جارٍ الاتصال..."
     }
   },
     "chat": {

@@ -275,7 +275,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
         <button
           type="button"
           onClick={startNewChat}
-          title="New chat"
+          title={t("aiNewChat")}
           className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
         >
           <Plus className="w-4 h-4" />
@@ -284,7 +284,7 @@ export function AiAssistantPanel({ onClose }: AiAssistantPanelProps) {
         <button
           type="button"
           onClick={onClose}
-          title="Close"
+          title={t("aiClose")}
           className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
         >
           <X className="w-4 h-4" />

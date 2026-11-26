@@ -64,6 +64,8 @@ export const dictionaries = {
     aiMsgs: "messages",
     aiFaq: "FAQ",
     aiPlaceholder: "Type your question...",
+    aiNewChat: "New chat",
+    aiClose: "Close",
 
     // Certificate Not Found
     certNotFoundTitle: "Certificate not found",
@@ -145,6 +147,8 @@ export const dictionaries = {
     aiMsgs: "رسالة",
     aiFaq: "أسئلة شائعة",
     aiPlaceholder: "اكتب سؤالك…",
+    aiNewChat: "محادثة جديدة",
+    aiClose: "إغلاق",
 
     // Certificate Not Found
     certNotFoundTitle: "الشهادة غير موجودة",

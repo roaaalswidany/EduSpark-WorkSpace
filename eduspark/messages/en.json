@@ -2,7 +2,18 @@
   "nav": {
     "dashboard": "Dashboard",
     "courses": "Courses",
-    "marketplace": "Marketplace"
+    "marketplace": "Marketplace",
+    "toggleMenu": "Toggle menu"
+  },
+    "breadcrumbs": {
+    "aria": "Breadcrumb",
+    "home": "Home"
+  },
+    "themeToggle": {
+    "group": "Color theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   },
   "sidebar": {
     "main": "Main",
@@ -474,6 +485,11 @@
       "markedAllFailedToast": "Failed to mark all as read",
       "closeButton": "Close",
       "goToPage": "Go to page"
+    },
+      "bell": {
+      "aria": "Notifications",
+      "connected": "Real-time enabled",
+      "connecting": "Connecting..."
     }
   },
     "chat": {
