@@ -1,0 +1,161 @@
+"use client";
+
+import { useRef, useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import { Upload, Loader2, Image as ImageIcon, ExternalLink } from "lucide-react";
+import { updateServiceThumbnailAction } from "@/actions/marketplace/update-service-thumbnail";
+import { cn } from "@/lib/utils";
+
+interface ServiceThumbnailUploaderProps {
+  serviceId: string;
+  currentThumbnail: string | null;
+}
+
+const MAX_SIZE = 2 * 1024 * 1024;
+
+export function ServiceThumbnailUploader({
+  serviceId,
+  currentThumbnail,
+}: ServiceThumbnailUploaderProps) {
+  const t = useTranslations("creatorServices.thumbnail");
+  const [preview, setPreview] = useState<string | null>(currentThumbnail);
+  const [isPending, startTransition] = useTransition();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = (file: File) => {
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+      toast.error(t("onlyAllowed"));
+      return;
+    }
+    if (file.size > MAX_SIZE) {
+      toast.error(t("maxSize"));
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setPreview(objectUrl);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("serviceId", serviceId);
+
+    const toastId = toast.loading(t("uploading"));
+    startTransition(async () => {
+      const res = await updateServiceThumbnailAction(formData);
+      if (res.success) {
+        toast.success(t("success"), { id: toastId });
+        setPreview(res.url);
+        URL.revokeObjectURL(objectUrl);
+      } else {
+        const errorMap: Record<string, string> = {
+          INVALID_TYPE: t("errors.invalidType"),
+          FILE_TOO_LARGE: t("errors.fileTooLarge"),
+          SERVICE_LOCKED: t("errors.serviceLocked"),
+          RATE_LIMITED: t("errors.rateLimited"),
+          FORBIDDEN: t("errors.forbidden"),
+        };
+        toast.error(t("uploadFailed"), {
+          id: toastId,
+          description: errorMap[res.error] ?? res.error,
+        });
+        setPreview(currentThumbnail);
+        URL.revokeObjectURL(objectUrl);
+      }
+    });
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFile(file);
+    e.target.value = "";
+  };
+
+  return (
+    <div className="rounded-xl border border-border bg-card/60 p-4 flex flex-col sm:flex-row items-center gap-5 transition-all hover:border-primary/40">
+      <div
+        className="relative w-full sm:w-40 aspect-video rounded-lg overflow-hidden bg-background border border-border shrink-0 group cursor-pointer"
+        onClick={() => !isPending && inputRef.current?.click()}
+      >
+        {preview ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={preview}
+              alt="Service thumbnail"
+              className="w-full h-full object-cover group-hover:opacity-60 transition-opacity"
+            />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="px-2 py-1 bg-black/70 text-white text-[10px] font-semibold rounded backdrop-blur-sm flex items-center gap-1">
+                <Upload className="w-3 h-3" /> {t("change")}
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground group-hover:text-primary transition-colors gap-1">
+            <ImageIcon className="w-5 h-5" />
+            <span className="text-[9px] font-medium uppercase tracking-wider">
+              {t("noImage")}
+            </span>
+          </div>
+        )}
+
+        {isPending && (
+          <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-10">
+            <Loader2 className="w-5 h-5 text-primary animate-spin" />
+          </div>
+        )}
+      </div>
+
+      <div className="flex-1 w-full space-y-2">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+              {t("title")}
+              {preview && (
+                <a
+                  href={preview}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  title={t("openNewTab")}
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
+            </h3>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {t("hint")}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={isPending}
+            className={cn(
+              "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg",
+              "bg-accent hover:bg-accent/80 border border-border text-foreground text-xs font-semibold",
+              "disabled:opacity-50 transition-all shrink-0"
+            )}
+          >
+            {isPending ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Upload className="w-3.5 h-3.5" />
+            )}
+            {preview ? t("replace") : t("upload")}
+          </button>
+        </div>
+      </div>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        onChange={onChange}
+        className="hidden"
+      />
+    </div>
+  );
+}

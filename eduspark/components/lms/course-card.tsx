@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from "next/image";
-import Link from "next/link";
-import { BookOpen, Clock, Star, Users, Award } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { BookOpen, Clock, Star, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CourseLevel } from "@prisma/client";
 
@@ -31,15 +31,12 @@ export interface CourseCardData {
 }
 
 const LEVEL_STYLES: Record<CourseLevel, string> = {
-  BEGINNER: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  INTERMEDIATE: "bg-amber-600 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-500/20",
-  ADVANCED: "bg-rose-500/10 text-rose-400 border-rose-500/20",
-};
-
-const LEVEL_LABELS: Record<CourseLevel, string> = {
-  BEGINNER: "Beginner",
-  INTERMEDIATE: "Intermediate",
-  ADVANCED: "Advanced",
+  BEGINNER:
+    "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+  INTERMEDIATE:
+    "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+  ADVANCED:
+    "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
 };
 
 function formatDuration(minutes: number): string {
@@ -49,7 +46,8 @@ function formatDuration(minutes: number): string {
   return m > 0 ? `${h}h ${m}m` : `${h}h`;
 }
 
-export function CourseCard({ course }: { course: CourseCardData }) {
+export async function CourseCard({ course }: { course: CourseCardData }) {
+  const t = await getTranslations("courses.card");
   const showEnrolled = course.isEnrolled;
   const progress = course.enrollmentProgress ?? 0;
 
@@ -60,11 +58,23 @@ export function CourseCard({ course }: { course: CourseCardData }) {
     .join("")
     .toUpperCase();
   const creatorHue =
-    course.creator.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+    course.creator.name
+      .split("")
+      .reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+
+  const levelKey = course.level.toLowerCase() as
+    | "beginner"
+    | "intermediate"
+    | "advanced";
+  const levelLabel = t(`levels.${levelKey}`);
 
   return (
     <Link
-      href={showEnrolled ? `/dashboard/student/courses/${course.id}` : `/courses/${course.slug}`}
+      href={
+        showEnrolled
+          ? `/dashboard/student/courses/${course.id}`
+          : `/courses/${course.slug}`
+      }
       className={cn(
         "group flex flex-col rounded-2xl bg-card border border-border overflow-hidden",
         "hover:border-primary/40 hover:bg-card/80",
@@ -87,10 +97,8 @@ export function CourseCard({ course }: { course: CourseCardData }) {
           </div>
         )}
 
-        {/* Dark gradient overlay for text visibility */}
         <div className="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-zinc-950/20 to-transparent" />
 
-        {/* Level badge top-left */}
         <div className="absolute top-3 left-3">
           <span
             className={cn(
@@ -98,11 +106,10 @@ export function CourseCard({ course }: { course: CourseCardData }) {
               LEVEL_STYLES[course.level]
             )}
           >
-            {LEVEL_LABELS[course.level]}
+            {levelLabel}
           </span>
         </div>
 
-        {/* Enrolled badge top-right */}
         {showEnrolled && (
           <div className="absolute top-3 right-3">
             <span
@@ -116,16 +123,15 @@ export function CourseCard({ course }: { course: CourseCardData }) {
               {course.isPassed ? (
                 <>
                   <Award className="w-3 h-3" />
-                  Completed
+                  {t("completed")}
                 </>
               ) : (
-                <>Enrolled</>
+                <>{t("enrolled")}</>
               )}
             </span>
           </div>
         )}
 
-        {/* Progress bar bottom (if enrolled) */}
         {showEnrolled && (
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-background/60">
             <div
@@ -143,28 +149,23 @@ export function CourseCard({ course }: { course: CourseCardData }) {
 
       {/* ── Body ──────────────────────────────────────────── */}
       <div className="flex flex-col flex-1 p-4 sm:p-5 gap-3">
-        {/* Category */}
         {course.category && (
           <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
             {course.category.name}
           </span>
         )}
 
-        {/* Title */}
         <h3 className="text-sm sm:text-base font-bold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
           {course.title}
         </h3>
 
-        {/* Description */}
         <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
           {course.description}
         </p>
 
-        {/* Creator */}
         <div className="flex items-center gap-2 mt-auto pt-2">
-
-          <div 
-            className="w-6 h-6 rounded-full text-foreground text-[10px] font-bold flex items-center justify-center ring-1 ring-border shrink-0"
+          <div
+            className="w-6 h-6 rounded-full text-white text-[10px] font-bold flex items-center justify-center ring-1 ring-border shrink-0"
             style={{ background: `hsl(${creatorHue}, 55%, 42%)` }}
           >
             {creatorInitials}
@@ -174,11 +175,10 @@ export function CourseCard({ course }: { course: CourseCardData }) {
           </span>
         </div>
 
-        {/* Stats row */}
-        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+        <div className="flex items-center gap-3 text-[11px] text-muted-foreground flex-wrap">
           <span className="flex items-center gap-1">
             <BookOpen className="w-3 h-3" />
-            {course.totalLessons} lessons
+            {t("lessons", { count: course.totalLessons })}
           </span>
           {course.totalDuration > 0 && (
             <span className="flex items-center gap-1">
@@ -188,24 +188,29 @@ export function CourseCard({ course }: { course: CourseCardData }) {
           )}
           {course.ratingCount > 0 && (
             <span className="flex items-center gap-1 ml-auto">
-              <Star className="w-3 h-3 text-amber-600 dark:text-amber-400 fill-amber-400" />
-              <span className="text-amber-300 font-semibold">
+              <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+              <span className="text-amber-600 dark:text-amber-400 font-semibold">
                 {course.totalRating.toFixed(1)}
               </span>
-              <span className="text-muted-foreground/70">({course.ratingCount})</span>
+              <span className="text-muted-foreground/70">
+                ({course.ratingCount})
+              </span>
             </span>
           )}
         </div>
 
-        {/* Price / Progress footer */}
         <div className="flex items-center justify-between pt-3 border-t border-border">
           {showEnrolled ? (
             <>
-              <span className="text-xs text-muted-foreground">Progress</span>
+              <span className="text-xs text-muted-foreground">
+                {t("progress")}
+              </span>
               <span
                 className={cn(
                   "text-sm font-bold tabular-nums",
-                  course.isPassed ? "text-emerald-400" : "text-primary"
+                  course.isPassed
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-primary"
                 )}
               >
                 {progress}%
@@ -213,9 +218,13 @@ export function CourseCard({ course }: { course: CourseCardData }) {
             </>
           ) : (
             <>
-              <span className="text-xs text-muted-foreground">Price</span>
+              <span className="text-xs text-muted-foreground">
+                {t("price")}
+              </span>
               {course.price === 0 ? (
-                <span className="text-sm font-bold text-emerald-400">Free</span>
+                <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                  {t("free")}
+                </span>
               ) : (
                 <span className="text-base font-black text-foreground tabular-nums">
                   ${course.price.toFixed(2)}

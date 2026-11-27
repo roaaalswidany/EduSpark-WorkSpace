@@ -1,0 +1,179 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { redirect, notFound } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { getTranslations, getLocale } from "next-intl/server";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { db } from "@/lib/db";
+import { ProjectView } from "./_components/project-view";
+import { ProjectReviewPanel } from "@/components/reviews/project-review-panel";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import type { SerializedProject } from "./_components/project-view";
+
+interface ProjectPageProps {
+  params: Promise<{ locale: string; projectId: string }>;
+}
+
+export async function generateMetadata({ params }: ProjectPageProps) {
+  const { projectId, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "projects.view" });
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: { title: true },
+  });
+  return {
+    title: project ? `${project.title} — EduSpark` : `Project — EduSpark`,
+  };
+}
+
+export default async function ProjectPage({ params }: ProjectPageProps) {
+  const { projectId } = await params;
+  const session = await getServerSession(authOptions);
+  const locale = await getLocale();
+
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/login`);
+  }
+
+  const tPage = await getTranslations("projects.page.breadcrumb");
+  const { id: userId } = session.user;
+
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      budget: true,
+      deadline: true,
+      status: true,
+      tags: true,
+      createdAt: true,
+      updatedAt: true,
+      clientId: true,
+      creatorId: true,
+      serviceId: true,
+      client: {
+        select: { id: true, name: true, image: true, email: true },
+      },
+      creator: {
+        select: { id: true, name: true, image: true, headline: true },
+      },
+      service: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          price: true,
+          deliveryDays: true,
+        },
+      },
+      milestones: {
+        orderBy: { order: "asc" },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          dueDate: true,
+          status: true,
+          order: true,
+          amount: true,
+          completedAt: true,
+          revisionNote: true,
+          submissionNote: true,
+          submissionUrl: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
+      chatRoom: {
+        select: {
+          id: true,
+          _count: { select: { messages: true } },
+        },
+      },
+    },
+  });
+
+  if (!project) notFound();
+
+  const isClient = project.clientId === userId;
+  const isCreator = project.creatorId === userId;
+
+  if (!isClient && !isCreator) {
+    redirect(`/${locale}/dashboard/projects`);
+  }
+
+  const serialized: SerializedProject = {
+    id: project.id,
+    title: project.title,
+    description: project.description,
+    budget: project.budget ? Number(project.budget) : null,
+    deadline: project.deadline?.toISOString() ?? null,
+    status: project.status,
+    tags: project.tags,
+    createdAt: project.createdAt.toISOString(),
+    clientId: project.clientId,
+    creatorId: project.creatorId,
+    client: project.client,
+    creator: project.creator,
+    service: project.service
+      ? { ...project.service, price: Number(project.service.price) }
+      : null,
+    milestones: project.milestones.map((m) => ({
+      id: m.id,
+      title: m.title,
+      description: m.description,
+      dueDate: m.dueDate?.toISOString() ?? null,
+      status: m.status,
+      order: m.order,
+      amount: m.amount ? Number(m.amount) : null,
+      completedAt: m.completedAt?.toISOString() ?? null,
+      revisionNote: m.revisionNote,
+      submissionNote: m.submissionNote,
+      submissionUrl: m.submissionUrl,
+      createdAt: m.createdAt.toISOString(),
+      updatedAt: m.updatedAt.toISOString(),
+    })),
+    chatRoom: project.chatRoom
+      ? {
+          id: project.chatRoom.id,
+          messageCount: project.chatRoom._count.messages,
+        }
+      : null,
+  };
+
+  return (
+    <>
+      <div className="border-b border-border bg-background">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3">
+          <Breadcrumbs
+            items={[
+              { label: tPage("dashboard"), href: "/dashboard" },
+              { label: tPage("projects"), href: "/dashboard/projects" },
+              { label: project.title, truncate: true },
+            ]}
+          />
+        </div>
+      </div>
+
+      <ProjectView
+        project={serialized}
+        currentUserId={userId}
+        isClient={isClient}
+        isCreator={isCreator}
+      />
+      {project.creator && (
+        <div className="bg-background">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-10">
+            <ProjectReviewPanel
+              projectId={project.id}
+              status={project.status}
+              isClient={isClient}
+              creatorName={project.creator.name}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

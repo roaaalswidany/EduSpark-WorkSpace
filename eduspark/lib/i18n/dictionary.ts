@@ -7,28 +7,28 @@ export const dictionaries = {
     theme: "Theme",
     language: "Language",
     languageDesc: "Choose your preferred language for the platform.",
-    
-    // General & Navigation
+    accountInfo: "Account Information",
+    security: "Security",
+
+    // Navigation
     dashboard: "Dashboard",
     courses: "Courses",
     marketplace: "Marketplace",
     signIn: "Sign In",
     signOut: "Sign Out",
     getStarted: "Get Started",
-    
-    // Example (Career Path)
-    // في القسم الإنجليزي (en):
-    careerGoal: "What is your career goal?",
-    careerGoalDesc: "Describe your dream job or the skills you want to master.",
-    careerGoalPlaceholder: "e.g. I want to become a Full-Stack Developer specialized in Next.js",
-    suggestion1: "I want to become a Full-Stack Developer",
-    suggestion2: "I want to learn Data Analysis",
-    suggestion3: "I want to become a UI/UX Designer",
-    suggestion4: "I want to learn Mobile App Development",
+
+    // Career Path
+    careerPath: "Career Path",
+    emptyStateTitle: "Build Your Career Path",
+    emptyStateDesc: "Tell us your career goal, and our AI will design a personalized learning journey.",
+    createPathBtn: "Create Your Path",
+
     // Create Path Dialog
     createPathTitle: "Create Your Career Path",
     createPathDesc: "Our AI will design a personalized learning journey for you.",
     careerGoalLabel: "What is your career goal?",
+    careerGoalPlaceholder: "e.g. I want to become a Full-Stack Developer specialized in Next.js",
     examples: "Examples",
     exFullStack: "I want to become a Full-Stack Developer",
     exDataAnalysis: "I want to learn Data Analysis",
@@ -46,6 +46,7 @@ export const dictionaries = {
     successToastDesc: "Your personalized path is ready.",
     failedToast: "Generation failed",
     errorPrefix: "Something went wrong.",
+
     // AI Assistant
     aiWelcomeMsg: "Hello! 👋 I am the EduSpark AI Assistant.\n\nHow can I help you?",
     aiPromptCourses: "📚 Suggest courses for me",
@@ -63,11 +64,14 @@ export const dictionaries = {
     aiMsgs: "messages",
     aiFaq: "FAQ",
     aiPlaceholder: "Type your question...",
+    aiNewChat: "New chat",
+    aiClose: "Close",
 
     // Certificate Not Found
     certNotFoundTitle: "Certificate not found",
     certNotFoundDesc: "No certificate matches this credential ID. Check for typing mistakes, or ask the holder to share the link again. Only certificates issued by EduSpark can be verified here.",
     backToEduSpark: "Back to EduSpark",
+
     // Path Timeline
     updatingProgress: "Updating progress...",
     updateFailed: "Update failed",
@@ -77,7 +81,6 @@ export const dictionaries = {
     markCompleteBtn: "Mark Complete",
     completedLabel: "Completed",
     weeksShort: "w",
-
   },
   ar: {
     // Settings
@@ -87,28 +90,28 @@ export const dictionaries = {
     theme: "الوضع",
     language: "اللغة",
     languageDesc: "اختر لغتك المفضلة للمنصة.",
-    
-    // General & Navigation
+    accountInfo: "معلومات الحساب",
+    security: "الأمان",
+
+    // Navigation
     dashboard: "لوحة التحكم",
     courses: "الكورسات",
     marketplace: "السوق",
     signIn: "تسجيل الدخول",
     signOut: "تسجيل الخروج",
     getStarted: "ابدأ الآن",
-    
-    // Example (Career Path)
-   // في القسم العربي (ar):
-    careerGoal: "ما هو هدفك الوظيفي؟",
-    careerGoalDesc: "صف وظيفة أحلامك أو المهارات التي تريد إتقانها.",
-    careerGoalPlaceholder: "مثال: أريد أن أصبح مطور Full-Stack متخصص في Next.js",
-    suggestion1: "أريد أن أصبح Full-Stack Developer",
-    suggestion2: "أريد تعلم تحليل البيانات",
-    suggestion3: "أريد أن أصبح UI/UX Designer",
-    suggestion4: "أريد تعلم تطوير تطبيقات الجوال",
+
+    // Career Path
+    careerPath: "المسار الوظيفي",
+    emptyStateTitle: "ابنِ مسارك الوظيفي",
+    emptyStateDesc: "أخبرنا بهدفك الوظيفي، وسيقوم الذكاء الاصطناعي بتصميم رحلة تعلم مخصصة لك.",
+    createPathBtn: "أنشئ مسارك",
+
     // Create Path Dialog
     createPathTitle: "أنشئ مسارك الوظيفي",
     createPathDesc: "سيقوم الذكاء الاصطناعي بتصميم رحلة تعلم مخصصة لك.",
     careerGoalLabel: "ما هو هدفك الوظيفي؟",
+    careerGoalPlaceholder: "مثال: أريد أن أصبح مطور Full-Stack متخصص في Next.js",
     examples: "أمثلة",
     exFullStack: "أريد أن أصبح Full-Stack Developer",
     exDataAnalysis: "أريد تعلم تحليل البيانات",
@@ -126,6 +129,7 @@ export const dictionaries = {
     successToastDesc: "مسارك المخصص جاهز.",
     failedToast: "فشل الإنشاء",
     errorPrefix: "حدث خطأ ما.",
+
     // AI Assistant
     aiWelcomeMsg: "أهلاً! 👋 أنا مساعد EduSpark الذكي.\n\nكيف يمكنني مساعدتك؟",
     aiPromptCourses: "📚 اقترح لي كورسات",
@@ -143,11 +147,14 @@ export const dictionaries = {
     aiMsgs: "رسالة",
     aiFaq: "أسئلة شائعة",
     aiPlaceholder: "اكتب سؤالك…",
+    aiNewChat: "محادثة جديدة",
+    aiClose: "إغلاق",
 
     // Certificate Not Found
     certNotFoundTitle: "الشهادة غير موجودة",
     certNotFoundDesc: "لا توجد شهادة مطابقة لهذا المعرّف. تحقق من الأخطاء الإملائية، أو اطلب من حامل الشهادة مشاركة الرابط مرة أخرى. يمكن التحقق هنا فقط من الشهادات الصادرة عن EduSpark.",
     backToEduSpark: "العودة إلى EduSpark",
+
     // Path Timeline
     updatingProgress: "جاري تحديث التقدم...",
     updateFailed: "فشل التحديث",
@@ -157,7 +164,7 @@ export const dictionaries = {
     markCompleteBtn: "تحديد كمكتمل",
     completedLabel: "مكتمل",
     weeksShort: "أسبوع",
-  }
+  },
 };
 
 export type Locale = "en" | "ar";

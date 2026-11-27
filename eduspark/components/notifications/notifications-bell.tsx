@@ -1,18 +1,20 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Bell } from "lucide-react";
 import { useNotifications } from "@/components/providers/notifications-provider";
 
 export function NotificationsBell() {
+  const t = useTranslations("notifications.bell");
   const { unreadCount, isConnected } = useNotifications();
 
   return (
     <Link
       href="/dashboard/notifications"
       className="relative flex items-center justify-center w-9 h-9 rounded-lg hover:bg-accent transition-colors"
-      aria-label="Notifications"
-      title={isConnected ? "Real-time enabled" : "Connecting..."}
+      aria-label={t("aria")}
+      title={isConnected ? t("connected") : t("connecting")}
     >
       <Bell className="w-4 h-4 text-muted-foreground" />
 

@@ -1,0 +1,1607 @@
+{
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "courses": "الكورسات",
+    "marketplace": "السوق",
+    "toggleMenu": "إظهار/إخفاء القائمة"
+  },
+    "breadcrumbs": {
+    "aria": "مسار التنقل",
+    "home": "الرئيسية"
+  },
+    "themeToggle": {
+    "group": "وضع الألوان",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  },
+  "sidebar": {
+    "main": "الرئيسية",
+    "learn": "التعلّم",
+    "work": "العمل",
+    "creatorStudio": "استوديو المنشئ",
+    "administration": "الإدارة",
+    "dashboard": "لوحة التحكم",
+    "careerPath": "المسار الوظيفي",
+    "achievements": "الإنجازات",
+    "messages": "الرسائل",
+    "notifications": "الإشعارات",
+    "settings": "الإعدادات",
+    "myCourses": "كورساتي",
+    "certificates": "الشهادات",
+    "browseCourses": "تصفح الكورسات",
+    "marketplace": "السوق",
+    "myOrders": "طلباتي",
+    "myProjects": "مشاريعي",
+    "myServices": "خدماتي",
+    "incomingOrders": "الطلبات الواردة",
+    "newService": "خدمة جديدة",
+    "overview": "نظرة عامة",
+    "users": "المستخدمون",
+    "coursesAdmin": "الكورسات",
+    "servicesAdmin": "الخدمات",
+    "signOut": "تسجيل الخروج",
+    "admin": "مدير"
+  },
+  "navbar": {
+    "courses": "الكورسات",
+    "marketplace": "السوق",
+    "dashboard": "لوحة التحكم",
+    "signIn": "تسجيل الدخول",
+    "getStarted": "ابدأ الآن",
+    "goToDashboard": "الذهاب للوحة التحكم"
+  },
+  "auth": {
+    "signIn": {
+      "title": "أهلاً بعودتك",
+      "subtitle": "سجّل الدخول إلى حسابك في EduSpark",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "submitButton": "تسجيل الدخول",
+      "submittingButton": "جارٍ تسجيل الدخول...",
+      "noAccount": "ليس لديك حساب؟",
+      "createAccount": "أنشئ حساباً",
+      "orContinueWith": "أو تابع باستخدام",
+      "errorInvalid": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "errorAccountDisabled": "تم تعطيل حسابك. تواصل مع الدعم.",
+      "errorOauth": "هذا الحساب يستخدم تسجيل الدخول الاجتماعي. يرجى استخدامه بدلاً من ذلك.",
+      "errorRateLimited": "محاولات تسجيل دخول كثيرة. يرجى المحاولة بعد 15 دقيقة.",
+      "errorGeneric": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "register": {
+      "title": "أنشئ حسابك",
+      "subtitle": "انضم إلى EduSpark وابدأ التعلم",
+      "nameLabel": "الاسم الكامل",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "••••••••",
+      "termsNote": "الحسابات الجديدة تبدأ كطلاب. اجتَز اختبار شهادة دورة لفتح صلاحيات المنشئ.",
+      "submitButton": "إنشاء الحساب",
+      "submittingButton": "جارٍ إنشاء الحساب...",
+      "hasAccount": "لديك حساب بالفعل؟",
+      "signInLink": "تسجيل الدخول",
+      "errorPasswordMismatch": "كلمتا المرور غير متطابقتين.",
+      "errorPasswordWeak": "يجب أن تكون كلمة المرور 8 أحرف على الأقل، مع حرف كبير ورقم.",
+      "errorEmailTaken": "يوجد حساب مسجل بهذا البريد الإلكتروني.",
+      "errorGeneric": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+      "errorPasswordsDoNotMatch": "كلمتا المرور غير متطابقتين.",
+      "rulesMinLength": "8 أحرف على الأقل",
+      "rulesUppercase": "حرف كبير واحد",
+      "rulesLowercase": "حرف صغير واحد",
+      "rulesNumber": "رقم واحد",
+      "rulesSpecial": "رمز خاص واحد",
+      "hidePassword": "إخفاء كلمة المرور",
+      "showPassword": "إظهار كلمة المرور"
+    },
+    "forgotPassword": {
+      "title": "نسيت كلمة المرور؟",
+      "subtitle": "أدخل بريد حسابك الإلكتروني وسنرسل لك رابط إعادة التعيين.",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "you@example.com",
+      "submitButton": "إرسال رابط التعيين",
+      "submittingButton": "جارٍ الإرسال...",
+      "successMessage": "إذا كان هناك حساب مرتبط بـ {email}، فقد أرسلنا له رابط إعادة التعيين. تنتهي صلاحيته خلال ساعة.",
+      "backToLogin": "العودة لتسجيل الدخول",
+      "errorGeneric": "تعذر إرسال بريد إعادة التعيين. يرجى المحاولة مرة أخرى."
+    },
+    "resetPassword": {
+      "title": "اختر كلمة مرور جديدة",
+      "subtitle": "أدخل كلمة مرور جديدة لحسابك.",
+      "passwordLabel": "كلمة المرور الجديدة",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "••••••••",
+      "submitButton": "إعادة تعيين كلمة المرور",
+      "submittingButton": "جارٍ الحفظ...",
+      "changePasswordButton": "تغيير كلمة المرور",
+      "successMessage": "تم تغيير كلمة المرور. يمكنك تسجيل الدخول الآن.",
+      "resettingFor": "إعادة تعيين كلمة المرور لـ {email}",
+      "passwordRulesHint": "8–72 حرفاً تحتوي على حرف كبير، حرف صغير، رقم ورمز.",
+      "invalidLinkText": "رابط إعادة التعيين غير مكتمل أو غير صالح.",
+      "requestNewLink": "اطلب رابطاً جديداً",
+      "signInButton": "تسجيل الدخول",
+      "errorInvalidToken": "رابط إعادة التعيين غير صالح أو منتهي الصلاحية.",
+      "errorPasswordMismatch": "كلمتا المرور غير متطابقتين.",
+      "errorPasswordWeak": "يجب أن تكون كلمة المرور 8 أحرف على الأقل، مع حرف كبير ورقم.",
+      "errorGeneric": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "verifyEmail": {
+      "title": "تأكيد بريدك الإلكتروني",
+      "subtitle": "أكّد بريدك الإلكتروني لتفعيل حسابك.",
+      "checkInbox": "يرجى التحقق من بريدك الوارد والنقر على الرابط لتفعيل حسابك.",
+      "resendButton": "إعادة إرسال بريد التحقق",
+      "resendingButton": "جارٍ الإرسال...",
+      "successResend": "تم إرسال بريد التحقق! تحقق من صندوق الوارد.",
+      "errorGeneric": "تعذر إرسال بريد التحقق. يرجى المحاولة مرة أخرى.",
+      "signInLink": "تسجيل الدخول",
+      "confirmEmailFor": "أكّد أن {email} هو بريدك الإلكتروني.",
+      "confirmButton": "تأكيد البريد الإلكتروني",
+      "confirmingButton": "جارٍ التأكيد...",
+      "confirmedMessage": "تم تأكيد بريدك الإلكتروني. شكراً لك!",
+      "goToDashboard": "الذهاب إلى لوحة التحكم",
+      "invalidLinkText": "رابط التأكيد غير مكتمل أو غير صالح."
+    },
+    "welcome": {
+      "title": "أهلاً بك في EduSpark!",
+      "subtitle": "حسابك جاهز. ابدأ باستكشاف الكورسات وبناء مهاراتك.",
+      "getStartedButton": "ابدأ الآن",
+      "exploreCourses": "استكشف الكورسات",
+      "goToDashboard": "الذهاب إلى لوحة التحكم"
+    },
+    "error": {
+      "title": "خطأ في المصادقة",
+      "description": "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.",
+      "backToLogin": "العودة لتسجيل الدخول",
+      "backToHome": "العودة للرئيسية",
+      "configurationError": "هناك مشكلة في إعدادات الخادم.",
+      "accessDenied": "ليس لديك صلاحية تسجيل الدخول.",
+      "verificationError": "رابط تسجيل الدخول لم يعد صالحاً.",
+      "defaultError": "حدث خطأ أثناء تسجيل الدخول.",
+      "loading": "جارٍ التحميل..."
+    }
+  },
+    "dashboard": {
+    "title": "لوحة التحكم",
+    "roles": {
+      "admin": "مدير",
+      "creator": "منشئ",
+      "student": "طالب"
+    },
+    "welcome": "أهلاً بعودتك، {name}",
+    "subtitles": {
+      "admin": "راقب وأدر منصة EduSpark بأكملها.",
+      "creator": "طوّر أعمالك، وأدر خدماتك، وتتبع طلباتك.",
+      "student": "واصل التعلم، واجمع الشهادات، وأطلق إمكانياتك."
+    },
+    "sections": {
+      "platformOverview": "نظرة عامة على المنصة",
+      "learning": "التعلّم",
+      "creatorStudio": "استوديو المنشئ",
+      "explore": "استكشاف"
+    },
+    "stats": {
+      "totalUsers": "إجمالي المستخدمين",
+      "courses": "الكورسات",
+      "services": "الخدمات",
+      "projects": "المشاريع",
+      "myCourses": "كورساتي",
+      "certificates": "الشهادات",
+      "orders": "الطلبات"
+    },
+    "adminPanel": {
+      "title": "لوحة الإدارة",
+      "description": "إدارة المستخدمين والكورسات والخدمات"
+    },
+    "conversations": {
+      "title": "المحادثات",
+      "description": "مراقبة المحادثات على مستوى المنصة"
+    },
+    "creatorSection": {
+      "newService": "خدمة جديدة",
+      "myServices": "خدماتي",
+      "publishedCount": "{count, plural, =0 {لا توجد خدمات منشورة} =1 {خدمة واحدة منشورة} =2 {خدمتان منشورتان} few {# خدمات منشورة} many {# خدمة منشورة} other {# خدمة منشورة}}",
+      "marketplaceTitle": "السوق",
+      "marketplaceDesc": "تصفح ما يقدمه المنشئون الآخرون"
+    },
+    "explore": {
+      "browseCourses": "تصفح الكورسات",
+      "browseCoursesDesc": "اكتشف مهارات جديدة لإتقانها",
+      "browseServices": "تصفح الخدمات",
+      "browseServicesDesc": "استعن بخبراء معتمدين"
+    }
+  },
+  "courses": {
+    "hero": {
+      "availableBadge": "{count, plural, =0 {لا توجد كورسات متاحة} =1 {كورس واحد متاح} =2 {كورسان متاحان} few {# كورسات متاحة} many {# كورساً متاحاً} other {# كورس متاح}}",
+      "title": "تعلّم من الأفضل،",
+      "titleHighlight": "بالسرعة التي تناسبك.",
+      "description": "اكتشف كورسات يقودها خبراء، واجمع الشهادات، وأطلق إمكانياتك مع EduSpark."
+    },
+    "results": {
+      "showingRange": "عرض {start}–{end} من {total}",
+      "pageOf": "صفحة {page} من {total}",
+      "noCourses": "لا توجد كورسات",
+      "tryAdjusting": "جرب تعديل الفلاتر أو كلمة البحث.",
+      "noPublished": "لا توجد كورسات منشورة بعد. تحقق مرة أخرى قريباً!",
+      "clearFilters": "مسح الفلاتر",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "filters": {
+      "searchPlaceholder": "ابحث عن كورس...",
+      "levels": {
+        "all": "كل المستويات",
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "advanced": "متقدم"
+      },
+      "sort": {
+        "newest": "الأحدث",
+        "popular": "الأكثر شيوعاً",
+        "rating": "الأعلى تقييماً",
+        "priceLow": "السعر: من الأقل للأعلى",
+        "priceHigh": "السعر: من الأعلى للأقل"
+      },
+      "filtersButton": "الفلاتر",
+      "allCategories": "الكل ({count})",
+      "levelLabel": "المستوى:",
+      "clear": "مسح"
+    },
+    "detail": {
+      "breadcrumb": "الكورسات",
+      "createdBy": "أنشأه",
+      "ratingCount": "{count, plural, =0 {لا توجد تقييمات} =1 {تقييم واحد} =2 {تقييمان} few {# تقييمات} many {# تقييماً} other {# تقييم}}",
+      "studentsCount": "{count, plural, =0 {لا يوجد طلاب} =1 {طالب واحد} =2 {طالبان} few {# طلاب} many {# طالباً} other {# طالب}}",
+      "lessonsCount": "{count, plural, =0 {لا توجد دروس} =1 {درس واحد} =2 {درسان} few {# دروس} many {# درساً} other {# درس}}",
+      "free": "مجاني",
+      "includesTitle": "تشمل هذه الدورة",
+      "includesLessons": "{count, plural, =0 {لا توجد دروس فيديو} =1 {درس فيديو واحد} =2 {درسان فيديو} few {# دروس فيديو} many {# درس فيديو} other {# درس فيديو}}",
+      "includesCertificate": "شهادة إتمام",
+      "includesAccess": "الوصول عبر الجوال والحاسوب",
+      "includesLifetime": "وصول مدى الحياة",
+      "learningTitle": "ما ستتعلمه",
+      "instructorTitle": "عن المدرب",
+      "outcomes": {
+        "master": "أتقن {title} من خلال مشاريع تطبيقية",
+        "build": "ابنِ تطبيقات جاهزة للإنتاج بسيناريوهات واقعية",
+        "learnFrom": "تعلّم من {creator}، مدرب ذو خبرة",
+        "certificate": "احصل على شهادة موثقة عند الإتمام بنجاح",
+        "accessLessons": "الوصول إلى {count} دروس فيديو على أي جهاز، في أي وقت",
+        "community": "انضم إلى مجتمع المتعلمين وطوّر مهاراتك"
+      }
+    },
+    "curriculum": {
+      "title": "منهج الدورة",
+      "sections": "{count, plural, =0 {لا توجد أقسام} =1 {قسم واحد} =2 {قسمان} few {# أقسام} many {# قسماً} other {# قسم}}",
+      "lessons": "{count, plural, =0 {لا توجد دروس} =1 {درس واحد} =2 {درسان} few {# دروس} many {# درساً} other {# درس}}",
+      "totalSuffix": "{duration} إجمالي",
+      "free": "مجاني"
+    },
+    "enroll": {
+      "adminTitle": "حساب مدير",
+      "adminDescription": "المديرون يديرون المنصة ولا يمكنهم التسجيل في الكورسات.",
+      "continue": "متابعة التعلم",
+      "signIn": "سجّل الدخول للتسجيل",
+      "enrolling": "جارٍ التسجيل...",
+      "enrollFree": "سجّل مجاناً",
+      "enrollPaid": "سجّل مقابل ${price}",
+      "loadingToast": "جارٍ التسجيل…",
+      "successToast": "تم التسجيل بنجاح! 🎉",
+      "successToastDesc": "جارٍ تحويلك إلى كورسك…",
+      "errorToast": "فشل التسجيل",
+      "errors": {
+        "alreadyEnrolled": "أنت مسجل بالفعل في هذا الكورس.",
+        "ownCourse": "لا يمكنك التسجيل في كورسك الخاص.",
+        "courseNotFound": "الكورس غير موجود.",
+        "notPublished": "هذا الكورس غير متاح للتسجيل بعد.",
+        "unauthorized": "يرجى تسجيل الدخول للتسجيل.",
+        "adminCannotParticipate": "المديرون لا يمكنهم التسجيل في الكورسات. استخدم حساب طالب للمشاركة.",
+        "invalidInput": "بيانات الكورس غير صالحة. يرجى التحديث والمحاولة مرة أخرى.",
+        "serverError": "خطأ في الخادم. يرجى المحاولة بعد قليل.",
+        "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "card": {
+      "levels": {
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "advanced": "متقدم"
+      },
+      "enrolled": "مسجل",
+      "completed": "مكتمل",
+      "lessons": "{count, plural, =0 {لا توجد دروس} =1 {درس واحد} =2 {درسان} few {# دروس} many {# درساً} other {# درس}}",
+      "price": "السعر",
+      "free": "مجاني",
+      "progress": "التقدم"
+    }
+  },
+    "marketplace": {
+    "meta": {
+      "title": "السوق",
+      "description": "وظّف خبراء معتمدين أثبتوا مهاراتهم عبر برنامج الكورسات الصارم في EduSpark."
+    },
+    "hero": {
+      "badge": "جميع المنشئين معتمدون من EduSpark",
+      "titleLine1": "وظّف",
+      "titleHighlight": "خبراء",
+      "titleLine2": "معتمدين",
+      "description": "كل منشئ أثبت مهاراته عبر برنامجنا الصارم — عملك في أيدٍ موثوقة.",
+      "searchPlaceholder": "ابحث عن خدمات، مهارات، أو منشئين..."
+    },
+    "stats": {
+      "services": "{count, plural, =0 {لا توجد خدمات} =1 {خدمة واحدة} =2 {خدمتان} few {# خدمات} many {# خدمة} other {# خدمة}}",
+      "experts": "{count, plural, =0 {لا يوجد خبراء} =1 {خبير واحد} =2 {خبيران} few {# خبراء} many {# خبيراً} other {# خبير}}",
+      "certified": "100% معتمد"
+    },
+    "filters": {
+      "allServices": "كل الخدمات"
+    },
+    "sort": {
+      "newest": "الأحدث أولاً",
+      "priceAsc": "السعر: من الأقل للأعلى",
+      "priceDesc": "السعر: من الأعلى للأقل",
+      "popular": "الأكثر شيوعاً"
+    },
+    "results": {
+      "count": "{count, plural, =0 {لا توجد خدمات} =1 {خدمة واحدة} =2 {خدمتان} few {# خدمات} many {# خدمة} other {# خدمة}}",
+      "for": "لـ",
+      "clearAll": "مسح الكل"
+    },
+    "empty": {
+      "noResultsFor": "لا توجد نتائج لـ \"{query}\"",
+      "noServicesAvailable": "لا توجد خدمات متاحة",
+      "tryDifferent": "جرّب كلمة بحث مختلفة أو تصفح حسب الفئة.",
+      "checkBack": "تحقق قريباً — المنشئون يكملون الشهادات يومياً.",
+      "clearFilters": "مسح كل الفلاتر"
+    },
+    "card": {
+      "certified": "معتمد",
+      "certifiedIn": "معتمد في {category}",
+      "delivery": "تسليم {days}ي",
+      "from": "يبدأ من"
+    },
+    "detail": {
+      "breadcrumb": "السوق",
+      "certifiedCreator": "منشئ معتمد",
+      "serviceNotFound": "الخدمة غير موجودة",
+      "metaSuffix": "سوق EduSpark",
+      "orderCount": "{count, plural, =0 {لا توجد طلبات} =1 {طلب واحد} =2 {طلبان} few {# طلبات} many {# طلباً} other {# طلب}}",
+      "daysDelivery": "{count, plural, =1 {تسليم خلال يوم} =2 {تسليم خلال يومين} few {تسليم خلال # أيام} many {تسليم خلال # يوماً} other {تسليم خلال # يوم}}",
+      "aboutService": "عن هذه الخدمة",
+      "skillsTags": "المهارات والوسوم",
+      "portfolio": "معرض الأعمال",
+      "aboutCreator": "عن المنشئ",
+      "whatIncluded": "ما الذي تشمله",
+      "revisions": "{count, plural, =0 {لا توجد مراجعات} =1 {مراجعة واحدة} =2 {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}}",
+      "directChat": "محادثة مباشرة مع المنشئ",
+      "milestoneWorkflow": "سير عمل قائم على المراحل",
+      "created": "تم الإنشاء",
+      "edusparkCertified": "معتمد من EduSpark",
+      "edusparkCertifiedDesc": "أثبت هذا المنشئ مهاراته عبر برنامج الاعتماد الصارم لدينا.",
+      "orderNow": "اطلب الآن",
+      "signInToOrder": "سجّل الدخول للطلب",
+      "adminCannotOrder": "المديرون لا يمكنهم طلب الخدمات.",
+      "ownService": "هذه خدمتك الخاصة",
+      "moreFrom": "المزيد من {category}",
+      "moreFromDefault": "المزيد من الخدمات",
+      "trustBadgeTitle": "معتمد من EduSpark",
+      "trustBadgeDesc": "أثبت هذا المنشئ مهاراته عبر برنامج الاعتماد الصارم لدينا."
+    },
+    "orderDialog": {
+      "placeOrder": "تقديم طلب",
+      "total": "الإجمالي",
+      "delivery": "التسليم",
+      "days": "{count, plural, =1 {يوم واحد} =2 {يومان} few {# أيام} many {# يوماً} other {# يوم}}",
+      "revisions": "المراجعات",
+      "revisionsNone": "بدون",
+      "revisionsOne": "مراجعة واحدة",
+      "revisionsMany": "{count} مراجعات",
+      "yourRequirements": "متطلباتك",
+      "requirementsPlaceholder": "صف ما تحتاجه — كلما زادت التفاصيل، كان أفضل. (20 حرفاً على الأقل)",
+      "cancel": "إلغاء",
+      "confirmOrder": "تأكيد الطلب",
+      "placingOrder": "جارٍ تقديم الطلب…",
+      "creatingToast": "جارٍ إنشاء طلبك…",
+      "successToast": "تم إنشاء الطلب! 🎉",
+      "successToastDesc": "جارٍ فتح مساحة عملك…",
+      "errorToast": "فشل الطلب",
+      "errors": {
+        "serviceNotFound": "الخدمة غير موجودة.",
+        "serviceInactive": "هذه الخدمة لم تعد متاحة.",
+        "selfOrder": "لا يمكنك طلب خدمتك الخاصة.",
+        "invalidInput": "يرجى وصف متطلباتك بمزيد من التفاصيل.",
+        "unauthorized": "يرجى تسجيل الدخول لتقديم طلب.",
+        "staleSession": "انتهت جلستك. يرجى تسجيل الخروج والدخول مرة أخرى.",
+        "serverError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+        "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+      }
+    }
+  },
+    "profile": {
+    "view": {
+      "editProfile": "تعديل الملف الشخصي",
+      "about": "نبذة",
+      "cancel": "إلغاء",
+      "saveChanges": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ...",
+      "bio": "النبذة",
+      "website": "الموقع الإلكتروني",
+      "noBio": "لم تُضف نبذة بعد. اضغط على \"تعديل الملف الشخصي\" لإضافتها.",
+      "noWebsite": "لم يُضف موقع إلكتروني بعد.",
+      "fullName": "الاسم الكامل",
+      "headline": "العنوان المهني",
+      "headlinePlaceholder": "مثال: مطور Full-Stack أول",
+      "bioPlaceholder": "أخبر الآخرين عن نفسك، خبراتك، وما تفعله…",
+      "websitePlaceholder": "https://your-portfolio.com",
+      "optional": "اختياري",
+      "toastSaving": "جارٍ حفظ الملف الشخصي...",
+      "toastSuccess": "تم تحديث الملف الشخصي بنجاح! ✨",
+      "errorInvalid": "يرجى التحقق من الحقول والمحاولة مرة أخرى.",
+      "errorGeneric": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "header": {
+      "roles": {
+        "student": "طالب",
+        "creator": "منشئ معتمد",
+        "admin": "مدير"
+      },
+      "joined": "انضم في {date}",
+      "stats": {
+        "courses": "الكورسات",
+        "certificates": "الشهادات",
+        "services": "الخدمات",
+        "projects": "المشاريع"
+      }
+    },
+    "page": {
+      "title": "الملف الشخصي"
+    }
+  },
+    "notifications": {
+    "page": {
+      "title": "الإشعارات",
+      "inbox": "الوارد",
+      "count": "{count, plural, =0 {لا توجد إشعارات} =1 {إشعار واحد} =2 {إشعاران} few {# إشعارات} many {# إشعاراً} other {# إشعار}}",
+      "unread": "{count, plural, =1 {واحد غير مقروء} =2 {اثنان غير مقروءين} few {# غير مقروءة} many {# غير مقروء} other {# غير مقروء}}",
+      "pageOf": "صفحة {page} من {total}",
+      "emptyTitle": "أنت على اطلاع بكل شيء!",
+      "emptyDesc": "ليست لديك أي إشعارات بعد. سنخبرك عند حدوث شيء مهم.",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "client": {
+      "markAllAsRead": "تحديد الكل كمقروء",
+      "deleteAria": "حذف الإشعار",
+      "deletedToast": "تم حذف الإشعار",
+      "deleteFailedToast": "تعذر حذف الإشعار",
+      "markedAllToast": "تم تحديد جميع الإشعارات كمقروءة",
+      "markedAllFailedToast": "تعذر تحديد الكل كمقروء",
+      "closeButton": "إغلاق",
+      "goToPage": "الذهاب إلى الصفحة"
+    },
+      "bell": {
+      "aria": "الإشعارات",
+      "connected": "التحديث الفوري مفعّل",
+      "connecting": "جارٍ الاتصال..."
+    }
+  },
+    "chat": {
+    "page": {
+      "title": "الرسائل",
+      "inbox": "الوارد",
+      "noConversations": "لا توجد محادثات بعد. ابدأ مشروعاً لفتح المحادثة.",
+      "conversationsCount": "{count, plural, =0 {لا توجد محادثات} =1 {محادثة واحدة} =2 {محادثتان} few {# محادثات} many {# محادثة} other {# محادثة}}",
+      "emptyTitle": "لا توجد محادثات بعد",
+      "emptyDesc": "تُفتح المحادثات تلقائياً عند طلب خدمة، أو التسجيل في كورس، أو قبول المنشئ لمشروعك.",
+      "browseServices": "تصفح الخدمات"
+    },
+    "list": {
+      "noOtherParticipants": "لا يوجد مشاركون آخرون",
+      "noMessages": "لا توجد رسائل بعد",
+      "youPrefix": "أنت: ",
+      "types": {
+        "project": "مشروع",
+        "course": "كورس",
+        "direct": "مباشر",
+        "support": "دعم"
+      },
+      "time": {
+        "now": "الآن",
+        "minutes": "{count} د",
+        "hours": "{count} س",
+        "days": "{count} ي"
+      }
+    },
+    "room": {
+      "chatDefault": "محادثة",
+      "allMessages": "كل الرسائل",
+      "endToEndEncrypted": "قناة مشفرة من الطرف إلى الطرف",
+      "secure": "آمن",
+      "you": "(أنت)"
+    },
+        "box": {
+      "types": {
+        "project": "محادثة مشروع",
+        "educational": "غرفة كورس",
+        "support": "دعم"
+      },
+      "dates": {
+        "today": "اليوم",
+        "yesterday": "أمس"
+      },
+      "retry": "إعادة المحاولة",
+      "typing": {
+        "one": "{name} يكتب...",
+        "two": "{name1} و {name2} يكتبان...",
+        "many": "{name} و {count} آخرون يكتبون..."
+      },
+      "connection": {
+        "reconnecting": "جارٍ إعادة الاتصال... (المحاولة {attempt})",
+        "lost": "انقطع الاتصال.",
+        "connecting": "جارٍ الاتصال بخادم المحادثة..."
+      },
+      "online": {
+        "label": "متصل",
+        "now": "متصل الآن",
+        "you": "(أنت)",
+        "noUsers": "لا يوجد مستخدمون متصلون"
+      },
+      "legal": {
+        "label": "إشعار قانوني:",
+        "text": "جميع الرسائل في قناة المشروع هذه تُسجَّل بشكل دائم وتُعتبر جزءاً من السجل القانوني الملزم للمشروع. بإرسالك رسالة، فإنك توافق على الاحتفاظ بها واستخدامها المحتمل في حل النزاعات."
+      },
+      "loading": "جارٍ تحميل المحادثة...",
+      "empty": {
+        "title": "لا توجد رسائل بعد",
+        "desc": "ابدأ المحادثة بإرسال رسالتك الأولى."
+      },
+      "newMessages": "رسائل جديدة",
+      "placeholder": {
+        "connecting": "جارٍ الاتصال...",
+        "joining": "جارٍ الانضمام للغرفة...",
+        "message": "رسالة إلى {roomName}..."
+      },
+      "input": {
+        "enter": "Enter",
+        "shiftEnter": "Shift+Enter",
+        "toSend": "للإرسال",
+        "forNewLine": "لسطر جديد"
+      },
+      "sendAria": "إرسال الرسالة"
+    }
+  },
+    "orders": {
+    "page": {
+      "title": "طلباتي",
+      "buying": "الشراء",
+      "noOrders": "لا توجد طلبات بعد. اطلب خدمة للبدء.",
+      "ordersCount": "{count, plural, =0 {لا توجد طلبات} =1 {طلب واحد} =2 {طلبان} few {# طلبات} many {# طلباً} other {# طلب}}",
+      "emptyTitle": "لا توجد طلبات بعد",
+      "emptyDesc": "تصفح السوق ووظّف منشئاً معتمداً لتظهر طلباتك هنا.",
+      "browseMarketplace": "تصفح السوق"
+    },
+    "card": {
+      "orderLabel": "طلب",
+      "incomingOrderLabel": "طلب وارد",
+      "creatorLabel": "المنشئ:",
+      "clientLabel": "العميل:",
+      "unassigned": "غير معيَّن",
+      "updated": "آخر تحديث",
+      "milestones": "{completed} من {total} مراحل",
+      "openProject": "فتح المشروع",
+      "chat": "محادثة",
+      "status": {
+        "pending": "بانتظار البدء",
+        "open": "مفتوح",
+        "inProgress": "قيد التنفيذ",
+        "reviewRequested": "قيد المراجعة",
+        "completed": "مكتمل",
+        "cancelled": "ملغى",
+        "disputed": "متنازع عليه"
+      },
+      "time": {
+        "justNow": "الآن",
+        "minutesAgo": "قبل {count} د",
+        "hoursAgo": "قبل {count} س",
+        "daysAgo": "قبل {count} ي"
+      }
+    }
+  },
+    "projects": {
+    "page": {
+      "title": "مشاريعي",
+      "workspace": "مساحة العمل",
+      "noProjects": "لا توجد مشاريع بعد. اطلب خدمة أو انتظر قبول المنشئ لمشروعك.",
+      "projectsCount": "{count, plural, =0 {لا توجد مشاريع} =1 {مشروع واحد} =2 {مشروعان} few {# مشاريع} many {# مشروعاً} other {# مشروع}}",
+      "emptyTitle": "لا توجد مشاريع بعد",
+      "emptyDesc": "تُنشأ المشاريع تلقائياً عند طلب خدمة من السوق.",
+      "browseServices": "تصفح الخدمات",
+      "clientLabel": "العميل",
+      "creatorLabel": "المنشئ",
+      "milestonesCount": "{count, plural, =0 {لا توجد مراحل} =1 {مرحلة واحدة} =2 {مرحلتان} few {# مراحل} many {# مرحلة} other {# مرحلة}}",
+      "breadcrumb": {
+        "dashboard": "لوحة التحكم",
+        "projects": "المشاريع"
+      }
+    },
+    "statuses": {
+      "pending": "بانتظار البدء",
+      "open": "مفتوح",
+      "inProgress": "قيد التنفيذ",
+      "reviewRequested": "بانتظار الموافقة",
+      "completed": "مكتمل",
+      "cancelled": "ملغى",
+      "disputed": "متنازع عليه"
+    },
+    "view": {
+      "back": "العودة للمشاريع",
+      "started": "بدأ في {date}",
+      "chat": "محادثة",
+      "milestonesProgress": "{completed} من {total} مراحل معتمدة",
+      "milestonesTitle": "المراحل",
+      "done": "{completed}/{total} مكتمل",
+      "service": "الخدمة",
+      "dayDelivery": "{days, plural, =1 {تسليم خلال يوم} =2 {تسليم خلال يومين} few {تسليم خلال # أيام} many {تسليم خلال # يوماً} other {تسليم خلال # يوم}}",
+      "totalBudget": "الميزانية الإجمالية",
+      "viewService": "عرض الخدمة",
+      "participants": "المشاركون",
+      "client": "العميل",
+      "creator": "المنشئ",
+      "you": "أنت",
+      "noCreator": "لم يُعيَّن منشئ",
+      "details": "التفاصيل",
+      "budget": "الميزانية",
+      "deadline": "الموعد النهائي",
+      "status": "الحالة",
+      "projectChat": "محادثة المشروع",
+      "chatMessages": "{count, plural, =0 {لا توجد رسائل} =1 {رسالة واحدة} =2 {رسالتان} few {# رسائل} many {# رسالة} other {# رسالة}}",
+      "approveTitle": "تم تسليم كل العمل",
+      "approveDesc": "قدّم المنشئ جميع المراحل للمراجعة. الموافقة ستعيّن المشروع كمكتمل وتحرر الدفع.",
+      "approveBtn": "الموافقة وإكمال المشروع",
+      "approving": "جارٍ المعالجة…",
+      "completedTitle": "اكتمل المشروع! 🎉",
+      "completedDesc": "تمت الموافقة على جميع المراحل. تم تسليم هذا المشروع بنجاح.",
+      "errorDismiss": "إغلاق الخطأ"
+    },
+    "milestone": {
+      "label": "المرحلة {number}",
+      "value": "القيمة",
+      "deliveryNote": "ملاحظة التسليم",
+      "viewDeliveryLink": "عرض رابط التسليم",
+      "revisionNote": "ملاحظة المراجعة",
+      "approvedAt": "تمت الموافقة في {date}",
+      "statuses": {
+        "pending": "معلقة",
+        "inProgress": "قيد التنفيذ",
+        "reviewRequested": "قيد المراجعة",
+        "approved": "معتمدة",
+        "revisionNeeded": "تحتاج مراجعة"
+      },
+      "actions": {
+        "start": "ابدأ العمل",
+        "submitForReview": "تقديم للمراجعة",
+        "requestRevision": "طلب مراجعة",
+        "awaitingReview": "بانتظار مراجعة العميل…",
+        "approvedMsg": "المرحلة معتمدة",
+        "creatorWorking": "المنشئ يعمل على هذا…",
+        "notStarted": "لم تبدأ بعد",
+        "youApproved": "اعتمدت هذه المرحلة"
+      }
+    },
+    "dueDate": {
+      "noDeadline": "لا يوجد موعد نهائي",
+      "overdue": "متأخر {days} يوم",
+      "dueToday": "يستحق اليوم",
+      "dueTomorrow": "يستحق غداً",
+      "dueIn": "يستحق خلال {days} يوم"
+    },
+    "submissionForm": {
+      "hint": "أضف تفاصيل التسليم:",
+      "notePlaceholder": "صف ما سلّمته (مثال: 'ملفات الشعار النهائية بصيغ SVG، PNG، AI. دلائل العلامة التجارية مرفقة.')",
+      "urlPlaceholder": "رابط التسليم (اختياري) — https://…",
+      "httpsOnly": "يُسمح فقط بروابط https://.",
+      "cancel": "إلغاء",
+      "submit": "تسليم العمل"
+    },
+    "revisionForm": {
+      "hint": "صف ما يحتاج إلى تغيير:",
+      "notePlaceholder": "كن محدداً — مثال: 'يرجى مراجعة قسم الرأس وتعديل لوحة الألوان لتطابق إرشادات العلامة التجارية المرفقة.'",
+      "cancel": "إلغاء",
+      "submit": "إرسال الطلب"
+    },
+    "chatPage": {
+      "back": "العودة للمشروع",
+      "endToEndEncrypted": "قناة مشفرة من الطرف إلى الطرف",
+      "secure": "آمن",
+      "client": "العميل",
+      "creator": "المنشئ",
+      "you": "(أنت)",
+      "noCreator": "لم يُعيَّن منشئ"
+    }
+  },
+    "achievements": {
+    "page": {
+      "eyebrow": "الإنجازات",
+      "title": "رحلتك",
+      "subtitle": "تابع تقدمك، افتح الشارات، وتنافس على لوحة الصدارة.",
+      "metadataTitle": "الإنجازات"
+    },
+    "levelCard": {
+      "currentLevel": "المستوى الحالي",
+      "rank": "الترتيب",
+      "xpSuffix": "XP",
+      "toNext": "{xp} إلى {next}",
+      "inLevel": "{xp} / {span} XP في هذا المستوى",
+      "badges": "الشارات",
+      "progress": "التقدم",
+      "nextLevel": "المستوى التالي",
+      "max": "الأقصى"
+    },
+    "badges": {
+      "title": "الشارات",
+      "unlocked": "{earned} من {total} مفتوحة",
+      "filterAll": "الكل",
+      "filterEarned": "المكتسبة",
+      "filterLocked": "المقفلة",
+      "noResults": "لا توجد شارات تطابق هذا الفلتر."
+    },
+    "leaderboard": {
+      "title": "لوحة الصدارة",
+      "subtitle": "أفضل 20 متعلماً هذا الموسم",
+      "you": "(أنت)"
+    }
+  },
+    "studentCourses": {
+    "page": {
+      "eyebrow": "تعلّمي",
+      "title": "كورساتي",
+      "noEnrollments": "لم تسجل في أي كورس بعد.",
+      "statsLine": "{inProgress} قيد التقدم · {completed} مكتملة · {total} إجمالي",
+      "emptyTitle": "ابدأ رحلة التعلم",
+      "emptyDesc": "تصفح كتالوج كورساتنا المقدمة من خبراء، وسجّل في أول كورس للبدء.",
+      "browseCourses": "تصفح الكورسات"
+    },
+    "card": {
+      "levels": {
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "advanced": "متقدم"
+      },
+      "statusCompleted": "مكتمل",
+      "statusInProgress": "قيد التقدم",
+      "allCompleted": "تم إكمال جميع الدروس",
+      "yourProgress": "تقدمك",
+      "lessonsCount": "{count, plural, =0 {لا توجد دروس} =1 {درس واحد} =2 {درسان} few {# دروس} many {# درساً} other {# درس}}",
+      "reviewCourse": "مراجعة الكورس",
+      "continueLearning": "متابعة التعلم",
+      "startLearning": "ابدأ التعلم",
+      "viewPublicPage": "عرض الصفحة العامة مع التقييمات",
+      "time": {
+        "justNow": "الآن",
+        "minutesAgo": "قبل {count} د",
+        "hoursAgo": "قبل {count} س",
+        "yesterday": "أمس",
+        "daysAgo": "قبل {count} ي"
+      },
+      "durationSeconds": "{count} ث",
+      "durationMinutes": "{count} د",
+      "durationHours": "{hours} س",
+      "durationHoursMinutes": "{hours} س {minutes} د"
+    }
+  },
+    "learning": {
+    "header": {
+      "backToCourses": "العودة إلى كورساتي",
+      "toggleMenu": "إظهار/إخفاء قائمة الكورس",
+      "completed": "مكتمل",
+      "viewPublicPage": "عرض الصفحة العامة (تقييمات ومراجعات)"
+    },
+    "video": {
+      "noVideo": "لا يوجد فيديو لهذا الدرس"
+    },
+    "lesson": {
+      "label": "الدرس {current} من {total}",
+      "completed": "مكتمل",
+      "saving": "جارٍ الحفظ…",
+      "markComplete": "تحديد كمكتمل",
+      "previous": "السابق",
+      "next": "التالي",
+      "progressTrack": "مسار تقدم الدروس",
+      "free": "مجاني"
+    },
+    "completion": {
+      "title": "اكتمل الكورس! 🎉",
+      "descWithQuiz": "أكملت {title}. خُذ اختبار الاعتماد للحصول على شهادتك.",
+      "descNoQuiz": "أكملت {title}. الشهادة متاحة الآن في لوحة التحكم.",
+      "takeQuiz": "خُذ اختبار الاعتماد"
+    },
+    "sidebar": {
+      "lessonsDone": "{completed} من {total} دروس مكتملة",
+      "instructor": "المدرب:"
+    },
+    "attachments": {
+      "title": "مواد الدرس ({count})",
+      "downloadError": "تعذر إنشاء رابط التنزيل",
+      "rateLimited": "تنزيلات كثيرة. يرجى الانتظار بضع دقائق."
+    }
+  },
+    "quiz": {
+    "intro": {
+      "eyebrow": "اختبار الاعتماد",
+      "questions": "الأسئلة",
+      "toPass": "للنجاح",
+      "timeLimit": "الحد الزمني",
+      "noLimit": "بدون حد",
+      "lastAttemptPassed": "لقد نجحت في هذا الاختبار بالفعل!",
+      "lastAttemptFailed": "المحاولة السابقة لم تنجح",
+      "scoreLine": "النتيجة: {score}% ({correct}/{total} صحيحة)",
+      "beforeYouBegin": "قبل أن تبدأ",
+      "rules": {
+        "passingScore": "تحتاج إلى نتيجة {passingScore}% أو أعلى للنجاح",
+        "attempts": "يمكنك محاولة هذا الاختبار حتى {maxAttempts} مرات كل {windowHours} ساعة حتى تنجح",
+        "timerStarts": "يبدأ المؤقت فور الضغط على بدء",
+        "noTimeLimit": "لا يوجد حد زمني — خذ وقتك",
+        "feedbackAfterPass": "تُفتح المراجعة التفصيلية للإجابات بعد النجاح",
+        "certificateEarned": "لقد حصلت بالفعل على شهادة هذا الكورس",
+        "certificateOnPass": "النجاح يمنحك شهادة موثقة"
+      },
+      "retakeQuiz": "إعادة الاختبار",
+      "startQuiz": "ابدأ الاختبار"
+    },
+    "inProgress": {
+      "questionOf": "السؤال {current} من {total}",
+      "previous": "السابق",
+      "next": "التالي",
+      "submitQuiz": "إرسال الاختبار",
+      "submitting": "جارٍ الإرسال…",
+      "optionLabel": "الخيار {letter}"
+    },
+    "result": {
+      "eyebrow": "نتائج الاختبار",
+      "passedTitle": "تهانينا! 🎉",
+      "failedTitle": "واصل التعلم!",
+      "passedDesc": "لقد نجحت في الاختبار. تم إصدار شهادتك.",
+      "failedDesc": "تحتاج إلى {passingScore}% أو أعلى للنجاح. راجع الملاحظات أدناه وحاول مرة أخرى.",
+      "yourScore": "نتيجتك",
+      "correct": "صحيحة",
+      "required": "المطلوب",
+      "certificateIssued": "تم إصدار الشهادة!",
+      "credentialId": "معرّف الشهادة:",
+      "viewCertificate": "عرض الشهادة",
+      "roleUpgradedTitle": "تمت ترقية حسابك!",
+      "roleUpgradedDesc": "أنت الآن منشئ. توجه إلى لوحة التحكم لبدء تقديم الخدمات.",
+      "answerReview": "مراجعة الإجابات",
+      "answerReviewDesc": "اطلع على كيفية إجابتك لكل سؤال",
+      "correctMark": "صحيحة",
+      "yourAnswerMark": "(إجابتك)",
+      "reviewLocked": "تُفتح مراجعة الإجابات بعد النجاح. راجع دروس الكورس ثم حاول مرة أخرى.",
+      "backToCourse": "العودة إلى الكورس",
+      "retakeForPractice": "إعادة للتمرين",
+      "tryAgain": "حاول مرة أخرى"
+    },
+    "errors": {
+      "notEnrolled": "أنت غير مسجل في هذا الكورس.",
+      "courseNotCompleted": "أكمل جميع دروس هذا الكورس قبل إجراء اختبار الاعتماد.",
+      "quizNotFound": "الاختبار غير موجود.",
+      "questionCountMismatch": "يرجى الإجابة على جميع الأسئلة.",
+      "emailNotVerified": "يرجى تأكيد بريدك الإلكتروني أولاً — تحقق من صندوق الوارد.",
+      "attemptLimitReached": "تم الوصول إلى حد المحاولات. يمكنك المحاولة بعد {retryAt}.",
+      "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "toasts": {
+      "timesUp": "انتهى الوقت — جارٍ الإرسال…",
+      "submittingQuiz": "جارٍ إرسال اختبارك…",
+      "passed": "🎉 تهانينا! لقد نجحت!",
+      "passedDesc": "النتيجة {score}% · {certificate}",
+      "failed": "واصل المحاولة!",
+      "failedDesc": "النتيجة {score}% — تحتاج {passingScore}% للنجاح",
+      "submissionFailed": "فشل الإرسال"
+    }
+  },
+    "creatorServices": {
+    "page": {
+      "eyebrow": "استوديو المنشئ",
+      "title": "خدماتي",
+      "subtitle": "أدر عروضك، وتتبّع الطلبات، وطوّر أعمالك.",
+      "metadataTitle": "خدماتي"
+    },
+    "stats": {
+      "total": "إجمالي الخدمات",
+      "active": "نشطة",
+      "orders": "الطلبات",
+      "projects": "المشاريع"
+    },
+    "card": {
+      "newService": "خدمة جديدة",
+      "actionsAria": "إجراءات الخدمة",
+      "viewPublic": "عرض الصفحة العامة",
+      "editService": "تعديل الخدمة",
+      "pauseService": "إيقاف الخدمة",
+      "withdrawSubmission": "سحب الطلب",
+      "submitForReview": "إرسال للمراجعة",
+      "deleteService": "حذف الخدمة",
+      "ordersCount": "{count, plural, =0 {لا توجد طلبات} =1 {طلب واحد} =2 {طلبان} few {# طلبات} many {# طلباً} other {# طلب}}",
+      "projectsCount": "{count, plural, =0 {لا توجد مشاريع} =1 {مشروع واحد} =2 {مشروعان} few {# مشاريع} many {# مشروعاً} other {# مشروع}}",
+      "from": "يبدأ من",
+      "changesRequested": "تغييرات مطلوبة:"
+    },
+    "statuses": {
+      "pendingReview": "قيد المراجعة",
+      "active": "نشطة",
+      "paused": "متوقفة",
+      "archived": "مؤرشفة"
+    },
+    "statusToasts": {
+      "updating": "جارٍ تحديث الحالة...",
+      "pausing": "جارٍ إيقاف الخدمة...",
+      "activating": "جارٍ تنشيط الخدمة...",
+      "submitting": "جارٍ الإرسال للمراجعة...",
+      "success": "تم تحديث الحالة",
+      "successDesc": "تم تحديث حالة خدمتك.",
+      "failed": "فشل تحديث الحالة",
+      "errorInvalidTransition": "هذا التغيير في الحالة غير مسموح. المدير وحده يمكنه تنشيط خدمة.",
+      "errorForbidden": "ليس لديك صلاحية تعديل هذه الخدمة.",
+      "errorGeneric": "فشل تحديث الحالة."
+    },
+    "deleteDialog": {
+      "title": "حذف الخدمة",
+      "subtitle": "لا يمكن التراجع عن هذا الإجراء.",
+      "confirmText": "هل أنت متأكد من حذف {title}؟ سيُزال نهائياً من السوق.",
+      "cancel": "إلغاء",
+      "delete": "حذف",
+      "deleting": "جارٍ الحذف...",
+      "toastLoading": "جارٍ حذف الخدمة...",
+      "toastSuccess": "تم حذف الخدمة",
+      "toastSuccessDesc": "تمت إزالة الخدمة من السوق.",
+      "toastFailed": "فشل الحذف",
+      "errors": {
+        "hasOrders": "هذه الخدمة لها طلبات أو مشاريع. أوقفها بدلاً من حذفها.",
+        "forbidden": "ليس لديك صلاحية حذف هذه الخدمة.",
+        "notFound": "الخدمة غير موجودة.",
+        "generic": "فشل حذف الخدمة."
+      }
+    },
+    "empty": {
+      "title": "لا توجد خدمات بعد",
+      "desc": "أنشئ أول خدمة لك وابدأ بالكسب. كل خدمة يجب أن ترتبط بكورس حصلت على شهادته.",
+      "cta": "أنشئ خدمتك الأولى"
+    },
+    "thumbnail": {
+      "title": "صورة الغلاف",
+      "hint": "الحجم الموصى به: 1280x720 (نسبة أبعاد 16:9).",
+      "replace": "استبدال",
+      "upload": "تحميل",
+      "change": "تغيير",
+      "noImage": "لا توجد صورة",
+      "openNewTab": "فتح في تبويب جديد",
+      "onlyAllowed": "يُسمح فقط بصور PNG أو JPG أو WebP.",
+      "maxSize": "الحد الأقصى لحجم الملف 2 ميغابايت.",
+      "uploading": "جارٍ تحميل الصورة...",
+      "success": "تم تحديث الصورة!",
+      "uploadFailed": "فشل التحميل",
+      "errors": {
+        "invalidType": "الملف ليس صورة PNG أو JPG أو WebP صالحة.",
+        "fileTooLarge": "الحد الأقصى لحجم الملف 2 ميغابايت.",
+        "serviceLocked": "الخدمة قيد المراجعة. اسحبها لتغيير الصورة.",
+        "rateLimited": "تحميلات كثيرة. يرجى المحاولة لاحقاً.",
+        "forbidden": "ليس لديك صلاحية تغيير هذه الصورة."
+      }
+    }
+  },
+    "serviceForm": {
+    "editPage": {
+      "back": "العودة إلى خدماتي",
+      "eyebrow": "استوديو المنشئ",
+      "title": "تعديل الخدمة",
+      "note": "ملاحظة:",
+      "noteText": "ستظهر تغييرات خدمتك في السوق فوراً. الفئة مقفلة على شهادتك.",
+      "metadataTitle": "تعديل الخدمة"
+    },
+    "newPage": {
+      "eyebrow": "استوديو المنشئ",
+      "title": "إنشاء خدمة جديدة",
+      "subtitle": "لديك {count, plural, =0 {لا توجد كورسات معتمدة} =1 {كورس واحد معتمد} =2 {كورسان معتمدان} few {# كورسات معتمدة} many {# كورساً معتمداً} other {# كورس معتمد}} متاحة لإنشاء الخدمات.",
+      "marketplaceRule": "قاعدة السوق:",
+      "marketplaceRuleText": "كل خدمة يجب أن ترتبط بكورس حصلت على شهادته رسمياً. تُعيَّن فئة الخدمة تلقائياً من شهادتك.",
+      "metadataTitle": "خدمة جديدة"
+    },
+    "noCertificate": {
+      "title": "شهادة مطلوبة",
+      "desc": "لتقديم خدمات على EduSpark، يجب أولاً إكمال كورس واجتياز اختبار الاعتماد بنتيجة {passingScore}% أو أعلى. شهادتك تُثبت خبرتك للعملاء المحتملين.",
+      "browseCourses": "تصفح الكورسات",
+      "myDashboard": "لوحة التحكم"
+    },
+    "form": {
+      "sections": {
+        "foundation": {
+          "title": "أساس الخدمة",
+          "desc": "اربط خدمتك بكورس حصلت على شهادته."
+        },
+        "details": {
+          "title": "تفاصيل الخدمة",
+          "desc": "اكتب عنواناً ووصفاً جذاباً لجذب المشترين."
+        },
+        "pricing": {
+          "title": "التسعير والتسليم",
+          "desc": "حدد أسعاراً تنافسية بناءً على مستوى خبرتك."
+        },
+        "tags": {
+          "title": "الوسوم ومعرض الأعمال",
+          "desc": "ساعد المشترين على اكتشاف خدمتك ورؤية أعمالك السابقة."
+        }
+      },
+      "fields": {
+        "certifiedCourse": "الكورس المعتمد",
+        "certifiedCourseDesc": "تُدرج فقط الكورسات التي حصلت على شهادة اجتيازها.",
+        "certifiedCoursePlaceholder": "اختر كورساً معتمداً…",
+        "certifiedCourseSearch": "ابحث في الكورسات…",
+        "certifiedCourseEmpty": "لا توجد كورسات مطابقة.",
+        "credential": "معرّف الشهادة",
+        "score": "النتيجة",
+        "categoryAuto": "الفئة تُعيَّن تلقائياً",
+        "categoryAutoDesc": "من شهادتك. يمكنك فقط تقديم خدمات في الفئات التي أنت معتمد فيها.",
+        "title": "عنوان الخدمة",
+        "titlePlaceholder": "مثال: سأبني تطبيق ويب كامل بـ Next.js…",
+        "description": "الوصف",
+        "descriptionPlaceholder": "صف بالضبط ما ستقدمه، وما يشمله، وعملية عملك، وأي متطلبات من المشتري…",
+        "price": "السعر (USD)",
+        "pricePlaceholder": "25.00",
+        "priceHint": "الحد الأدنى 5$ · الأقصى 10,000$",
+        "deliveryTime": "مدة التسليم",
+        "deliveryTimePlaceholder": "3",
+        "deliveryTimeHint": "1–90 يوماً تقويمياً",
+        "deliveryDaysSuffix": "أيام",
+        "revisions": "المراجعات",
+        "revisionsPlaceholder": "1",
+        "revisionsHint": "0 = بدون مراجعات",
+        "tags": "الوسوم",
+        "tagsPlaceholder": "اكتب وسماً ثم اضغط Enter...",
+        "tagsHint": "{count}/{max} وسوم مضافة · اضغط Enter أو , للإضافة",
+        "tagsHintBefore": "{count}/{max} وسوم مضافة · اضغط",
+        "tagsHintAfter": "للإضافة",
+        "portfolioLinks": "روابط معرض الأعمال",
+        "portfolioLinksOptional": "(اختياري)",
+        "portfolioLinksHint": "أضف حتى 5 روابط لعرض أعمالك السابقة.",
+        "portfolioLinkPlaceholder": "https://your-portfolio.com/project",
+        "addPortfolioLink": "إضافة رابط معرض",
+        "cancel": "إلغاء",
+        "saveChanges": "حفظ التغييرات",
+        "publish": "نشر الخدمة",
+        "saving": "جارٍ الحفظ...",
+        "publishing": "جارٍ النشر..."
+      },
+      "success": {
+        "createdTitle": "تم إنشاء الخدمة!",
+        "updatedTitle": "تم تحديث الخدمة!",
+        "redirecting": "جارٍ تحويلك إلى خدماتك..."
+      },
+      "toasts": {
+        "savingChanges": "جارٍ حفظ التغييرات...",
+        "publishing": "جارٍ نشر الخدمة...",
+        "created": "تم إرسال الخدمة للمراجعة 📬",
+        "createdDesc": "ستظهر في السوق بمجرد موافقة المدير عليها.",
+        "updated": "تم تحديث الخدمة بنجاح! ✨",
+        "updatedDesc": "جارٍ تحويلك إلى خدماتك...",
+        "sentForReview": "تم إرسال التغييرات للمراجعة 📬",
+        "sentForReviewDesc": "الخدمة مخفية حتى يوافق المدير على تغييراتك.",
+        "updateFailed": "فشل تحديث الخدمة",
+        "publishFailed": "فشل نشر الخدمة"
+      },
+      "errors": {
+        "noCertificate": "تعذر التحقق من شهادتك لهذا الكورس. يرجى التأكد من اجتيازك لاختبار الكورس.",
+        "forbiddenRole": "حسابك غير مصرح له بإنشاء الخدمات.",
+        "forbidden": "ليس لديك صلاحية تعديل هذه الخدمة.",
+        "notFound": "هذه الخدمة لم تعد موجودة.",
+        "maliciousUrl": "تم الإبلاغ عن رابط أو أكثر من روابط معرض الأعمال كخبيث. يرجى إزالتها قبل الحفظ.",
+        "rateLimited": "تغييرات كثيرة في وقت قصير. يرجى الانتظار بضع دقائق والمحاولة مرة أخرى.",
+        "conflict": "تغيرت حالة الخدمة أثناء التعديل (قد يكون المدير راجعها). أعد تحميل الصفحة وحاول مرة أخرى.",
+        "serverError": "حدث خطأ من جانبنا. يرجى المحاولة مرة أخرى.",
+        "generic": "حدث خطأ غير متوقع."
+      }
+    }
+  },
+    "creatorOrders": {
+    "page": {
+      "eyebrow": "استوديو المنشئ",
+      "title": "الطلبات الواردة",
+      "subtitle": "أدر طلبات عملائك.",
+      "metadataTitle": "الطلبات الواردة"
+    },
+    "stats": {
+      "new": "جديدة",
+      "active": "قيد التنفيذ",
+      "completed": "مكتملة"
+    },
+    "empty": {
+      "title": "لا توجد طلبات واردة",
+      "desc": "عندما يطلب العملاء خدماتك، ستظهر طلباتهم هنا.",
+      "cta": "عرض خدماتي"
+    }
+  },
+    "admin": {
+    "broadcast": {
+      "titlePlaceholder": "عنوان الإشعار",
+      "bodyPlaceholder": "نص الرسالة...",
+      "sending": "جارٍ الإرسال...",
+      "sendToAll": "إرسال لجميع المستخدمين",
+      "successToast": "تم إرسال الإشعار إلى {count} مستخدمين! 🎉",
+      "failedToast": "فشل إرسال الإشعار"
+    },
+    "dashboard": {
+      "title": "لوحة الإدارة",
+      "subtitle": "نظرة عامة على المنصة، والمراجعات المعلقة، وأدوات الإدارة.",
+      "metadataTitle": "لوحة الإدارة",
+      "pendingAlert": {
+        "title": "{count, plural, =0 {لا توجد عناصر بانتظار مراجعتك} =1 {عنصر واحد بانتظار مراجعتك} =2 {عنصران بانتظار مراجعتك} few {# عناصر بانتظار مراجعتك} many {# عنصراً بانتظار مراجعتك} other {# عنصر بانتظار مراجعتك}}",
+        "details": "{courses, plural, =0 {لا توجد كورسات} =1 {كورس واحد} =2 {كورسان} few {# كورسات} many {# كورساً} other {# كورس}} بانتظار المراجعة · {services, plural, =0 {لا توجد خدمات} =1 {خدمة واحدة} =2 {خدمتان} few {# خدمات} many {# خدمة} other {# خدمة}} بانتظار المراجعة"
+      },
+      "stats": {
+        "activeUsers": "المستخدمون النشطون",
+        "totalCourses": "إجمالي الكورسات",
+        "totalServices": "إجمالي الخدمات",
+        "revenue": "الإيرادات",
+        "newThisWeek": "+{count} هذا الأسبوع"
+      },
+      "sections": {
+        "pendingReviews": "مراجعات معلقة",
+        "recentActivity": "النشاط الأخير",
+        "viewAll": "عرض الكل",
+        "broadcast": "بث إشعار",
+        "broadcastDesc": "إرسال رسالة إلى جميع المستخدمين النشطين.",
+        "quickActions": "إجراءات سريعة",
+        "quickActionsDesc": "الانتقال إلى أقسام الإدارة."
+      },
+      "pendingEmpty": "أنت على اطلاع بكل شيء! لا يوجد ما يستحق المراجعة.",
+      "byCreator": "بواسطة",
+      "draftCourse": "كورس مسودة",
+      "pausedService": "خدمة موقوفة",
+      "review": "مراجعة",
+      "activityEmpty": "لا يوجد نشاط بعد. ستظهر الإجراءات هنا.",
+      "system": "النظام",
+      "actions": {
+        "manageUsers": "إدارة المستخدمين",
+        "manageCourses": "إدارة الكورسات",
+        "manageServices": "إدارة الخدمات"
+      }
+    },
+    "courses": {
+      "page": {
+        "eyebrow": "الإدارة",
+        "title": "الكورسات",
+        "subtitle": "راجع الكورسات المقدمة، وانشرها، أو أرشفها عبر المنصة.",
+        "metadataTitle": "الكورسات — الإدارة"
+      },
+      "table": {
+        "searchPlaceholder": "ابحث بالعنوان أو الوصف…",
+        "filters": {
+          "all": "الكل",
+          "pendingReview": "قيد المراجعة",
+          "published": "منشورة",
+          "draft": "مسودة",
+          "archived": "مؤرشفة"
+        },
+        "showingRange": "عرض {start}–{end} من {total}",
+        "pageOf": "صفحة {page} من {total}",
+        "noCourses": "لا توجد كورسات",
+        "noCoursesDesc": "جرب تعديل البحث أو الفلاتر.",
+        "columns": {
+          "course": "الكورس",
+          "creator": "المنشئ",
+          "stats": "الإحصائيات",
+          "status": "الحالة"
+        },
+        "mobileLabels": {
+          "creator": "المنشئ:",
+          "stats": "الإحصائيات:",
+          "status": "الحالة:"
+        },
+        "uncategorized": "غير مصنف",
+        "levels": {
+          "beginner": "مبتدئ",
+          "intermediate": "متوسط",
+          "advanced": "متقدم"
+        },
+        "statuses": {
+          "published": "منشور",
+          "draft": "مسودة",
+          "pendingReview": "قيد المراجعة",
+          "archived": "مؤرشف"
+        },
+        "actionsAria": "إجراءات الكورس",
+        "menu": {
+          "reviewHeader": "مراجعة",
+          "reviewContent": "مراجعة المحتوى والدروس",
+          "reviewQuiz": "مراجعة الاختبار ({count, plural, =0 {لا توجد أقسام} =1 {قسم واحد} =2 {قسمان} few {# أقسام} many {# قسماً} other {# قسم}})",
+          "viewPublic": "عرض الصفحة العامة",
+          "actionsHeader": "الإجراءات",
+          "approveAndPublish": "موافقة ونشر",
+          "requestChanges": "طلب تغييرات...",
+          "publish": "نشر",
+          "setDraft": "تعيين كمسودة",
+          "archive": "أرشفة"
+        },
+        "statusToasts": {
+          "publishedTitle": "تم نشر الكورس 🚀",
+          "publishedDesc": "الكورس الآن مرئي في الكتالوج العام.",
+          "draftTitle": "تم النقل إلى المسودات 📌",
+          "draftDesc": "الكورس الآن مخفي عن الطلاب.",
+          "pendingReviewTitle": "تم الإرسال للمراجعة",
+          "pendingReviewDesc": "الكورس بانتظار قرار المدير.",
+          "archivedTitle": "تم أرشفة الكورس 🗄️",
+          "archivedDesc": "تم أرشفة الكورس ولم يعد نشطاً."
+        },
+        "toasts": {
+          "updating": "جارٍ التحديث إلى {status}...",
+          "updateFailed": "فشل التحديث",
+          "reviewFailed": "فشلت المراجعة",
+          "approving": "جارٍ الموافقة...",
+          "sendingFeedback": "جارٍ إرسال الملاحظات...",
+          "approved": "تمت الموافقة على الكورس 🚀",
+          "approvedDesc": "الكورس الآن منشور.",
+          "feedbackSent": "تم إرسال الملاحظات 📌",
+          "feedbackSentDesc": "عاد الكورس إلى المسودات مع ملاحظتك."
+        },
+        "errors": {
+          "forbidden": "المديرون فقط يمكنهم تنفيذ هذا الإجراء.",
+          "forbiddenReview": "المديرون فقط يمكنهم مراجعة الكورسات.",
+          "notFound": "الكورس غير موجود.",
+          "invalidInput": "مطلوب سبب صالح لأرشفة الكورس.",
+          "invalidInputReview": "مطلوب ملاحظة من 10 أحرف على الأقل.",
+          "invalidState": "هذا الكورس لم يعد بانتظار المراجعة.",
+          "cannotPublishEmpty": "الكورس لا يحتوي على دروس بعد.",
+          "quizTooShort": "اختبار الكورس أقل من الحد الأدنى لعدد الأسئلة.",
+          "actionFailed": "فشل الإجراء."
+        },
+        "archiveDialog": {
+          "rejectTitle": "طلب تغييرات",
+          "archiveTitle": "أرشفة الكورس",
+          "rejectDescBefore": "أخبر المنشئ بما يجب تغييره قبل أن",
+          "rejectDescAfter": "يُمكن النشر.",
+          "archiveDescBefore": "يرجى تقديم سبب لأرشفة",
+          "archiveDescAfter": ". سيُرسل هذا السبب إلى منشئ الكورس بالبريد الإلكتروني.",
+          "reasonLabel": "السبب (مطلوب)",
+          "reasonPlaceholder": "مثال: المحتوى يخالف إرشادات جودة المنصة.",
+          "reasonError": "يرجى تقديم 10 أحرف على الأقل لشرح السبب.",
+          "reasonCounter": "{count}/500 حرف (الحد الأدنى 10)",
+          "cancel": "إلغاء",
+          "sendFeedback": "إرسال الملاحظات",
+          "archive": "أرشفة الكورس"
+        },
+        "pagination": {
+          "previous": "السابق",
+          "next": "التالي"
+        }
+      }
+    },
+        "services": {
+      "page": {
+        "eyebrow": "الإدارة",
+        "title": "الخدمات",
+        "subtitle": "أدر وراجع جميع خدمات السوق.",
+        "metadataTitle": "الخدمات — الإدارة"
+      },
+      "table": {
+        "searchPlaceholder": "ابحث بالعنوان أو الوصف…",
+        "filters": {
+          "all": "الكل",
+          "pendingReview": "قيد المراجعة",
+          "active": "نشطة",
+          "paused": "متوقفة",
+          "archived": "مؤرشفة"
+        },
+        "showingRange": "عرض {start}–{end} من {total}",
+        "pageOf": "صفحة {page} من {total}",
+        "noServices": "لا توجد خدمات",
+        "noServicesDesc": "جرب تعديل البحث أو الفلاتر.",
+        "columns": {
+          "service": "الخدمة",
+          "creator": "المنشئ",
+          "stats": "الإحصائيات",
+          "status": "الحالة"
+        },
+        "mobileLabels": {
+          "creator": "المنشئ:",
+          "stats": "الإحصائيات:",
+          "status": "الحالة:"
+        },
+        "uncategorized": "غير مصنف",
+        "deliveryShort": "{days}ي",
+        "statuses": {
+          "pendingReview": "قيد المراجعة",
+          "active": "نشطة",
+          "paused": "متوقفة",
+          "archived": "مؤرشفة"
+        },
+        "actionsAria": "إجراءات الخدمة",
+        "menu": {
+          "reviewHeader": "مراجعة",
+          "reviewDetails": "مراجعة التفاصيل",
+          "approveAndActivate": "موافقة وتنشيط",
+          "requestChanges": "طلب تغييرات...",
+          "viewPublic": "عرض الصفحة العامة",
+          "changeStatus": "تغيير الحالة",
+          "activate": "تنشيط",
+          "pause": "إيقاف",
+          "archive": "أرشفة"
+        },
+        "statusToasts": {
+          "pendingReviewTitle": "تم إرسال الخدمة للمراجعة",
+          "pendingReviewDesc": "الخدمة بانتظار قرار المدير.",
+          "activeTitle": "تم تنشيط الخدمة ▶️",
+          "activeDesc": "الخدمة الآن مرئية في السوق.",
+          "pausedTitle": "تم إيقاف الخدمة ⏸️",
+          "pausedDesc": "الخدمة الآن مخفية عن المشترين.",
+          "archivedTitle": "تم أرشفة الخدمة 🗄️",
+          "archivedDesc": "تم أرشفة الخدمة ولم تعد نشطة."
+        },
+        "toasts": {
+          "updating": "جارٍ التحديث إلى {status}...",
+          "updateFailed": "فشل التحديث",
+          "reviewFailed": "فشلت المراجعة",
+          "approving": "جارٍ الموافقة...",
+          "sendingFeedback": "جارٍ إرسال الملاحظات...",
+          "approved": "تمت الموافقة على الخدمة 🚀",
+          "approvedDesc": "الخدمة الآن مباشرة في السوق.",
+          "feedbackSent": "تم إرسال الملاحظات 📌",
+          "feedbackSentDesc": "الخدمة موقوفة مع ملاحظتك. يمكن للمنشئ إصلاحها وإعادة إرسالها."
+        },
+        "errors": {
+          "forbidden": "المديرون فقط يمكنهم تنفيذ هذا الإجراء.",
+          "forbiddenReview": "المديرون فقط يمكنهم مراجعة الخدمات.",
+          "notFound": "الخدمة غير موجودة.",
+          "invalidInput": "مطلوب سبب صالح لأرشفة الخدمة.",
+          "invalidInputReview": "مطلوب ملاحظة من 10 أحرف على الأقل لطلب التغييرات.",
+          "invalidState": "هذه الخدمة لم تعد بانتظار المراجعة.",
+          "actionFailed": "فشل الإجراء."
+        },
+        "archiveDialog": {
+          "rejectTitle": "طلب تغييرات",
+          "archiveTitle": "أرشفة الخدمة",
+          "rejectDescBefore": "أخبر المنشئ بما يجب تغييره قبل أن",
+          "rejectDescAfter": "تصبح مباشرة. الخدمة موقوفة وهذه الملاحظة تظهر للمنشئ.",
+          "archiveDescBefore": "يرجى تقديم سبب لأرشفة",
+          "archiveDescAfter": ". سيُرسل هذا السبب إلى منشئ الخدمة بالبريد الإلكتروني.",
+          "reasonLabel": "السبب (مطلوب)",
+          "reasonPlaceholder": "مثال: عرض الخدمة يخالف سياسة السوق.",
+          "reasonError": "يرجى تقديم 10 أحرف على الأقل لشرح السبب.",
+          "reasonCounter": "{count}/500 حرف (الحد الأدنى 10)",
+          "cancel": "إلغاء",
+          "sendFeedback": "إرسال الملاحظات",
+          "archive": "أرشفة الخدمة"
+        },
+        "pagination": {
+          "previous": "السابق",
+          "next": "التالي"
+        },
+        "modal": {
+          "title": "مراجعة الخدمة",
+          "subtitle": "راجع جميع التفاصيل قبل اتخاذ القرار.",
+          "statusLabel": "الحالة",
+          "by": "بواسطة",
+          "deliveryDays": "{count, plural, =1 {تسليم خلال يوم} =2 {تسليم خلال يومين} few {تسليم خلال # أيام} many {تسليم خلال # يوماً} other {تسليم خلال # يوم}}",
+          "revisions": "{count, plural, =0 {لا توجد مراجعات} =1 {مراجعة واحدة} =2 {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}}",
+          "orders": "{count, plural, =0 {لا توجد طلبات} =1 {طلب واحد} =2 {طلبان} few {# طلبات} many {# طلباً} other {# طلب}}",
+          "description": "الوصف",
+          "tags": "الوسوم",
+          "portfolio": "معرض الأعمال",
+          "unsafeLink": "رابط غير آمن لم يُعرَض: {url}",
+          "close": "إغلاق",
+          "approveActivate": "موافقة وتنشيط",
+          "requestChanges": "طلب تغييرات",
+          "archive": "أرشفة"
+        }
+      }
+    },
+    "users": {
+      "page": {
+        "eyebrow": "الإدارة",
+        "title": "المستخدمون",
+        "subtitle": "أدر الأدوار، وفعّل أو أوقف الحسابات.",
+        "metadataTitle": "المستخدمون — الإدارة"
+      },
+      "table": {
+        "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني…",
+        "filters": {
+          "all": "الكل",
+          "students": "الطلاب",
+          "creators": "المنشئون",
+          "admins": "المديرون"
+        },
+        "showingRange": "عرض {start}–{end} من {total}",
+        "pageOf": "صفحة {page} من {total}",
+        "noUsers": "لا يوجد مستخدمون",
+        "noUsersDesc": "جرب تعديل البحث أو الفلاتر.",
+        "columns": {
+          "user": "المستخدم",
+          "role": "الدور",
+          "activity": "النشاط",
+          "status": "الحالة"
+        },
+        "mobileLabels": {
+          "role": "الدور:",
+          "activity": "النشاط:",
+          "status": "الحالة:"
+        },
+        "youBadge": "أنت",
+        "status": {
+          "active": "نشط",
+          "suspended": "موقوف"
+        },
+        "actionsAria": "إجراءات المستخدم",
+        "menu": {
+          "changeRole": "تغيير الدور",
+          "makeStudent": "تعيين كطالب",
+          "makeCreator": "تعيين كمنشئ",
+          "makeAdmin": "تعيين كمدير",
+          "suspendAccount": "إيقاف الحساب",
+          "activateAccount": "تنشيط الحساب"
+        },
+        "toasts": {
+          "suspending": "جارٍ إيقاف الحساب...",
+          "activating": "جارٍ تنشيط الحساب...",
+          "actionFailed": "فشل الإجراء",
+          "suspended": "تم إيقاف الحساب",
+          "suspendedDesc": "تم إيقاف حساب {name}.",
+          "activated": "تم تنشيط الحساب",
+          "activatedDesc": "تمت إعادة تنشيط حساب {name}.",
+          "updatingRole": "جارٍ تحديث الدور إلى {role}...",
+          "roleUpdateFailed": "فشل تحديث الدور",
+          "roleUpdated": "تم تحديث الدور إلى {role}",
+          "roleUpdatedDesc": "تم تغيير دور {name}."
+        },
+        "errors": {
+          "cannotModifySelf": "لا يمكنك تنفيذ هذا الإجراء على حسابك الخاص.",
+          "forbidden": "المديرون فقط يمكنهم تنفيذ هذا الإجراء.",
+          "notFound": "المستخدم غير موجود.",
+          "invalidInput": "مطلوب سبب صالح لإيقاف الحساب.",
+          "actionFailed": "فشل الإجراء."
+        },
+        "roleLabels": {
+          "student": "طالب",
+          "creator": "منشئ",
+          "admin": "مدير"
+        },
+        "suspendDialog": {
+          "title": "إيقاف الحساب",
+          "descBefore": "يرجى تقديم سبب لإيقاف",
+          "descAfter": ". سيُرسل هذا السبب إلى المستخدم بالبريد الإلكتروني.",
+          "reasonLabel": "السبب (مطلوب)",
+          "reasonPlaceholder": "مثال: انتهاك شروط خدمة المنصة.",
+          "reasonError": "يرجى تقديم 10 أحرف على الأقل لشرح السبب.",
+          "reasonCounter": "{count}/500 حرف (الحد الأدنى 10)",
+          "cancel": "إلغاء",
+          "suspend": "إيقاف الحساب"
+        },
+        "pagination": {
+          "previous": "السابق",
+          "next": "التالي"
+        }
+      }
+    }
+  },
+    "reviews": {
+    "starRating": {
+      "aria": "{value} من 5 نجوم"
+    },
+    "course": {
+      "title": "المراجعات ({count})",
+      "leaveReview": "اترك مراجعة",
+      "writeReview": "اكتب مراجعة",
+      "alreadyReviewed": "لقد راجعت هذا الكورس بالفعل.",
+      "needsProgress": "يمكنك مراجعة هذا الكورس بعد إكمال جزء منه.",
+      "noReviews": "لا توجد مراجعات بعد.",
+      "form": {
+        "chooseRating": "يرجى اختيار تقييم.",
+        "commentPlaceholder": "شارك تجربتك (اختياري)",
+        "cancel": "إلغاء",
+        "submit": "إرسال",
+        "submittingToast": "جارٍ إرسال المراجعة...",
+        "failedToast": "فشل",
+        "successToast": "تم إرسال المراجعة! ⭐",
+        "errors": {
+          "alreadyReviewed": "لقد راجعت هذا الكورس بالفعل.",
+          "notEnrolled": "يجب أن تكون مسجلاً لتتمكن من المراجعة.",
+          "notEnoughProgress": "أكمل جزءاً أكثر من الكورس قبل مراجعته.",
+          "rateLimited": "مراجعات كثيرة في وقت قصير. يرجى المحاولة لاحقاً.",
+          "ownCourse": "لا يمكنك مراجعة كورسك الخاص.",
+          "generic": "تعذر إرسال المراجعة."
+        }
+      }
+    },
+    "project": {
+      "question": "كيف كانت تجربة العمل مع {creatorName}؟",
+      "subtitle": "مراجعتك عامة ولا يمكن تعديلها بعد ذلك.",
+      "commentPlaceholder": "شارك تفاصيل تساعد العملاء الآخرين (اختياري)",
+      "submitting": "جارٍ الإرسال...",
+      "submit": "إرسال المراجعة",
+      "clientReview": "مراجعة العميل",
+      "ratingAria": "التقييم",
+      "starAria": "{count, plural, =1 {نجمة واحدة} =2 {نجمتان} few {# نجوم} many {# نجمة} other {# نجمة}}",
+      "errors": {
+        "alreadyReviewed": "لقد راجعت هذا المشروع بالفعل.",
+        "notCompleted": "يمكنك مراجعة المشروع بعد اكتماله.",
+        "forbidden": "العميل فقط يمكنه مراجعة هذا المشروع.",
+        "rateLimited": "محاولات كثيرة. يرجى المحاولة لاحقاً.",
+        "emailNotVerified": "يرجى تأكيد بريدك الإلكتروني أولاً.",
+        "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "service": {
+      "title": "مراجعات العملاء",
+      "noReviews": "لا توجد مراجعات بعد. تظهر المراجعات بعد إكمال عميل لمشروع."
+    },
+    "reputation": {
+      "title": "السمعة",
+      "reviewsCount": "{count, plural, =0 {لا توجد مراجعات} =1 {مراجعة واحدة} =2 {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}}",
+      "projectsCount": "{count, plural, =0 {لا توجد مشاريع مكتملة} =1 {مشروع مكتمل واحد} =2 {مشروعان مكتملان} few {# مشاريع مكتملة} many {# مشروعاً مكتملاً} other {# مشروع مكتمل}}"
+    }
+  },
+    "userMenu": {
+    "dashboard": "لوحة التحكم",
+    "profile": "الملف الشخصي",
+    "signOut": "تسجيل الخروج"
+  },
+  "ui": {
+    "combobox": {
+      "defaultPlaceholder": "اختر خياراً...",
+      "defaultEmpty": "لا توجد نتائج مطابقة.",
+      "defaultSearch": "بحث..."
+    }
+  },
+  "certificate": {
+    "brand": "EduSpark",
+    "type": "شهادة إتمام",
+    "thisCertifies": "تشهد هذه الوثيقة أن",
+    "hasCompleted": "قد أكمل بنجاح دورة",
+    "levelFormat": "مستوى {level}",
+    "issued": "تاريخ الإصدار",
+    "instructor": "المدرب",
+    "credentialId": "معرّف الشهادة",
+    "copyCredentialId": "نسخ معرّف الشهادة",
+    "download": "تحميل",
+    "downloadTitle": "تحميل بيانات الشهادة بصيغة JSON",
+    "share": "مشاركة",
+    "copied": "تم النسخ!",
+    "copyVerifyLink": "نسخ رابط التحقق",
+    "verify": "تحقق",
+    "verifyTitle": "التحقق من الشهادة",
+    "downloadMetadata": "تحميل البيانات الوصفية",
+    "grades": {
+      "distinction": "بامتياز",
+      "merit": "بجدارة",
+      "pass": "ناجح"
+    },
+    "courses": {
+  "card": {
+    "levels": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "advanced": "متقدم"
+    }
+  }
+}
+  },
+  "verifyEmailBanner": {
+  "message": "يرجى تأكيد بريدك الإلكتروني لفتح الطلبات والشهادات والنشر.",
+  "resendBtn": "إعادة إرسال البريد",
+  "sending": "جاري الإرسال…",
+  "successMsg": "تم إرسال البريد — تحقق من صندوق الوارد.",
+  "fallbackError": "فشل إرسال البريد. حاول مرة أخرى."
+},
+"studentCertificates": {
+  "achievements": "الإنجازات",
+  "title": "شهاداتي",
+  "descEmpty": "أكمل الدورات واجتز اختبارات الشهادات للحصول على شهاداتك.",
+  "earned": "{count, plural, =0 {لا توجد شهادات بعد} =1 {لقد حصلت على شهادة واحدة} =2 {لقد حصلت على شهادتين} few {لقد حصلت على # شهادات} many {لقد حصلت على # شهادة} other {لقد حصلت على # شهادة}}",
+  "noCertsTitle": "لا توجد شهادات بعد",
+  "noCertsDesc": "أكمل دورة واجتز اختبار الشهادة الخاص بها لفتح شهادتك الأولى.",
+  "browseCourses": "تصفح الدورات"
+}
+}

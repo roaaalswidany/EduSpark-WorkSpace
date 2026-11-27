@@ -1,0 +1,1607 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "courses": "Courses",
+    "marketplace": "Marketplace",
+    "toggleMenu": "Toggle menu"
+  },
+    "breadcrumbs": {
+    "aria": "Breadcrumb",
+    "home": "Home"
+  },
+    "themeToggle": {
+    "group": "Color theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "sidebar": {
+    "main": "Main",
+    "learn": "Learn",
+    "work": "Work",
+    "creatorStudio": "Creator Studio",
+    "administration": "Administration",
+    "dashboard": "Dashboard",
+    "careerPath": "Career Path",
+    "achievements": "Achievements",
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "myCourses": "My Courses",
+    "certificates": "Certificates",
+    "browseCourses": "Browse Courses",
+    "marketplace": "Marketplace",
+    "myOrders": "My Orders",
+    "myProjects": "My Projects",
+    "myServices": "My Services",
+    "incomingOrders": "Incoming Orders",
+    "newService": "New Service",
+    "overview": "Overview",
+    "users": "Users",
+    "coursesAdmin": "Courses",
+    "servicesAdmin": "Services",
+    "signOut": "Sign out",
+    "admin": "Admin"
+  },
+  "navbar": {
+    "courses": "Courses",
+    "marketplace": "Marketplace",
+    "dashboard": "Dashboard",
+    "signIn": "Sign In",
+    "getStarted": "Get Started",
+    "goToDashboard": "Go to Dashboard"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your EduSpark account",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot password?",
+      "submitButton": "Sign In",
+      "submittingButton": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create one",
+      "orContinueWith": "Or continue with",
+      "errorInvalid": "Invalid email or password.",
+      "errorAccountDisabled": "Your account has been disabled. Contact support.",
+      "errorOauth": "This account uses social login. Please use that instead.",
+      "errorRateLimited": "Too many login attempts. Please try again in 15 minutes.",
+      "errorGeneric": "Something went wrong. Please try again."
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Join EduSpark and start learning",
+      "nameLabel": "Full name",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "Confirm password",
+      "confirmPasswordPlaceholder": "••••••••",
+      "termsNote": "New accounts start as Students. Pass a course certification quiz to unlock Creator access.",
+      "submitButton": "Create account",
+      "submittingButton": "Creating account...",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "errorPasswordMismatch": "Passwords do not match.",
+      "errorPasswordWeak": "Password must be at least 8 characters, with 1 uppercase and 1 number.",
+      "errorEmailTaken": "An account with this email already exists.",
+      "errorGeneric": "Something went wrong. Please try again.",
+      "errorPasswordsDoNotMatch": "Passwords do not match.",
+      "rulesMinLength": "At least 8 characters",
+      "rulesUppercase": "One uppercase letter",
+      "rulesLowercase": "One lowercase letter",
+      "rulesNumber": "One number",
+      "rulesSpecial": "One special character",
+      "hidePassword": "Hide password",
+      "showPassword": "Show password"
+    },
+    "forgotPassword": {
+      "title": "Forgot your password?",
+      "subtitle": "Enter your account email and we will send you a reset link.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "submitButton": "Send reset link",
+      "submittingButton": "Sending...",
+      "successMessage": "If an account exists for {email}, a reset link is on its way. It expires in 1 hour.",
+      "backToLogin": "Back to sign in",
+      "errorGeneric": "Could not send reset email. Please try again."
+    },
+    "resetPassword": {
+      "title": "Choose a new password",
+      "subtitle": "Enter a new password for your account.",
+      "passwordLabel": "New password",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "Confirm password",
+      "confirmPasswordPlaceholder": "••••••••",
+      "submitButton": "Reset password",
+      "submittingButton": "Saving...",
+      "changePasswordButton": "Change password",
+      "successMessage": "Your password was changed. You can sign in now.",
+      "resettingFor": "Resetting the password for {email}",
+      "passwordRulesHint": "8–72 characters with an uppercase letter, a lowercase letter, a number and a symbol.",
+      "invalidLinkText": "This reset link is incomplete or invalid.",
+      "requestNewLink": "Request a new link",
+      "signInButton": "Sign in",
+      "errorInvalidToken": "This reset link is invalid or expired.",
+      "errorPasswordMismatch": "Passwords do not match.",
+      "errorPasswordWeak": "Password must be at least 8 characters, with 1 uppercase and 1 number.",
+      "errorGeneric": "Something went wrong. Please try again."
+    },
+    "verifyEmail": {
+      "title": "Confirm your email",
+      "subtitle": "Confirm your email address to activate your account.",
+      "checkInbox": "Please check your inbox and click the link to verify your account.",
+      "resendButton": "Resend verification email",
+      "resendingButton": "Sending...",
+      "successResend": "Verification email sent! Check your inbox.",
+      "errorGeneric": "Could not send verification email. Please try again.",
+      "signInLink": "Sign in",
+      "confirmEmailFor": "Confirm that {email} is your email address.",
+      "confirmButton": "Confirm email",
+      "confirmingButton": "Confirming...",
+      "confirmedMessage": "Your email address is confirmed. Thank you!",
+      "goToDashboard": "Go to dashboard",
+      "invalidLinkText": "This confirmation link is incomplete or invalid."
+    },
+    "welcome": {
+      "title": "Welcome to EduSpark!",
+      "subtitle": "Your account is ready. Start exploring courses and building your skills.",
+      "getStartedButton": "Get Started",
+      "exploreCourses": "Explore Courses",
+      "goToDashboard": "Go to dashboard"
+    },
+    "error": {
+      "title": "Authentication Error",
+      "description": "Something went wrong during sign in. Please try again.",
+      "backToLogin": "Back to sign in",
+      "backToHome": "Back to home",
+      "configurationError": "There is a problem with the server configuration.",
+      "accessDenied": "You do not have permission to sign in.",
+      "verificationError": "The sign-in link is no longer valid.",
+      "defaultError": "An error occurred during sign-in.",
+      "loading": "Loading..."
+    }
+  },
+    "dashboard": {
+    "title": "Dashboard",
+    "roles": {
+      "admin": "Administrator",
+      "creator": "Creator",
+      "student": "Student"
+    },
+    "welcome": "Welcome back, {name}",
+    "subtitles": {
+      "admin": "Monitor and manage the entire EduSpark platform.",
+      "creator": "Grow your business, manage services, and track your orders.",
+      "student": "Continue learning, earn certificates, and unlock your potential."
+    },
+    "sections": {
+      "platformOverview": "Platform Overview",
+      "learning": "Learning",
+      "creatorStudio": "Creator Studio",
+      "explore": "Explore"
+    },
+    "stats": {
+      "totalUsers": "Total Users",
+      "courses": "Courses",
+      "services": "Services",
+      "projects": "Projects",
+      "myCourses": "My Courses",
+      "certificates": "Certificates",
+      "orders": "Orders"
+    },
+    "adminPanel": {
+      "title": "Admin Panel",
+      "description": "Manage users, courses, and services"
+    },
+    "conversations": {
+      "title": "Conversations",
+      "description": "Monitor platform-wide chats"
+    },
+    "creatorSection": {
+      "newService": "New Service",
+      "myServices": "My Services",
+      "publishedCount": "{count, plural, =0 {No services published} =1 {1 service published} other {# services published}}",
+      "marketplaceTitle": "Marketplace",
+      "marketplaceDesc": "Browse what other creators offer"
+    },
+    "explore": {
+      "browseCourses": "Browse Courses",
+      "browseCoursesDesc": "Discover new skills to master",
+      "browseServices": "Browse Services",
+      "browseServicesDesc": "Hire certified experts"
+    }
+  },
+  "courses": {
+    "hero": {
+      "availableBadge": "{count, plural, =0 {No courses available} =1 {1 course available} other {# courses available}}",
+      "title": "Learn from the best,",
+      "titleHighlight": "at your own pace.",
+      "description": "Discover expert-led courses, earn certificates, and unlock your potential with EduSpark."
+    },
+    "results": {
+      "showingRange": "Showing {start}–{end} of {total}",
+      "pageOf": "Page {page} of {total}",
+      "noCourses": "No courses found",
+      "tryAdjusting": "Try adjusting your filters or search query.",
+      "noPublished": "No published courses yet. Check back soon!",
+      "clearFilters": "Clear filters",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "filters": {
+      "searchPlaceholder": "Search courses...",
+      "levels": {
+        "all": "All levels",
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "sort": {
+        "newest": "Newest",
+        "popular": "Most popular",
+        "rating": "Highest rated",
+        "priceLow": "Price: Low to High",
+        "priceHigh": "Price: High to Low"
+      },
+      "filtersButton": "Filters",
+      "allCategories": "All ({count})",
+      "levelLabel": "Level:",
+      "clear": "Clear"
+    },
+    "detail": {
+      "breadcrumb": "Courses",
+      "createdBy": "Created by",
+      "ratingCount": "{count, plural, =0 {No ratings} =1 {1 rating} other {# ratings}}",
+      "studentsCount": "{count, plural, =0 {No students} =1 {1 student} other {# students}}",
+      "lessonsCount": "{count, plural, =0 {No lessons} =1 {1 lesson} other {# lessons}}",
+      "free": "Free",
+      "includesTitle": "This course includes",
+      "includesLessons": "{count, plural, =0 {No video lessons} =1 {1 video lesson} other {# video lessons}}",
+      "includesCertificate": "Certificate of completion",
+      "includesAccess": "Access on mobile and desktop",
+      "includesLifetime": "Lifetime access",
+      "learningTitle": "What you'll learn",
+      "instructorTitle": "About the instructor",
+      "outcomes": {
+        "master": "Master {title} through hands-on projects",
+        "build": "Build production-ready applications with real-world scenarios",
+        "learnFrom": "Learn from {creator}, an experienced instructor",
+        "certificate": "Earn a verified certificate upon successful completion",
+        "accessLessons": "Access {count} video lessons on any device, anytime",
+        "community": "Join a community of learners and grow your skills"
+      }
+    },
+    "curriculum": {
+      "title": "Course Curriculum",
+      "sections": "{count, plural, =0 {No sections} =1 {1 section} other {# sections}}",
+      "lessons": "{count, plural, =0 {No lessons} =1 {1 lesson} other {# lessons}}",
+      "totalSuffix": "{duration} total",
+      "free": "Free"
+    },
+    "enroll": {
+      "adminTitle": "Admin Account",
+      "adminDescription": "Admins manage the platform and cannot enroll in courses.",
+      "continue": "Continue Learning",
+      "signIn": "Sign in to enroll",
+      "enrolling": "Enrolling...",
+      "enrollFree": "Enroll for free",
+      "enrollPaid": "Enroll for ${price}",
+      "loadingToast": "Enrolling…",
+      "successToast": "Enrolled successfully! 🎉",
+      "successToastDesc": "Redirecting to your course…",
+      "errorToast": "Enrollment failed",
+      "errors": {
+        "alreadyEnrolled": "You're already enrolled in this course.",
+        "ownCourse": "You can't enroll in your own course.",
+        "courseNotFound": "Course not found.",
+        "notPublished": "This course isn't available for enrollment yet.",
+        "unauthorized": "Please sign in to enroll.",
+        "adminCannotParticipate": "Admins cannot enroll in courses. Use a student account to participate.",
+        "invalidInput": "Invalid course data. Please refresh and try again.",
+        "serverError": "Server error. Please try again in a moment.",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "card": {
+      "levels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "enrolled": "Enrolled",
+      "completed": "Completed",
+      "lessons": "{count, plural, =0 {No lessons} =1 {1 lesson} other {# lessons}}",
+      "price": "Price",
+      "free": "Free",
+      "progress": "Progress"
+    }
+  },
+    "marketplace": {
+    "meta": {
+      "title": "Marketplace",
+      "description": "Hire certified experts who have proven their skills through EduSpark's rigorous course program."
+    },
+    "hero": {
+      "badge": "All creators are EduSpark certified",
+      "titleLine1": "Hire",
+      "titleHighlight": "Certified",
+      "titleLine2": "Experts",
+      "description": "Every creator proved their skills through our rigorous course program — your work is in trusted hands.",
+      "searchPlaceholder": "Search services, skills, or creators..."
+    },
+    "stats": {
+      "services": "{count, plural, =0 {No services} =1 {1 service} other {# services}}",
+      "experts": "{count, plural, =0 {No experts} =1 {1 expert} other {# experts}}",
+      "certified": "100% certified"
+    },
+    "filters": {
+      "allServices": "All Services"
+    },
+    "sort": {
+      "newest": "Newest First",
+      "priceAsc": "Price: Low → High",
+      "priceDesc": "Price: High → Low",
+      "popular": "Most Popular"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No services} =1 {1 service} other {# services}}",
+      "for": "for",
+      "clearAll": "Clear all"
+    },
+    "empty": {
+      "noResultsFor": "No results for \"{query}\"",
+      "noServicesAvailable": "No services available",
+      "tryDifferent": "Try a different search term or browse by category.",
+      "checkBack": "Check back soon — creators are completing certifications daily.",
+      "clearFilters": "Clear all filters"
+    },
+    "card": {
+      "certified": "Certified",
+      "certifiedIn": "Certified in {category}",
+      "delivery": "{days}d delivery",
+      "from": "From"
+    },
+    "detail": {
+      "breadcrumb": "Marketplace",
+      "certifiedCreator": "Certified Creator",
+      "serviceNotFound": "Service not found",
+      "metaSuffix": "EduSpark Marketplace",
+      "orderCount": "{count, plural, =0 {No orders} =1 {1 order} other {# orders}}",
+      "daysDelivery": "{count, plural, =1 {1 day delivery} other {# days delivery}}",
+      "aboutService": "About This Service",
+      "skillsTags": "Skills & Tags",
+      "portfolio": "Portfolio",
+      "aboutCreator": "About the Creator",
+      "whatIncluded": "What's included",
+      "revisions": "{count, plural, =0 {No revisions} =1 {1 revision} other {# revisions}}",
+      "directChat": "Direct chat with creator",
+      "milestoneWorkflow": "Milestone-based workflow",
+      "created": "Created",
+      "edusparkCertified": "EduSpark Certified",
+      "edusparkCertifiedDesc": "This creator has proven their skills through our rigorous certification program.",
+      "orderNow": "Order Now",
+      "signInToOrder": "Sign in to order",
+      "adminCannotOrder": "Admins cannot order services.",
+      "ownService": "This is your own service",
+      "moreFrom": "More from {category}",
+      "moreFromDefault": "More Services",
+      "trustBadgeTitle": "EduSpark Certified",
+      "trustBadgeDesc": "This creator has proven their skills through our rigorous certification program."
+    },
+    "orderDialog": {
+      "placeOrder": "Place Order",
+      "total": "Total",
+      "delivery": "Delivery",
+      "days": "{count, plural, =1 {1 day} other {# days}}",
+      "revisions": "Revisions",
+      "revisionsNone": "None",
+      "revisionsOne": "1 revision",
+      "revisionsMany": "{count} revisions",
+      "yourRequirements": "Your Requirements",
+      "requirementsPlaceholder": "Describe what you need — the more detail, the better. (min 20 characters)",
+      "cancel": "Cancel",
+      "confirmOrder": "Confirm Order",
+      "placingOrder": "Placing Order…",
+      "creatingToast": "Creating your order…",
+      "successToast": "Order created! 🎉",
+      "successToastDesc": "Opening your project workspace…",
+      "errorToast": "Order failed",
+      "errors": {
+        "serviceNotFound": "Service not found.",
+        "serviceInactive": "This service is no longer available.",
+        "selfOrder": "You can't order your own service.",
+        "invalidInput": "Please describe your requirements in more detail.",
+        "unauthorized": "Please sign in to place an order.",
+        "staleSession": "Your session has expired. Please sign out and sign in again.",
+        "serverError": "Something went wrong. Please try again.",
+        "generic": "Something went wrong. Please try again."
+      }
+    }
+  },
+    "profile": {
+    "view": {
+      "editProfile": "Edit Profile",
+      "about": "About",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "bio": "Bio",
+      "website": "Website",
+      "noBio": "No bio added yet. Click \"Edit Profile\" to add one.",
+      "noWebsite": "No website added yet.",
+      "fullName": "Full Name",
+      "headline": "Headline",
+      "headlinePlaceholder": "e.g. Senior Full-Stack Developer",
+      "bioPlaceholder": "Tell others about yourself, your expertise, and what you do…",
+      "websitePlaceholder": "https://your-portfolio.com",
+      "optional": "Optional",
+      "toastSaving": "Saving profile...",
+      "toastSuccess": "Profile updated successfully! ✨",
+      "errorInvalid": "Please check the fields and try again.",
+      "errorGeneric": "Something went wrong. Please try again."
+    },
+    "header": {
+      "roles": {
+        "student": "Student",
+        "creator": "Verified Creator",
+        "admin": "Administrator"
+      },
+      "joined": "Joined {date}",
+      "stats": {
+        "courses": "Courses",
+        "certificates": "Certificates",
+        "services": "Services",
+        "projects": "Projects"
+      }
+    },
+    "page": {
+      "title": "Profile"
+    }
+  },
+    "notifications": {
+    "page": {
+      "title": "Notifications",
+      "inbox": "Inbox",
+      "count": "{count, plural, =0 {No notifications} =1 {1 notification} other {# notifications}}",
+      "unread": "{count, plural, =1 {1 unread} other {# unread}}",
+      "pageOf": "Page {page} of {total}",
+      "emptyTitle": "All caught up!",
+      "emptyDesc": "You don't have any notifications yet. We'll let you know when something important happens.",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "client": {
+      "markAllAsRead": "Mark all as read",
+      "deleteAria": "Delete notification",
+      "deletedToast": "Notification deleted",
+      "deleteFailedToast": "Failed to delete notification",
+      "markedAllToast": "All notifications marked as read",
+      "markedAllFailedToast": "Failed to mark all as read",
+      "closeButton": "Close",
+      "goToPage": "Go to page"
+    },
+      "bell": {
+      "aria": "Notifications",
+      "connected": "Real-time enabled",
+      "connecting": "Connecting..."
+    }
+  },
+    "chat": {
+    "page": {
+      "title": "Messages",
+      "inbox": "Inbox",
+      "noConversations": "No conversations yet. Start a project to unlock chat.",
+      "conversationsCount": "{count, plural, =0 {No conversations} =1 {1 conversation} other {# conversations}}",
+      "emptyTitle": "No conversations yet",
+      "emptyDesc": "Chats unlock automatically when you order a service, enroll in a course, or a creator accepts your project.",
+      "browseServices": "Browse Services"
+    },
+    "list": {
+      "noOtherParticipants": "No other participants",
+      "noMessages": "No messages yet",
+      "youPrefix": "You: ",
+      "types": {
+        "project": "Project",
+        "course": "Course",
+        "direct": "Direct",
+        "support": "Support"
+      },
+      "time": {
+        "now": "now",
+        "minutes": "{count}m",
+        "hours": "{count}h",
+        "days": "{count}d"
+      }
+    },
+    "room": {
+      "chatDefault": "Chat",
+      "allMessages": "All Messages",
+      "endToEndEncrypted": "End-to-end encrypted channel",
+      "secure": "Secure",
+      "you": "(you)"
+    },
+        "box": {
+      "types": {
+        "project": "Project Chat",
+        "educational": "Course Room",
+        "support": "Support"
+      },
+      "dates": {
+        "today": "Today",
+        "yesterday": "Yesterday"
+      },
+      "retry": "Retry",
+      "typing": {
+        "one": "{name} is typing...",
+        "two": "{name1} and {name2} are typing...",
+        "many": "{name} and {count} others are typing..."
+      },
+      "connection": {
+        "reconnecting": "Reconnecting... (attempt {attempt})",
+        "lost": "Connection lost.",
+        "connecting": "Connecting to chat server..."
+      },
+      "online": {
+        "label": "online",
+        "now": "Online now",
+        "you": "(you)",
+        "noUsers": "No users online"
+      },
+      "legal": {
+        "label": "Legal Notice:",
+        "text": "All messages in this project channel are permanently recorded and form part of the legally binding project record. By sending a message, you consent to its retention and potential use in dispute resolution."
+      },
+      "loading": "Loading conversation...",
+      "empty": {
+        "title": "No messages yet",
+        "desc": "Start the conversation by sending the first message."
+      },
+      "newMessages": "New messages",
+      "placeholder": {
+        "connecting": "Connecting...",
+        "joining": "Joining room...",
+        "message": "Message {roomName}..."
+      },
+      "input": {
+        "enter": "Enter",
+        "shiftEnter": "Shift+Enter",
+        "toSend": "to send",
+        "forNewLine": "for new line"
+      },
+      "sendAria": "Send message"
+    }
+  },
+    "orders": {
+    "page": {
+      "title": "My Orders",
+      "buying": "Buying",
+      "noOrders": "No orders yet. Order a service to get started.",
+      "ordersCount": "{count, plural, =0 {No orders} =1 {1 order} other {# orders}}",
+      "emptyTitle": "No orders yet",
+      "emptyDesc": "Browse the marketplace and hire a certified creator to see your orders here.",
+      "browseMarketplace": "Browse Marketplace"
+    },
+    "card": {
+      "orderLabel": "Order",
+      "incomingOrderLabel": "Incoming Order",
+      "creatorLabel": "Creator:",
+      "clientLabel": "Client:",
+      "unassigned": "Unassigned",
+      "updated": "Updated",
+      "milestones": "{completed} of {total} milestones",
+      "openProject": "Open Project",
+      "chat": "Chat",
+      "status": {
+        "pending": "Awaiting Start",
+        "open": "Open",
+        "inProgress": "In Progress",
+        "reviewRequested": "Under Review",
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "disputed": "Disputed"
+      },
+      "time": {
+        "justNow": "just now",
+        "minutesAgo": "{count}m ago",
+        "hoursAgo": "{count}h ago",
+        "daysAgo": "{count}d ago"
+      }
+    }
+  },
+    "projects": {
+    "page": {
+      "title": "My Projects",
+      "workspace": "Workspace",
+      "noProjects": "No projects yet. Order a service or wait for a creator to accept your project.",
+      "projectsCount": "{count, plural, =0 {No projects} =1 {1 project} other {# projects}}",
+      "emptyTitle": "No projects yet",
+      "emptyDesc": "Projects are created automatically when you order a service from the marketplace.",
+      "browseServices": "Browse Services",
+      "clientLabel": "Client",
+      "creatorLabel": "Creator",
+      "milestonesCount": "{count, plural, =0 {No milestones} =1 {1 milestone} other {# milestones}}",
+      "breadcrumb": {
+        "dashboard": "Dashboard",
+        "projects": "Projects"
+      }
+    },
+    "statuses": {
+      "pending": "Awaiting Start",
+      "open": "Open",
+      "inProgress": "In Progress",
+      "reviewRequested": "Awaiting Approval",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "disputed": "Disputed"
+    },
+    "view": {
+      "back": "Back to projects",
+      "started": "Started {date}",
+      "chat": "Chat",
+      "milestonesProgress": "{completed} of {total} milestones approved",
+      "milestonesTitle": "Milestones",
+      "done": "{completed}/{total} done",
+      "service": "Service",
+      "dayDelivery": "{days, plural, =1 {1 day delivery} other {# day delivery}}",
+      "totalBudget": "Total Budget",
+      "viewService": "View Service",
+      "participants": "Participants",
+      "client": "Client",
+      "creator": "Creator",
+      "you": "You",
+      "noCreator": "No creator assigned",
+      "details": "Details",
+      "budget": "Budget",
+      "deadline": "Deadline",
+      "status": "Status",
+      "projectChat": "Project Chat",
+      "chatMessages": "{count, plural, =0 {No messages} =1 {1 message} other {# messages}}",
+      "approveTitle": "All Work Submitted",
+      "approveDesc": "The creator has submitted all milestones for your review. Approving this will mark the project as complete and release payment.",
+      "approveBtn": "Approve & Complete Project",
+      "approving": "Processing…",
+      "completedTitle": "Project Complete! 🎉",
+      "completedDesc": "All milestones approved. This project has been successfully delivered.",
+      "errorDismiss": "Dismiss error"
+    },
+    "milestone": {
+      "label": "Milestone {number}",
+      "value": "Value",
+      "deliveryNote": "Delivery Note",
+      "viewDeliveryLink": "View Delivery Link",
+      "revisionNote": "Revision Note",
+      "approvedAt": "Approved {date}",
+      "statuses": {
+        "pending": "Pending",
+        "inProgress": "In Progress",
+        "reviewRequested": "Under Review",
+        "approved": "Approved",
+        "revisionNeeded": "Revision Needed"
+      },
+      "actions": {
+        "start": "Start Work",
+        "submitForReview": "Submit for Review",
+        "requestRevision": "Request Revision",
+        "awaitingReview": "Awaiting client review…",
+        "approvedMsg": "Milestone approved",
+        "creatorWorking": "Creator is working on this…",
+        "notStarted": "Not started yet",
+        "youApproved": "You approved this milestone"
+      }
+    },
+    "dueDate": {
+      "noDeadline": "No deadline",
+      "overdue": "{days}d overdue",
+      "dueToday": "Due today",
+      "dueTomorrow": "Due tomorrow",
+      "dueIn": "Due in {days}d"
+    },
+    "submissionForm": {
+      "hint": "Add delivery details:",
+      "notePlaceholder": "Describe what you've delivered (e.g., 'Final logo files in SVG, PNG, and AI formats. Brand guidelines included.')",
+      "urlPlaceholder": "Delivery link (optional) — https://…",
+      "httpsOnly": "Only https:// links are allowed.",
+      "cancel": "Cancel",
+      "submit": "Submit Delivery"
+    },
+    "revisionForm": {
+      "hint": "Describe what needs to be changed:",
+      "notePlaceholder": "Be specific — e.g. 'Please revise the header section and adjust the color palette to match the brand guidelines provided.'",
+      "cancel": "Cancel",
+      "submit": "Send Request"
+    },
+    "chatPage": {
+      "back": "Back to Project",
+      "endToEndEncrypted": "End-to-end encrypted channel",
+      "secure": "Secure",
+      "client": "Client",
+      "creator": "Creator",
+      "you": "(you)",
+      "noCreator": "Creator not assigned"
+    }
+  },
+    "achievements": {
+    "page": {
+      "eyebrow": "Achievements",
+      "title": "Your Journey",
+      "subtitle": "Track your progress, unlock badges, and compete on the leaderboard.",
+      "metadataTitle": "Achievements"
+    },
+    "levelCard": {
+      "currentLevel": "Current Level",
+      "rank": "Rank",
+      "xpSuffix": "XP",
+      "toNext": "{xp} to {next}",
+      "inLevel": "{xp} / {span} XP in this level",
+      "badges": "Badges",
+      "progress": "Progress",
+      "nextLevel": "Next Level",
+      "max": "MAX"
+    },
+    "badges": {
+      "title": "Badges",
+      "unlocked": "{earned} of {total} unlocked",
+      "filterAll": "All",
+      "filterEarned": "Earned",
+      "filterLocked": "Locked",
+      "noResults": "No badges match this filter."
+    },
+    "leaderboard": {
+      "title": "Leaderboard",
+      "subtitle": "Top 20 learners this season",
+      "you": "(you)"
+    }
+  },
+    "studentCourses": {
+    "page": {
+      "eyebrow": "My Learning",
+      "title": "My Courses",
+      "noEnrollments": "You haven't enrolled in any course yet.",
+      "statsLine": "{inProgress} in progress · {completed} completed · {total} total",
+      "emptyTitle": "Start your learning journey",
+      "emptyDesc": "Browse our catalog of expert-led courses and enroll in your first course to get started.",
+      "browseCourses": "Browse Courses"
+    },
+    "card": {
+      "levels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "statusCompleted": "Completed",
+      "statusInProgress": "In Progress",
+      "allCompleted": "All lessons completed",
+      "yourProgress": "Your progress",
+      "lessonsCount": "{count, plural, =0 {No lessons} =1 {1 lesson} other {# lessons}}",
+      "reviewCourse": "Review Course",
+      "continueLearning": "Continue Learning",
+      "startLearning": "Start Learning",
+      "viewPublicPage": "View public page with reviews",
+      "time": {
+        "justNow": "Just now",
+        "minutesAgo": "{count}m ago",
+        "hoursAgo": "{count}h ago",
+        "yesterday": "Yesterday",
+        "daysAgo": "{count}d ago"
+      },
+      "durationSeconds": "{count}s",
+      "durationMinutes": "{count}m",
+      "durationHours": "{hours}h",
+      "durationHoursMinutes": "{hours}h {minutes}m"
+    }
+  },
+    "learning": {
+    "header": {
+      "backToCourses": "Back to My Courses",
+      "toggleMenu": "Toggle course menu",
+      "completed": "Completed",
+      "viewPublicPage": "View public page (reviews & ratings)"
+    },
+    "video": {
+      "noVideo": "No video for this lesson"
+    },
+    "lesson": {
+      "label": "Lesson {current} of {total}",
+      "completed": "Completed",
+      "saving": "Saving…",
+      "markComplete": "Mark Complete",
+      "previous": "Previous",
+      "next": "Next",
+      "progressTrack": "Lesson progress track",
+      "free": "Free"
+    },
+    "completion": {
+      "title": "Course Complete! 🎉",
+      "descWithQuiz": "You finished {title}. Take the certification quiz to earn your certificate.",
+      "descNoQuiz": "You finished {title}. Certificate is now available in your dashboard.",
+      "takeQuiz": "Take Certification Quiz"
+    },
+    "sidebar": {
+      "lessonsDone": "{completed} of {total} lessons done",
+      "instructor": "Instructor:"
+    },
+    "attachments": {
+      "title": "Lesson Materials ({count})",
+      "downloadError": "Could not generate download link",
+      "rateLimited": "Too many downloads. Please wait a few minutes."
+    }
+  },
+    "quiz": {
+    "intro": {
+      "eyebrow": "Certification Quiz",
+      "questions": "Questions",
+      "toPass": "To Pass",
+      "timeLimit": "Time Limit",
+      "noLimit": "No Limit",
+      "lastAttemptPassed": "You already passed this quiz!",
+      "lastAttemptFailed": "Previous attempt did not pass",
+      "scoreLine": "Score: {score}% ({correct}/{total} correct)",
+      "beforeYouBegin": "Before you begin",
+      "rules": {
+        "passingScore": "You need a score of {passingScore}% or higher to pass",
+        "attempts": "You can attempt this quiz up to {maxAttempts} times per {windowHours} hours until you pass",
+        "timerStarts": "The timer starts as soon as you click Start",
+        "noTimeLimit": "There is no time limit — take your time",
+        "feedbackAfterPass": "Detailed answer feedback is unlocked once you pass",
+        "certificateEarned": "You've already earned your certificate for this course",
+        "certificateOnPass": "Passing grants you a verified certificate"
+      },
+      "retakeQuiz": "Retake Quiz",
+      "startQuiz": "Start Quiz"
+    },
+    "inProgress": {
+      "questionOf": "Question {current} of {total}",
+      "previous": "Previous",
+      "next": "Next",
+      "submitQuiz": "Submit Quiz",
+      "submitting": "Submitting…",
+      "optionLabel": "Option {letter}"
+    },
+    "result": {
+      "eyebrow": "Quiz Results",
+      "passedTitle": "Congratulations! 🎉",
+      "failedTitle": "Keep Learning!",
+      "passedDesc": "You passed the quiz. Your certificate has been issued.",
+      "failedDesc": "You need {passingScore}% or higher to pass. Review the feedback below and try again.",
+      "yourScore": "Your Score",
+      "correct": "Correct",
+      "required": "Required",
+      "certificateIssued": "Certificate Issued!",
+      "credentialId": "Credential ID:",
+      "viewCertificate": "View Certificate",
+      "roleUpgradedTitle": "Your account was upgraded!",
+      "roleUpgradedDesc": "You are now a Creator. Head to your dashboard to start offering services.",
+      "answerReview": "Answer Review",
+      "answerReviewDesc": "See how you answered each question",
+      "correctMark": "Correct",
+      "yourAnswerMark": "(Your answer)",
+      "reviewLocked": "Answer review is unlocked once you pass. Revisit the course lessons, then try again.",
+      "backToCourse": "Back to Course",
+      "retakeForPractice": "Retake for Practice",
+      "tryAgain": "Try Again"
+    },
+    "errors": {
+      "notEnrolled": "You are not enrolled in this course.",
+      "courseNotCompleted": "Finish all the lessons of this course before taking the certification quiz.",
+      "quizNotFound": "Quiz not found.",
+      "questionCountMismatch": "Please answer all questions.",
+      "emailNotVerified": "Please confirm your email address first — check your inbox.",
+      "attemptLimitReached": "Attempt limit reached. You can try again after {retryAt}.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "toasts": {
+      "timesUp": "Time's up — submitting…",
+      "submittingQuiz": "Submitting your quiz…",
+      "passed": "🎉 Congratulations! You passed!",
+      "passedDesc": "Scored {score}% · {certificate}",
+      "failed": "Keep trying!",
+      "failedDesc": "Scored {score}% — need {passingScore}% to pass",
+      "submissionFailed": "Submission failed"
+    }
+  },
+    "creatorServices": {
+    "page": {
+      "eyebrow": "Creator Studio",
+      "title": "My Services",
+      "subtitle": "Manage your offerings, track orders, and grow your business.",
+      "metadataTitle": "My Services"
+    },
+    "stats": {
+      "total": "Total Services",
+      "active": "Active",
+      "orders": "Orders",
+      "projects": "Projects"
+    },
+    "card": {
+      "newService": "New Service",
+      "actionsAria": "Service actions",
+      "viewPublic": "View Public",
+      "editService": "Edit Service",
+      "pauseService": "Pause Service",
+      "withdrawSubmission": "Withdraw Submission",
+      "submitForReview": "Submit for Review",
+      "deleteService": "Delete Service",
+      "ordersCount": "{count, plural, =0 {No orders} =1 {1 order} other {# orders}}",
+      "projectsCount": "{count, plural, =0 {No projects} =1 {1 project} other {# projects}}",
+      "from": "From",
+      "changesRequested": "Changes requested:"
+    },
+    "statuses": {
+      "pendingReview": "Pending Review",
+      "active": "Active",
+      "paused": "Paused",
+      "archived": "Archived"
+    },
+    "statusToasts": {
+      "updating": "Updating status...",
+      "pausing": "Pausing service...",
+      "activating": "Activating service...",
+      "submitting": "Submitting for review...",
+      "success": "Status updated",
+      "successDesc": "Your service status has been updated.",
+      "failed": "Status update failed",
+      "errorInvalidTransition": "That status change is not allowed. Only an administrator can activate a service.",
+      "errorForbidden": "You don't have permission to change this service.",
+      "errorGeneric": "Failed to update status."
+    },
+    "deleteDialog": {
+      "title": "Delete Service",
+      "subtitle": "This action cannot be undone.",
+      "confirmText": "Are you sure you want to delete {title}? This will permanently remove it from the marketplace.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting...",
+      "toastLoading": "Deleting service...",
+      "toastSuccess": "Service deleted",
+      "toastSuccessDesc": "The service has been removed from the marketplace.",
+      "toastFailed": "Deletion failed",
+      "errors": {
+        "hasOrders": "This service has orders or projects. Pause it instead of deleting.",
+        "forbidden": "You don't have permission to delete this service.",
+        "notFound": "Service not found.",
+        "generic": "Failed to delete service."
+      }
+    },
+    "empty": {
+      "title": "No services yet",
+      "desc": "Create your first service and start earning. Every service must be linked to a course you've been certified in.",
+      "cta": "Create Your First Service"
+    },
+    "thumbnail": {
+      "title": "Service Cover Image",
+      "hint": "Recommended size: 1280x720 (16:9 aspect ratio).",
+      "replace": "Replace",
+      "upload": "Upload",
+      "change": "Change",
+      "noImage": "No Image",
+      "openNewTab": "Open in new tab",
+      "onlyAllowed": "Only PNG, JPG, or WebP images are allowed.",
+      "maxSize": "Maximum file size is 2MB.",
+      "uploading": "Uploading thumbnail...",
+      "success": "Thumbnail updated!",
+      "uploadFailed": "Upload failed",
+      "errors": {
+        "invalidType": "The file is not a valid PNG, JPG or WebP image.",
+        "fileTooLarge": "Maximum file size is 2MB.",
+        "serviceLocked": "The service is under review. Withdraw it to change the image.",
+        "rateLimited": "Too many uploads. Please try again later.",
+        "forbidden": "You don't have permission to change this image."
+      }
+    }
+  },
+    "serviceForm": {
+    "editPage": {
+      "back": "Back to My Services",
+      "eyebrow": "Creator Studio",
+      "title": "Edit Service",
+      "note": "Note:",
+      "noteText": "Changes to your service will appear on the marketplace immediately. The category is locked to your certificate.",
+      "metadataTitle": "Edit Service"
+    },
+    "newPage": {
+      "eyebrow": "Creator Studio",
+      "title": "Create a New Service",
+      "subtitle": "You have {count, plural, =0 {No certified courses} =1 {1 certified course} other {# certified courses}} available for service creation.",
+      "marketplaceRule": "Marketplace Rule:",
+      "marketplaceRuleText": "Each service must be linked to a course you have officially certified in. The service category is set automatically from your certificate.",
+      "metadataTitle": "New Service"
+    },
+    "noCertificate": {
+      "title": "Certificate Required",
+      "desc": "To offer services on EduSpark, you must first complete a course and pass the certification quiz with a score of {passingScore}% or higher. Your certificate proves your expertise to potential clients.",
+      "browseCourses": "Browse Courses",
+      "myDashboard": "My Dashboard"
+    },
+    "form": {
+      "sections": {
+        "foundation": {
+          "title": "Service Foundation",
+          "desc": "Link your service to a course you've certified in."
+        },
+        "details": {
+          "title": "Service Details",
+          "desc": "Write a compelling title and description to attract buyers."
+        },
+        "pricing": {
+          "title": "Pricing & Delivery",
+          "desc": "Set competitive rates based on your expertise level."
+        },
+        "tags": {
+          "title": "Tags & Portfolio",
+          "desc": "Help buyers discover your service and see past work."
+        }
+      },
+      "fields": {
+        "certifiedCourse": "Certified Course",
+        "certifiedCourseDesc": "Only courses with a passing certificate are listed.",
+        "certifiedCoursePlaceholder": "Select a certified course…",
+        "certifiedCourseSearch": "Search courses…",
+        "certifiedCourseEmpty": "No matching courses.",
+        "credential": "Credential",
+        "score": "Score",
+        "categoryAuto": "Category is set automatically",
+        "categoryAutoDesc": "from your certificate. You can only offer services in categories you're certified in.",
+        "title": "Service Title",
+        "titlePlaceholder": "e.g. I will build a full-stack Next.js web application…",
+        "description": "Description",
+        "descriptionPlaceholder": "Describe exactly what you'll deliver, what's included, your process, and any requirements from the buyer…",
+        "price": "Price (USD)",
+        "pricePlaceholder": "25.00",
+        "priceHint": "Min $5 · Max $10,000",
+        "deliveryTime": "Delivery Time",
+        "deliveryTimePlaceholder": "3",
+        "deliveryTimeHint": "1–90 calendar days",
+        "deliveryDaysSuffix": "days",
+        "revisions": "Revisions",
+        "revisionsPlaceholder": "1",
+        "revisionsHint": "0 = no revisions",
+        "tags": "Tags",
+        "tagsPlaceholder": "Type a tag, press Enter...",
+        "tagsHint": "{count}/{max} tags added · Press Enter or , to add",
+        "tagsHintBefore": "{count}/{max} tags added · Press",
+        "tagsHintAfter": "to add",
+        "portfolioLinks": "Portfolio Links",
+        "portfolioLinksOptional": "(optional)",
+        "portfolioLinksHint": "Add up to 5 links to showcase your previous work.",
+        "portfolioLinkPlaceholder": "https://your-portfolio.com/project",
+        "addPortfolioLink": "Add portfolio link",
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        "publish": "Publish Service",
+        "saving": "Saving...",
+        "publishing": "Publishing..."
+      },
+      "success": {
+        "createdTitle": "Service Created!",
+        "updatedTitle": "Service Updated!",
+        "redirecting": "Redirecting to your services..."
+      },
+      "toasts": {
+        "savingChanges": "Saving changes...",
+        "publishing": "Publishing service...",
+        "created": "Service submitted for review 📬",
+        "createdDesc": "It will appear in the marketplace once an administrator approves it.",
+        "updated": "Service updated successfully! ✨",
+        "updatedDesc": "Redirecting to your services...",
+        "sentForReview": "Changes sent for review 📬",
+        "sentForReviewDesc": "The service is hidden until an administrator approves your changes.",
+        "updateFailed": "Failed to update service",
+        "publishFailed": "Failed to publish service"
+      },
+      "errors": {
+        "noCertificate": "Your certificate for this course could not be verified. Please ensure you passed the course quiz.",
+        "forbiddenRole": "Your account is not authorized to create services.",
+        "forbidden": "You don't have permission to edit this service.",
+        "notFound": "This service no longer exists.",
+        "maliciousUrl": "One or more portfolio links were flagged as malicious. Please remove them before saving.",
+        "rateLimited": "Too many changes in a short time. Please wait a few minutes and try again.",
+        "conflict": "The service status changed while you were editing (an administrator may have reviewed it). Reload the page and try again.",
+        "serverError": "Something went wrong on our end. Please try again.",
+        "generic": "An unexpected error occurred."
+      }
+    }
+  },
+    "creatorOrders": {
+    "page": {
+      "eyebrow": "Creator Studio",
+      "title": "Incoming Orders",
+      "subtitle": "Manage orders from your clients.",
+      "metadataTitle": "Incoming Orders"
+    },
+    "stats": {
+      "new": "New",
+      "active": "In Progress",
+      "completed": "Completed"
+    },
+    "empty": {
+      "title": "No incoming orders",
+      "desc": "When clients order your services, their orders will appear here.",
+      "cta": "View My Services"
+    }
+  },
+    "admin": {
+    "broadcast": {
+      "titlePlaceholder": "Notification Title",
+      "bodyPlaceholder": "Message body...",
+      "sending": "Sending...",
+      "sendToAll": "Send to All Users",
+      "successToast": "Notification sent to {count} users! 🎉",
+      "failedToast": "Failed to send notification"
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Platform overview, pending reviews, and administrative controls.",
+      "metadataTitle": "Admin Dashboard",
+      "pendingAlert": {
+        "title": "{count, plural, =1 {1 item awaiting your review} other {# items awaiting your review}}",
+        "details": "{courses, plural, =0 {No courses} =1 {1 course} other {# courses}} awaiting review · {services, plural, =0 {No services} =1 {1 service} other {# services}} awaiting review"
+      },
+      "stats": {
+        "activeUsers": "Active Users",
+        "totalCourses": "Total Courses",
+        "totalServices": "Total Services",
+        "revenue": "Revenue",
+        "newThisWeek": "+{count} this week"
+      },
+      "sections": {
+        "pendingReviews": "Pending Reviews",
+        "recentActivity": "Recent Activity",
+        "viewAll": "View all",
+        "broadcast": "Broadcast Notification",
+        "broadcastDesc": "Send a message to all active users.",
+        "quickActions": "Quick Actions",
+        "quickActionsDesc": "Jump to management sections."
+      },
+      "pendingEmpty": "All caught up! Nothing to review.",
+      "byCreator": "by",
+      "draftCourse": "Draft course",
+      "pausedService": "Paused service",
+      "review": "Review",
+      "activityEmpty": "No activity yet. Actions will appear here.",
+      "system": "System",
+      "actions": {
+        "manageUsers": "Manage Users",
+        "manageCourses": "Manage Courses",
+        "manageServices": "Manage Services"
+      }
+    },
+    "courses": {
+      "page": {
+        "eyebrow": "Admin",
+        "title": "Courses",
+        "subtitle": "Review submitted courses, publish, or archive courses across the platform.",
+        "metadataTitle": "Courses — Admin"
+      },
+      "table": {
+        "searchPlaceholder": "Search by title or description…",
+        "filters": {
+          "all": "All",
+          "pendingReview": "Pending review",
+          "published": "Published",
+          "draft": "Draft",
+          "archived": "Archived"
+        },
+        "showingRange": "Showing {start}–{end} of {total}",
+        "pageOf": "Page {page} of {total}",
+        "noCourses": "No courses found",
+        "noCoursesDesc": "Try adjusting your search or filters.",
+        "columns": {
+          "course": "Course",
+          "creator": "Creator",
+          "stats": "Stats",
+          "status": "Status"
+        },
+        "mobileLabels": {
+          "creator": "Creator:",
+          "stats": "Stats:",
+          "status": "Status:"
+        },
+        "uncategorized": "Uncategorized",
+        "levels": {
+          "beginner": "Beginner",
+          "intermediate": "Intermediate",
+          "advanced": "Advanced"
+        },
+        "statuses": {
+          "published": "Published",
+          "draft": "Draft",
+          "pendingReview": "Pending Review",
+          "archived": "Archived"
+        },
+        "actionsAria": "Course actions",
+        "menu": {
+          "reviewHeader": "Review",
+          "reviewContent": "Review Content & Lessons",
+          "reviewQuiz": "Review Quiz ({count, plural, =0 {no sections} =1 {1 section} other {# sections}})",
+          "viewPublic": "View Public",
+          "actionsHeader": "Actions",
+          "approveAndPublish": "Approve & publish",
+          "requestChanges": "Request changes...",
+          "publish": "Publish",
+          "setDraft": "Set as Draft",
+          "archive": "Archive"
+        },
+        "statusToasts": {
+          "publishedTitle": "Course published 🚀",
+          "publishedDesc": "The course is now visible in the public catalog.",
+          "draftTitle": "Moved to draft 📌",
+          "draftDesc": "The course is now hidden from students.",
+          "pendingReviewTitle": "Submitted for review",
+          "pendingReviewDesc": "The course is waiting for an administrator decision.",
+          "archivedTitle": "Course archived 🗄️",
+          "archivedDesc": "The course has been archived and is no longer active."
+        },
+        "toasts": {
+          "updating": "Updating to {status}...",
+          "updateFailed": "Update failed",
+          "reviewFailed": "Review failed",
+          "approving": "Approving...",
+          "sendingFeedback": "Sending feedback...",
+          "approved": "Course approved 🚀",
+          "approvedDesc": "The course is now public.",
+          "feedbackSent": "Feedback sent 📌",
+          "feedbackSentDesc": "The course is back in draft with your note."
+        },
+        "errors": {
+          "forbidden": "Only admins can perform this action.",
+          "forbiddenReview": "Only admins can review courses.",
+          "notFound": "Course not found.",
+          "invalidInput": "A valid reason is required to archive a course.",
+          "invalidInputReview": "A note of at least 10 characters is required.",
+          "invalidState": "This course is no longer waiting for review.",
+          "cannotPublishEmpty": "The course has no lessons yet.",
+          "quizTooShort": "The course quiz is below the minimum number of questions.",
+          "actionFailed": "Action failed."
+        },
+        "archiveDialog": {
+          "rejectTitle": "Request changes",
+          "archiveTitle": "Archive course",
+          "rejectDescBefore": "Tell the creator what must change before",
+          "rejectDescAfter": "can be published.",
+          "archiveDescBefore": "Please provide a reason for archiving",
+          "archiveDescAfter": ". This reason will be sent to the course creator by email.",
+          "reasonLabel": "Reason (required)",
+          "reasonPlaceholder": "e.g., Content violates platform quality guidelines.",
+          "reasonError": "Please provide at least 10 characters explaining the reason.",
+          "reasonCounter": "{count}/500 characters (minimum 10)",
+          "cancel": "Cancel",
+          "sendFeedback": "Send feedback",
+          "archive": "Archive course"
+        },
+        "pagination": {
+          "previous": "Previous",
+          "next": "Next"
+        }
+      }
+    },
+        "services": {
+      "page": {
+        "eyebrow": "Admin",
+        "title": "Services",
+        "subtitle": "Moderate and review all marketplace services.",
+        "metadataTitle": "Services — Admin"
+      },
+      "table": {
+        "searchPlaceholder": "Search by title or description…",
+        "filters": {
+          "all": "All",
+          "pendingReview": "Pending review",
+          "active": "Active",
+          "paused": "Paused",
+          "archived": "Archived"
+        },
+        "showingRange": "Showing {start}–{end} of {total}",
+        "pageOf": "Page {page} of {total}",
+        "noServices": "No services found",
+        "noServicesDesc": "Try adjusting your search or filters.",
+        "columns": {
+          "service": "Service",
+          "creator": "Creator",
+          "stats": "Stats",
+          "status": "Status"
+        },
+        "mobileLabels": {
+          "creator": "Creator:",
+          "stats": "Stats:",
+          "status": "Status:"
+        },
+        "uncategorized": "Uncategorized",
+        "deliveryShort": "{days}d",
+        "statuses": {
+          "pendingReview": "Pending Review",
+          "active": "Active",
+          "paused": "Paused",
+          "archived": "Archived"
+        },
+        "actionsAria": "Service actions",
+        "menu": {
+          "reviewHeader": "Review",
+          "reviewDetails": "Review Details",
+          "approveAndActivate": "Approve & Activate",
+          "requestChanges": "Request changes...",
+          "viewPublic": "View Public",
+          "changeStatus": "Change status",
+          "activate": "Activate",
+          "pause": "Pause",
+          "archive": "Archive"
+        },
+        "statusToasts": {
+          "pendingReviewTitle": "Service submitted for review",
+          "pendingReviewDesc": "The service is waiting for an administrator decision.",
+          "activeTitle": "Service activated ▶️",
+          "activeDesc": "The service is now visible in the marketplace.",
+          "pausedTitle": "Service paused ⏸️",
+          "pausedDesc": "The service is now hidden from buyers.",
+          "archivedTitle": "Service archived 🗄️",
+          "archivedDesc": "The service has been archived and is no longer active."
+        },
+        "toasts": {
+          "updating": "Updating to {status}...",
+          "updateFailed": "Update failed",
+          "reviewFailed": "Review failed",
+          "approving": "Approving...",
+          "sendingFeedback": "Sending feedback...",
+          "approved": "Service approved 🚀",
+          "approvedDesc": "The service is now live in the marketplace.",
+          "feedbackSent": "Feedback sent 📌",
+          "feedbackSentDesc": "The service is paused with your note. The creator can fix it and resubmit."
+        },
+        "errors": {
+          "forbidden": "Only admins can perform this action.",
+          "forbiddenReview": "Only admins can review services.",
+          "notFound": "Service not found.",
+          "invalidInput": "A valid reason is required to archive a service.",
+          "invalidInputReview": "A note of at least 10 characters is required to request changes.",
+          "invalidState": "This service is no longer waiting for review.",
+          "actionFailed": "Action failed."
+        },
+        "archiveDialog": {
+          "rejectTitle": "Request changes",
+          "archiveTitle": "Archive service",
+          "rejectDescBefore": "Tell the creator what must change before",
+          "rejectDescAfter": "can go live. The service is paused and this note is shown to the creator.",
+          "archiveDescBefore": "Please provide a reason for archiving",
+          "archiveDescAfter": ". This reason will be sent to the service creator by email.",
+          "reasonLabel": "Reason (required)",
+          "reasonPlaceholder": "e.g., Service offering violates marketplace policy.",
+          "reasonError": "Please provide at least 10 characters explaining the reason.",
+          "reasonCounter": "{count}/500 characters (minimum 10)",
+          "cancel": "Cancel",
+          "sendFeedback": "Send feedback",
+          "archive": "Archive service"
+        },
+        "pagination": {
+          "previous": "Previous",
+          "next": "Next"
+        },
+        "modal": {
+          "title": "Review Service",
+          "subtitle": "Review all details before making a decision.",
+          "statusLabel": "Status",
+          "by": "By",
+          "deliveryDays": "{count, plural, =1 {1 day delivery} other {# days delivery}}",
+          "revisions": "{count, plural, =0 {No revisions} =1 {1 revision} other {# revisions}}",
+          "orders": "{count, plural, =0 {No orders} =1 {1 order} other {# orders}}",
+          "description": "Description",
+          "tags": "Tags",
+          "portfolio": "Portfolio",
+          "unsafeLink": "Unsafe link not shown: {url}",
+          "close": "Close",
+          "approveActivate": "Approve & Activate",
+          "requestChanges": "Request changes",
+          "archive": "Archive"
+        }
+      }
+    },
+    "users": {
+      "page": {
+        "eyebrow": "Admin",
+        "title": "Users",
+        "subtitle": "Manage roles, activate or suspend accounts.",
+        "metadataTitle": "Users — Admin"
+      },
+      "table": {
+        "searchPlaceholder": "Search by name or email…",
+        "filters": {
+          "all": "All",
+          "students": "Students",
+          "creators": "Creators",
+          "admins": "Admins"
+        },
+        "showingRange": "Showing {start}–{end} of {total}",
+        "pageOf": "Page {page} of {total}",
+        "noUsers": "No users found",
+        "noUsersDesc": "Try adjusting your search or filters.",
+        "columns": {
+          "user": "User",
+          "role": "Role",
+          "activity": "Activity",
+          "status": "Status"
+        },
+        "mobileLabels": {
+          "role": "Role:",
+          "activity": "Activity:",
+          "status": "Status:"
+        },
+        "youBadge": "YOU",
+        "status": {
+          "active": "Active",
+          "suspended": "Suspended"
+        },
+        "actionsAria": "User actions",
+        "menu": {
+          "changeRole": "Change role",
+          "makeStudent": "Make Student",
+          "makeCreator": "Make Creator",
+          "makeAdmin": "Make Admin",
+          "suspendAccount": "Suspend account",
+          "activateAccount": "Activate account"
+        },
+        "toasts": {
+          "suspending": "Suspending account...",
+          "activating": "Activating account...",
+          "actionFailed": "Action failed",
+          "suspended": "Account suspended",
+          "suspendedDesc": "{name}'s account has been suspended.",
+          "activated": "Account activated",
+          "activatedDesc": "{name}'s account has been reactivated.",
+          "updatingRole": "Updating role to {role}...",
+          "roleUpdateFailed": "Role update failed",
+          "roleUpdated": "Role updated to {role}",
+          "roleUpdatedDesc": "{name}'s role has been changed."
+        },
+        "errors": {
+          "cannotModifySelf": "You cannot perform this action on your own account.",
+          "forbidden": "Only admins can perform this action.",
+          "notFound": "User not found.",
+          "invalidInput": "A valid reason is required to suspend an account.",
+          "actionFailed": "Action failed."
+        },
+        "roleLabels": {
+          "student": "Student",
+          "creator": "Creator",
+          "admin": "Admin"
+        },
+        "suspendDialog": {
+          "title": "Suspend account",
+          "descBefore": "Please provide a reason for suspending",
+          "descAfter": ". This reason will be sent to the user by email.",
+          "reasonLabel": "Reason (required)",
+          "reasonPlaceholder": "e.g., Violation of platform terms of service.",
+          "reasonError": "Please provide at least 10 characters explaining the reason.",
+          "reasonCounter": "{count}/500 characters (minimum 10)",
+          "cancel": "Cancel",
+          "suspend": "Suspend account"
+        },
+        "pagination": {
+          "previous": "Previous",
+          "next": "Next"
+        }
+      }
+    }
+  },
+    "reviews": {
+    "starRating": {
+      "aria": "{value} out of 5 stars"
+    },
+    "course": {
+      "title": "Reviews ({count})",
+      "leaveReview": "Leave a review",
+      "writeReview": "Write a review",
+      "alreadyReviewed": "You have already reviewed this course.",
+      "needsProgress": "You can review this course after completing a part of it.",
+      "noReviews": "No reviews yet.",
+      "form": {
+        "chooseRating": "Please choose a rating.",
+        "commentPlaceholder": "Share your experience (optional)",
+        "cancel": "Cancel",
+        "submit": "Submit",
+        "submittingToast": "Submitting review...",
+        "failedToast": "Failed",
+        "successToast": "Review submitted! ⭐",
+        "errors": {
+          "alreadyReviewed": "You already reviewed this course.",
+          "notEnrolled": "You must be enrolled to review.",
+          "notEnoughProgress": "Complete a bit more of the course before reviewing it.",
+          "rateLimited": "Too many reviews in a short time. Please try again later.",
+          "ownCourse": "You cannot review your own course.",
+          "generic": "Could not submit review."
+        }
+      }
+    },
+    "project": {
+      "question": "How was working with {creatorName}?",
+      "subtitle": "Your review is public and cannot be edited afterwards.",
+      "commentPlaceholder": "Share details that help other clients (optional)",
+      "submitting": "Submitting...",
+      "submit": "Submit review",
+      "clientReview": "Client review",
+      "ratingAria": "Rating",
+      "starAria": "{count, plural, =1 {1 star} other {# stars}}",
+      "errors": {
+        "alreadyReviewed": "You have already reviewed this project.",
+        "notCompleted": "You can review a project once it is completed.",
+        "forbidden": "Only the client of this project can review it.",
+        "rateLimited": "Too many attempts. Please try again later.",
+        "emailNotVerified": "Please confirm your email address first.",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "service": {
+      "title": "Client reviews",
+      "noReviews": "No reviews yet. Reviews appear after a client completes a project."
+    },
+    "reputation": {
+      "title": "Reputation",
+      "reviewsCount": "{count, plural, =0 {No reviews} =1 {1 review} other {# reviews}}",
+      "projectsCount": "{count, plural, =0 {No completed projects} =1 {1 completed project} other {# completed projects}}"
+    }
+  },
+    "userMenu": {
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "signOut": "Sign out"
+  },
+  "ui": {
+    "combobox": {
+      "defaultPlaceholder": "Select an option...",
+      "defaultEmpty": "No matches found.",
+      "defaultSearch": "Search..."
+    }
+  },
+  "certificate": {
+    "brand": "EduSpark",
+    "type": "Certificate of Completion",
+    "thisCertifies": "This certifies that",
+    "hasCompleted": "has successfully completed the course",
+    "levelFormat": "{level} Level",
+    "issued": "Issued",
+    "instructor": "Instructor",
+    "credentialId": "Credential ID",
+    "copyCredentialId": "Copy Credential ID",
+    "download": "Download",
+    "downloadTitle": "Download certificate metadata as JSON",
+    "share": "Share",
+    "copied": "Copied!",
+    "copyVerifyLink": "Copy verification link",
+    "verify": "Verify",
+    "verifyTitle": "Verify certificate",
+    "downloadMetadata": "Download metadata",
+    "grades": {
+      "distinction": "With Distinction",
+      "merit": "With Merit",
+      "pass": "Pass"
+    },
+    "courses": {
+  "card": {
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
+  }
+}
+  },
+  "verifyEmailBanner": {
+  "message": "Please confirm your email address to unlock ordering, certification and publishing.",
+  "resendBtn": "Resend email",
+  "sending": "Sending…",
+  "successMsg": "Email sent — check your inbox.",
+  "fallbackError": "Failed to send email. Please try again."
+},
+"studentCertificates": {
+  "achievements": "Achievements",
+  "title": "My Certificates",
+  "descEmpty": "Complete courses and pass the certification quizzes to earn certificates.",
+  "earned": "{count, plural, =0 {No certificates yet} =1 {You've earned 1 certificate} other {You've earned # certificates}}",
+  "noCertsTitle": "No certificates yet",
+  "noCertsDesc": "Finish a course and pass its certification quiz to unlock your first certificate.",
+  "browseCourses": "Browse Courses"
+}
+}
