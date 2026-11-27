@@ -1577,6 +1577,31 @@
       "distinction": "With Distinction",
       "merit": "With Merit",
       "pass": "Pass"
+    },
+    "courses": {
+  "card": {
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
     }
   }
+}
+  },
+  "verifyEmailBanner": {
+  "message": "Please confirm your email address to unlock ordering, certification and publishing.",
+  "resendBtn": "Resend email",
+  "sending": "Sending…",
+  "successMsg": "Email sent — check your inbox.",
+  "fallbackError": "Failed to send email. Please try again."
+},
+"studentCertificates": {
+  "achievements": "Achievements",
+  "title": "My Certificates",
+  "descEmpty": "Complete courses and pass the certification quizzes to earn certificates.",
+  "earned": "{count, plural, =0 {No certificates yet} =1 {You've earned 1 certificate} other {You've earned # certificates}}",
+  "noCertsTitle": "No certificates yet",
+  "noCertsDesc": "Finish a course and pass its certification quiz to unlock your first certificate.",
+  "browseCourses": "Browse Courses"
+}
 }

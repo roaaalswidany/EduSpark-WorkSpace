@@ -1,8 +1,9 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { headers } from "next/headers";
 import { Award, Search } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation"; // 👈 تم التعديل للـ i18n
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { CertificateCard } from "@/components/lms/CertificateCard";
@@ -10,6 +11,8 @@ import { CertificateCard } from "@/components/lms/CertificateCard";
 export default async function MyCertificatesPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/auth/login");
+
+  const t = await getTranslations("studentCertificates");
 
   // Build the base URL from request headers (works for any host)
   const headersList = await headers();
@@ -59,15 +62,13 @@ export default async function MyCertificatesPage() {
       <div className="mb-8">
         <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400 mb-2">
           <Award className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-widest">Achievements</span>
+          <span className="uppercase tracking-widest">{t("achievements")}</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-          My Certificates
+          {t("title")}
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
-          {data.length === 0
-            ? "Complete courses and pass the certification quizzes to earn certificates."
-            : `You've earned ${data.length} ${data.length === 1 ? "certificate" : "certificates"}`}
+          {data.length === 0 ? t("descEmpty") : t("earned", { count: data.length })}
         </p>
       </div>
 
@@ -78,18 +79,17 @@ export default async function MyCertificatesPage() {
             <Award className="w-7 h-7 text-amber-600 dark:text-amber-400" />
           </div>
           <h2 className="text-lg font-bold text-foreground mb-1.5">
-            No certificates yet
+            {t("noCertsTitle")}
           </h2>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
-            Finish a course and pass its certification quiz to unlock your first
-            certificate.
+            {t("noCertsDesc")}
           </p>
           <Link
             href="/courses"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary text-primary-foreground text-sm font-bold transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
           >
-            <Search className="w-4 h-4" />
-            Browse Courses
+            <Search className="w-4 h-4 rtl:rotate-180" />
+            {t("browseCourses")}
           </Link>
         </div>
       ) : (
